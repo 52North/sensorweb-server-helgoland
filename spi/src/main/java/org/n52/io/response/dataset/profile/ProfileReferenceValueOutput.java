@@ -30,42 +30,6 @@ package org.n52.io.response.dataset.profile;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class ProfileReferenceValueOutput implements ReferenceValueOutput<ProfileValue< ? >> {
-
-    private String referenceValueId;
-
-    private String label;
-
-    private ProfileValue< ? > lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public ProfileValue< ? > getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(ProfileValue< ? > lastValue) {
-        this.lastValue = lastValue;
-    }
+public class ProfileReferenceValueOutput extends ReferenceValueOutput<ProfileValue< ? >> {
 
 }

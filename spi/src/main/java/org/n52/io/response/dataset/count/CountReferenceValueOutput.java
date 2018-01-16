@@ -30,41 +30,5 @@ package org.n52.io.response.dataset.count;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class CountReferenceValueOutput implements ReferenceValueOutput<CountValue> {
-
-    private String referenceValueId;
-
-    private String label;
-
-    private CountValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public CountValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(CountValue lastValue) {
-        this.lastValue = lastValue;
-    }
+public class CountReferenceValueOutput extends ReferenceValueOutput<CountValue> {
 }

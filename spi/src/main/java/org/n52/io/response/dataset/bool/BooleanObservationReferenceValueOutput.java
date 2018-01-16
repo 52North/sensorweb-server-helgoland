@@ -30,41 +30,6 @@ package org.n52.io.response.dataset.bool;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class BooleanObservationReferenceValueOutput implements ReferenceValueOutput<BooleanValue> {
+public class BooleanObservationReferenceValueOutput extends ReferenceValueOutput<BooleanValue> {
 
-    private String referenceValueId;
-
-    private String label;
-
-    private BooleanValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public BooleanValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(BooleanValue lastValue) {
-        this.lastValue = lastValue;
-    }
 }

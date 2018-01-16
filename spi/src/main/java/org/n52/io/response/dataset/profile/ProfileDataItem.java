@@ -126,7 +126,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ProfileDataItem other = (ProfileDataItem) obj;
+        ProfileDataItem<?> other = (ProfileDataItem) obj;
         if (value == null) {
             if (other.value != null) {
                 return false;

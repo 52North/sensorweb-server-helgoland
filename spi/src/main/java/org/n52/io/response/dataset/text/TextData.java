@@ -26,10 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.quantity;
+package org.n52.io.response.dataset.text;
 
-import org.n52.io.response.dataset.DatasetMetadata;
+import org.n52.io.response.dataset.Data;
 
-public class QuantityDatasetMetadata extends DatasetMetadata<QuantityData> {
-    private static final long serialVersionUID = 7422416308386483575L;
+/**
+ * TODO JavaDoc
+ * @author Christian Autermann
+ */
+public class TextData extends Data<TextValue> {
+    private static final long serialVersionUID = -3661490870564822288L;
+
+    public static TextData newTextObservationData(TextValue... values) {
+        TextData timeseries = new TextData();
+        timeseries.addValues(values);
+        return timeseries;
+    }
+
+
 }

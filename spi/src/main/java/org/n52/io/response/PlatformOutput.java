@@ -52,7 +52,7 @@ public class PlatformOutput extends OutputWithParameters {
     // TODO use plain string in output and let repository assert correctness
     private OptionalOutput<PlatformType> platformType;
 
-    private OptionalOutput<Collection<DatasetOutput>> datasets;
+    private OptionalOutput<Collection<DatasetOutput<?>>> datasets;
 
     private OptionalOutput<Geometry> geometry;
 
@@ -98,11 +98,11 @@ public class PlatformOutput extends OutputWithParameters {
         return this;
     }
 
-    public Collection<DatasetOutput> getDatasets() {
+    public Collection<DatasetOutput<?>> getDatasets() {
         return getIfSerializedCollection(datasets);
     }
 
-    public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput>> series) {
+    public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput<?>>> series) {
         this.datasets = series;
         return this;
     }

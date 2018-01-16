@@ -28,26 +28,8 @@
  */
 package org.n52.io.response.dataset.bool;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.n52.io.response.dataset.DatasetMetadata;
 
-public class BooleanDatasetMetadata implements DatasetMetadata<Map<String, BooleanData>>, Serializable {
-
-    private static final long serialVersionUID = -5666064665815076013L;
-
-    private Map<String, BooleanData> referenceValues = new HashMap<>();
-
-    @Override
-    public Map<String, BooleanData> getReferenceValues() {
-        return referenceValues;
-    }
-
-    @Override
-    public void setReferenceValues(Map<String, BooleanData> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
+public class BooleanDatasetMetadata extends DatasetMetadata<BooleanData> {
+    private static final long serialVersionUID = -7453927811120253464L;
 }

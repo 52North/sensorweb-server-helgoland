@@ -31,24 +31,11 @@ package org.n52.io.response.dataset.record;
 import org.n52.io.response.dataset.Data;
 
 public class RecordData extends Data<RecordValue> {
-
     private static final long serialVersionUID = 4717558247670336015L;
 
-    private RecordDatasetMetadata metadata;
-
-    public static RecordData newTextObservationData(RecordValue... values) {
+    public static RecordData newRecordObservationData(RecordValue... values) {
         RecordData timeseries = new RecordData();
         timeseries.addValues(values);
         return timeseries;
     }
-
-    @Override
-    public RecordDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(RecordDatasetMetadata metadata) {
-        this.metadata = metadata;
-    }
-
 }

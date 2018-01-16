@@ -30,41 +30,5 @@ package org.n52.io.response.dataset.record;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class RecordObservationReferenceValueOutput implements ReferenceValueOutput<RecordValue> {
-
-    private String referenceValueId;
-
-    private String label;
-
-    private RecordValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public RecordValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(RecordValue lastValue) {
-        this.lastValue = lastValue;
-    }
+public class RecordObservationReferenceValueOutput extends ReferenceValueOutput<RecordValue> {
 }

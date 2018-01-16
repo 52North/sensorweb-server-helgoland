@@ -28,26 +28,8 @@
  */
 package org.n52.io.response.dataset.count;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.n52.io.response.dataset.DatasetMetadata;
 
-public class CountDatasetMetadata implements DatasetMetadata<Map<String, CountData>>, Serializable {
-
-    private static final long serialVersionUID = -5666064665815076013L;
-
-    private Map<String, CountData> referenceValues = new HashMap<>();
-
-    @Override
-    public Map<String, CountData> getReferenceValues() {
-        return referenceValues;
-    }
-
-    @Override
-    public void setReferenceValues(Map<String, CountData> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
+public class CountDatasetMetadata extends DatasetMetadata<CountData> {
+    private static final long serialVersionUID = -5729151265783873882L;
 }

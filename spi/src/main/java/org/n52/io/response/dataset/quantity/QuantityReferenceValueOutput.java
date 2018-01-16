@@ -30,42 +30,6 @@ package org.n52.io.response.dataset.quantity;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class QuantityReferenceValueOutput implements ReferenceValueOutput<QuantityValue> {
-
-    private String referenceValueId;
-
-    private String label;
-
-    private QuantityValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public QuantityValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(QuantityValue lastValue) {
-        this.lastValue = lastValue;
-    }
+public class QuantityReferenceValueOutput extends ReferenceValueOutput<QuantityValue> {
 
 }

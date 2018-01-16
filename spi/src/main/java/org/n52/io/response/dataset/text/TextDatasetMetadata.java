@@ -28,26 +28,8 @@
  */
 package org.n52.io.response.dataset.text;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.n52.io.response.dataset.DatasetMetadata;
 
-public class TextDatasetMetadata implements DatasetMetadata<Map<String, TextData>>, Serializable {
-
+public class TextDatasetMetadata extends DatasetMetadata<TextData> {
     private static final long serialVersionUID = -5666064665815076013L;
-
-    private Map<String, TextData> referenceValues = new HashMap<>();
-
-    @Override
-    public Map<String, TextData> getReferenceValues() {
-        return referenceValues;
-    }
-
-    @Override
-    public void setReferenceValues(Map<String, TextData> referenceValues) {
-        this.referenceValues = referenceValues;
-    }
-
 }

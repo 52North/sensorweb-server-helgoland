@@ -30,41 +30,6 @@ package org.n52.io.response.dataset.text;
 
 import org.n52.io.response.dataset.ReferenceValueOutput;
 
-public class TextObservationReferenceValueOutput implements ReferenceValueOutput<TextValue> {
+public class TextObservationReferenceValueOutput extends ReferenceValueOutput<TextValue> {
 
-    private String referenceValueId;
-
-    private String label;
-
-    private TextValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
-    }
-
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
-    }
-
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public TextValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(TextValue lastValue) {
-        this.lastValue = lastValue;
-    }
 }
