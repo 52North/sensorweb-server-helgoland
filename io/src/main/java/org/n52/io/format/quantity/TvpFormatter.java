@@ -29,16 +29,17 @@
 package org.n52.io.format.quantity;
 
 import org.n52.io.format.DataFormatter;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 /**
  * Represents the identity transformation. Input is equal to output.
  */
-public class TvpFormatter implements DataFormatter<QuantityData, QuantityData> {
+public class TvpFormatter implements DataFormatter<Data<QuantityValue>, Data<QuantityValue>> {
 
     @Override
-    public DataCollection<QuantityData> format(DataCollection<QuantityData> toFormat) {
+    public DataCollection<Data<QuantityValue>> format(DataCollection<Data<QuantityValue>> toFormat) {
         return toFormat;
     }
 

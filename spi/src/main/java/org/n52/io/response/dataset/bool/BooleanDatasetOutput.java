@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.bool;
 
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class BooleanDatasetOutput extends DatasetOutput<BooleanValue, BooleanObservationReferenceValueOutput> {
+public class BooleanDatasetOutput extends DatasetOutput<BooleanValue> {
 
     // hide generics clutter
 }

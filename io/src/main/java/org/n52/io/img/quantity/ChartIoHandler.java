@@ -72,14 +72,15 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
-import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ChartIoHandler extends IoHandler<QuantityData> {
+public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ChartIoHandler.class);
 
@@ -98,18 +99,18 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
     private JFreeChart jFreeChart;
 
     public ChartIoHandler(IoParameters parameters,
-                          IoProcessChain<QuantityData> processChain,
+                          IoProcessChain<Data<QuantityValue>> processChain,
                           IoStyleContext context) {
         super(parameters, processChain);
         this.context = context;
         this.xyPlot = createChart(context);
     }
 
-    public abstract void writeDataToChart(DataCollection<QuantityData> data)
+    public abstract void writeDataToChart(DataCollection<Data<QuantityValue>> data)
             throws IoParseException;
 
     @Override
-    public void encodeAndWriteTo(DataCollection<QuantityData> data,
+    public void encodeAndWriteTo(DataCollection<Data<QuantityValue>> data,
                                  OutputStream stream)
             throws IoParseException {
         try {
@@ -328,8 +329,8 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         }
     }
 
-    private DatasetOutput getTimeseriesMetadataOutput(String datasetId) {
-        for (DatasetOutput output : getMetadataOutputs()) {
+    private DatasetOutput< ? > getTimeseriesMetadataOutput(String datasetId) {
+        for (DatasetOutput< ? > output : getMetadataOutputs()) {
             if (output.getId()
                       .equals(datasetId)) {
                 return output;
@@ -338,7 +339,7 @@ public abstract class ChartIoHandler extends IoHandler<QuantityData> {
         return null;
     }
 
-    protected List< ? extends DatasetOutput<?, ?>> getMetadataOutputs() {
+    protected List< ? extends DatasetOutput< ? >> getMetadataOutputs() {
         return context.getAllDatasetMetadatas();
     }
 

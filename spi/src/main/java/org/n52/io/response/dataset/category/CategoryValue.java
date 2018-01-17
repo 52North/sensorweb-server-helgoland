@@ -26,46 +26,26 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.quantity;
+package org.n52.io.response.dataset.category;
 
-import org.n52.io.response.dataset.ReferenceValueOutput;
+import org.n52.io.response.dataset.AbstractValue;
 
-public class QuantityReferenceValueOutput implements ReferenceValueOutput<QuantityValue> {
+public class CategoryValue extends AbstractValue<Integer> {
 
-    private String referenceValueId;
+    public static final String TYPE = "category";
 
-    private String label;
+    private static final long serialVersionUID = 635165564503748527L;
 
-    private QuantityValue lastValue;
-
-    @Override
-    public String getReferenceValueId() {
-        return referenceValueId;
+    public CategoryValue() {
+        // for serialization
     }
 
-    @Override
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
+    public CategoryValue(Long timestart, Long timeend, Integer value) {
+        super(timestart, timeend, value);
     }
 
-    @Override
-    public String getLabel() {
-        return label;
-    }
-
-    @Override
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    @Override
-    public QuantityValue getLastValue() {
-        return lastValue;
-    }
-
-    @Override
-    public void setLastValue(QuantityValue lastValue) {
-        this.lastValue = lastValue;
+    public CategoryValue(Long timestamp, Integer value) {
+        super(timestamp, value);
     }
 
 }

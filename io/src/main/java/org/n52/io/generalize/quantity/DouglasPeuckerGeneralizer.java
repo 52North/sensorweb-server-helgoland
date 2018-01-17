@@ -34,8 +34,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * differ less than this tolerance value from an ideal line between some minima and maxima will be
  * dropped.
  */
-public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
+public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityValue>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DouglasPeuckerGeneralizer.class);
 
@@ -120,17 +120,17 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
     }
 
     @Override
-    public DataCollection<QuantityData> generalize(DataCollection<QuantityData> data)
+    public DataCollection<Data<QuantityValue>> generalize(DataCollection<Data<QuantityValue>> data)
             throws GeneralizerException {
-        TvpDataCollection<QuantityData> generalizedDataCollection = new TvpDataCollection<>();
+        TvpDataCollection<Data<QuantityValue>> generalizedDataCollection = new TvpDataCollection<>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
-            QuantityData timeseries = data.getSeries(timeseriesId);
+            Data<QuantityValue> timeseries = data.getSeries(timeseriesId);
             generalizedDataCollection.addNewSeries(timeseriesId, generalize(timeseries));
         }
         return generalizedDataCollection;
     }
 
-    private QuantityData generalize(QuantityData timeseries) throws
+    private Data<QuantityValue> generalize(Data<QuantityValue> timeseries) throws
             GeneralizerException {
         QuantityValue[] originalValues = getValueArray(timeseries);
         if (originalValues.length < 3 || toleranceValue <= 0) {
@@ -144,7 +144,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
                     + maxEntries + ")!");
         }
 
-        QuantityData generalizedTimeseries = new QuantityData();
+        Data<QuantityValue> generalizedTimeseries = new Data<>();
         QuantityValue[] generalizedValues = recursiveGeneralize(timeseries);
         generalizedTimeseries.addValues(generalizedValues);
 
@@ -164,12 +164,12 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
         return generalizedTimeseries;
     }
 
-    private QuantityValue[] getValueArray(QuantityData timeseries) {
+    private QuantityValue[] getValueArray(Data<QuantityValue> timeseries) {
         return timeseries.getValues()
                 .toArray(new QuantityValue[0]);
     }
 
-    private QuantityValue[] recursiveGeneralize(QuantityData timeseries) {
+    private QuantityValue[] recursiveGeneralize(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
         QuantityValue startValue = getFirstValue(timeseries);
         QuantityValue endValue = getLastValue(timeseries);
@@ -194,9 +194,9 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
             return getValueArray(timeseries);
         } else {
             // split and handle both parts separately
-            QuantityData generalizedData = new QuantityData();
-            QuantityData firstPartToBeGeneralized = new QuantityData();
-            QuantityData restPartToBeGeneralized = new QuantityData();
+            Data<QuantityValue> generalizedData = new Data<>();
+            Data<QuantityValue> firstPartToBeGeneralized = new Data<>();
+            Data<QuantityValue> restPartToBeGeneralized = new Data<>();
             firstPartToBeGeneralized.addValues(Arrays.copyOfRange(values, 0, index));
             restPartToBeGeneralized.addValues(Arrays.copyOfRange(values, index + 1, values.length));
             generalizedData.addValues(recursiveGeneralize(firstPartToBeGeneralized));
@@ -227,7 +227,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
         return new Line2D.Double(startTime, startValue.doubleValue(), endTime, endValue.doubleValue());
     }
 
-    private QuantityValue getFirstValue(QuantityData timeseries) {
+    private QuantityValue getFirstValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();
@@ -235,7 +235,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<QuantityData> {
         return values[0];
     }
 
-    private QuantityValue getLastValue(QuantityData timeseries) {
+    private QuantityValue getLastValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
         if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();

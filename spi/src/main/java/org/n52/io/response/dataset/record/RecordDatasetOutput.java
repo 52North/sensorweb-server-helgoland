@@ -30,7 +30,7 @@ package org.n52.io.response.dataset.record;
 
 import org.n52.io.response.dataset.DatasetOutput;
 
-public class RecordDatasetOutput extends DatasetOutput<RecordValue, RecordObservationReferenceValueOutput> {
+public class RecordDatasetOutput extends DatasetOutput<RecordValue> {
 
     // hide generics clutter
 

@@ -31,8 +31,8 @@ package org.n52.io.generalize.quantity;
 import java.math.BigDecimal;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.series.TvpDataCollection;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * <a href="https://github.com/sveinn-steinarsson/flot-downsample/">
  * https://github.com/sveinn-steinarsson/flot-downsample/</a>
  */
-public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<QuantityData> {
+public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<QuantityValue>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(
             LargestTriangleThreeBucketsGeneralizer.class);
@@ -80,19 +80,19 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Quantity
     }
 
     @Override
-    public DataCollection<QuantityData> generalize(
-            DataCollection<QuantityData> data) throws GeneralizerException {
-        TvpDataCollection<QuantityData> generalizedDataCollection = new TvpDataCollection<>();
+    public DataCollection<Data<QuantityValue>> generalize(
+            DataCollection<Data<QuantityValue>> data) throws GeneralizerException {
+        TvpDataCollection<Data<QuantityValue>> generalizedDataCollection = new TvpDataCollection<>();
         for (String timeseriesId : data.getAllSeries().keySet()) {
-            QuantityData timeseries = data.getSeries(timeseriesId);
-            QuantityData generalizedTimeseries = generalize(timeseries);
+            Data<QuantityValue> timeseries = data.getSeries(timeseriesId);
+            Data<QuantityValue> generalizedTimeseries = generalize(timeseries);
             generalizedTimeseries.setMetadata(timeseries.getMetadata());
             generalizedDataCollection.addNewSeries(timeseriesId, generalizedTimeseries);
         }
         return generalizedDataCollection;
     }
 
-    private QuantityData generalize(QuantityData timeseries) {
+    private Data<QuantityValue> generalize(Data<QuantityValue> timeseries) {
         QuantityValue[] data = timeseries.getValues().toArray(new QuantityValue[0]);
 
         int dataLength = data.length;
@@ -103,13 +103,13 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Quantity
         return generalizeData(data);
     }
 
-    private QuantityData generalizeData(QuantityValue[] data) {
+    private Data<QuantityValue> generalizeData(QuantityValue[] data) {
         int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
 
         int pointIndex = 0;
-        QuantityData sampled = new QuantityData();
+        Data<QuantityValue> sampled = new Data<>();
         sampled.addValues(data[pointIndex]);
 
         for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2;
@@ -191,7 +191,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Quantity
                 : amountOfNodataValues > noDataGapThreshold;
     }
 
-    private void addNodataValue(QuantityData sampled, long timestamp) {
+    private void addNodataValue(Data<QuantityValue> sampled, long timestamp) {
         sampled.addValues(new QuantityValue(timestamp, null));
     }
 

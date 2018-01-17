@@ -28,47 +28,48 @@
  */
 package org.n52.io.format.quantity;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.n52.io.format.DataFormatter;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
-import org.n52.io.response.dataset.quantity.QuantityDatasetMetadata;
+import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
-public class FlotFormatter implements DataFormatter<QuantityData, FlotData> {
+import com.vividsolutions.jts.geom.Coordinate;
+
+public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotData> {
 
     @Override
-    public FlotDataCollection format(DataCollection<QuantityData> toFormat) {
+    public FlotDataCollection format(DataCollection<Data<QuantityValue>> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            QuantityData seriesToFormat = toFormat.getSeries(timeseriesId);
+            Data<QuantityValue> seriesToFormat = toFormat.getSeries(timeseriesId);
             FlotData series = createFlotSeries(seriesToFormat);
             flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotData createFlotSeries(QuantityData seriesToFormat) {
+    private FlotData createFlotSeries(Data<QuantityValue> seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
-        QuantityDatasetMetadata metadata = seriesToFormat.getMetadata();
+        DatasetMetadata<Data<QuantityValue>> metadata = seriesToFormat.getMetadata();
         if (metadata != null) {
-            Map<String, QuantityData> referenceValues = metadata.getReferenceValues();
+            Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
             for (String referenceValueId : referenceValues.keySet()) {
-                QuantityData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
+                Data<QuantityValue> referenceValueData = metadata.getReferenceValues().get(referenceValueId);
                 flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
             }
         }
         return flotSeries;
     }
 
-    private List<Number[]> formatSeries(QuantityData timeseries) {
+    private List<Number[]> formatSeries(Data<QuantityValue> referenceValueData) {
         List<Number[]> series = new ArrayList<>();
-        for (QuantityValue currentValue : timeseries.getValues()) {
+        for (QuantityValue currentValue : referenceValueData.getValues()) {
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());

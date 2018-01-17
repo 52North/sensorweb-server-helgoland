@@ -28,18 +28,35 @@
  */
 package org.n52.io.response.dataset;
 
-public interface ReferenceValueOutput<T extends AbstractValue<?>> {
+public class ReferenceValueOutput<T extends AbstractValue<?>> {
 
-    String getReferenceValueId();
+    private String referenceValueId;
 
-    void setReferenceValueId(String referenceValueId);
+    private String label;
 
-    String getLabel();
+    private T lastValue;
 
-    void setLabel(String label);
+    public String getReferenceValueId() {
+        return referenceValueId;
+    }
 
-    T getLastValue();
+    public void setReferenceValueId(String referenceValueId) {
+        this.referenceValueId = referenceValueId;
+    }
 
-    void setLastValue(T lastValue);
+    public String getLabel() {
+        return label;
+    }
 
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public T getLastValue() {
+        return lastValue;
+    }
+
+    public void setLastValue(T lastValue) {
+        this.lastValue = lastValue;
+    }
 }

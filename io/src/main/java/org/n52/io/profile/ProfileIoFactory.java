@@ -35,11 +35,11 @@ import java.util.Set;
 import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.response.dataset.profile.ProfileData;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.profile.ProfileDatasetOutput;
 import org.n52.io.response.dataset.profile.ProfileValue;
 
-public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutput, ProfileValue< ? >> {
+public class ProfileIoFactory extends IoFactory<ProfileDatasetOutput, ProfileValue< ? >> {
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
@@ -52,7 +52,7 @@ public class ProfileIoFactory extends IoFactory<ProfileData, ProfileDatasetOutpu
     }
 
     @Override
-    public IoHandler<ProfileData> createHandler(String outputMimeType) {
+    public IoHandler<Data<ProfileValue< ? >>> createHandler(String outputMimeType) {
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;

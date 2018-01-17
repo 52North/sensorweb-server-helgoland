@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("deprecation")
-public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ? , ? >> {
+public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ? >> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 
@@ -71,28 +71,28 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ?
     }
 
     @Override
-    public Collection<String> getExtraMetadataFieldNames(DatasetOutput< ? , ? > output) {
+    public Collection<String> getExtraMetadataFieldNames(DatasetOutput< ? > output) {
         return hasStatusIntervals(output)
                 ? Collections.singleton(EXTENSION_NAME)
                 : Collections.emptySet();
     }
 
-    private boolean hasStatusIntervals(DatasetOutput< ? , ? > output) {
+    private boolean hasStatusIntervals(DatasetOutput< ? > output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(DatasetOutput< ? , ? > output) {
+    private boolean hasSeriesConfiguration(DatasetOutput< ? > output) {
         Map<String, ConfigInterval> intervals = intervalConfig.getTimeseriesIntervals();
         return intervals.containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(DatasetOutput< ? , ? > output) {
+    private boolean hasPhenomenonConfiguration(DatasetOutput< ? > output) {
         Map<String, ConfigInterval> intervals = intervalConfig.getPhenomenonIntervals();
         return intervals.containsKey(output.getId());
     }
 
     @Override
-    public Map<String, Object> getExtras(DatasetOutput< ? , ? > output, IoParameters parameters) {
+    public Map<String, Object> getExtras(DatasetOutput< ? > output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
@@ -106,17 +106,17 @@ public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ?
         return Collections.emptyMap();
     }
 
-    private boolean hasExtrasToReturn(DatasetOutput< ? , ? > output, IoParameters parameters) {
+    private boolean hasExtrasToReturn(DatasetOutput< ? > output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasStatusIntervals(output);
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(DatasetOutput< ? , ? > output) {
+    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(DatasetOutput< ? > output) {
         return intervalConfig.getTimeseriesIntervals()
                              .get(output.getId());
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(DatasetOutput< ? , ? > output) {
+    private StatusIntervalsExtensionConfig.ConfigInterval getPhenomenonIntervals(DatasetOutput< ? > output) {
         String id = output.getDatasetParameters(true)
                           .getPhenomenon()
                           .getId();

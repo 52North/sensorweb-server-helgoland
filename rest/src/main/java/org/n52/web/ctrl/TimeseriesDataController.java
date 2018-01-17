@@ -57,9 +57,9 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.ValueType;
-import org.n52.io.response.dataset.quantity.QuantityData;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
@@ -94,7 +94,7 @@ public class TimeseriesDataController extends BaseController {
 
     private ParameterService<QuantityDatasetOutput> timeseriesMetadataService;
 
-    private DataService<QuantityData> timeseriesDataService;
+    private DataService<Data<QuantityValue>> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -147,7 +147,7 @@ public class TimeseriesDataController extends BaseController {
             return null;
         }
 
-        DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
+        DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
@@ -165,7 +165,7 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
         // TODO add paging
-        DataCollection<QuantityData> seriesData = getTimeseriesData(parameters);
+        DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
         if (parameters.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
@@ -175,9 +175,9 @@ public class TimeseriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
-    private DataCollection<QuantityData> getTimeseriesData(IoParameters parameters) {
+    private DataCollection<Data<QuantityValue>> getTimeseriesData(IoParameters parameters) {
         Stopwatch stopwatch = Stopwatch.startStopwatch();
-        DataCollection<QuantityData> timeseriesData = parameters.isGeneralize()
+        DataCollection<Data<QuantityValue>> timeseriesData = parameters.isGeneralize()
                 ? new GeneralizingQuantityService(timeseriesDataService).getData(parameters)
                 : timeseriesDataService.getData(parameters);
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
@@ -231,7 +231,7 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private DataCollection< ? > format(DataCollection<QuantityData> timeseriesData, IoParameters parameters) {
+    private DataCollection< ? > format(DataCollection<Data<QuantityValue>> timeseriesData, IoParameters parameters) {
         return FormatterFactory.createFormatterFactory(parameters)
                                .create()
                                .format(timeseriesData);
@@ -408,8 +408,7 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private IoFactory<QuantityData,
-                      QuantityDatasetOutput,
+    private IoFactory<QuantityDatasetOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
@@ -419,8 +418,8 @@ public class TimeseriesDataController extends BaseController {
                                        .setDatasetService(timeseriesMetadataService);
     }
 
-    private DefaultIoFactory<QuantityData, QuantityDatasetOutput, QuantityValue> createDefaultIoFactory() {
-        return new DefaultIoFactory<QuantityData, QuantityDatasetOutput, QuantityValue>();
+    private DefaultIoFactory<QuantityDatasetOutput, QuantityValue> createDefaultIoFactory() {
+        return new DefaultIoFactory<QuantityDatasetOutput, QuantityValue>();
     }
 
     private URI getRootResource() throws URISyntaxException, MalformedURLException {
@@ -437,11 +436,11 @@ public class TimeseriesDataController extends BaseController {
         this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);
     }
 
-    public DataService<QuantityData> getTimeseriesDataService() {
+    public DataService<Data<QuantityValue>> getTimeseriesDataService() {
         return timeseriesDataService;
     }
 
-    public void setTimeseriesDataService(DataService<QuantityData> timeseriesDataService) {
+    public void setTimeseriesDataService(DataService<Data<QuantityValue>> timeseriesDataService) {
         this.timeseriesDataService = timeseriesDataService;
     }
 

@@ -35,11 +35,11 @@ import java.util.Set;
 import org.n52.io.Constants;
 import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
-import org.n52.io.response.dataset.count.CountData;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.count.CountDatasetOutput;
 import org.n52.io.response.dataset.count.CountValue;
 
-public class CountIoFactory extends IoFactory<CountData, CountDatasetOutput, CountValue> {
+public class CountIoFactory extends IoFactory<CountDatasetOutput, CountValue> {
 
     @Override
     public boolean isAbleToCreateHandlerFor(String outputMimeType) {
@@ -52,7 +52,7 @@ public class CountIoFactory extends IoFactory<CountData, CountDatasetOutput, Cou
     }
 
     @Override
-    public IoHandler<CountData> createHandler(String outputMimeType) {
+    public IoHandler<Data<CountValue>> createHandler(String outputMimeType) {
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;

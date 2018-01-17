@@ -98,7 +98,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     @Autowired
     @Qualifier("datasetService")
     // autowired due to quartz job creation
-    private ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService;
+    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
 
     @Autowired
     @Qualifier("datasetService")
@@ -152,7 +152,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             Map<String, String> parameters = new HashMap<>();
             parameters.put("phenomenon", config.getId());
             IoParameters query = IoParameters.createFromSingleValueMap(parameters);
-            for (DatasetOutput< ? , ? > metadata : datasetService.getCondensedParameters(query)) {
+            for (DatasetOutput< ? > metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
                 renderConfiguredIntervals(timeseriesId, config);
                 if (interrupted) {
@@ -199,8 +199,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<Data<AbstractValue< ? >>,
-                      DatasetOutput<AbstractValue< ? >, ? >,
+    private IoFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
@@ -209,11 +208,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                                        .setDatasetService(datasetService);
     }
 
-    private DefaultIoFactory<Data<AbstractValue< ? >>,
-                             DatasetOutput<AbstractValue< ? >, ? >,
+    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> createDefaultIoFactory() {
-        return new DefaultIoFactory<Data<AbstractValue< ? >>,
-                                    DatasetOutput<AbstractValue< ? >, ? >,
+        return new DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                                     AbstractValue< ? >>();
     }
 

@@ -93,13 +93,12 @@ public class DataController extends BaseController {
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
 
     @Autowired
-    private DefaultIoFactory<Data<AbstractValue< ? >>,
-                             DatasetOutput<AbstractValue< ? >, ? >,
+    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> ioFactoryCreator;
 
     private DataService<Data<AbstractValue< ? >>> dataService;
 
-    private ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService;
+    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
@@ -122,7 +121,8 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(map.getTimespan());
         checkForUnknownDatasetId(map, datasetId);
 
-//        RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId, map);
+        // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
+        // map);
         String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
         String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
@@ -159,13 +159,13 @@ public class DataController extends BaseController {
     }
 
     private String getValueType(IoParameters parameters) {
-      String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
-      Set<String> datasetIds = parameters.getDatasets();
-      Iterator<String> iterator = datasetIds.iterator();
-      return iterator.hasNext()
-              ? ValueType.extractType(iterator.next(), handleAs)
-              : ValueType.DEFAULT_VALUE_TYPE;
-  }
+        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
+        Set<String> datasetIds = parameters.getDatasets();
+        Iterator<String> iterator = datasetIds.iterator();
+        return iterator.hasNext()
+                ? ValueType.extractType(iterator.next(), handleAs)
+                : ValueType.DEFAULT_VALUE_TYPE;
+    }
 
     @RequestMapping(value = "/data",
         params = {
@@ -433,8 +433,7 @@ public class DataController extends BaseController {
         }
     }
 
-    private IoFactory<Data<AbstractValue< ? >>,
-                      DatasetOutput<AbstractValue< ? >, ? >,
+    private IoFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(final String valueType)
                               throws DatasetFactoryException {
         if (!ioFactoryCreator.isKnown(valueType)) {
@@ -481,11 +480,11 @@ public class DataController extends BaseController {
         this.dataService = dataService;
     }
 
-    public ParameterService<DatasetOutput<AbstractValue< ? >, ? >> getDatasetService() {
+    public ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
         return datasetService;
     }
 
-    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >, ? >> datasetService) {
+    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService) {
         this.datasetService = datasetService;
     }
 

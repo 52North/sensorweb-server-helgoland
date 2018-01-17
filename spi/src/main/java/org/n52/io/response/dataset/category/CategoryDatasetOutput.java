@@ -26,31 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.profile;
+package org.n52.io.response.dataset.category;
 
+import org.n52.io.response.dataset.DatasetOutput;
 
-import org.n52.io.response.dataset.Data;
+public class CategoryDatasetOutput extends DatasetOutput<CategoryValue> {
 
-public class ProfileData extends Data<ProfileValue< ? >> {
-
-    private static final long serialVersionUID = 4717558247670336015L;
-
-    private ProfileDatasetMetadata metadata;
-
-    public static ProfileData newMeasurementData(ProfileValue< ? >... values) {
-        ProfileData timeseries = new ProfileData();
-        timeseries.addValues(values);
-        return timeseries;
-    }
-
-    @Override
-    public ProfileDatasetMetadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(ProfileDatasetMetadata metadata) {
-        this.metadata = metadata;
-    }
-
+    // hide generics clutter
 
 }

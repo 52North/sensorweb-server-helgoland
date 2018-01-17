@@ -30,7 +30,8 @@ package org.n52.io.format.quantity;
 
 import org.n52.io.format.DataFormatter;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public final class FormatterFactory {
 
@@ -42,7 +43,7 @@ public final class FormatterFactory {
 
     // TODO align with config typed factory
 
-    public DataFormatter<QuantityData, ?> create() {
+    public DataFormatter<Data<QuantityValue>, ?> create() {
         String format = parameters.getFormat();
         if ("highcharts".equalsIgnoreCase(format)) {
             return new HighchartFormatter();

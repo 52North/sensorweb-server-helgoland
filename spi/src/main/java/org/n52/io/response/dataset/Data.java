@@ -28,19 +28,22 @@
  */
 package org.n52.io.response.dataset;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Data<T extends AbstractValue<?>> implements Serializable {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class Data<T extends AbstractValue<?>> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
     private List<T> values = new ArrayList<>();
+
+    private DatasetMetadata<Data<T>> metadata;
 
     public void addValues(T... toAdd) {
         if (toAdd != null && toAdd.length > 0) {
@@ -69,12 +72,16 @@ public abstract class Data<T extends AbstractValue<?>> implements Serializable {
 
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return getMetadata() != null
-                && getMetadata().getReferenceValues() != null;
+        return getMetadata().hasReferenceValues();
+    }
+
+    public void setMetadata(DatasetMetadata<Data<T>> metadata) {
+        this.metadata = metadata;
     }
 
     @JsonProperty("extra")
-    public abstract DatasetMetadata<?> getMetadata();
-
+    public DatasetMetadata<Data<T>> getMetadata() {
+        return metadata;
+    }
 
 }

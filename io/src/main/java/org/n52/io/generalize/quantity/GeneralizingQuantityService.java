@@ -29,8 +29,9 @@
 package org.n52.io.generalize.quantity;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityData;
+import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.RawDataService;
 import org.slf4j.Logger;
@@ -39,23 +40,23 @@ import org.slf4j.LoggerFactory;
 /**
  * Composes a {@link DataService} instance to generalize requested timeseries data.
  */
-public class GeneralizingQuantityService implements DataService<QuantityData> {
+public class GeneralizingQuantityService implements DataService<Data<QuantityValue>> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneralizingQuantityService.class);
 
-    private final DataService<QuantityData> composedService;
+    private final DataService<Data<QuantityValue>> composedService;
 
-    public GeneralizingQuantityService(DataService<QuantityData> toCompose) {
+    public GeneralizingQuantityService(DataService<Data<QuantityValue>> toCompose) {
         this.composedService = toCompose;
     }
 
     @Override
-    public DataCollection<QuantityData> getData(IoParameters parameters) {
-        DataCollection<QuantityData> data = composedService.getData(parameters);
-        DataCollection<QuantityData> ungeneralizedData = data;
+    public DataCollection<Data<QuantityValue>> getData(IoParameters parameters) {
+        DataCollection<Data<QuantityValue>> data = composedService.getData(parameters);
+        DataCollection<Data<QuantityValue>> ungeneralizedData = data;
         try {
-            Generalizer<QuantityData> generalizer = GeneralizerFactory.createGeneralizer(parameters);
-            DataCollection<QuantityData> generalizedData = generalizer.generalize(ungeneralizedData);
+            Generalizer<Data<QuantityValue>> generalizer = GeneralizerFactory.createGeneralizer(parameters);
+            DataCollection<Data<QuantityValue>> generalizedData = generalizer.generalize(ungeneralizedData);
             if (LOGGER.isDebugEnabled()) {
                 logGeneralizationAmount(ungeneralizedData, generalizedData);
             }
@@ -66,13 +67,12 @@ public class GeneralizingQuantityService implements DataService<QuantityData> {
         }
     }
 
-    private void logGeneralizationAmount(
-                                         DataCollection<QuantityData> ungeneralizedData,
-                                         DataCollection<QuantityData> generalizedData) {
+    private void logGeneralizationAmount(DataCollection<Data<QuantityValue>> ungeneralizedData,
+                                         DataCollection<Data<QuantityValue>> generalizedData) {
         for (String timeseriesId : ungeneralizedData.getAllSeries()
                                                     .keySet()) {
-            QuantityData originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
-            QuantityData generalizedTimeseries = generalizedData.getSeries(timeseriesId);
+            Data<QuantityValue> originalTimeseries = ungeneralizedData.getSeries(timeseriesId);
+            Data<QuantityValue> generalizedTimeseries = generalizedData.getSeries(timeseriesId);
             int originalAmount = originalTimeseries.getValues()
                                                    .size();
             int generalizedAmount = generalizedTimeseries.getValues()

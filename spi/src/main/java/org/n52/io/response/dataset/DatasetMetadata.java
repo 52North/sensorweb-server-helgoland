@@ -28,9 +28,27 @@
  */
 package org.n52.io.response.dataset;
 
-public interface DatasetMetadata<T> {
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
-    T getReferenceValues();
+public class DatasetMetadata<T extends Data<?>> implements Serializable {
 
-    void setReferenceValues(T referenceValues);
+    private static final long serialVersionUID = -2670379436251511249L;
+
+    private Map<String, T> referenceValues = new HashMap<>();
+
+    public boolean hasReferenceValues() {
+        return referenceValues != null
+                && !referenceValues.isEmpty();
+    }
+
+    public Map<String, T> getReferenceValues() {
+        return referenceValues;
+    }
+
+    public void setReferenceValues(Map<String, T> referenceValues) {
+        this.referenceValues = referenceValues;
+    }
+
 }

@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
-public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput< ? , ? >> {
+public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput< ? >> {
 
     @Override
     public String getCollectionPath(String hrefBase) {

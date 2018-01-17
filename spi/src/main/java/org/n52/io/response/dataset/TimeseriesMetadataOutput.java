@@ -36,7 +36,6 @@ import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
-import org.n52.io.response.dataset.quantity.QuantityReferenceValueOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -48,7 +47,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @deprecated since 2.0.0. use {@link QuantityDatasetOutput} instead.
  */
 @Deprecated
-public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue, QuantityReferenceValueOutput> {
+public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue> {
 
     public static final String STATION = "station";
 
