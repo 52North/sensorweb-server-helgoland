@@ -28,11 +28,14 @@
  */
 package org.n52.io.response.dataset.profile;
 
+import java.math.BigDecimal;
+import java.util.Comparator;
+
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private String verticalUnit;
 
-    private Double vertical;
+    private BigDecimal vertical;
 
     private T value;
 
@@ -44,11 +47,11 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.verticalUnit = verticalUnit;
     }
 
-    public Double getVertical() {
+    public BigDecimal getVertical() {
         return vertical;
     }
 
-    public void setVertical(Double vertical) {
+    public void setVertical(BigDecimal vertical) {
         this.vertical = vertical;
     }
 
@@ -62,7 +65,8 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int compareTo(ProfileDataItem<T> o) {
-        return Double.compare(getVertical(), o.getVertical());
+        return Comparator.comparing(ProfileDataItem<T>::getVertical)
+                         .compare(this, o);
     }
 
     @Override
