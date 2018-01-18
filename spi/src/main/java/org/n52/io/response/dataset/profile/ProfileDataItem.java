@@ -32,7 +32,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private String verticalUnit;
 
-    private Double vertical;
+    private BigDecimal vertical;
 
     private Double verticalFrom;
 
@@ -48,27 +48,27 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.verticalUnit = verticalUnit;
     }
 
-    public Double getVertical() {
+    public BigDecimal getVertical() {
         return vertical;
     }
 
-    public void setVertical(Double vertical) {
+    public void setVertical(BigDecimal vertical) {
         this.vertical = vertical;
     }
 
-    public Double getVerticalFrom() {
+    public BigDecimal getVerticalFrom() {
         return verticalFrom;
     }
 
-    public void setVerticalFrom(Double verticalFrom) {
+    public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
 
-    public Double getVerticalTo() {
+    public BigDecimal getVerticalTo() {
         return verticalTo;
     }
 
-    public void setVerticalTo(Double verticalTo) {
+    public void setVerticalTo(BigDecimal verticalTo) {
         this.verticalTo = verticalTo;
     }
 
@@ -83,11 +83,11 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     @Override
     public int compareTo(ProfileDataItem<T> o) {
         if (getVertical() != null && o.getVertical() != null) {
-            return Double.compare(getVertical(), o.getVertical());
+            return BigDecimal.compare(getVertical(), o.getVertical());
         } else if (getVerticalFrom() != null && o.getVerticalFrom() != null && getVerticalTo() != null
                 && o.getVerticalTo() != null) {
-            int from = Double.compare(getVerticalFrom(), o.getVerticalFrom());
-            int to = Double.compare(getVerticalTo(), o.getVerticalTo());
+            int from = BigDecimal.compare(getVerticalFrom(), o.getVerticalFrom());
+            int to = BigDecimal.compare(getVerticalTo(), o.getVerticalTo());
             return from == to ? from : -1;
         }
         return 0;

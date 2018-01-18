@@ -120,7 +120,8 @@ public class DataController extends BaseController {
         IoParameters map = createParameters(datasetId, query, locale);
         LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan());
-        checkForUnknownDatasetId(map, datasetId);
+        checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
+                                    .removeAllOf(Parameters.NEAR), datasetId);
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);

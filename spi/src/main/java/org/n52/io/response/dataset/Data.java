@@ -72,7 +72,7 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
 
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return getMetadata().hasReferenceValues();
+        return getMetadata() != null && getMetadata().hasReferenceValues();
     }
 
     public void setMetadata(DatasetMetadata<Data<T>> metadata) {
