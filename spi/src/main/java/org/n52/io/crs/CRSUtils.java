@@ -70,7 +70,7 @@ public final class CRSUtils {
     private static CoordinateReferenceSystem internCrs;
 
     protected CRSAuthorityFactory crsFactory;
-
+    
     /**
      * use static constructors to create an instance.
      *
@@ -170,7 +170,7 @@ public final class CRSUtils {
     }
 
     public GeometryFactory createGeometryFactory() {
-        return createGeometryFactory(null);
+        return createGeometryFactory(DEFAULT_CRS);
     }
 
     public GeometryFactory createGeometryFactory(String srsId) {
