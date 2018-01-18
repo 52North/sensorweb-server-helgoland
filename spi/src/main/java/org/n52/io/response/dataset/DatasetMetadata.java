@@ -39,8 +39,7 @@ public class DatasetMetadata<T extends Data<?>> implements Serializable {
     private Map<String, T> referenceValues = new HashMap<>();
 
     public boolean hasReferenceValues() {
-        return referenceValues != null
-                && !referenceValues.isEmpty();
+        return referenceValues != null && !referenceValues.isEmpty();
     }
 
     public Map<String, T> getReferenceValues() {

@@ -28,6 +28,8 @@
  */
 package org.n52.io.request;
 
+import static java.util.stream.Collectors.toSet;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,7 +37,6 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,6 +54,13 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
@@ -62,12 +70,9 @@ import org.n52.io.response.PlatformType;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.n52.shetland.ogc.filter.Filter;
+import org.n52.svalbard.decode.exception.DecodingException;
+import org.n52.svalbard.odata.ODataFesParser;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -85,6 +90,8 @@ public final class IoParameters implements Parameters {
 
     // TODO use global object mapper
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
 
     private final MultiValueMap<String, JsonNode> query;
 
@@ -433,6 +440,23 @@ public final class IoParameters implements Parameters {
         return handleSimpleValueParseException(timestamp, Instant::parse);
     }
 
+
+    public Optional<Filter<?>> getODataFilter() {
+        if (!containsParameter(ODATA_FILTER)) {
+            return Optional.empty();
+        }
+        String parameter = getAsString(ODATA_FILTER);
+        if (parameter.trim().isEmpty()) {
+            return Optional.empty();
+        }
+        try {
+            return Optional.ofNullable(ODATA_PARSER.decode(parameter));
+        } catch (DecodingException ex) {
+            handleIoParseException(ODATA_FILTER, createIoParseException(ODATA_FILTER, ex));
+            return Optional.empty();
+        }
+    }
+
     /**
      * @return the category filter
      * @deprecated use {@link #getCategories()}
@@ -585,7 +609,7 @@ public final class IoParameters implements Parameters {
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : new HashSet<String>();
+                : new HashSet<>(0);
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
@@ -597,16 +621,10 @@ public final class IoParameters implements Parameters {
     }
 
     private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
-        String[] values = csv != null
-                ? csv.split(",")
-                : new String[0];
-        List<O> outputs = new ArrayList<>();
-        if (c != null) {
-            for (int i = 0; i < values.length; i++) {
-                outputs.add(c.apply(values[i]));
-            }
-        }
-        return new HashSet<>(outputs);
+        return Optional.ofNullable(csv)
+                .map(str -> str.split(","))
+                .flatMap(values -> Optional.ofNullable(c).map(f -> Arrays.stream(values).map(f).collect(toSet())))
+                .orElseGet(HashSet::new);
     }
 
     public FilterResolver getFilterResolver() {
@@ -659,19 +677,7 @@ public final class IoParameters implements Parameters {
      *        the point in CRS:84 which shall extend the bounding box.
      */
     private void extendBy(Point point, BoundingBox bbox) {
-        if (bbox.contains(point)) {
-            return;
-        }
-        Point lowerLeft = bbox.getLowerLeft();
-        Point upperRight = bbox.getUpperRight();
-        double llX = Math.min(point.getX(), lowerLeft.getX());
-        double llY = Math.max(point.getX(), upperRight.getX());
-        double urX = Math.min(point.getY(), lowerLeft.getY());
-        double urY = Math.max(point.getY(), upperRight.getY());
-
-        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
-        bbox.setLl(crsUtils.createPoint(llX, llY, bbox.getSrs()));
-        bbox.setUr(crsUtils.createPoint(urX, urY, bbox.getSrs()));
+        bbox.extendBy(point);
     }
 
     /**
@@ -1074,8 +1080,7 @@ public final class IoParameters implements Parameters {
         final Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
         for (Entry<String, List<String>> entry : entrySet) {
             for (String value : entry.getValue()) {
-                final String key = entry.getKey()
-                                        .toLowerCase();
+                final String key = entry.getKey().toLowerCase();
                 parameters.add(key, getJsonNodeFrom(value));
             }
         }

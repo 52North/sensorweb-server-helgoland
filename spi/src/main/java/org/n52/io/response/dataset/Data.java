@@ -55,19 +55,19 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
         this.values = Arrays.asList(values);
     }
 
-    public void addNewValue(T value) {
-        values.add(value);
-    }
-
     /**
      * @return a sorted list of quantity values.
      */
     public List<T> getValues() {
-        return Collections.unmodifiableList(values);
+        return Collections.unmodifiableList(this.values);
+    }
+
+    public void addNewValue(T value) {
+        this.values.add(value);
     }
 
     public long size() {
-        return values.size();
+        return this.values.size();
     }
 
     @JsonIgnore
@@ -81,7 +81,7 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
 
     @JsonProperty("extra")
     public DatasetMetadata<Data<T>> getMetadata() {
-        return metadata;
+        return this.metadata;
     }
 
 }

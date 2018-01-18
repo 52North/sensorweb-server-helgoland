@@ -31,9 +31,7 @@ package org.n52.io.response.dataset;
 public class ReferenceValueOutput<T extends AbstractValue<?>> {
 
     private String referenceValueId;
-
     private String label;
-
     private T lastValue;
 
     public String getReferenceValueId() {

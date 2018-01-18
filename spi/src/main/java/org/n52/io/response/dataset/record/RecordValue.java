@@ -29,6 +29,7 @@
 package org.n52.io.response.dataset.record;
 
 import java.util.Map;
+
 import org.n52.io.response.dataset.AbstractValue;
 
 public class RecordValue extends AbstractValue<Map<String, Object>> {

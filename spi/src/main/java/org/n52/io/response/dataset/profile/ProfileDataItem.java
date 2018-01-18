@@ -26,16 +26,22 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.Objects;
 
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private String verticalUnit;
 
     private BigDecimal vertical;
+
+    private BigDecimal verticalFrom;
+
+    private BigDecimal verticalTo;
 
     private T value;
 
@@ -55,6 +61,22 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.vertical = vertical;
     }
 
+    public BigDecimal getVerticalFrom() {
+        return verticalFrom;
+    }
+
+    public void setVerticalFrom(BigDecimal verticalFrom) {
+        this.verticalFrom = verticalFrom;
+    }
+
+    public BigDecimal getVerticalTo() {
+        return verticalTo;
+    }
+
+    public void setVerticalTo(BigDecimal verticalTo) {
+        this.verticalTo = verticalTo;
+    }
+
     public T getValue() {
         return value;
     }
@@ -65,60 +87,34 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int compareTo(ProfileDataItem<T> o) {
-        return Comparator.comparing(ProfileDataItem<T>::getVertical)
-                         .compare(this, o);
+        if (getVertical() != null && o.getVertical() != null) {
+            return Comparator.comparing(ProfileDataItem<T>::getVertical)
+                             .compare(this, o);
+        } else {
+            return Comparator.comparing(ProfileDataItem<T>::getVerticalFrom)
+                             .thenComparing(ProfileDataItem<T>::getVerticalTo)
+                             .compare(this, o);
+        }
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null)
-                ? 0
-                : value.hashCode());
-        result = prime * result + ((vertical == null)
-                ? 0
-                : vertical.hashCode());
-        result = prime * result + ((verticalUnit == null)
-                ? 0
-                : verticalUnit.hashCode());
-        return result;
+        return Objects.hash(value, vertical, verticalFrom, verticalTo, verticalUnit);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
+        if (obj == null || !(obj instanceof ProfileDataItem)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        ProfileDataItem other = (ProfileDataItem) obj;
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        if (vertical == null) {
-            if (other.vertical != null) {
-                return false;
-            }
-        } else if (!vertical.equals(other.vertical)) {
-            return false;
-        }
-        if (verticalUnit == null) {
-            if (other.verticalUnit != null) {
-                return false;
-            }
-        } else if (!verticalUnit.equals(other.verticalUnit)) {
-            return false;
-        }
-        return true;
+
+        @SuppressWarnings("rawtypes")
+        ProfileDataItem< ? > other = (ProfileDataItem) obj;
+        return Objects.equals(this.value, other.value)
+                && Objects.equals(this.vertical, other.vertical)
+                && Objects.equals(this.verticalFrom, other.verticalFrom)
+                && Objects.equals(this.verticalTo, other.verticalTo)
+                && Objects.equals(this.verticalUnit, other.verticalUnit);
     }
 
 }

@@ -28,11 +28,12 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.DatasetOutput;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DatasetOutput;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)

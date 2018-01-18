@@ -57,13 +57,14 @@ public abstract class OutputCollection<T> implements Iterable<T> {
 
     protected OutputCollection(Collection<T> items) {
         this.items = items == null
-                ? new ArrayList<T>()
+                ? new ArrayList<>(0)
                 : new ArrayList<>(items);
     }
 
+    @SafeVarargs
     protected OutputCollection(T... items) {
         this.items = items == null
-                ? new ArrayList<T>()
+                ? new ArrayList<>(0)
                 : Arrays.asList(items);
     }
 
@@ -110,6 +111,7 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     private OutputCollection<T> collatorSort(Collator collator) {
         for (int i = 0; i < items.size(); i++) {
             for (int j = i + 1; j < items.size(); j++) {
+                @SuppressWarnings("unchecked")
                 CollatorComparable<T> first = (CollatorComparable<T>) items;
                 T second = items.get(j);
                 if (first.compare(collator, second) > 0) {
@@ -121,7 +123,8 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     }
 
     private boolean isCollatorComparable() {
-        return CollatorComparable.class.isAssignableFrom(items.getClass());
+        //FIXME this is NEVER true
+        return items instanceof CollatorComparable;
     }
 
     private void swap(int i, int j) {
