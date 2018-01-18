@@ -70,7 +70,7 @@ public final class CRSUtils {
     private static CoordinateReferenceSystem internCrs;
 
     protected CRSAuthorityFactory crsFactory;
-    
+
     /**
      * use static constructors to create an instance.
      *
