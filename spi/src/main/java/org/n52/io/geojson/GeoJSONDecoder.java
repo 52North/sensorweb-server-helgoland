@@ -28,6 +28,8 @@
  */
 package org.n52.io.geojson;
 
+import org.n52.io.crs.CRSUtils;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -41,7 +43,6 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import org.n52.io.crs.CRSUtils;
 
 /**
  *
@@ -223,6 +224,15 @@ public class GeoJSONDecoder {
         return coordinate;
     }
 
+    protected GeometryFactory getGeometryFactory(int srid,
+            GeometryFactory factory) {
+        if (srid == factory.getSRID()) {
+            return factory;
+        } else {
+            return new GeometryFactory(DEFAULT_PRECISION_MODEL, srid);
+        }
+    }
+
     protected GeometryFactory getGeometryFactory(JsonNode node,
             GeometryFactory factory) throws GeoJSONException {
         if (!node.hasNonNull(JSONConstants.CRS)) {
@@ -287,15 +297,6 @@ public class GeoJSONDecoder {
             }
         }
         throw new GeoJSONException("Unsupported linked crs: " + href);
-    }
-
-    protected GeometryFactory getGeometryFactory(int srid,
-            GeometryFactory factory) {
-        if (srid == factory.getSRID()) {
-            return factory;
-        } else {
-            return new GeometryFactory(DEFAULT_PRECISION_MODEL, srid);
-        }
     }
 
     protected String getType(final JsonNode node) throws GeoJSONException {

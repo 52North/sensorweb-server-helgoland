@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
-        <version>7</version>
+        <version>11</version>
     </parent>
 
     <groupId>org.n52.series-api</groupId>
@@ -569,7 +569,7 @@
                     <!-- dependencies' licenses -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.12</version>
+                    <version>1.14</version>
                     <configuration>
                         <useMissingFile>true</useMissingFile>
                         <fileTemplate>etc/license-as-csv.ftl</fileTemplate>

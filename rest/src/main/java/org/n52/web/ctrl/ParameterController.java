@@ -157,6 +157,12 @@ public abstract class ParameterController<T extends ParameterOutput>
         }
     }
 
+    private OutputCollection<T> getCollection(IoParameters parameters) {
+        return parameters.isExpanded()
+                ? addExtensionInfos(parameterService.getExpandedParameters(parameters), parameters)
+                : parameterService.getCondensedParameters(parameters);
+    }
+
     private void preparePagingHeaders(IoParameters parameters, HttpServletResponse response) {
         if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
             Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
@@ -169,19 +175,6 @@ public abstract class ParameterController<T extends ParameterOutput>
                 this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
             }
         }
-    }
-
-    private OutputCollection<T> getCollection(IoParameters parameters) {
-        return parameters.isExpanded()
-                ? addExtensionInfos(parameterService.getExpandedParameters(parameters), parameters)
-                : parameterService.getCondensedParameters(parameters);
-    }
-
-    private OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
-        for (T parameterOutput : toBeProcessed) {
-            addExtensionInfos(parameterOutput, ioParameters);
-        }
-        return toBeProcessed;
     }
 
     @Override
@@ -206,6 +199,13 @@ public abstract class ParameterController<T extends ParameterOutput>
                                                       .collect(Collectors.toList());
         output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
         return output;
+    }
+
+    private OutputCollection<T> addExtensionInfos(OutputCollection<T> toBeProcessed, IoParameters ioParameters) {
+        for (T parameterOutput : toBeProcessed) {
+            addExtensionInfos(parameterOutput, ioParameters);
+        }
+        return toBeProcessed;
     }
 
     public ParameterService<T> getParameterService() {
