@@ -63,7 +63,7 @@
         <version.geotools>14.0</version.geotools>
         <version.slf4j>1.7.25</version.slf4j>
         <version.hamcrest>1.3</version.hamcrest>
-        <version.arctic-sea>3.1.0-SNAPSHOT</version.arctic-sea>
+        <version.arctic-sea>3.1.0</version.arctic-sea>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>

@@ -11,6 +11,7 @@
 - pluralized filter parameters
 - output includes href property
 - filterable output members via `fields=<members>` parameter
+- result filtering via OData $filter
 
 ### Features
 - #129 provides paging headers if backend supports counting
