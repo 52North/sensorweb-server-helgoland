@@ -37,28 +37,32 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private String verticalUnit;
 
-    private BigDecimal vertical;
-
     private BigDecimal verticalFrom;
 
-    private BigDecimal verticalTo;
+    // serves also as verticalTo
+    private BigDecimal vertical;
 
     private T value;
 
+    public ProfileDataItem() {
+    }
+
+    public ProfileDataItem(BigDecimal vertical, T value) {
+        this(null, vertical, value);
+    }
+
+    public ProfileDataItem(BigDecimal verticalFrom, BigDecimal verticalTo, T value) {
+        this.verticalFrom = verticalFrom;
+        this.vertical = verticalTo;
+        this.value = value;
+    }
+    
     public String getVerticalUnit() {
         return verticalUnit;
     }
 
     public void setVerticalUnit(String verticalUnit) {
         this.verticalUnit = verticalUnit;
-    }
-
-    public BigDecimal getVertical() {
-        return vertical;
-    }
-
-    public void setVertical(BigDecimal vertical) {
-        this.vertical = vertical;
     }
 
     public BigDecimal getVerticalFrom() {
@@ -68,15 +72,27 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
+    
+    private boolean isSetVerticalFrom() {
+        return this.verticalFrom != null;
+    }
 
+    public BigDecimal getVertical() {
+        return !isSetVerticalFrom()
+                ? this.vertical
+                : null;
+    }
+    
     public BigDecimal getVerticalTo() {
-        return verticalTo;
+        return isSetVerticalFrom()
+                ? this.vertical
+                : null;
     }
 
-    public void setVerticalTo(BigDecimal verticalTo) {
-        this.verticalTo = verticalTo;
+    public void setVertical(BigDecimal vertical) {
+        this.vertical = vertical;
     }
-
+    
     public T getValue() {
         return value;
     }
@@ -92,14 +108,14 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
                              .compare(this, o);
         } else {
             return Comparator.comparing(ProfileDataItem<T>::getVerticalFrom)
-                             .thenComparing(ProfileDataItem<T>::getVerticalTo)
+                             .thenComparing(ProfileDataItem<T>::getVertical)
                              .compare(this, o);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, vertical, verticalFrom, verticalTo, verticalUnit);
+        return Objects.hash(value, vertical, verticalFrom, vertical, verticalUnit);
     }
 
     @Override
@@ -113,7 +129,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return Objects.equals(this.value, other.value)
                 && Objects.equals(this.vertical, other.vertical)
                 && Objects.equals(this.verticalFrom, other.verticalFrom)
-                && Objects.equals(this.verticalTo, other.verticalTo)
+                && Objects.equals(this.vertical, other.vertical)
                 && Objects.equals(this.verticalUnit, other.verticalUnit);
     }
 
