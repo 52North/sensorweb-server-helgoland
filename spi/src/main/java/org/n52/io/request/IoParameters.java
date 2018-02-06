@@ -872,7 +872,7 @@ public final class IoParameters implements Parameters {
     public boolean isShowVerticalIntervals() {
         return getAsBoolean(SHOW_VERTICAL_INTERVALS, DEFAULT_SHOW_VERTICAL_INTERVALS);
     }
-    
+
     public boolean containsParameter(String parameter) {
         return query.containsKey(parameter.toLowerCase())
                 || query.containsKey(parameter);

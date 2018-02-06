@@ -347,7 +347,7 @@ public interface Parameters {
      * Default for {@link #SHOW_TIME_INTERVALS}
      */
     boolean DEFAULT_SHOW_TIME_INTERVALS = false;
-    
+
     /**
      * If verticals shall be shown within intervals.
      */

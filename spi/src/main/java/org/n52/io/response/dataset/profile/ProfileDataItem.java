@@ -56,7 +56,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.vertical = verticalTo;
         this.value = value;
     }
-    
+
     public String getVerticalUnit() {
         return verticalUnit;
     }
@@ -72,7 +72,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
-    
+
     private boolean isSetVerticalFrom() {
         return this.verticalFrom != null;
     }
@@ -82,7 +82,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
                 ? this.vertical
                 : null;
     }
-    
+
     public BigDecimal getVerticalTo() {
         return isSetVerticalFrom()
                 ? this.vertical
@@ -92,7 +92,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     public void setVertical(BigDecimal vertical) {
         this.vertical = vertical;
     }
-    
+
     public T getValue() {
         return value;
     }
