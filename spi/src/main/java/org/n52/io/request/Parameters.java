@@ -347,6 +347,16 @@ public interface Parameters {
      * Default for {@link #SHOW_TIME_INTERVALS}
      */
     boolean DEFAULT_SHOW_TIME_INTERVALS = false;
+    
+    /**
+     * If verticals shall be shown within intervals.
+     */
+    String SHOW_VERTICAL_INTERVALS = "showVerticalIntervals";
+
+    /**
+     * Default for {@link #SHOW_VERTICAL_INTERVALS}
+     */
+    boolean DEFAULT_SHOW_VERTICAL_INTERVALS = false;
 
     /*
      *############### INTERNAL CONSTANTS

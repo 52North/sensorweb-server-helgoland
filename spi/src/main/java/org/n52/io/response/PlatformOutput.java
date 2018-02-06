@@ -49,7 +49,6 @@ public class PlatformOutput extends OutputWithParameters {
     public static final String GEOMETRY = "geometry";
     public static final String PLATFORMTYPE = "platformtype";
 
-    // TODO use plain string in output and let repository assert correctness
     private OptionalOutput<PlatformType> platformType;
 
     private OptionalOutput<Collection<DatasetOutput>> datasets;

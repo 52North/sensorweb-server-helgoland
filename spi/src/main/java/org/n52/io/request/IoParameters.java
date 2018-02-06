@@ -54,13 +54,6 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
@@ -73,6 +66,12 @@ import org.n52.io.style.Style;
 import org.n52.shetland.ogc.filter.Filter;
 import org.n52.svalbard.decode.exception.DecodingException;
 import org.n52.svalbard.odata.ODataFesParser;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -870,6 +869,10 @@ public final class IoParameters implements Parameters {
         return getAsBoolean(SHOW_TIME_INTERVALS, DEFAULT_SHOW_TIME_INTERVALS);
     }
 
+    public boolean isShowVerticalIntervals() {
+        return getAsBoolean(SHOW_VERTICAL_INTERVALS, DEFAULT_SHOW_VERTICAL_INTERVALS);
+    }
+    
     public boolean containsParameter(String parameter) {
         return query.containsKey(parameter.toLowerCase())
                 || query.containsKey(parameter);
