@@ -2,20 +2,19 @@ language: java
 jdk:
 - oraclejdk8
 script: mvn -fae -U -B clean install -P check
-after_success: 
+after_success:
 - chmod +x .travis/deploy-docs.sh && .travis/deploy-docs.sh
 - curl -Ls https://git.io/deploy-maven-snapshot | bash
-# start dependend builds
 - curl -Ls https://git.io/trigger-build | bash -s -- 52North/dao-series-api develop
 - curl -Ls https://git.io/trigger-build | bash -s -- 52North/dao-series-api "version/v3.x"
 env:
   global:
-  - SNAPSHOT_BRANCH: "develop"
-cache:
-  directories
-  - $HOME/.m2
+  - SNAPSHOT_BRANCH: develop
+  - secure: ekAd02ifPv2FUwJbwiM6jsl41xPXYReDPRyH0smKVq3AGkieeSRdGa/kTA45LomoevDrIe3pEQ2sIvaNzBlnU7smPWIBRhNUsGMoFiSkcelpFtlc7g9CU9NviP2oNGHL0X3OUmrcApOp2O36aZRZakQmKbRGL7ug5r6xxLQa6MY=
+  - secure: W+G9Ej0pALpbGFMzzwC7B+JiO35UWtnuQdDJEO8r7HJVzqyvqav0XdkxwXikx8i+2Q+J04Cn1VaI5P6k4OruUxtC0KjW0Nx5M8YCz0wf+O10x2xlZr1Pd/U+raaMdUk8Wic9+LziEvuyQkV2opLjz20i20XQKCRsmSqjbab6ogE=
+cache: directories - $HOME/.m2
 notifications:
   irc:
     channels:
-    - "chat.freenode.net#52north"
+    - chat.freenode.net#52north
     on_failure: always
