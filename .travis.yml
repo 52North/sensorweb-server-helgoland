@@ -5,8 +5,11 @@ script: mvn -fae -U -B clean install -P check
 after_success:
 - chmod +x .travis/deploy-docs.sh && .travis/deploy-docs.sh
 - curl -Ls https://git.io/deploy-maven-snapshot | bash
-- curl -Ls https://git.io/trigger-build | bash -s -- 52North/dao-series-api develop
-- curl -Ls https://git.io/trigger-build | bash -s -- 52North/dao-series-api "version/v3.x"
+
+- SCRIPT=$(mktemp)
+- curl -Ls https://git.io/trigger-build -o "$SCRIPT"
+- bash "${SCRIPT}" 52North/dao-series-api develop
+- bash "${SCRIPT}" 52North/dao-series-api "version/v3.x"
 env:
   global:
   - SNAPSHOT_BRANCH: develop
