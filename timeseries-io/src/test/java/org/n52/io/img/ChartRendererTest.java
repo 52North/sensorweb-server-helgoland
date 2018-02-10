@@ -104,6 +104,7 @@ public class ChartRendererTest {
     public void shouldPrintExplicitlySetOutputTimezoneInDomainAxisLabel() {
         IoParameters config = IoParameters.createDefaults()
                                           .removeAllOf("outputTimezone")
+                                          .extendWith("timespan", "P4D/2012-08-12TZ")
                                           .extendWith("outputTimezone", "America/Los_Angeles");
         RenderingContext context = RenderingContext.create(config);
         String label = new MyChartRenderer(context).getXYPlot()
