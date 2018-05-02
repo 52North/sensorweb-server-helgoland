@@ -29,6 +29,7 @@
 package org.n52.io.generalize.quantity;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
@@ -237,7 +238,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         }
 
         avgTimestamp /= avgRangeLength;
-        avgValue = avgValue.divide(new BigDecimal(avgRangeLength));
+        avgValue = avgValue.divide(BigDecimal.valueOf(avgRangeLength), MathContext.DECIMAL128);
         return new BucketAverage(avgTimestamp, avgValue);
     }
 
