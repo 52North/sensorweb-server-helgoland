@@ -36,6 +36,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Data<T extends AbstractValue<?>> implements Serializable {
 
@@ -58,6 +59,9 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
     /**
      * @return a sorted list of quantity values.
      */
+    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
+    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
+    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
     public List<T> getValues() {
         return Collections.unmodifiableList(this.values);
     }

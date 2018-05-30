@@ -35,6 +35,7 @@ import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
@@ -117,6 +118,9 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return this;
     }
 
+    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
+    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
+    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
     public V getFirstValue() {
         return getIfSerialized(firstValue);
     }
@@ -126,6 +130,9 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return this;
     }
 
+    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
+    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
+    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
     public V getLastValue() {
         return getIfSerialized(lastValue);
     }
