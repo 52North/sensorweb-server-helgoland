@@ -52,19 +52,6 @@ import javax.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.quartz.InterruptableJob;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.UnableToInterruptJobException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.context.ServletConfigAware;
-
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -77,6 +64,18 @@ import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.quartz.InterruptableJob;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

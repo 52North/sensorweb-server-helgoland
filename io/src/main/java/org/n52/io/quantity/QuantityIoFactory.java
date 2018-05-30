@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.quantity;
 
 import java.util.Arrays;
@@ -55,12 +56,12 @@ import org.n52.series.spi.srv.DataService;
 public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, QuantityValue> {
 
     private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
-            new Constants.MimeType[] {
-                Constants.MimeType.TEXT_CSV,
-                Constants.MimeType.IMAGE_PNG,
-                Constants.MimeType.APPLICATION_ZIP,
-                Constants.MimeType.APPLICATION_PDF,
-            });
+                                                                                      new Constants.MimeType[] {
+                                                                                                                Constants.MimeType.TEXT_CSV,
+                                                                                                                Constants.MimeType.IMAGE_PNG,
+                                                                                                                Constants.MimeType.APPLICATION_ZIP,
+                                                                                                                Constants.MimeType.APPLICATION_PDF,
+                                                                                      });
 
     @Override
     public IoProcessChain<Data<QuantityValue>> createProcessChain() {
@@ -69,16 +70,16 @@ public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, Qu
             public DataCollection<Data<QuantityValue>> getData() {
                 boolean generalize = getParameters().isGeneralize();
                 DataService<Data<QuantityValue>> dataService = generalize
-                        ? new GeneralizingQuantityService(getDataService())
-                        : getDataService();
+                    ? new GeneralizingQuantityService(getDataService())
+                    : getDataService();
                 return dataService.getData(getParameters());
             }
 
             @Override
-            public DataCollection<?> getProcessedData() {
+            public DataCollection< ? > getProcessedData() {
                 return getParameters().shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
-                        : createFormatter().create().format(getData());
+                    ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
+                    : createFormatter().create().format(getData());
             }
 
             private FormatterFactory createFormatter() {
@@ -112,7 +113,8 @@ public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, Qu
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
+        }
+        else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
         }
@@ -136,9 +138,9 @@ public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, Qu
 
     private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                getParameters(),
-                createProcessChain(),
-                createContext());
+                                                                          getParameters(),
+                                                                          createProcessChain(),
+                                                                          createContext());
 
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;
