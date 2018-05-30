@@ -45,13 +45,11 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
-import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
-import org.n52.io.IoHandlerException;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.format.quantity.FormatterFactory;
-import org.n52.io.generalize.quantity.GeneralizingQuantityService;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerException;
+import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -61,6 +59,8 @@ import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.type.quantity.format.FormatterFactory;
+import org.n52.io.type.quantity.generalize.GeneralizingQuantityService;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -83,7 +83,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Deprecated
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
     "application/json"
@@ -418,7 +417,7 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private IoFactory<TimeseriesMetadataOutput,
+    private IoHandlerFactory<TimeseriesMetadataOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)

@@ -26,45 +26,46 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.generalize.quantity;
+package org.n52.io.type.quantity.generalize;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.math.BigDecimal;
-import java.util.Random;
-
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.type.quantity.generalize.GeneralizerException;
-import org.n52.io.type.quantity.generalize.LargestTriangleThreeBucketsGeneralizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LargestTriangleThreeBucketsGeneralizerTest {
+public class GeneralizerFactory {
 
-    private LargestTriangleThreeBucketsGeneralizer generalizer;
-    private DataCollection<Data<QuantityValue>> collection;
+    private static final Logger LOG = LoggerFactory.getLogger(GeneralizerFactory.class);
 
-    @Before
-    public void setUp() {
-        Random random = new Random();
-        generalizer = new LargestTriangleThreeBucketsGeneralizer(IoParameters.createDefaults());
-        Data<QuantityValue> data = new Data<>();
-        DateTime now = DateTime.now();
-        for (int i = 0; i < 10000; i++) {
-            data.addNewValue(new QuantityValue(now.plusSeconds(i).getMillis(), BigDecimal.valueOf(100*random.nextDouble())));
+    private static final String GENERALIZING_ALGORITHM = "generalizing_algorithm";
+
+    private static final String LARGEST_TRIANGLE_THREE_BUCKETS = "LTTB";
+
+    private static final String DOUGLAS_PEUCKER = "DP";
+
+    public static final Generalizer<Data<QuantityValue>> createGeneralizer(IoParameters parameters) {
+
+        if (!parameters.isGeneralize()) {
+            return new NoActionGeneralizer(parameters);
         }
-        collection = new DataCollection<>();
-        collection.addNewSeries("test", data);
+
+        String algorithm = parameters.containsParameter(GENERALIZING_ALGORITHM)
+                ? parameters.getOther(GENERALIZING_ALGORITHM)
+                : LARGEST_TRIANGLE_THREE_BUCKETS;
+
+        Generalizer<Data<QuantityValue>> generalizer;
+        if (LARGEST_TRIANGLE_THREE_BUCKETS.equalsIgnoreCase(algorithm)) {
+            generalizer = new LargestTriangleThreeBucketsGeneralizer(parameters);
+        } else if (DOUGLAS_PEUCKER.equalsIgnoreCase(algorithm)) {
+            generalizer = new DouglasPeuckerGeneralizer(parameters);
+        } else {
+            LOG.info("No generalizing algorithm found for code: {}.", algorithm);
+            generalizer = new NoActionGeneralizer(parameters);
+        }
+
+        LOG.info("Selected {} algorithm.", generalizer.getName());
+        return generalizer;
     }
 
-    @Test
-    public void testGeneralizer() throws GeneralizerException {
-        DataCollection<Data<QuantityValue>> generalizedValues = generalizer.generalize(collection);
-        assertThat(generalizedValues != null, is(true));
-    }
 }

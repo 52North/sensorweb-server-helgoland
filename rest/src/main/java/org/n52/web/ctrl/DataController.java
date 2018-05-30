@@ -44,11 +44,11 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
-import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
-import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -437,14 +437,13 @@ public class DataController extends BaseController {
         }
     }
 
-    private IoFactory<DatasetOutput<AbstractValue< ? >>,
+    private IoHandlerFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(final String valueType)
                               throws DatasetFactoryException {
         if (!ioFactoryCreator.isKnown(valueType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
         return ioFactoryCreator.create(valueType)
-                               // .withBasePath(getRootResource())
                                .setDataService(dataService)
                                .setDatasetService(datasetService);
     }

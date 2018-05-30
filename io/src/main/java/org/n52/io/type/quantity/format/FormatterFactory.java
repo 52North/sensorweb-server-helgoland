@@ -26,45 +26,36 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.generalize.quantity;
+package org.n52.io.type.quantity.format;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.math.BigDecimal;
-import java.util.Random;
-
-import org.joda.time.DateTime;
-import org.junit.Before;
-import org.junit.Test;
+import org.n52.io.format.DataFormatter;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.type.quantity.generalize.GeneralizerException;
-import org.n52.io.type.quantity.generalize.LargestTriangleThreeBucketsGeneralizer;
 
-public class LargestTriangleThreeBucketsGeneralizerTest {
+public final class FormatterFactory {
 
-    private LargestTriangleThreeBucketsGeneralizer generalizer;
-    private DataCollection<Data<QuantityValue>> collection;
+    private final IoParameters parameters;
 
-    @Before
-    public void setUp() {
-        Random random = new Random();
-        generalizer = new LargestTriangleThreeBucketsGeneralizer(IoParameters.createDefaults());
-        Data<QuantityValue> data = new Data<>();
-        DateTime now = DateTime.now();
-        for (int i = 0; i < 10000; i++) {
-            data.addNewValue(new QuantityValue(now.plusSeconds(i).getMillis(), BigDecimal.valueOf(100*random.nextDouble())));
-        }
-        collection = new DataCollection<>();
-        collection.addNewSeries("test", data);
+    private FormatterFactory(IoParameters parameters) {
+        this.parameters = parameters;
     }
 
-    @Test
-    public void testGeneralizer() throws GeneralizerException {
-        DataCollection<Data<QuantityValue>> generalizedValues = generalizer.generalize(collection);
-        assertThat(generalizedValues != null, is(true));
+    // TODO align with config typed factory
+
+    public DataFormatter<Data<QuantityValue>, ?> create() {
+        String format = parameters.getFormat();
+        if ("highcharts".equalsIgnoreCase(format)) {
+            return new HighchartFormatter();
+        } else if ("flotcharts".equalsIgnoreCase(format)
+                || "flot".equalsIgnoreCase(format)) {
+            return new FlotFormatter();
+        } else {
+            return new TvpFormatter();
+        }
+    }
+
+    public static FormatterFactory createFormatterFactory(IoParameters ioParameters) {
+        return new FormatterFactory(ioParameters);
     }
 }
