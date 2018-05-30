@@ -61,7 +61,7 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
         return Collections.singletonList(getExtensionName());
     }
 
-    protected boolean hasExtrasToReturn(ParameterOutput output, IoParameters parameters) {
+    protected boolean hasExtrasToReturn(T output, IoParameters parameters) {
         return parameters.getFields().isEmpty()
                 || containsIgnoreCase(parameters.getFields());
     }

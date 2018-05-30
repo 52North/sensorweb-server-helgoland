@@ -26,16 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import java.util.function.Predicate;
 
 import org.n52.io.extension.RenderingHintsExtension;
 import org.n52.io.extension.StatusIntervalsExtension;
@@ -44,10 +41,15 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.OutputCollection;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.StatusInterval;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
+import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @Deprecated
 @RestController
@@ -63,10 +65,10 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     protected ModelAndView createModelAndView(OutputCollection<TimeseriesMetadataOutput> items,
                                               IoParameters parameters) {
         items.stream()
-                .forEach(e -> {
-                    addRenderingHints(e, parameters);
-                    addStatusIntervals(e, parameters);
-                });
+             .forEach(e -> {
+                 addRenderingHints(e, parameters);
+                 addStatusIntervals(e, parameters);
+             });
         return super.createModelAndView(items, parameters);
     }
 
@@ -79,11 +81,12 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
 
     private TimeseriesMetadataOutput addRenderingHints(TimeseriesMetadataOutput output, IoParameters parameters) {
         if (parameters.isRenderingHintsRequests()) {
-            getMetadataExtensionExtras(output, parameters, RenderingHintsExtension.class).ifPresent(extras
-                    -> output.setValue(TimeseriesMetadataOutput.RENDERING_HINTS,
-                                       (StyleProperties) extras.get(TimeseriesMetadataOutput.RENDERING_HINTS),
+            getMetadataExtensionExtras(output,
                                        parameters,
-                                       output::setRenderingHints));
+                                       RenderingHintsExtension.class::isInstance).ifPresent(extras -> output.setValue(TimeseriesMetadataOutput.RENDERING_HINTS,
+                                                                                                          (StyleProperties) extras.get(TimeseriesMetadataOutput.RENDERING_HINTS),
+                                                                                                          parameters,
+                                                                                                          output::setRenderingHints));
 
         }
         return output;
@@ -92,12 +95,13 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     @SuppressWarnings("unchecked")
     private TimeseriesMetadataOutput addStatusIntervals(TimeseriesMetadataOutput output, IoParameters parameters) {
         if (parameters.isStatusIntervalsRequests()) {
-            getMetadataExtensionExtras(output, parameters, StatusIntervalsExtension.class).ifPresent(extras
-                    -> output.setValue(TimeseriesMetadataOutput.STATUS_INTERVALS,
-                                       (Collection<StatusInterval>) extras
-                                               .get(TimeseriesMetadataOutput.STATUS_INTERVALS),
+            getMetadataExtensionExtras(output,
                                        parameters,
-                                       output::setStatusIntervals));
+                                       StatusIntervalsExtension.class::isInstance).ifPresent(extras -> output.setValue(TimeseriesMetadataOutput.STATUS_INTERVALS,
+                                                                                                           (Collection<StatusInterval>) extras
+                                                                                                                                              .get(TimeseriesMetadataOutput.STATUS_INTERVALS),
+                                                                                                           parameters,
+                                                                                                           output::setStatusIntervals));
 
         }
         return output;
@@ -145,13 +149,14 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends ParameterOutput> Optional<Map<String, Object>> getMetadataExtensionExtras(
-            T output, IoParameters parameters, Class<? extends MetadataExtension<T>> clazz) {
+    private Optional<Map<String, Object>> getMetadataExtensionExtras(
+            TimeseriesMetadataOutput output, IoParameters parameters, Predicate<MetadataExtension<?>> isExtension) {
         return getMetadataExtensions().stream()
                 .map(x -> (MetadataExtension<?>) x)
-                .filter(x -> clazz.isInstance(x))
-                .map(x -> (MetadataExtension<T>) x)
+                .filter(isExtension)
+                .map(x -> (MetadataExtension<TimeseriesMetadataOutput>) x)
                 .map(x -> x.getExtras(output, parameters))
                 .findFirst();
     }
+    
 }

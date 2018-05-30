@@ -47,7 +47,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @deprecated since 2.0.0. use {@link QuantityDatasetOutput} instead.
  */
 @Deprecated
-public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue> {
+public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
 
     public static final String STATION = "station";
 

@@ -416,7 +416,6 @@ public class TimeseriesDataController extends BaseController {
     }
 
     private IoFactory<TimeseriesMetadataOutput,
-    private IoFactory<QuantityDatasetOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
