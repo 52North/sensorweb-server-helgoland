@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.report.quantity;
 
 import java.io.File;
@@ -92,8 +93,6 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
 
     private final ChartIoHandler renderer;
 
-    private URI baseURI;
-
     public PDFReportGenerator(IoParameters parameters,
                               IoProcessChain<Data<QuantityValue>> processChain,
                               ChartIoHandler renderer) {
@@ -104,15 +103,12 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         this.renderer = renderer;
     }
 
-    public void setBaseURI(URI baseURI) {
-        this.baseURI = baseURI;
-    }
-
     public void generateOutput(DataCollection<Data<QuantityValue>> data) throws IoHandlerException {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new IoHandlerException("Error handling (temp) file!", e);
         }
     }
@@ -123,16 +119,11 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
             renderer.encodeAndWriteTo(data, stream);
             document.getDocumentStructure()
-                    .setDiagramURL(tmpFile.getAbsolutePath());
+                    .setDiagramURL(tmpFile.toURI().toString());
             // String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
             // document.getDocumentStructure().setDiagramURL(absoluteFilePath);
             stream.flush();
         }
-    }
-
-    private String getFoAbsoluteFilepath(File tmpFile) {
-        return tmpFile.toURI()
-                      .toString();
     }
 
     private void generateTimeseriesMetadata() {
@@ -150,8 +141,9 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             Configuration cfg = cfgBuilder.build(document.newInputStream());
-            FopFactory fopFactory = new FopFactoryBuilder(baseURI)
-                                                                  .setConfiguration(cfg)
+            
+            URI baseURI = new File(".").toURI();
+            FopFactory fopFactory = new FopFactoryBuilder(baseURI).setConfiguration(cfg)
                                                                   .build();
             final String mimeType = Constants.APPLICATION_PDF;
             Fop fop = fopFactory.newFop(mimeType, stream);
@@ -176,20 +168,25 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
                     String xslResult = XmlObject.Factory.parse(tempFile)
                                                         .xmlText();
                     LOGGER.debug("xsl-fo input (locale '{}'): {}", i18n.getTwoDigitsLanguageCode(), xslResult);
-                } catch (IOException | TransformerException | XmlException e) {
+                }
+                catch (IOException | TransformerException | XmlException e) {
                     LOGGER.error("Could not debug XSL result output!", e);
                 }
             }
 
             // XXX debug, diagram is not embedded
             transformer.transform(source, result);
-        } catch (FOPException e) {
+        }
+        catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
-        } catch (SAXException | ConfigurationException | IOException e) {
+        }
+        catch (SAXException | ConfigurationException | IOException e) {
             throw new IoParseException("Failed to read config for Formatting Object Processor (FOP)", e);
-        } catch (TransformerConfigurationException e) {
+        }
+        catch (TransformerConfigurationException e) {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
-        } catch (TransformerException e) {
+        }
+        catch (TransformerException e) {
             throw new IoParseException("Could not generate PDF report!", e);
         }
     }

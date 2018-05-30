@@ -114,17 +114,12 @@ public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, Qu
             return createMultiChartRenderer(mimeType);
         } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
-            PDFReportGenerator reportGenerator = new PDFReportGenerator(
-                    parameters,
-                    createProcessChain(),
-                    imgRenderer);
-            reportGenerator.setBaseURI(getBasePath());
-            return reportGenerator;
-        } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
-            QuantityCsvIoHandler handler = new QuantityCsvIoHandler(
-                    parameters,
-                    createProcessChain(),
-                    getMetadatas());
+            return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
+        }
+        else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
+            QuantityCsvIoHandler handler = new QuantityCsvIoHandler(parameters,
+                                                                    createProcessChain(),
+                                                                    getMetadatas());
             handler.setTokenSeparator(parameters.getOther(Parameters.TOKEN_SEPARATOR));
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);

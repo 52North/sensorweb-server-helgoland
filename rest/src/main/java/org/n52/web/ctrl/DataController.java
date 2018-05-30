@@ -30,9 +30,6 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -444,12 +441,6 @@ public class DataController extends BaseController {
                                // .withBasePath(getRootResource())
                                .setDataService(dataService)
                                .setDatasetService(datasetService);
-    }
-
-    private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext()
-                                 .getResource("/")
-                                 .toURI();
     }
 
     // TODO set preredering config instead of task

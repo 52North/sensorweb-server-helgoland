@@ -28,7 +28,6 @@
  */
 package org.n52.io;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -49,19 +48,12 @@ public abstract class IoFactory<P extends DatasetOutput<V>, V extends AbstractVa
 
     private ParameterService<P> datasetService;
 
-    private URI basePath;
-
     public IoFactory() {
         this.parameters = IoParameters.createDefaults();
     }
 
     public IoFactory<P, V> setParameters(IoParameters parameters) {
         this.parameters = parameters;
-        return this;
-    }
-
-    public IoFactory<P, V> setBasePath(URI basePath) {
-        this.basePath = basePath;
         return this;
     }
 
@@ -122,10 +114,6 @@ public abstract class IoFactory<P extends DatasetOutput<V>, V extends AbstractVa
 
     protected DataService<Data<V>> getDataService() {
         return dataService;
-    }
-
-    public URI getBasePath() {
-        return basePath;
     }
 
 }
