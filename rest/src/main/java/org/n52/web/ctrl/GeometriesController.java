@@ -31,7 +31,9 @@ package org.n52.web.ctrl;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.GeometryInfo;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
+import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,9 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = UrlSettings.COLLECTION_GEOMETRIES)
 public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
 
-    @Override
-    public void setParameterService(ParameterService<GeometryInfo> parameterService) {
-        super.setParameterService(new TransformingGeometryOutputService(parameterService));
+    @Autowired
+    public GeometriesController(CountingMetadataService counter, ParameterService<GeometryInfo> parameterService) {
+        super(counter, new TransformingGeometryOutputService(parameterService));
     }
 
     @Override

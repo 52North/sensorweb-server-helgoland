@@ -48,8 +48,6 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -68,14 +66,20 @@ public class StationsParameterController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<StationOutput> parameterService;
+    private final ParameterService<StationOutput> parameterService;
 
-    @Autowired
-    private ProceduresParameterController parameterControllerWithHref;
+    private final CountingMetadataService counter;
 
-    @Autowired
-    @Qualifier("metadataService")
-    private CountingMetadataService counter;
+    private final ProceduresParameterController parameterControllerWithHref;
+
+    public StationsParameterController(CountingMetadataService counter,
+                                       ParameterService<StationOutput> service,
+                                       ProceduresParameterController proceduresController) {
+        ParameterService<StationOutput> transformingService = new TransformingStationOutputService(service);
+        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(transformingService));
+        this.parameterControllerWithHref = proceduresController;
+        this.counter = counter;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
@@ -135,14 +139,6 @@ public class StationsParameterController extends BaseController {
         return new ModelAndView().addObject(result);
     }
 
-    public ParameterService<StationOutput> getParameterService() {
-        return parameterService;
-    }
-
-    public void setParameterService(ParameterService<StationOutput> stationParameterService) {
-        ParameterService<StationOutput> service = new TransformingStationOutputService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(service));
-    }
 
     private void logRequestTime(Stopwatch stopwatch) {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());

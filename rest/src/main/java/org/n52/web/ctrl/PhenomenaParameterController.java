@@ -31,12 +31,18 @@ package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.PhenomenonOutput;
+import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_PHENOMENA)
 public class PhenomenaParameterController extends ParameterRequestMappingAdapter<PhenomenonOutput> {
+
+    public PhenomenaParameterController(CountingMetadataService counter, ParameterService<PhenomenonOutput> service) {
+        super(counter, service);
+    }
 
     @Override
     public String getCollectionPath(String hrefBase) {

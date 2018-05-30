@@ -61,6 +61,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
@@ -72,10 +73,16 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private List<MetadataExtension<T>> metadataExtensions = new ArrayList<>();
 
-    private ParameterService<T> parameterService;
+    private final ParameterService<T> parameterService;
 
     @Value("${external.url:http://localhost:8080/api}")
     private String externalUrl;
+
+    @Autowired
+    public ParameterController(ParameterService<T> parameterService) {
+        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
+        this.parameterService = new LocaleAwareSortService<>(service);
+    }
 
     public String getExternalUrl() {
         return externalUrl;
@@ -90,14 +97,14 @@ public abstract class ParameterController<T extends ParameterOutput>
                            String id,
                            String locale,
                            MultiValueMap<String, String> query) {
-        if (!getParameterService().supportsRawData()) {
+        if (!parameterService.supportsRawData()) {
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
         IoParameters queryMap = createParameters(query, locale);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
-        try (InputStream inputStream = getParameterService().getRawDataService()
+        try (InputStream inputStream = parameterService.getRawDataService()
                                                             .getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
@@ -208,13 +215,10 @@ public abstract class ParameterController<T extends ParameterOutput>
         return toBeProcessed;
     }
 
-    public ParameterService<T> getParameterService() {
-        return parameterService;
-    }
-
-    public void setParameterService(ParameterService<T> parameterService) {
-        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
-        this.parameterService = new LocaleAwareSortService<>(service);
+    public void addMetadataExtension(MetadataExtension<T> extension) {
+        if (metadataExtensions != null) {
+            metadataExtensions.add(extension);
+        }
     }
 
     public List<MetadataExtension<T>> getMetadataExtensions() {

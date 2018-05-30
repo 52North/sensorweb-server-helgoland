@@ -31,7 +31,6 @@ package org.n52.web.ctrl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
@@ -59,8 +58,8 @@ import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.ValueType;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -73,6 +72,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -92,15 +92,22 @@ public class TimeseriesDataController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
 
-    private ParameterService<QuantityDatasetOutput> timeseriesMetadataService;
+    private final ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
-    private DataService<Data<QuantityValue>> timeseriesDataService;
+    private final DataService<Data<QuantityValue>> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
 
     private boolean handlingPreRenderingTask;
 
+    @Value("${request.interval.restriction}")
     private String requestIntervalRestriction;
+
+    public TimeseriesDataController(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService,
+                                    DataService<Data<QuantityValue>> timeseriesDataService) {
+        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);;
+        this.timeseriesDataService = timeseriesDataService;
+    }
 
     @Override
     protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
@@ -408,6 +415,7 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
+    private IoFactory<TimeseriesMetadataOutput,
     private IoFactory<QuantityDatasetOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
@@ -417,42 +425,12 @@ public class TimeseriesDataController extends BaseController {
                                        .setDatasetService(timeseriesMetadataService);
     }
 
-    private DefaultIoFactory<QuantityDatasetOutput, QuantityValue> createDefaultIoFactory() {
-        return new DefaultIoFactory<QuantityDatasetOutput, QuantityValue>();
-    }
-
-    private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext()
-                                 .getResource("/")
-                                 .toURI();
-    }
-
-    public ParameterService<QuantityDatasetOutput> getTimeseriesMetadataService() {
-        return timeseriesMetadataService;
-    }
-
-    public void setTimeseriesMetadataService(ParameterService<QuantityDatasetOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);
-    }
-
-    public DataService<Data<QuantityValue>> getTimeseriesDataService() {
-        return timeseriesDataService;
-    }
-
-    public void setTimeseriesDataService(DataService<Data<QuantityValue>> timeseriesDataService) {
-        this.timeseriesDataService = timeseriesDataService;
+    private DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue> createDefaultIoFactory() {
+        return new DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue>();
     }
 
     public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
-    }
-
-    public boolean isHandlingPreRenderingTask() {
-        return handlingPreRenderingTask;
-    }
-
-    public void setHandlingPreRenderingTask(boolean handlingPreRenderingTask) {
-        this.handlingPreRenderingTask = handlingPreRenderingTask;
     }
 
     public void setPreRenderingTask(PreRenderingJob prerenderingTask) {

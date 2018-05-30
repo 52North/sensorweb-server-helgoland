@@ -67,7 +67,6 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -89,18 +88,25 @@ public class DataController extends BaseController {
 
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
 
-    @Autowired
-    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
+    private final DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> ioFactoryCreator;
 
-    private DataService<Data<AbstractValue< ? >>> dataService;
+    private final DataService<Data<AbstractValue< ? >>> dataService;
 
-    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
+    private final ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
+
+    public DataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue< ? >> ioFactory,
+                          ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
+                          DataService<Data<AbstractValue< ? >>> dataService) {
+        this.ioFactoryCreator = ioFactory;
+        this.datasetService = datasetService;
+        this.dataService = dataService;
+    }
 
     @RequestMapping(value = "/{datasetId}/data",
         produces = {
@@ -462,22 +468,6 @@ public class DataController extends BaseController {
         Period.parse(requestIntervalRestriction);
         LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
         this.requestIntervalRestriction = requestIntervalRestriction;
-    }
-
-    public DataService<Data<AbstractValue< ? >>> getDataService() {
-        return dataService;
-    }
-
-    public void setDataService(DataService<Data<AbstractValue< ? >>> dataService) {
-        this.dataService = dataService;
-    }
-
-    public ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
-        return datasetService;
-    }
-
-    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService) {
-        this.datasetService = datasetService;
     }
 
     private void assertPrerenderingIsEnabled() {

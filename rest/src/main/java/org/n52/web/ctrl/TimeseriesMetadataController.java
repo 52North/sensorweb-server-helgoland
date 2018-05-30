@@ -54,6 +54,11 @@ import org.n52.io.response.extension.MetadataExtension;
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
 
+    public TimeseriesMetadataController(CountingMetadataService counter,
+                                        ParameterService<TimeseriesMetadataOutput> service) {
+        super(counter, service);
+    }
+
     @Override
     protected ModelAndView createModelAndView(OutputCollection<TimeseriesMetadataOutput> items,
                                               IoParameters parameters) {

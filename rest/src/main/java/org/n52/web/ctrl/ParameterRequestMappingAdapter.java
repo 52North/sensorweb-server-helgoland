@@ -37,9 +37,9 @@ import org.n52.io.Constants;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawFormats;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -51,9 +51,15 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(method = RequestMethod.GET)
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
+//    @Autowired
+//    @Qualifier("metadataService")
+    private final CountingMetadataService counter;
+
     @Autowired
-    @Qualifier("metadataService")
-    private CountingMetadataService counter;
+    public ParameterRequestMappingAdapter(CountingMetadataService counter, ParameterService<T> parameterService) {
+        super(parameterService);
+        this.counter = counter;
+    }
 
     @Override
     @RequestMapping(path = "", produces = Constants.APPLICATION_JSON)
