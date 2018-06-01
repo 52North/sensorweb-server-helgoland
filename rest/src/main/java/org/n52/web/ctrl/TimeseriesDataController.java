@@ -104,7 +104,7 @@ public class TimeseriesDataController extends BaseController {
 
     public TimeseriesDataController(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService,
                                     DataService<Data<QuantityValue>> timeseriesDataService) {
-        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);;
+        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);
         this.timeseriesDataService = timeseriesDataService;
     }
 

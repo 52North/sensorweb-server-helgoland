@@ -107,8 +107,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         try {
             generateTimeseriesChart(data);
             generateTimeseriesMetadata();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new IoHandlerException("Error handling (temp) file!", e);
         }
     }
@@ -141,7 +140,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             generateOutput(data);
             DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             Configuration cfg = cfgBuilder.build(document.newInputStream());
-            
+
             URI baseURI = new File(".").toURI();
             FopFactory fopFactory = new FopFactoryBuilder(baseURI).setConfiguration(cfg)
                                                                   .build();
@@ -168,25 +167,20 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
                     String xslResult = XmlObject.Factory.parse(tempFile)
                                                         .xmlText();
                     LOGGER.debug("xsl-fo input (locale '{}'): {}", i18n.getTwoDigitsLanguageCode(), xslResult);
-                }
-                catch (IOException | TransformerException | XmlException e) {
+                } catch (IOException | TransformerException | XmlException e) {
                     LOGGER.error("Could not debug XSL result output!", e);
                 }
             }
 
             // XXX debug, diagram is not embedded
             transformer.transform(source, result);
-        }
-        catch (FOPException e) {
+        } catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
-        }
-        catch (SAXException | ConfigurationException | IOException e) {
+        } catch (SAXException | ConfigurationException | IOException e) {
             throw new IoParseException("Failed to read config for Formatting Object Processor (FOP)", e);
-        }
-        catch (TransformerConfigurationException e) {
+        } catch (TransformerConfigurationException e) {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
-        }
-        catch (TransformerException e) {
+        } catch (TransformerException e) {
             throw new IoParseException("Could not generate PDF report!", e);
         }
     }

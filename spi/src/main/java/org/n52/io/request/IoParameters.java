@@ -1114,8 +1114,12 @@ public final class IoParameters implements Parameters {
             if (!queryParameters.containsKey(lowerCasedKey)) {
                 queryParameters.put(lowerCasedKey, values);
             } else {
-                queryParameters.get(lowerCasedKey)
-                               .addAll(values);
+                List<JsonNode> currentValues = queryParameters.get(lowerCasedKey);
+                if (currentValues == null) {
+                    queryParameters.put(lowerCasedKey, values);
+                } else {
+                    currentValues.addAll(values);
+                }
             }
         }
         return queryParameters;

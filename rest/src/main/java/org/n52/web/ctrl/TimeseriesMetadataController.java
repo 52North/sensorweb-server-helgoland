@@ -78,30 +78,32 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
         return super.createModelAndView(item, parameters);
     }
 
+    // stay backwards compatible
+    @SuppressWarnings("deprecation")
     private TimeseriesMetadataOutput addRenderingHints(TimeseriesMetadataOutput output, IoParameters parameters) {
         if (parameters.isRenderingHintsRequests()) {
-            getMetadataExtensionExtras(output,
-                                       parameters,
-                                       RenderingHintsExtension.class::isInstance).ifPresent(extras -> output.setValue(TimeseriesMetadataOutput.RENDERING_HINTS,
-                                                                                                          (StyleProperties) extras.get(TimeseriesMetadataOutput.RENDERING_HINTS),
-                                                                                                          parameters,
-                                                                                                          output::setRenderingHints));
-
+            final String valueName = TimeseriesMetadataOutput.RENDERING_HINTS;
+            Predicate<MetadataExtension< ? >> filter = RenderingHintsExtension.class::isInstance;
+            Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
+            extras.ifPresent(it -> {
+                StyleProperties value = (StyleProperties) it.get(valueName);
+                output.setValue(valueName, value, parameters, output::setRenderingHints);
+            });
         }
         return output;
     }
 
-    @SuppressWarnings("unchecked")
+    // stay backwards compatible
+    @SuppressWarnings(value = {"unchecked", "deprecation"})
     private TimeseriesMetadataOutput addStatusIntervals(TimeseriesMetadataOutput output, IoParameters parameters) {
         if (parameters.isStatusIntervalsRequests()) {
-            getMetadataExtensionExtras(output,
-                                       parameters,
-                                       StatusIntervalsExtension.class::isInstance).ifPresent(extras -> output.setValue(TimeseriesMetadataOutput.STATUS_INTERVALS,
-                                                                                                           (Collection<StatusInterval>) extras
-                                                                                                                                              .get(TimeseriesMetadataOutput.STATUS_INTERVALS),
-                                                                                                           parameters,
-                                                                                                           output::setStatusIntervals));
-
+            final String valueName = TimeseriesMetadataOutput.STATUS_INTERVALS;
+            Predicate<MetadataExtension< ? >> filter = StatusIntervalsExtension.class::isInstance;
+            Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
+            extras.ifPresent(it -> {
+                Collection<StatusInterval> value = (Collection<StatusInterval>) it.get(valueName);
+                output.setValue(valueName, value, parameters, output::setStatusIntervals);
+            });
         }
         return output;
     }
@@ -148,14 +150,16 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @SuppressWarnings("unchecked")
-    private Optional<Map<String, Object>> getMetadataExtensionExtras(
-            TimeseriesMetadataOutput output, IoParameters parameters, Predicate<MetadataExtension<?>> isExtension) {
+    private Optional<Map<String, Object>> getExtras(
+                                                    TimeseriesMetadataOutput output,
+                                                    IoParameters parameters,
+                                                    Predicate<MetadataExtension< ? >> isExtension) {
         return getMetadataExtensions().stream()
-                .map(x -> (MetadataExtension<?>) x)
-                .filter(isExtension)
-                .map(x -> (MetadataExtension<TimeseriesMetadataOutput>) x)
-                .map(x -> x.getExtras(output, parameters))
-                .findFirst();
+                                      .map(x -> (MetadataExtension< ? >) x)
+                                      .filter(isExtension)
+                                      .map(x -> (MetadataExtension<TimeseriesMetadataOutput>) x)
+                                      .map(x -> x.getExtras(output, parameters))
+                                      .findFirst();
     }
 
 }

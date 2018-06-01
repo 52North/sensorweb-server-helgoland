@@ -59,8 +59,7 @@ public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends Metad
         try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
             ObjectMapper om = new ObjectMapper();
             return om.readValue(config, RenderingHintsExtensionConfig.class);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", CONFIG_FILE, e);
             return new RenderingHintsExtensionConfig();
         }
@@ -97,14 +96,13 @@ public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends Metad
 
     @Override
     public Map<String, Object> getExtras(T output, IoParameters parameters) {
-        if ( !hasExtrasToReturn(output, parameters)) {
+        if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
 
         if (hasSeriesConfiguration(output)) {
             return wrapSingleIntoMap(createStyle(getSeriesStyle(output)));
-        }
-        else if (hasPhenomenonConfiguration(output)) {
+        } else if (hasPhenomenonConfiguration(output)) {
             return wrapSingleIntoMap(createStyle(getPhenomenonStyle(output)));
         }
 

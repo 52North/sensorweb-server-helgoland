@@ -55,13 +55,13 @@ import org.n52.series.spi.srv.DataService;
 
 public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOutput, QuantityValue> {
 
-    private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(
-                                                                                      new Constants.MimeType[] {
-                                                                                                                Constants.MimeType.TEXT_CSV,
-                                                                                                                Constants.MimeType.IMAGE_PNG,
-                                                                                                                Constants.MimeType.APPLICATION_ZIP,
-                                                                                                                Constants.MimeType.APPLICATION_PDF,
-                                                                                      });
+    private static final Constants.MimeType[] MIME_TYPES = new Constants.MimeType[] {Constants.MimeType.TEXT_CSV,
+                                                                                     Constants.MimeType.IMAGE_PNG,
+                                                                                     Constants.MimeType.APPLICATION_ZIP,
+                                                                                     Constants.MimeType.APPLICATION_PDF,
+    };
+
+    private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(MIME_TYPES);
 
     @Override
     public IoProcessChain<Data<QuantityValue>> createProcessChain() {
@@ -113,12 +113,10 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {
             return createMultiChartRenderer(mimeType);
-        }
-        else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
+        } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
-        }
-        else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
+        } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
             QuantityCsvIoHandler handler = new QuantityCsvIoHandler(parameters,
                                                                     createProcessChain(),
                                                                     getMetadatas());

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.Collections;
@@ -51,8 +52,6 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(method = RequestMethod.GET)
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
-//    @Autowired
-//    @Qualifier("metadataService")
     private final CountingMetadataService counter;
 
     @Autowired
@@ -81,7 +80,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(value = "/{item}", produces = Constants.APPLICATION_JSON, params = {
-        RawFormats.RAW_FORMAT
+                                                                                        RawFormats.RAW_FORMAT
     })
     public void getRawData(HttpServletResponse response,
                            @PathVariable("item") String id,

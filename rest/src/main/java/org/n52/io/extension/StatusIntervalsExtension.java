@@ -60,8 +60,7 @@ public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends Meta
         try (InputStream config = getClass().getResourceAsStream(CONFIG_FILE);) {
             ObjectMapper om = new ObjectMapper();
             return om.readValue(config, StatusIntervalsExtensionConfig.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
             return new StatusIntervalsExtensionConfig();
         }
@@ -95,14 +94,13 @@ public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends Meta
 
     @Override
     public Map<String, Object> getExtras(T output, IoParameters parameters) {
-        if ( !hasExtrasToReturn(output, parameters)) {
+        if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
 
         if (hasSeriesConfiguration(output)) {
             return wrapSingleIntoMap(createIntervals(getSeriesIntervals(output)));
-        }
-        else if (hasPhenomenonConfiguration(output)) {
+        } else if (hasPhenomenonConfiguration(output)) {
             return wrapSingleIntoMap(createIntervals(getPhenomenonIntervals(output)));
         }
         LOGGER.error("No status intervals found for {} (id={})", output, output.getId());

@@ -62,7 +62,7 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
     private OptionalOutput<Collection<StatusInterval>> statusIntervals;
 
     public TimeseriesMetadataOutput(IoParameters parameters) {
-        setValue(VALUE_TYPE, QuantityValue.TYPE, parameters, this::setValueType);
+        setValue(DatasetOutput.VALUE_TYPE, QuantityValue.TYPE, parameters, this::setValueType);
     }
 
     @Override

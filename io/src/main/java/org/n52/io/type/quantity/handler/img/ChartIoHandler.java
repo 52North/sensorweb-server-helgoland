@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.handler.img;
 
 import java.awt.Color;
@@ -280,8 +281,8 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
             if (parameters.containsParameter(Parameters.RENDERING_TRIGGER)) {
                 String trigger = parameters.getAsString(Parameters.RENDERING_TRIGGER);
                 title = RENDERING_TRIGGER_PRERENDERING.equalsIgnoreCase(trigger)
-                        ? getTitleForSingle(parameters, title)
-                        : title;
+                    ? getTitleForSingle(parameters, title)
+                    : title;
             }
             chart.setTitle(title);
         }
@@ -302,22 +303,22 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
     protected String formatTitle(DatasetOutput metadata, String title) {
         DatasetParameters parameters = metadata.getDatasetParameters();
         Object[] varargs = {
-            // index important to reference in config!
-            parameters.getPlatform()
-                      .getLabel(),
-            parameters.getPhenomenon()
-                      .getLabel(),
-            parameters.getProcedure()
-                      .getLabel(),
-            parameters.getCategory()
-                      .getLabel(),
-            parameters.getOffering()
-                      .getLabel(),
-            parameters.getFeature()
-                      .getLabel(),
-            parameters.getService()
-                      .getLabel(),
-            metadata.getUom()
+                            // index important to reference in config!
+                            parameters.getPlatform()
+                                      .getLabel(),
+                            parameters.getPhenomenon()
+                                      .getLabel(),
+                            parameters.getProcedure()
+                                      .getLabel(),
+                            parameters.getCategory()
+                                      .getLabel(),
+                            parameters.getOffering()
+                                      .getLabel(),
+                            parameters.getFeature()
+                                      .getLabel(),
+                            parameters.getService()
+                                      .getLabel(),
+                            metadata.getUom()
         };
         try {
             return String.format(title, varargs);
