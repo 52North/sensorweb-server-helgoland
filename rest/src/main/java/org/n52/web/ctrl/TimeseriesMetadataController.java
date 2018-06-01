@@ -51,7 +51,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Deprecated
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
@@ -158,5 +157,5 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
                 .map(x -> x.getExtras(output, parameters))
                 .findFirst();
     }
-    
+
 }
