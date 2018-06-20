@@ -144,7 +144,8 @@ public final class IoParameters implements Parameters {
                                                                                     String.class,
                                                                                     JsonNode.class));
         } catch (IOException e) {
-            LOGGER.info("Could not load '{}'. Using empty config.", DEFAULT_CONFIG_FILE, e);
+            LOGGER.trace("Could not load '{}'", DEFAULT_CONFIG_FILE, e);
+            LOGGER.info("Config could not be loaded (switch to TRACE to see details).");
             return new HashMap<>();
         }
     }
