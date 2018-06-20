@@ -44,19 +44,21 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
+public class GeometryOutput extends AbstractOutput implements GeoJSONFeature {
+
+    public static final String COLLECTION_PATH = "geometries";
 
     public static final String PROPERTIES = "properties";
-
     public static final String GEOMETRY_TYPE = "geometryType";
-
     public static final String PLATFORM = "platform";
-
     private OptionalOutput<GeometryType> geometryType;
-
     private OptionalOutput<PlatformOutput> platform;
-
     private OptionalOutput<Geometry> geometry;
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
 
     @Override
     public String getId() {
@@ -64,7 +66,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
         return type.createId(super.getId());
     }
 
-    public GeometryInfo setGeometryType(OptionalOutput<GeometryType> geometryType) {
+    public GeometryOutput setGeometryType(OptionalOutput<GeometryType> geometryType) {
         this.geometryType = geometryType;
         return this;
     }
@@ -88,7 +90,7 @@ public class GeometryInfo extends AbstractOutput implements GeoJSONFeature {
         return getIfSerialized(platform);
     }
 
-    public GeometryInfo setPlatform(OptionalOutput<PlatformOutput> platform) {
+    public GeometryOutput setPlatform(OptionalOutput<PlatformOutput> platform) {
         this.platform = platform;
         return this;
     }

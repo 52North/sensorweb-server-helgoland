@@ -30,4 +30,11 @@ package org.n52.io.response;
 
 public class FeatureOutput extends OutputWithParameters {
 
+    public static final String COLLECTION_PATH = "features";
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
+
 }

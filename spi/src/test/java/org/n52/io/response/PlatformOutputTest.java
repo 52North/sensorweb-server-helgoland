@@ -42,7 +42,7 @@ public class PlatformOutputTest {
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
-        assertThat(platform.getHref(), is("http://localhost/context/mobile_remote_12"));
+        assertThat(platform.getHref(), is("http://localhost/context/platforms/mobile_remote_12"));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class PlatformOutputTest {
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
-        assertThat(platform.getHref(), is("http://localhost/context/stationary_remote_12"));
+        assertThat(platform.getHref(), is("http://localhost/context/platforms/stationary_remote_12"));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class PlatformOutputTest {
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
-        assertThat(platform.getHref(), is("http://localhost/context/stationary_insitu_12"));
+        assertThat(platform.getHref(), is("http://localhost/context/platforms/stationary_insitu_12"));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class PlatformOutputTest {
         platform.setHrefBase(OptionalOutput.of("http://localhost/context"));
         platform.setId("12");
 
-        assertThat(platform.getHref(), is("http://localhost/context/mobile_insitu_12"));
+        assertThat(platform.getHref(), is("http://localhost/context/platforms/mobile_insitu_12"));
     }
 
     @Test

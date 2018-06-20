@@ -26,12 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.pagination;
+package org.n52.web.common;
 
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.StringJoiner;
-import org.n52.io.response.OutputCollection;
 
 
 /**
@@ -39,7 +37,7 @@ import org.n52.io.response.OutputCollection;
  *@author Christian Autermann autermann@uni-muenster.de
  *@author Jan Speckamp
  */
-public class Paginated<T> extends OutputCollection<T> {
+public class Paginated {
     private final Optional<Pagination> current;
     private final Optional<Pagination> last;
     private final Optional<Pagination> first;
@@ -120,12 +118,6 @@ public class Paginated<T> extends OutputCollection<T> {
             .add("next=" + getNext().orElse(null))
             .add("last=" + getLast().orElse(null))
             .toString();
-    }
-
-    @Override
-    protected Comparator<T> getComparator() {
-        //TODO(specki): Implementation
-        return null;
     }
 
 }

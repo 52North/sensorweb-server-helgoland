@@ -45,6 +45,8 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class PlatformOutput extends OutputWithParameters {
 
+    public static final String COLLECTION_PATH = "platforms";
+
     public static final String DATASETS = "datasets";
     public static final String GEOMETRY = "geometry";
     public static final String PLATFORMTYPE = "platformtype";
@@ -55,7 +57,9 @@ public class PlatformOutput extends OutputWithParameters {
 
     private OptionalOutput<Geometry> geometry;
 
-    public PlatformOutput() {
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
     }
 
     @Override

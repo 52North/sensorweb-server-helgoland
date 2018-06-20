@@ -30,7 +30,7 @@ package org.n52.io.response;
 
 import java.util.Collection;
 
-public class HierarchicalParameterOutput extends AbstractOutput {
+public abstract class HierarchicalParameterOutput extends AbstractOutput {
 
     private Collection<ProcedureOutput> parents;
 

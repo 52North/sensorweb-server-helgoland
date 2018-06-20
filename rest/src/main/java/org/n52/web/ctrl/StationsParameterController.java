@@ -29,6 +29,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,13 +37,13 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
-import org.n52.io.response.pagination.OffsetBasedPagination;
-import org.n52.io.response.pagination.Paginated;
 import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.web.common.RequestUtils;
+import org.n52.web.common.OffsetBasedPagination;
+import org.n52.web.common.PageLinkUtil;
+import org.n52.web.common.Paginated;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
@@ -62,7 +63,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
     "application/json"
 })
-public class StationsParameterController extends BaseController {
+public class StationsParameterController extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
@@ -80,7 +81,13 @@ public class StationsParameterController extends BaseController {
         this.parameterControllerWithHref = proceduresController;
         this.counter = counter;
     }
+    
+    @Override
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_STATIONS;
+    }
 
+    @Override
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
@@ -105,21 +112,20 @@ public class StationsParameterController extends BaseController {
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(map.getOffset(), map.getLimit());
                 Paginated paginated = new Paginated(obp, elementcount.longValue());
-                this.addPagingHeaders(response, paginated);
+                String collectionHref = createCollectionUrl(getCollectionName());
+                PageLinkUtil.addPagingHeaders(collectionHref, response, paginated);
             }
         }
         return new ModelAndView().addObject(result.getItems());
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        query.put(Parameters.HREF_BASE, Collections.singletonList(this.getHrefBase()));
+        List<String> value = Collections.singletonList(getExternalUrl());
+        query.put(Parameters.HREF_BASE, value);
         return query;
     }
 
-    private String getHrefBase() {
-        return RequestUtils.resolveQueryLessRequestUrl(parameterControllerWithHref.getExternalUrl());
-    }
-
+    @Override
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
@@ -144,26 +150,4 @@ public class StationsParameterController extends BaseController {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
     }
 
-    private HttpServletResponse addPagingHeaders(HttpServletResponse response, Paginated paginated) {
-        String l = "Link:";
-        String href = (new UrlHelper()).constructHref(this.getHrefBase(), UrlSettings.COLLECTION_STATIONS);
-
-        if (paginated.getCurrent().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
-        }
-        if (paginated.getNext().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
-        }
-        if (paginated.getPrevious().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
-        }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
-        }
-
-        return response;
-    }
 }

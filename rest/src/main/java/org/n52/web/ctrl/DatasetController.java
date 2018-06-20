@@ -45,9 +45,8 @@ public class DatasetController extends ParameterRequestMappingAdapter<DatasetOut
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_DATASETS);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_DATASETS;
     }
 
     @Override

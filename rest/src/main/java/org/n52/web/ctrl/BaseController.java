@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.HrefHelper;
 import org.n52.io.IoParseException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -51,6 +52,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.MultiValueMap;
@@ -84,6 +86,21 @@ public abstract class BaseController {
             + "server. Probably it is not valid.";
 
     private static final String HEADER_ACCEPT = "Accept";
+
+    @Value("${external.url:http://localhost:8080/api}")
+    private String externalUrl;
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
+    }
+
+    public String createCollectionUrl(String collectionName) {
+        return HrefHelper.constructHref(getExternalUrl(), collectionName);
+    }
 
     protected BiConsumer<String, IoParseException> getExceptionHandle() {
         return (parameter, e) -> {
@@ -145,7 +162,7 @@ public abstract class BaseController {
     private static String getAcceptHeader(HttpServletRequest request) {
         return request.getHeader(HEADER_ACCEPT);
     }
-
+    
     @ExceptionHandler(value = {
         BadRequestException.class,
         BadQueryParameterException.class

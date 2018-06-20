@@ -45,9 +45,8 @@ public class ProceduresParameterController extends ParameterRequestMappingAdapte
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_PROCEDURES);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_PROCEDURES;
     }
 
     @Override

@@ -26,35 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.pagination;
+package org.n52.web.ctrl;
 
-import java.util.Optional;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.util.MultiValueMap;
 
-/**
- *
- * @author Christian Autermann
- * @author Jan Speckamp
- */
+public interface RawDataController {
 
+    void getRawData(HttpServletResponse response, String id, String locale, MultiValueMap<String, String> query);
 
-public interface Pagination {
-    int MAX_LIMIT = 1000000;
-    int DEFAULT_LIMIT = 10000;
-
-    long getStart();
-
-    long getEnd();
-
-    long getOffset();
-
-    long getLimit();
-
-    Optional<Pagination> first(long elements);
-
-    Optional<Pagination> previous(long elements);
-
-    Optional<Pagination> next(long elements);
-
-    Optional<Pagination> last(long elements);
 }

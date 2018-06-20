@@ -44,9 +44,8 @@ public class PlatformsParameterController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_PLATFORMS);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_PLATFORMS;
     }
 
     @Override

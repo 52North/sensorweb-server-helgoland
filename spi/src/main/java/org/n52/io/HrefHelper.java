@@ -26,55 +26,30 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
 
-public class UrlHelper {
+package org.n52.io;
 
-    public String getServicesHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_SERVICES);
+public final class HrefHelper {
+
+    private HrefHelper() {
+        // no construct
     }
 
-    public String getCategoriesHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_CATEGORIES);
-    }
-
-    public String getOfferingsHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_OFFERINGS);
-    }
-
-    public String getFeaturesHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
-    }
-
-    public String getProceduresHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_PROCEDURES);
-    }
-
-    public String getPhenomenaHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_PHENOMENA);
-    }
-
-    public String getPlatformsHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_PLATFORMS);
-    }
-
-    public String getDatasetsHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_DATASETS);
-    }
-
-    public String getGeometriesHrefBaseUrl(String hrefBase) {
-        return constructHref(hrefBase, UrlSettings.COLLECTION_GEOMETRIES);
-    }
-
-    public String constructHref(String hrefBase, String path) {
+    public static String constructHref(String hrefBase, String path) {
         if (hrefBase == null || hrefBase.isEmpty()) {
             // backwards compatible relative link
             return ".".concat(path);
         }
         String href = hrefBase.endsWith("/")
-                ? hrefBase.substring(0, hrefBase.length() - 1)
-                : hrefBase;
-        return href.concat(path);
+            ? hrefBase.substring(0, hrefBase.length() - 1)
+            : hrefBase;
+        return href.concat(addStartingSlashIfMissing(path));
+    }
+
+    private static String addStartingSlashIfMissing(String path) {
+        return !path.startsWith("/")
+            ? "/" + path
+            : path;
     }
 
 }

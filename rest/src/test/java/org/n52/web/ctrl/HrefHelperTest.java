@@ -26,15 +26,38 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response;
+package org.n52.web.ctrl;
 
-public class OfferingOutput extends AbstractOutput {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-    public static final String COLLECTION_PATH = "offerings";
+import org.junit.Test;
+import org.n52.io.HrefHelper;
 
-    @Override
-    protected String getCollectionName() {
-        return COLLECTION_PATH;
+public class HrefHelperTest {
+
+    @Test
+    public void when_constructBackwardsCompatibleUrl_then_relativeLink() {
+        String actual = HrefHelper.constructHref(null, "/procedures");
+        assertThat(actual, is("./procedures"));
+    }
+
+    @Test
+    public void when_constructUrlWithNonTrailingSlashBaseUrl_then_fullLink() {
+        String actual = HrefHelper.constructHref("http://localhost:8080/foo/bar", "/procedures");
+        assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
+    }
+
+    @Test
+    public void when_constructUrlFromBaseUrl_then_fullLink() {
+        String actual = HrefHelper.constructHref("http://localhost:8080/foo/bar/", "/procedures");
+        assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
+    }
+    
+    @Test
+    public void given_baseUrlWithoutTrailingSlash_when_pathWithTrailingSlash_then_fullLink() {
+        String actual = HrefHelper.constructHref("http://localhost:8080/foo/bar", "procedures");
+        assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
     }
 
 }

@@ -39,6 +39,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
+    public static final String COLLECTION_PATH = "datasets";
+
     public static final String VALUE_TYPE = "valuetype";
     public static final String PLATFORM_TYPE = "platformtype";
     public static final String DATASET_PARAMETERS = "parameters";
@@ -63,6 +65,11 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
 
     protected DatasetOutput() {
         // use static constructor method
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
     }
 
     public static <V extends AbstractValue< ? >> DatasetOutput<V> create(String type, IoParameters params) {

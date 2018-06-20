@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.pagination;
+package org.n52.web.common;
 
 import java.util.Objects;
 import java.util.Optional;

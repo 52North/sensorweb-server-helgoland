@@ -29,7 +29,7 @@
 package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.GeometryInfo;
+import org.n52.io.response.GeometryOutput;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -39,17 +39,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_GEOMETRIES)
-public class GeometriesController extends ParameterRequestMappingAdapter<GeometryInfo> {
+public class GeometriesController extends ParameterRequestMappingAdapter<GeometryOutput> {
 
     @Autowired
-    public GeometriesController(CountingMetadataService counter, ParameterService<GeometryInfo> parameterService) {
+    public GeometriesController(CountingMetadataService counter, ParameterService<GeometryOutput> parameterService) {
         super(counter, new TransformingGeometryOutputService(parameterService));
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_GEOMETRIES);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_GEOMETRIES;
     }
 
     @Override

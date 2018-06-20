@@ -47,10 +47,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
 
+    public static final String COLLECTION_PATH = "timeseries";
+
     public static final String STATION = "station";
-
     public static final String RENDERING_HINTS = "renderingHints";
-
     public static final String STATUS_INTERVALS = "statusIntervals";
 
     private OptionalOutput<StationOutput> station;

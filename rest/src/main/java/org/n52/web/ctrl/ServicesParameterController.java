@@ -45,9 +45,8 @@ public class ServicesParameterController extends ParameterRequestMappingAdapter<
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_SERVICES);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_SERVICES;
     }
 
     @Override

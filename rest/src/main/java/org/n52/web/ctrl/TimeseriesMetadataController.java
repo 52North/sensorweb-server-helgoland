@@ -139,9 +139,8 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_TIMESERIES);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_TIMESERIES;
     }
 
     @Override

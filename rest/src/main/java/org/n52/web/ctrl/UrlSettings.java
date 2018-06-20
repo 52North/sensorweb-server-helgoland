@@ -28,6 +28,18 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.response.CategoryOutput;
+import org.n52.io.response.FeatureOutput;
+import org.n52.io.response.GeometryOutput;
+import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.PhenomenonOutput;
+import org.n52.io.response.PlatformOutput;
+import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.ServiceOutput;
+import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.StationOutput;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+
 /**
  * <p>
  * The {@link UrlSettings} serves as markup interface, so that each controller
@@ -46,55 +58,55 @@ public interface UrlSettings {
     /**
      * Subpath identifying a collection of services availabe.
      */
-    String COLLECTION_SERVICES = "/services";
+    String COLLECTION_SERVICES = "/" + ServiceOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of categories availabe.
      */
-    String COLLECTION_CATEGORIES = "/categories";
+    String COLLECTION_CATEGORIES = "/" + CategoryOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of offerings available.
      */
-    String COLLECTION_OFFERINGS = "/offerings";
+    String COLLECTION_OFFERINGS = "/" + OfferingOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of features available.
      */
-    String COLLECTION_FEATURES = "/features";
+    String COLLECTION_FEATURES = "/" + FeatureOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    String COLLECTION_PROCEDURES = "/procedures";
+    String COLLECTION_PROCEDURES = "/" + ProcedureOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    String COLLECTION_PHENOMENA = "/phenomena";
+    String COLLECTION_PHENOMENA = "/" + PhenomenonOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of stations available.
      */
-    String COLLECTION_STATIONS = "/stations";
+    String COLLECTION_STATIONS = "/" + StationOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
-    String COLLECTION_TIMESERIES = "/timeseries";
+    String COLLECTION_TIMESERIES = "/" + TimeseriesMetadataOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying platforms collections available.
      */
-    String COLLECTION_PLATFORMS = "/platforms";
+    String COLLECTION_PLATFORMS = "/" + PlatformOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying datasets collections available.
      */
-    String COLLECTION_DATASETS = "/datasets";
+    String COLLECTION_DATASETS = "/" + DatasetOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying geometries collections available.
      */
-    String COLLECTION_GEOMETRIES = "/geometries";
+    String COLLECTION_GEOMETRIES = "/" + GeometryOutput.COLLECTION_PATH;
 }

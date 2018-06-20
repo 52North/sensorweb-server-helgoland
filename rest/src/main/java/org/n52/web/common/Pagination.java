@@ -26,31 +26,35 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.web.common;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import java.util.Optional;
 
-import org.junit.Test;
 
-public class UrlHelperTest {
+/**
+ *
+ * @author Christian Autermann
+ * @author Jan Speckamp
+ */
 
-    @Test
-    public void when_constructBackwardsCompatibleUrl_then_relativeLink() {
-        String actual = new UrlHelper().constructHref(null, "/procedures");
-        assertThat(actual, is("./procedures"));
-    }
 
-    @Test
-    public void when_constructUrlWithNonTrailingSlashBaseUrl_then_fullLink() {
-        String actual = new UrlHelper().constructHref("http://localhost:8080/foo/bar", "/procedures");
-        assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
-    }
+public interface Pagination {
+    int MAX_LIMIT = 1000000;
+    int DEFAULT_LIMIT = 10000;
 
-    @Test
-    public void when_constructUrlFromBaseUrl_then_fullLink() {
-        String actual = new UrlHelper().constructHref("http://localhost:8080/foo/bar/", "/procedures");
-        assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
-    }
+    long getStart();
 
+    long getEnd();
+
+    long getOffset();
+
+    long getLimit();
+
+    Optional<Pagination> first(long elements);
+
+    Optional<Pagination> previous(long elements);
+
+    Optional<Pagination> next(long elements);
+
+    Optional<Pagination> last(long elements);
 }

@@ -30,6 +30,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -100,7 +101,8 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        query.put(Parameters.HREF_BASE, Collections.singletonList(getHrefBase()));
+        List<String> value = Collections.singletonList(getExternalUrl());
+        query.put(Parameters.HREF_BASE, value);
         return query;
     }
 
