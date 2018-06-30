@@ -1,6 +1,6 @@
 # 52n Series REST API
 
-<img style="width: 60%; height: 60%" alt="series-rest-api architecture overview" src="https://52north.github.io/series-rest-api/img/big-picture.png">
+<img style="width: 60%; height: 60%" alt="series-rest-api architecture overview" src="https://52north.github.io/series-rest-api/develop/assets/images/big-picture.png">
 
 ## Description
 
