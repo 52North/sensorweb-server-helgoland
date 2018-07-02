@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
@@ -38,22 +39,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class Data<T extends AbstractValue<?>> implements Serializable {
+public class Data<T extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
-    private List<T> values = new ArrayList<>();
+    private final List<T> values = new ArrayList<>();
 
-    private DatasetMetadata<Data<T>> metadata;
+    private final DatasetMetadata<Data<T>> metadata;
 
-    public void addValues(T... toAdd) {
-        if (toAdd != null && toAdd.length > 0) {
+    public Data() {
+        this(new DatasetMetadata<>());
+    }
+
+    public Data(final DatasetMetadata<Data<T>> metadata) {
+        this.metadata = metadata;
+    }
+
+    public void addValues(final T... toAdd) {
+        if ( (toAdd != null) && (toAdd.length > 0)) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }
 
-    public void setValues(T[] values) {
-        this.values = Arrays.asList(values);
+    public void addNewValue(final T value) {
+        this.values.add(value);
     }
 
     /**
@@ -66,26 +75,20 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
         return Collections.unmodifiableList(this.values);
     }
 
-    public void addNewValue(T value) {
-        this.values.add(value);
-    }
-
     public long size() {
         return this.values.size();
-    }
-
-    @JsonIgnore
-    public boolean hasReferenceValues() {
-        return getMetadata() != null && getMetadata().hasReferenceValues();
-    }
-
-    public void setMetadata(DatasetMetadata<Data<T>> metadata) {
-        this.metadata = metadata;
     }
 
     @JsonProperty("extra")
     public DatasetMetadata<Data<T>> getMetadata() {
         return this.metadata;
+    }
+
+    @JsonIgnore
+    public boolean hasReferenceValues() {
+        return (metadata != null)
+                && (metadata.getReferenceValues() != null)
+                && !metadata.getReferenceValues().isEmpty();
     }
 
 }

@@ -26,28 +26,76 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DatasetMetadata<T extends Data<?>> implements Serializable {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+/**
+ * Holds some metadata about a whole data container. Examples are {@link #referenceValues} or values which
+ * indicate the first value falling beyond the upper or lower time range bound requested
+ * ({@link #valueAfterTimespan} or {@link #valueBeforeTimespan}).
+ *
+ * @param <T>
+ *        the data type
+ */
+public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> implements Serializable {
 
     private static final long serialVersionUID = -2670379436251511249L;
 
     private Map<String, T> referenceValues = new HashMap<>();
 
+    private AbstractValue< ? > valueBeforeTimespan;
+
+    private AbstractValue< ? > valueAfterTimespan;
+
     public boolean hasReferenceValues() {
-        return referenceValues != null && !referenceValues.isEmpty();
+        return (referenceValues != null) && !referenceValues.isEmpty();
     }
 
     public Map<String, T> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Map<String, T> referenceValues) {
+    public void setReferenceValues(final Map<String, T> referenceValues) {
         this.referenceValues = referenceValues;
+    }
+
+    /**
+     * @return the value before to the lower timespan bounds
+     */
+    @JsonInclude(Include.ALWAYS)
+    public AbstractValue< ? > getValueBeforeTimespan() {
+        return valueBeforeTimespan;
+    }
+
+    /**
+     * @param valueBeforeTimespan
+     *        sets the value before to the lower timespan bounds
+     */
+    public void setValueBeforeTimespan(final AbstractValue< ? > valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan;
+    }
+
+    /**
+     * @return the value after to the upper timespan bounds
+     */
+    @JsonInclude(Include.ALWAYS)
+    public AbstractValue< ? > getValueAfterTimespan() {
+        return valueAfterTimespan;
+    }
+
+    /**
+     * @param valueBeforeTimespan
+     *        sets the value after to the upper timespan bounds
+     */
+    public void setValueAfterTimespan(final AbstractValue< ? > valueBeforeTimespan) {
+        this.valueAfterTimespan = valueBeforeTimespan;
     }
 
 }

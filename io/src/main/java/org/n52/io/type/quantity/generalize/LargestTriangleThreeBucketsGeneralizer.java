@@ -35,6 +35,7 @@ import org.n52.io.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,7 +88,6 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         for (String timeseriesId : data.getAllSeries().keySet()) {
             Data<QuantityValue> timeseries = data.getSeries(timeseriesId);
             Data<QuantityValue> generalizedTimeseries = generalize(timeseries);
-            generalizedTimeseries.setMetadata(timeseries.getMetadata());
             generalizedDataCollection.addNewSeries(timeseriesId, generalizedTimeseries);
         }
         return generalizedDataCollection;
@@ -97,23 +97,24 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         QuantityValue[] data = timeseries.getValues().toArray(new QuantityValue[0]);
 
         int dataLength = data.length;
-        if (maxOutputValues >= dataLength || maxOutputValues == 0) {
+        if ((maxOutputValues >= dataLength) || (maxOutputValues == 0)) {
             // nothing to do
             return timeseries;
         }
-        return generalizeData(data);
+        return generalizeData(data, timeseries.getMetadata());
     }
 
-    private Data<QuantityValue> generalizeData(QuantityValue[] data) {
-        int dataLength = data.length;
+    private Data<QuantityValue> generalizeData(final QuantityValue[] data,
+                                               final DatasetMetadata<Data<QuantityValue>> metadata) {
+        final int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
 
         int pointIndex = 0;
-        Data<QuantityValue> sampled = new Data<>();
+        Data<QuantityValue> sampled = new Data<>(metadata);
         sampled.addValues(data[pointIndex]);
 
-        for (int bucketIndex = 0; bucketIndex < maxOutputValues - 2;
+        for (int bucketIndex = 0; bucketIndex < (maxOutputValues - 2);
                 bucketIndex++) {
 
             // get the range for this bucket
@@ -187,7 +188,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
             double bucketSize) {
         return noDataGapThreshold <= 1
                 // max percent
-                ? amountOfNodataValues > noDataGapThreshold * bucketSize
+                ? amountOfNodataValues > (noDataGapThreshold * bucketSize)
                 // max absolute
                 : amountOfNodataValues > noDataGapThreshold;
     }
@@ -201,10 +202,10 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         BigDecimal middleValue = middle.getValue();
         final BigDecimal leftValue = left.getValue();
         final BigDecimal rightValue = right.value;
-        return Math.abs((left.getTimestamp() - right.timestamp)
-                * (middleValue.subtract(leftValue).doubleValue())
-                - (left.getTimestamp() - middle.getTimestamp())
-                * (rightValue.subtract(leftValue).doubleValue())) * 0.5;
+        return Math.abs(((left.getTimestamp() - right.timestamp)
+                * (middleValue.subtract(leftValue).doubleValue()))
+                - ((left.getTimestamp() - middle.getTimestamp())
+                * (rightValue.subtract(leftValue).doubleValue()))) * 0.5;
     }
 
     private BucketAverage calculateBucketAverage(int bucketIndex,
@@ -244,8 +245,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
 
     private static class BucketAverage {
 
-        private Double timestamp;
-        private BigDecimal value;
+        private final Double timestamp;
+        private final BigDecimal value;
 
         BucketAverage(Double timestamp, BigDecimal value) {
             this.timestamp = timestamp;
