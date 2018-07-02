@@ -44,15 +44,23 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
 
     private List<T> values = new ArrayList<>();
 
-    private DatasetMetadata<Data<T>> metadata;
+    private final DatasetMetadata<Data<T>> metadata;
 
-    public void addValues(T... toAdd) {
-        if (toAdd != null && toAdd.length > 0) {
+    public Data() {
+        this(new DatasetMetadata<>());
+    }
+
+    public Data(final DatasetMetadata<Data<T>> metadata) {
+        this.metadata = metadata;
+    }
+
+    public void addValues(final T... toAdd) {
+        if ((toAdd != null) && (toAdd.length > 0)) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }
 
-    public void setValues(T[] values) {
+    public void setValues(final T[] values) {
         this.values = Arrays.asList(values);
     }
 
@@ -66,7 +74,7 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
         return Collections.unmodifiableList(this.values);
     }
 
-    public void addNewValue(T value) {
+    public void addNewValue(final T value) {
         this.values.add(value);
     }
 
@@ -76,11 +84,7 @@ public class Data<T extends AbstractValue<?>> implements Serializable {
 
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return getMetadata() != null && getMetadata().hasReferenceValues();
-    }
-
-    public void setMetadata(DatasetMetadata<Data<T>> metadata) {
-        this.metadata = metadata;
+        return (getMetadata() != null) && getMetadata().hasReferenceValues();
     }
 
     @JsonProperty("extra")
