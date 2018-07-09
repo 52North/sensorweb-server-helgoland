@@ -35,8 +35,10 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
@@ -44,6 +46,7 @@ import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
+import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 public class SeriesDao extends AbstractDao<SeriesEntity> {
@@ -64,7 +67,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
          * for given pattern on any of the stored labels.
          */
 
-        List<SeriesEntity> series = new ArrayList<SeriesEntity>();
+        List<SeriesEntity> series = new ArrayList<>();
         Criteria criteria = getDefaultCriteria("series");
         Criteria featureCriteria = criteria.createCriteria("feature", LEFT_OUTER_JOIN);
 
@@ -73,7 +76,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         }
         featureCriteria.add(Restrictions.ilike("name", "%" + search + "%"));
         series.addAll(featureCriteria.list());
-        
+
         // reset criteria
         criteria = getDefaultCriteria("series");
         Criteria procedureCriteria = criteria.createCriteria("procedure", LEFT_OUTER_JOIN);
@@ -117,7 +120,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
         Criteria criteria = getDefaultCriteria("series", query);
         criteria = query.addDetachedFilters("", criteria);
         query.addPagingTo(criteria);
-        return (List<SeriesEntity>) criteria.list();
+        return criteria.list();
     }
 
     @SuppressWarnings("unchecked")
@@ -126,7 +129,32 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
                 .createAlias("feature", "f")
                 .add(Restrictions.eq("f.pkid", feature.getPkid()));
 //        criteria.add(eq("feature.pkid", feature.getPkid()));
-        return (List<SeriesEntity>) criteria.list();
+        return criteria.list();
+    }
+
+
+    public ObservationEntity getClosestOuterPreviousValue(final SeriesEntity dataset, final DateTime lowerBound, final DbQuery query) {
+        String column = "timestamp";
+        final Order order = Order.desc(column);
+        final Criteria criteria = createDataCriteria(dataset, query, order);
+        return (ObservationEntity) criteria.add(Restrictions.lt(column, lowerBound.toDate()))
+                           .setMaxResults(1)
+                           .uniqueResult();
+    }
+
+    public ObservationEntity getClosestOuterNextValue(final SeriesEntity dataset, final DateTime upperBound, final DbQuery query) {
+        String column = "timestamp";
+        final Order order = Order.asc(column);
+        final Criteria criteria = createDataCriteria(dataset, query, order);
+        return (ObservationEntity) criteria.add(Restrictions.gt(column, upperBound.toDate()))
+                           .setMaxResults(1)
+                           .uniqueResult();
+    }
+
+    private Criteria createDataCriteria(SeriesEntity dataset, DbQuery query, Order order) {
+        return session.createCriteria(ObservationEntity.class)
+                      .add(Restrictions.eq("pkid", dataset.getPkid()))
+                      .addOrder(order);
     }
 
     @Override
@@ -145,7 +173,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     protected Class<?> getEntityClass() {
         return SeriesEntity.class;
     }
-    
+
     @Override
     protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         return getDefaultCriteria(alias, true, query);

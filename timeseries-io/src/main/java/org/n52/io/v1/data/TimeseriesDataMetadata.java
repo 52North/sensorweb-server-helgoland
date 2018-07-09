@@ -31,11 +31,18 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class TimeseriesDataMetadata implements Serializable {
 
     private static final long serialVersionUID = 7422416308386483575L;
-    
-    private Map<String, TimeseriesData> referenceValues = new HashMap<String, TimeseriesData>();
+
+    private Map<String, TimeseriesData> referenceValues = new HashMap<>();
+
+    private TimeseriesValue valueBeforeTimespan;
+
+    private TimeseriesValue valueAfterTimespan;
 
     public Map<String, TimeseriesData> getReferenceValues() {
         return referenceValues;
@@ -44,5 +51,23 @@ public class TimeseriesDataMetadata implements Serializable {
     public void setReferenceValues(Map<String, TimeseriesData> referenceValues) {
         this.referenceValues = referenceValues;
     }
-    
+
+    @JsonInclude(Include.ALWAYS)
+    public TimeseriesValue getValueBeforeTimespan() {
+        return valueBeforeTimespan;
+    }
+
+    public void setValueBeforeTimespan(TimeseriesValue valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan;
+    }
+
+    @JsonInclude(Include.ALWAYS)
+    public TimeseriesValue getValueAfterTimespan() {
+        return valueAfterTimespan;
+    }
+
+    public void setValueAfterTimespan(TimeseriesValue valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan;
+    }
+
 }

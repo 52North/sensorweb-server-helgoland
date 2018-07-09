@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.v1.data.ReferenceValueOutput;
 import org.n52.io.v1.data.StationOutput;
@@ -86,11 +87,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
                                                         String locale) {
         // not needed, use #convertToResults() instead
-        return new ArrayList<SearchResult>();
+        return new ArrayList<>();
     }
 
     private List<SearchResult> convertToResults(List<SeriesEntity> found, String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
+        List<SearchResult> results = new ArrayList<>();
         for (SeriesEntity searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String phenomenonLabel = getLabelFrom(searchResult.getPhenomenon(), locale);
@@ -117,7 +118,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     @Override
     public List<TimeseriesMetadataOutput> getAllCondensed(DbQuery query, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
-        List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+        List<TimeseriesMetadataOutput> results = new ArrayList<>();
         for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
             /*
              *  ATM, the SWC REST API only supports numeric types
@@ -129,7 +130,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         return results;
     }
-    
+
     @Override
     public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query) throws DataAccessException {
         Session session = getSession();
@@ -144,7 +145,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     @Override
     public List<TimeseriesMetadataOutput> getAllExpanded(DbQuery query, Session session) throws DataAccessException {
         SeriesDao seriesDao = new SeriesDao(session);
-        List<TimeseriesMetadataOutput> results = new ArrayList<TimeseriesMetadataOutput>();
+        List<TimeseriesMetadataOutput> results = new ArrayList<>();
         for (SeriesEntity timeseries : seriesDao.getAllInstances(query)) {
             /*
              *  ATM, the SWC REST API only supports numeric types
@@ -158,7 +159,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         }
         return results;
     }
-    
+
     @Override
     public TimeseriesMetadataOutput getInstance(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
@@ -178,13 +179,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
          *  ATM, the SWC REST API only supports numeric types
          *  We check for a unit to check for them
          */
-        if (result == null || result.getUnit() == null) {
+        if ((result == null) || (result.getUnit() == null)) {
             LOGGER.debug("Series entry '{}' without UOM will be ignored!", timeseriesId);
             throw new ResourceNotFoundException("Resource with id '" + timeseriesId + "' could not be found.");
         }
         return createExpanded(result, dbQuery, session);
     }
-    
+
     public TimeseriesData getData(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
@@ -200,14 +201,24 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     public TimeseriesData getDataWithReferenceValues(String timeseriesId, DbQuery dbQuery) throws DataAccessException {
         Session session = getSession();
         try {
-            SeriesDao seriesDao = new SeriesDao(session);
-            SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
+            SeriesDao dao = new SeriesDao(session);
+            SeriesEntity timeseries = dao.getInstance(parseId(timeseriesId), dbQuery);
             TimeseriesData result = createTimeseriesData(timeseries, dbQuery, session);
+            TimeseriesDataMetadata metadata = result.getMetadata();
+            Interval timespan = dbQuery.getTimespan();
+
+            DateTime lowerBound = timespan.getStart();
+            ObservationEntity previousValue = dao.getClosestOuterPreviousValue(timeseries, lowerBound, dbQuery);
+            metadata.setValueBeforeTimespan(createTimeseriesValueFor(previousValue, timeseries));
+
+            DateTime upperBound = timespan.getEnd();
+            ObservationEntity nextValue = dao.getClosestOuterNextValue(timeseries, upperBound, dbQuery);
+            metadata.setValueAfterTimespan(createTimeseriesValueFor(nextValue, timeseries));
+
+
             Set<SeriesEntity> referenceValues = timeseries.getReferenceValues();
-            if (referenceValues != null && !referenceValues.isEmpty()) {
-                TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
+            if ((referenceValues != null) && !referenceValues.isEmpty()) {
                 metadata.setReferenceValues(assembleReferenceSeries(referenceValues, dbQuery, session));
-                result.setMetadata(metadata);
             }
             return result;
         }
@@ -242,7 +253,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private ReferenceValueOutput[] createReferenceValueOutputs(SeriesEntity series,
                                                                DbQuery query) throws DataAccessException {
         Set<SeriesEntity> referenceValues = series.getReferenceValues();
-        List<ReferenceValueOutput> outputs = new ArrayList<ReferenceValueOutput>();
+        List<ReferenceValueOutput> outputs = new ArrayList<>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
             ReferenceValueOutput refenceValueOutput = new ReferenceValueOutput();
             ProcedureEntity procedure = referenceSeriesEntity.getProcedure();
@@ -291,7 +302,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
     private Map<String, TimeseriesData> assembleReferenceSeries(Set<SeriesEntity> referenceValues,
                                                                 DbQuery query,
                                                                 Session session) throws DataAccessException {
-        Map<String, TimeseriesData> referenceSeries = new HashMap<String, TimeseriesData>();
+        Map<String, TimeseriesData> referenceSeries = new HashMap<>();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
             TimeseriesData referenceSeriesData = getReferenceDataValues(referenceSeriesEntity, query, session);
             referenceSeries.put(referenceSeriesEntity.getPkid().toString(), referenceSeriesData);
@@ -344,9 +355,9 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 result.addValues(createTimeseriesValueFor(observation, seriesEntity));
             }
         }
-        if (isReferenceSeries(seriesEntity) && result.size() <= 1) {
+        if (isReferenceSeries(seriesEntity) && (result.size() <= 1)) {
             TimeseriesValue value = result.size() == 0
-                    ? createTimeseriesValueFor(seriesEntity.getFirstValue(), seriesEntity)  
+                    ? createTimeseriesValueFor(seriesEntity.getFirstValue(), seriesEntity)
                     : result.getValues()[0];
             result.addValues(value); // set or override
             result.addValues(new TimeseriesValue(query.getTimespan().getEndMillis(), value.getValue()));
@@ -378,7 +389,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         value.setValue(observationValue);
         return value;
     }
-    
+
     private Double formatDecimal(Double value, SeriesEntity series) {
         int scale = series.getNumberOfDecimals();
         return new BigDecimal(value)
