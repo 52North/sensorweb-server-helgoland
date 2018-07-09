@@ -81,7 +81,7 @@ public class StationsParameterController extends BaseController implements Resou
         this.parameterControllerWithHref = proceduresController;
         this.counter = counter;
     }
-    
+
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_STATIONS;

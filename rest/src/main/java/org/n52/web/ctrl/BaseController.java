@@ -162,7 +162,7 @@ public abstract class BaseController {
     private static String getAcceptHeader(HttpServletRequest request) {
         return request.getHeader(HEADER_ACCEPT);
     }
-    
+
     @ExceptionHandler(value = {
         BadRequestException.class,
         BadQueryParameterException.class

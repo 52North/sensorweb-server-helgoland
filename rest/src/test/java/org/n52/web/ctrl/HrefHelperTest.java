@@ -53,7 +53,7 @@ public class HrefHelperTest {
         String actual = HrefHelper.constructHref("http://localhost:8080/foo/bar/", "/procedures");
         assertThat(actual, is("http://localhost:8080/foo/bar/procedures"));
     }
-    
+
     @Test
     public void given_baseUrlWithoutTrailingSlash_when_pathWithTrailingSlash_then_fullLink() {
         String actual = HrefHelper.constructHref("http://localhost:8080/foo/bar", "procedures");

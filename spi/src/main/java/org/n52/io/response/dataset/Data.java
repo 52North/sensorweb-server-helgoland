@@ -56,7 +56,7 @@ public class Data<T extends AbstractValue< ? >> implements Serializable {
     }
 
     public void addValues(final T... toAdd) {
-        if ( (toAdd != null) && (toAdd.length > 0)) {
+        if ((toAdd != null) && (toAdd.length > 0)) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }

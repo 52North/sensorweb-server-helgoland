@@ -26,11 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import java.util.Collection;
 
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -53,7 +55,7 @@ public class PlatformOutput extends OutputWithParameters {
 
     private OptionalOutput<PlatformType> platformType;
 
-    private OptionalOutput<Collection<DatasetOutput>> datasets;
+    private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;
 
     private OptionalOutput<Geometry> geometry;
 
@@ -66,9 +68,9 @@ public class PlatformOutput extends OutputWithParameters {
     public String getHrefBase() {
         String base = super.getHrefBase();
         String suffix = getType().getPlatformType();
-        return base != null && base.endsWith(suffix)
-                ? base.substring(0, base.lastIndexOf(suffix) - 1)
-                : base;
+        return (base != null) && base.endsWith(suffix)
+            ? base.substring(0, base.lastIndexOf(suffix) - 1)
+            : base;
     }
 
     public String getPlatformType() {
@@ -88,9 +90,9 @@ public class PlatformOutput extends OutputWithParameters {
     public PlatformType getType() {
         PlatformType type = getIfSet(platformType, true);
         return type != null
-                ? type
-                // stay backward compatible
-                : PlatformType.STATIONARY_INSITU;
+            ? type
+            // stay backward compatible
+            : PlatformType.STATIONARY_INSITU;
     }
 
     @Override
@@ -101,11 +103,11 @@ public class PlatformOutput extends OutputWithParameters {
         return this;
     }
 
-    public Collection<DatasetOutput> getDatasets() {
+    public Collection<DatasetOutput<AbstractValue<?>>> getDatasets() {
         return getIfSerializedCollection(datasets);
     }
 
-    public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput>> series) {
+    public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> series) {
         this.datasets = series;
         return this;
     }
