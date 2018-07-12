@@ -26,8 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,11 +41,11 @@ public interface ResourceController {
 
     ModelAndView getCollection(HttpServletResponse response, String locale, MultiValueMap<String, String> query);
 
-    String getCollectionPath(String hrefBase);
+    String getCollectionName();
 
     ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
 
-    void getRawData(HttpServletResponse response, String id, String locale, MultiValueMap<String, String> query);
-
-    Map<String, Object> getExtras(String id, String locale, MultiValueMap<String, String> query);
+    default Map<String, Object> getExtras(String id, String locale, MultiValueMap<String, String> query) {
+        return Collections.emptyMap();
+    }
 }

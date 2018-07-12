@@ -26,11 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
 
+package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
+import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,10 +40,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = UrlSettings.COLLECTION_FEATURES)
 public class FeaturesParameterController extends ParameterRequestMappingAdapter<FeatureOutput> {
 
+    public FeaturesParameterController(CountingMetadataService counter, ParameterService<FeatureOutput> service) {
+        super(counter, service);
+    }
+
     @Override
-    public String getCollectionPath(String hrefBase) {
-        UrlHelper urlhelper = new UrlHelper();
-        return urlhelper.constructHref(hrefBase, UrlSettings.COLLECTION_FEATURES);
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_FEATURES;
     }
 
     @Override

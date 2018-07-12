@@ -51,14 +51,8 @@ public interface CountingMetadataService {
 
     int getDatasetCount(IoParameters parameters);
 
-
-    // TODO check with Jan, what more might be interesting for a client
-
-
-    @Deprecated
     int getStationCount();
 
-    @Deprecated
     int getTimeseriesCount();
 
 }

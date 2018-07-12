@@ -29,6 +29,7 @@
 package org.n52.series.spi.srv;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
@@ -36,7 +37,7 @@ import org.n52.io.response.dataset.DataCollection;
  * Provides access to the actual series data via {@link IoParameters}.
  * @param <T> the data type
  */
-public interface DataService<T extends Data<?>> extends RawDataInfo {
+public interface DataService<T extends Data<? extends AbstractValue< ? >>> extends RawDataInfo {
 
     DataCollection<T> getData(IoParameters parameters);
 

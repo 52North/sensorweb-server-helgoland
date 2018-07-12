@@ -39,17 +39,20 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.handler.ConfigTypedFactory;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.text.TextIoFactory;
+import org.n52.io.type.quantity.QuantityIoFactory;
+import org.n52.io.type.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private ConfigTypedFactory<IoFactory> factory;
+    private ConfigTypedFactory<IoHandlerFactory> factory;
 
     @Before
     public void setUp() throws URISyntaxException {
@@ -59,7 +62,7 @@ public class DefaultIoHandlerFactoryTest {
 
     @Test
     public void when_createdWithNoConfig_useDefaultConfig() throws DatasetFactoryException {
-        ConfigTypedFactory<IoFactory<QuantityDatasetOutput, QuantityValue>> factory = new DefaultIoFactory<>();
+        ConfigTypedFactory<IoHandlerFactory<QuantityDatasetOutput, QuantityValue>> factory = new DefaultIoFactory<>();
         assertTrue(factory.isKnown("text"));
         assertTrue(factory.create(QuantityValue.TYPE).getClass() == QuantityIoFactory.class);
     }

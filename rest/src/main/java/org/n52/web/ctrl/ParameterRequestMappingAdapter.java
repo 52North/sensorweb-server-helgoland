@@ -26,9 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -37,9 +39,9 @@ import org.n52.io.Constants;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawFormats;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -51,9 +53,13 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(method = RequestMethod.GET)
 public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
 
+    private final CountingMetadataService counter;
+
     @Autowired
-    @Qualifier("metadataService")
-    private CountingMetadataService counter;
+    public ParameterRequestMappingAdapter(CountingMetadataService counter, ParameterService<T> parameterService) {
+        super(parameterService);
+        this.counter = counter;
+    }
 
     @Override
     @RequestMapping(path = "", produces = Constants.APPLICATION_JSON)
@@ -75,7 +81,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(value = "/{item}", produces = Constants.APPLICATION_JSON, params = {
-        RawFormats.RAW_FORMAT
+                                                                                        RawFormats.RAW_FORMAT
     })
     public void getRawData(HttpServletResponse response,
                            @PathVariable("item") String id,
@@ -95,7 +101,8 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        query.put(Parameters.HREF_BASE, Collections.singletonList(getHrefBase()));
+        List<String> value = Collections.singletonList(getExternalUrl());
+        query.put(Parameters.HREF_BASE, value);
         return query;
     }
 

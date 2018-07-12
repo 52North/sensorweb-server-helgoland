@@ -32,7 +32,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -69,18 +68,6 @@ public class RequestUtils {
     public static String resolveQueryLessRequestUrl(String externalUrl) {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-        if (LOGGER.isTraceEnabled()) {
-            StringBuilder sb = new StringBuilder("\n----- Start of HTTP Header -----\n");
-            Enumeration< ? > headerNames = request.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String headerName = (String) headerNames.nextElement();
-                sb.append(headerName + ": " + request.getHeader(headerName));
-                sb.append("\n");
-            }
-            sb.append("----- END of HTTP Header -----");
-            LOGGER.trace(sb.toString());
-        }
-
         return externalUrl == null || externalUrl.isEmpty()
                 ? createRequestUrl(request)
                 : createRequestUrl(externalUrl);

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
@@ -33,55 +34,71 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class Data<T extends AbstractValue<?>> implements Serializable {
+public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
-    private List<T> values = new ArrayList<>();
+    private final List<V> values = new ArrayList<>();
 
-    private DatasetMetadata<Data<T>> metadata;
+    private final DatasetMetadata<Data<V>> metadata;
 
-    public void addValues(T... toAdd) {
-        if (toAdd != null && toAdd.length > 0) {
+    public Data() {
+        this(new DatasetMetadata<>());
+    }
+
+    public Data(DatasetMetadata<Data<V>> metadata) {
+        this.metadata = metadata;
+    }
+
+    public void addValues(final V... toAdd) {
+        if ((toAdd != null) && (toAdd.length > 0)) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }
 
-    public void setValues(T[] values) {
-        this.values = Arrays.asList(values);
+    public Data<V> addNewValue(final V value) {
+        this.values.add(value);
+        return this;
+    }
+
+    public Data<V> addData(Data<V> toAdd) {
+        Data<V> data = new Data<>(metadata);
+        data.values.addAll(Stream.concat(values.stream(), toAdd.values.stream())
+                                 .collect(Collectors.toList()));
+        return data;
     }
 
     /**
      * @return a sorted list of quantity values.
      */
-    public List<T> getValues() {
+    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
+    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
+    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
+    public List<V> getValues() {
         return Collections.unmodifiableList(this.values);
-    }
-
-    public void addNewValue(T value) {
-        this.values.add(value);
     }
 
     public long size() {
         return this.values.size();
     }
 
+    @JsonProperty("extra")
+    public DatasetMetadata<Data<V>> getMetadata() {
+        return this.metadata;
+    }
+
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return getMetadata() != null && getMetadata().hasReferenceValues();
-    }
-
-    public void setMetadata(DatasetMetadata<Data<T>> metadata) {
-        this.metadata = metadata;
-    }
-
-    @JsonProperty("extra")
-    public DatasetMetadata<Data<T>> getMetadata() {
-        return this.metadata;
+        return (metadata != null)
+                && (metadata.getReferenceValues() != null)
+                && !metadata.getReferenceValues().isEmpty();
     }
 
 }

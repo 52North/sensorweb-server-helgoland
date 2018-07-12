@@ -144,7 +144,8 @@ public final class IoParameters implements Parameters {
                                                                                     String.class,
                                                                                     JsonNode.class));
         } catch (IOException e) {
-            LOGGER.info("Could not load '{}'. Using empty config.", DEFAULT_CONFIG_FILE, e);
+            LOGGER.trace("Could not load '{}'", DEFAULT_CONFIG_FILE, e);
+            LOGGER.info("Config could not be loaded (switch to TRACE to see details).");
             return new HashMap<>();
         }
     }
@@ -300,7 +301,7 @@ public final class IoParameters implements Parameters {
      *         available.
      */
     public boolean hasStyles() {
-        return getSingleStyle() != null || !getReferencedStyles().isEmpty();
+        return (getSingleStyle() != null) || !getReferencedStyles().isEmpty();
     }
 
     /**
@@ -1057,8 +1058,14 @@ public final class IoParameters implements Parameters {
      * @return a new instance with extended key/values
      */
     public IoParameters extendWith(String key, String... values) {
+        return values == null
+                ? extendWith(key, Collections.emptyList())
+                : extendWith(key, Arrays.asList(values));
+    }
+
+    public IoParameters extendWith(String key, List<String> values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
-        newValues.put(key.toLowerCase(), Arrays.asList(values));
+        newValues.put(key.toLowerCase(), values);
 
         MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
         mergedValues.putAll(convertToJsonNodes(newValues));
@@ -1066,6 +1073,10 @@ public final class IoParameters implements Parameters {
     }
 
     public IoParameters replaceWith(String key, String... values) {
+        return removeAllOf(key).extendWith(key, values);
+    }
+
+    public IoParameters replaceWith(String key, List<String> values) {
         return removeAllOf(key).extendWith(key, values);
     }
 
@@ -1114,8 +1125,12 @@ public final class IoParameters implements Parameters {
             if (!queryParameters.containsKey(lowerCasedKey)) {
                 queryParameters.put(lowerCasedKey, values);
             } else {
-                queryParameters.get(lowerCasedKey)
-                               .addAll(values);
+                List<JsonNode> currentValues = queryParameters.get(lowerCasedKey);
+                if (currentValues == null) {
+                    queryParameters.put(lowerCasedKey, values);
+                } else {
+                    currentValues.addAll(values);
+                }
             }
         }
         return queryParameters;
@@ -1183,13 +1198,13 @@ public final class IoParameters implements Parameters {
     }
 
     private boolean isStationaryInsituOnly(Set<String> platformTypes) {
-        return platformTypes.size() == 2
+        return (platformTypes.size() == 2)
                 && platformTypes.contains(PlatformType.PLATFORM_TYPE_STATIONARY)
                 && platformTypes.contains(PlatformType.PLATFORM_TYPE_INSITU);
     }
 
     private boolean isQuantityOnly(Set<String> valueTypes) {
-        return valueTypes.size() == 1
+        return (valueTypes.size() == 1)
                 && valueTypes.contains(ValueType.DEFAULT_VALUE_TYPE);
     }
 

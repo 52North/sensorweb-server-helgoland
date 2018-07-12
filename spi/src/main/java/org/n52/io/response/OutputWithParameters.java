@@ -31,7 +31,7 @@ package org.n52.io.response;
 import java.util.Map;
 import java.util.Set;
 
-public class OutputWithParameters extends AbstractOutput {
+public abstract class OutputWithParameters extends AbstractOutput {
 
     public static final String PARAMETERS = "parameters";
 

@@ -30,9 +30,6 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -47,11 +44,11 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
-import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
-import org.n52.io.IoProcessChain;
 import org.n52.io.PreRenderingJob;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
@@ -70,7 +67,6 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -92,18 +88,25 @@ public class DataController extends BaseController {
 
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
 
-    @Autowired
-    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
+    private final DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> ioFactoryCreator;
 
-    private DataService<Data<AbstractValue< ? >>> dataService;
+    private final DataService<Data<AbstractValue< ? >>> dataService;
 
-    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
+    private final ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
 
     private PreRenderingJob preRenderingTask;
 
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
+
+    public DataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue< ? >> ioFactory,
+                          ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
+                          DataService<Data<AbstractValue< ? >>> dataService) {
+        this.ioFactoryCreator = ioFactory;
+        this.datasetService = datasetService;
+        this.dataService = dataService;
+    }
 
     @RequestMapping(value = "/{datasetId}/data",
         produces = {
@@ -434,22 +437,15 @@ public class DataController extends BaseController {
         }
     }
 
-    private IoFactory<DatasetOutput<AbstractValue< ? >>,
+    private IoHandlerFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(final String valueType)
                               throws DatasetFactoryException {
         if (!ioFactoryCreator.isKnown(valueType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
         return ioFactoryCreator.create(valueType)
-                               // .withBasePath(getRootResource())
                                .setDataService(dataService)
                                .setDatasetService(datasetService);
-    }
-
-    private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext()
-                                 .getResource("/")
-                                 .toURI();
     }
 
     // TODO set preredering config instead of task
@@ -471,22 +467,6 @@ public class DataController extends BaseController {
         Period.parse(requestIntervalRestriction);
         LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
         this.requestIntervalRestriction = requestIntervalRestriction;
-    }
-
-    public DataService<Data<AbstractValue< ? >>> getDataService() {
-        return dataService;
-    }
-
-    public void setDataService(DataService<Data<AbstractValue< ? >>> dataService) {
-        this.dataService = dataService;
-    }
-
-    public ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
-        return datasetService;
-    }
-
-    public void setDatasetService(ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService) {
-        this.datasetService = datasetService;
     }
 
     private void assertPrerenderingIsEnabled() {

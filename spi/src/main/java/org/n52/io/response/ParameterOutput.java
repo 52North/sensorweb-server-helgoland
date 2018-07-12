@@ -36,6 +36,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import org.n52.io.HrefHelper;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.RawFormats;
 
@@ -133,8 +134,13 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
             return null;
         }
         return !isSet(href) && getHrefBase() != null
-                ? getHrefBase() + "/" + getId()
+                ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
                 : href.getValue();
+    }
+
+    @JsonIgnore
+    protected String getCollectionName() {
+        return "";
     }
 
     public ParameterOutput setHref(OptionalOutput<String> href) {

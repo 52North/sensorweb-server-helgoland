@@ -52,6 +52,21 @@ import javax.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerException;
+import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.task.ScheduledJob;
+import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.ParameterService;
+import org.n52.web.common.Stopwatch;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -64,19 +79,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.ServletConfigAware;
-
-import org.n52.io.PrerenderingJobConfig.RenderingConfig;
-import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
-import org.n52.io.response.dataset.AbstractValue;
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.task.ScheduledJob;
-import org.n52.series.spi.srv.DataService;
-import org.n52.series.spi.srv.ParameterService;
-import org.n52.web.common.Stopwatch;
-import org.n52.web.exception.ResourceNotFoundException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -200,7 +202,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
     }
 
-    private IoFactory<DatasetOutput<AbstractValue< ? >>,
+    private IoHandlerFactory<DatasetOutput<AbstractValue< ? >>,
                       AbstractValue< ? >> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)

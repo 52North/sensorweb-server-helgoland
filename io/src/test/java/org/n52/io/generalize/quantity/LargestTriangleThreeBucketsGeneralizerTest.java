@@ -41,6 +41,8 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.type.quantity.generalize.GeneralizerException;
+import org.n52.io.type.quantity.generalize.LargestTriangleThreeBucketsGeneralizer;
 
 public class LargestTriangleThreeBucketsGeneralizerTest {
 

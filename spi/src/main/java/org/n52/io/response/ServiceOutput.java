@@ -35,6 +35,8 @@ import org.n52.io.Utils;
 
 public class ServiceOutput extends ParameterOutput {
 
+    public static final String COLLECTION_PATH = "services";
+
     public static final String SERVICE_URL = "serviceurl";
     public static final String VERSION = "version";
     public static final String TYPE = "type";
@@ -58,6 +60,11 @@ public class ServiceOutput extends ParameterOutput {
      */
     @Deprecated
     private OptionalOutput<Boolean> supportsFirstLatest;
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
 
     public String getServiceUrl() {
         return getIfSerialized(serviceUrl);

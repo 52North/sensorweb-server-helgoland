@@ -29,7 +29,7 @@
 package org.n52.series.spi.geo;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.GeometryInfo;
+import org.n52.io.response.GeometryOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.series.spi.srv.ParameterService;
 
@@ -39,34 +39,34 @@ import com.vividsolutions.jts.geom.Geometry;
 // -> TransformingGeometryOutputService
 // -> TransformingPlatformOutputService
 // -> TransformingStationOutputService
-public class TransformingGeometryOutputService extends ParameterService<GeometryInfo> {
+public class TransformingGeometryOutputService extends ParameterService<GeometryOutput> {
 
-    private final ParameterService<GeometryInfo> composedService;
+    private final ParameterService<GeometryOutput> composedService;
 
     private final TransformationService transformationService;
 
-    public TransformingGeometryOutputService(ParameterService<GeometryInfo> toCompose) {
+    public TransformingGeometryOutputService(ParameterService<GeometryOutput> toCompose) {
         this.composedService = toCompose;
         this.transformationService = new TransformationService();
     }
 
     @Override
-    public OutputCollection<GeometryInfo> getExpandedParameters(IoParameters query) {
+    public OutputCollection<GeometryOutput> getExpandedParameters(IoParameters query) {
         return transform(query, composedService.getExpandedParameters(query));
     }
 
     @Override
-    public OutputCollection<GeometryInfo> getCondensedParameters(IoParameters query) {
+    public OutputCollection<GeometryOutput> getCondensedParameters(IoParameters query) {
         return transform(query, composedService.getCondensedParameters(query));
     }
 
     @Override
-    public OutputCollection<GeometryInfo> getParameters(String[] items, IoParameters query) {
+    public OutputCollection<GeometryOutput> getParameters(String[] items, IoParameters query) {
         return transform(query, composedService.getParameters(items, query));
     }
 
     @Override
-    public GeometryInfo getParameter(String item, IoParameters query) {
+    public GeometryOutput getParameter(String item, IoParameters query) {
         return transform(composedService.getParameter(item, query), query);
     }
 
@@ -75,23 +75,23 @@ public class TransformingGeometryOutputService extends ParameterService<Geometry
         return composedService.exists(id, parameters);
     }
 
-    private OutputCollection<GeometryInfo> transform(IoParameters query, OutputCollection<GeometryInfo> infos) {
+    private OutputCollection<GeometryOutput> transform(IoParameters query, OutputCollection<GeometryOutput> infos) {
         if (infos != null) {
-            for (GeometryInfo info : infos) {
+            for (GeometryOutput info : infos) {
                 transformInline(info, query);
             }
         }
         return infos;
     }
 
-    private GeometryInfo transform(GeometryInfo info, IoParameters parameters) {
+    private GeometryOutput transform(GeometryOutput info, IoParameters parameters) {
         transformInline(info, parameters);
         return info;
     }
 
-    private void transformInline(GeometryInfo info, IoParameters parameters) {
+    private void transformInline(GeometryOutput info, IoParameters parameters) {
         Geometry geometry = transformationService.transform(info.getGeometry(), parameters);
-        info.setValue(GeometryInfo.GEOMETRY, geometry, parameters, info::setGeometry);
+        info.setValue(GeometryOutput.GEOMETRY, geometry, parameters, info::setGeometry);
     }
 
 }

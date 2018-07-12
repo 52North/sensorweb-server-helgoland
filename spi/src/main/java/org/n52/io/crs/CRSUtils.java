@@ -157,7 +157,7 @@ public final class CRSUtils {
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, Double z, String srs) {
-        Coordinate coordinate = z != null && !z.isNaN()
+        Coordinate coordinate = (z != null) && !z.isNaN()
                 ? new Coordinate(x, y, z)
                 : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
@@ -189,7 +189,7 @@ public final class CRSUtils {
      * ('<code>:</code> '-separated).
      * @return the SRS number, e.g. 4326
      */
-    public int getSrsIdFrom(String srs) {
+    public static int getSrsIdFrom(final String srs) {
         return getSrsIdFromEPSG(extractSRSCode(srs));
     }
 
@@ -198,7 +198,7 @@ public final class CRSUtils {
      * ('<code>:</code> '-separated).
      * @return SRS string in the form of for example 'EPSG:4326' or 'EPSG:31466'.
      */
-    public String extractSRSCode(String srs) {
+    public static String extractSRSCode(String srs) {
         if (isSrsUrlDefinition(srs)) {
             return EPSG_PREFIX + srs.substring(srs.lastIndexOf("/") + 1);
         } else {
@@ -207,11 +207,11 @@ public final class CRSUtils {
         }
     }
 
-    private boolean isSrsUrlDefinition(String srs) {
+    private static boolean isSrsUrlDefinition(final String srs) {
         return srs.startsWith("http");
     }
 
-    public int getSrsIdFromEPSG(String srs) {
+    public static int getSrsIdFromEPSG(String srs) {
         String[] epsgParts = srs.split(":");
         if (epsgParts.length > 1) {
             return Integer.parseInt(epsgParts[epsgParts.length - 1]);
@@ -304,7 +304,7 @@ public final class CRSUtils {
      */
     private CoordinateReferenceSystem getCrsFor(String authorityCode) throws
             FactoryException {
-        if (authorityCode == null || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
+        if ((authorityCode == null) || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
             return internCrs;
         }
         return crsFactory.createCoordinateReferenceSystem(authorityCode);
@@ -320,8 +320,8 @@ public final class CRSUtils {
             CoordinateReferenceSystem second) {
         AxisOrder axisOrderFirst = CRS.getAxisOrder(first);
         AxisOrder axisOrderSecond = CRS.getAxisOrder(second);
-        if (axisOrderFirst == AxisOrder.INAPPLICABLE
-                || axisOrderSecond == AxisOrder.INAPPLICABLE) {
+        if ((axisOrderFirst == AxisOrder.INAPPLICABLE)
+                || (axisOrderSecond == AxisOrder.INAPPLICABLE)) {
             LOGGER.warn("Could not determine if axes ordering is switched.");
             return false;
         }

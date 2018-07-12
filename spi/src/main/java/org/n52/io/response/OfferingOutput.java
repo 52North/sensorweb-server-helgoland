@@ -30,4 +30,11 @@ package org.n52.io.response;
 
 public class OfferingOutput extends AbstractOutput {
 
+    public static final String COLLECTION_PATH = "offerings";
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
+
 }

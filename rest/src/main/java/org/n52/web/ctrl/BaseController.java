@@ -33,11 +33,11 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.HrefHelper;
 import org.n52.io.IoParseException;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -52,12 +52,12 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.ServletConfigAware;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -75,7 +75,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  * </p>
  */
 @RestController
-public abstract class BaseController implements ServletConfigAware {
+public abstract class BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
@@ -87,7 +87,20 @@ public abstract class BaseController implements ServletConfigAware {
 
     private static final String HEADER_ACCEPT = "Accept";
 
-    private ServletConfig servletConfig;
+    @Value("${external.url:http://localhost:8080/api}")
+    private String externalUrl;
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
+    }
+
+    public String createCollectionUrl(String collectionName) {
+        return HrefHelper.constructHref(getExternalUrl(), collectionName);
+    }
 
     protected BiConsumer<String, IoParseException> getExceptionHandle() {
         return (parameter, e) -> {
@@ -129,15 +142,6 @@ public abstract class BaseController implements ServletConfigAware {
     private IoParameters createParameters(IoParameters parameters, String locale) {
         return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
                            .setParseExceptionHandle(getExceptionHandle());
-    }
-
-    @Override
-    public void setServletConfig(ServletConfig servletConfig) {
-        this.servletConfig = servletConfig;
-    }
-
-    public ServletConfig getServletConfig() {
-        return servletConfig;
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {

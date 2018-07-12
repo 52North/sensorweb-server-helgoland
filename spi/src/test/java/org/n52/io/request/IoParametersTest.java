@@ -109,7 +109,7 @@ public class IoParametersTest {
     }
 
     @Test
-    public void when_geoJsonBboxWithTrimmableValues_then_parsingSpatialFilter() throws ParseException {
+    public void when_geojsonBboxWithTrimmableValues_then_parsingSpatialFilter() throws ParseException {
         Map<String, String> map = Collections.singletonMap("bbox", "6.7, 51.7,  7.9, 51.9");
         IoParameters parameters = createFromSingleValueMap(map);
         BoundingBox actual = parameters.getSpatialFilter();
@@ -122,9 +122,8 @@ public class IoParametersTest {
                                 .equals(ur));
     }
 
-
     @Test
-    public void when_geoJsonBboxNegativeValues_then_parsingSpatialFilter() throws ParseException {
+    public void when_geojsonBboxNegativeValues_then_parsingSpatialFilter() throws ParseException {
         Map<String, String> map = Collections.singletonMap("bbox", "-180,-90,180,90");
         IoParameters parameters = createFromSingleValueMap(map);
         BoundingBox actual = parameters.getSpatialFilter();

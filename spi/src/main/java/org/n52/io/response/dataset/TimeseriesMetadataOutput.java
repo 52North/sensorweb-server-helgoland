@@ -44,15 +44,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- * @deprecated since 2.0.0. use {@link QuantityDatasetOutput} instead.
  */
-@Deprecated
-public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue> {
+public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
+
+    public static final String COLLECTION_PATH = "timeseries";
 
     public static final String STATION = "station";
-
     public static final String RENDERING_HINTS = "renderingHints";
-
     public static final String STATUS_INTERVALS = "statusIntervals";
 
     private OptionalOutput<StationOutput> station;
@@ -64,7 +62,7 @@ public class TimeseriesMetadataOutput extends DatasetOutput<QuantityValue> {
     private OptionalOutput<Collection<StatusInterval>> statusIntervals;
 
     public TimeseriesMetadataOutput(IoParameters parameters) {
-        setValue(VALUE_TYPE, QuantityValue.TYPE, parameters, this::setValueType);
+        setValue(DatasetOutput.VALUE_TYPE, QuantityValue.TYPE, parameters, this::setValueType);
     }
 
     @Override

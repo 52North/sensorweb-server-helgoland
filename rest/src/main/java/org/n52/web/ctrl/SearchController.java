@@ -45,7 +45,11 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public class SearchController extends BaseController {
 
-    private SearchService searchService;
+    private final SearchService searchService;
+
+    public SearchController(SearchService service) {
+        this.searchService = service;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchResources(@RequestParam String q,
@@ -55,14 +59,6 @@ public class SearchController extends BaseController {
         IoParameters parameters = createParameters(query, locale).extendWith(Parameters.SEARCH_TERM, q)
                                                                  .respectBackwardsCompatibility();
         return new ModelAndView().addObject(searchService.searchResources(parameters));
-    }
-
-    public SearchService getSearchService() {
-        return searchService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
     }
 
 }

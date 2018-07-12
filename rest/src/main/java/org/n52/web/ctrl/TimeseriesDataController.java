@@ -31,7 +31,6 @@ package org.n52.web.ctrl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
@@ -46,22 +45,22 @@ import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
-import org.n52.io.DefaultIoFactory;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.IoFactory;
-import org.n52.io.IoHandlerException;
 import org.n52.io.PreRenderingJob;
-import org.n52.io.format.quantity.FormatterFactory;
-import org.n52.io.generalize.quantity.GeneralizingQuantityService;
+import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.handler.IoHandlerException;
+import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.ValueType;
-import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.type.quantity.format.FormatterFactory;
+import org.n52.io.type.quantity.generalize.GeneralizingQuantityService;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -73,6 +72,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -83,7 +83,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Deprecated
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
     "application/json"
@@ -92,15 +91,22 @@ public class TimeseriesDataController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
 
-    private ParameterService<QuantityDatasetOutput> timeseriesMetadataService;
+    private final ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService;
 
-    private DataService<Data<QuantityValue>> timeseriesDataService;
+    private final DataService<Data<QuantityValue>> timeseriesDataService;
 
     private PreRenderingJob preRenderingTask;
 
     private boolean handlingPreRenderingTask;
 
+    @Value("${request.interval.restriction}")
     private String requestIntervalRestriction;
+
+    public TimeseriesDataController(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService,
+                                    DataService<Data<QuantityValue>> timeseriesDataService) {
+        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);
+        this.timeseriesDataService = timeseriesDataService;
+    }
 
     @Override
     protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
@@ -371,9 +377,12 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        if (preRenderingTask == null || isHandlingPreRenderingTask()) {
+        if (preRenderingTask == null /*|| isHandlingPreRenderingTask()*/) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
+
+        // XXX fix task setup/config
+
         String datasetId = ValueType.createId(ValueType.DEFAULT_VALUE_TYPE, timeseriesId);
         if (!preRenderingTask.hasPrerenderedImage(datasetId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '"
@@ -408,52 +417,21 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private IoFactory<QuantityDatasetOutput,
+    private IoHandlerFactory<TimeseriesMetadataOutput,
                       QuantityValue> createIoFactory(IoParameters parameters)
                               throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
                                        .setParameters(parameters)
-                                       .setBasePath(getRootResource())
                                        .setDataService(timeseriesDataService)
                                        .setDatasetService(timeseriesMetadataService);
     }
 
-    private DefaultIoFactory<QuantityDatasetOutput, QuantityValue> createDefaultIoFactory() {
-        return new DefaultIoFactory<QuantityDatasetOutput, QuantityValue>();
-    }
-
-    private URI getRootResource() throws URISyntaxException, MalformedURLException {
-        return getServletConfig().getServletContext()
-                                 .getResource("/")
-                                 .toURI();
-    }
-
-    public ParameterService<QuantityDatasetOutput> getTimeseriesMetadataService() {
-        return timeseriesMetadataService;
-    }
-
-    public void setTimeseriesMetadataService(ParameterService<QuantityDatasetOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);
-    }
-
-    public DataService<Data<QuantityValue>> getTimeseriesDataService() {
-        return timeseriesDataService;
-    }
-
-    public void setTimeseriesDataService(DataService<Data<QuantityValue>> timeseriesDataService) {
-        this.timeseriesDataService = timeseriesDataService;
+    private DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue> createDefaultIoFactory() {
+        return new DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue>();
     }
 
     public PreRenderingJob getPreRenderingTask() {
         return preRenderingTask;
-    }
-
-    public boolean isHandlingPreRenderingTask() {
-        return handlingPreRenderingTask;
-    }
-
-    public void setHandlingPreRenderingTask(boolean handlingPreRenderingTask) {
-        this.handlingPreRenderingTask = handlingPreRenderingTask;
     }
 
     public void setPreRenderingTask(PreRenderingJob prerenderingTask) {

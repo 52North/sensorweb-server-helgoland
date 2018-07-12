@@ -36,7 +36,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,12 +47,11 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.io.response.pagination.OffsetBasedPagination;
-import org.n52.io.response.pagination.Paginated;
-import org.n52.io.response.pagination.Pagination;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.web.common.RequestUtils;
+import org.n52.web.common.OffsetBasedPagination;
+import org.n52.web.common.PageLinkUtil;
+import org.n52.web.common.Paginated;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.BadRequestException;
 import org.n52.web.exception.InternalServerException;
@@ -61,28 +59,23 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
 public abstract class ParameterController<T extends ParameterOutput>
-        extends BaseController implements ResourceController {
+        extends BaseController implements ResourceController, RawDataController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
     private List<MetadataExtension<T>> metadataExtensions = new ArrayList<>();
 
-    private ParameterService<T> parameterService;
+    private final ParameterService<T> parameterService;
 
-    @Value("${external.url:http://localhost:8080/api}")
-    private String externalUrl;
-
-    public String getExternalUrl() {
-        return externalUrl;
-    }
-
-    public void setExternalUrl(String externalUrl) {
-        this.externalUrl = externalUrl;
+    @Autowired
+    public ParameterController(ParameterService<T> parameterService) {
+        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
+        this.parameterService = new LocaleAwareSortService<>(service);
     }
 
     @Override
@@ -90,14 +83,14 @@ public abstract class ParameterController<T extends ParameterOutput>
                            String id,
                            String locale,
                            MultiValueMap<String, String> query) {
-        if (!getParameterService().supportsRawData()) {
+        if (!parameterService.supportsRawData()) {
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
         IoParameters queryMap = createParameters(query, locale);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
-        try (InputStream inputStream = getParameterService().getRawDataService()
+        try (InputStream inputStream = parameterService.getRawDataService()
                                                             .getRawData(id, queryMap)) {
             if (inputStream == null) {
                 throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
@@ -171,8 +164,8 @@ public abstract class ParameterController<T extends ParameterOutput>
                 int limit = parameters.getLimit();
                 int offset = parameters.getOffset();
                 OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);
-                Paginated<T> paginated = new Paginated<>(obp, elementcount.longValue());
-                this.addPagingHeaders(this.getCollectionPath(this.getHrefBase()), response, paginated);
+                Paginated paginated = new Paginated(obp, elementcount.longValue());
+                PageLinkUtil.addPagingHeaders(createCollectionUrl(getCollectionName()), response, paginated);
             }
         }
     }
@@ -208,13 +201,10 @@ public abstract class ParameterController<T extends ParameterOutput>
         return toBeProcessed;
     }
 
-    public ParameterService<T> getParameterService() {
-        return parameterService;
-    }
-
-    public void setParameterService(ParameterService<T> parameterService) {
-        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
-        this.parameterService = new LocaleAwareSortService<>(service);
+    public void addMetadataExtension(MetadataExtension<T> extension) {
+        if (metadataExtensions != null) {
+            metadataExtensions.add(extension);
+        }
     }
 
     public List<MetadataExtension<T>> getMetadataExtensions() {
@@ -232,33 +222,4 @@ public abstract class ParameterController<T extends ParameterOutput>
      */
     protected abstract int getElementCount(IoParameters queryMap);
 
-    protected String getHrefBase() {
-        return RequestUtils.resolveQueryLessRequestUrl(getExternalUrl());
-    }
-
-    private HttpServletResponse addPagingHeaders(String href, HttpServletResponse response, Paginated<T> paginated) {
-        addLinkHeader("self", href, paginated.getCurrent(), response);
-        addLinkHeader("previous", href, paginated.getPrevious(), response);
-        addLinkHeader("next", href, paginated.getNext(), response);
-        addLinkHeader("first", href, paginated.getFirst(), response);
-        addLinkHeader("last", href, paginated.getLast(), response);
-        return response;
-    }
-
-    private void addLinkHeader(String rel, String href, Optional<Pagination> pagination, HttpServletResponse response) {
-        if (pagination.isPresent()) {
-            String header = "Link";
-            Pagination pageLink = pagination.get();
-            StringBuilder sb = new StringBuilder();
-            String value = sb.append("<")
-                             .append(href)
-                             .append("?")
-                             .append(pageLink.toString())
-                             .append("> rel=\"")
-                             .append(rel)
-                             .append("\"")
-                             .toString();
-            response.addHeader(header, value);
-        }
-    }
 }

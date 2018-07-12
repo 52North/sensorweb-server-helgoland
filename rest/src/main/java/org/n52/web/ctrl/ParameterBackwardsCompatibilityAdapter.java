@@ -36,31 +36,31 @@ import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 
 
-public class ParameterBackwardsCompatibilityAdapter extends ParameterService<ParameterOutput> {
+public class ParameterBackwardsCompatibilityAdapter<T extends ParameterOutput> extends ParameterService<T> {
 
-    private final ParameterService<ParameterOutput> service;
+    private final ParameterService<T> service;
 
-    public ParameterBackwardsCompatibilityAdapter(ParameterService<ParameterOutput> toCompose) {
+    public ParameterBackwardsCompatibilityAdapter(ParameterService<T> toCompose) {
         this.service = toCompose;
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getExpandedParameters(IoParameters parameters) {
+    public OutputCollection<T> getExpandedParameters(IoParameters parameters) {
         return service.getExpandedParameters(parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getCondensedParameters(IoParameters parameters) {
+    public OutputCollection<T> getCondensedParameters(IoParameters parameters) {
         return service.getCondensedParameters(parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public OutputCollection<ParameterOutput> getParameters(String[] items, IoParameters parameters) {
+    public OutputCollection<T> getParameters(String[] items, IoParameters parameters) {
         return service.getParameters(items, parameters.respectBackwardsCompatibility());
     }
 
     @Override
-    public ParameterOutput getParameter(String item, IoParameters parameters) {
+    public T getParameter(String item, IoParameters parameters) {
         return service.getParameter(item, parameters.respectBackwardsCompatibility());
     }
 

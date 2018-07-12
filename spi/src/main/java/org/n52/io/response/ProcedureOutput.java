@@ -30,4 +30,11 @@ package org.n52.io.response;
 
 public class ProcedureOutput extends HierarchicalParameterOutput {
 
+    public static final String COLLECTION_PATH = "procedures";
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
+
 }

@@ -36,10 +36,11 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.n52.io.quantity.QuantityIoFactory;
+import org.n52.io.handler.IoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.type.quantity.QuantityIoFactory;
 
 public final class IoStyleContext {
 

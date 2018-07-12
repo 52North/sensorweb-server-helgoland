@@ -29,6 +29,7 @@
 package org.n52.web.ctrl;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,20 +37,18 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
-import org.n52.io.response.pagination.OffsetBasedPagination;
-import org.n52.io.response.pagination.Paginated;
 import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
-import org.n52.web.common.RequestUtils;
+import org.n52.web.common.OffsetBasedPagination;
+import org.n52.web.common.PageLinkUtil;
+import org.n52.web.common.Paginated;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -64,19 +63,31 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
     "application/json"
 })
-public class StationsParameterController extends BaseController {
+public class StationsParameterController extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
 
-    private ParameterService<StationOutput> parameterService;
+    private final ParameterService<StationOutput> parameterService;
 
-    @Autowired
-    private ProceduresParameterController parameterControllerWithHref;
+    private final CountingMetadataService counter;
 
-    @Autowired
-    @Qualifier("metadataService")
-    private CountingMetadataService counter;
+    private final ProceduresParameterController parameterControllerWithHref;
 
+    public StationsParameterController(CountingMetadataService counter,
+                                       ParameterService<StationOutput> service,
+                                       ProceduresParameterController proceduresController) {
+        ParameterService<StationOutput> transformingService = new TransformingStationOutputService(service);
+        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(transformingService));
+        this.parameterControllerWithHref = proceduresController;
+        this.counter = counter;
+    }
+
+    @Override
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_STATIONS;
+    }
+
+    @Override
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
@@ -101,21 +112,20 @@ public class StationsParameterController extends BaseController {
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(map.getOffset(), map.getLimit());
                 Paginated paginated = new Paginated(obp, elementcount.longValue());
-                this.addPagingHeaders(response, paginated);
+                String collectionHref = createCollectionUrl(getCollectionName());
+                PageLinkUtil.addPagingHeaders(collectionHref, response, paginated);
             }
         }
         return new ModelAndView().addObject(result.getItems());
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        query.put(Parameters.HREF_BASE, Collections.singletonList(this.getHrefBase()));
+        List<String> value = Collections.singletonList(getExternalUrl());
+        query.put(Parameters.HREF_BASE, value);
         return query;
     }
 
-    private String getHrefBase() {
-        return RequestUtils.resolveQueryLessRequestUrl(parameterControllerWithHref.getExternalUrl());
-    }
-
+    @Override
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
@@ -135,39 +145,9 @@ public class StationsParameterController extends BaseController {
         return new ModelAndView().addObject(result);
     }
 
-    public ParameterService<StationOutput> getParameterService() {
-        return parameterService;
-    }
-
-    public void setParameterService(ParameterService<StationOutput> stationParameterService) {
-        ParameterService<StationOutput> service = new TransformingStationOutputService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(service));
-    }
 
     private void logRequestTime(Stopwatch stopwatch) {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
     }
 
-    private HttpServletResponse addPagingHeaders(HttpServletResponse response, Paginated paginated) {
-        String l = "Link:";
-        String href = (new UrlHelper()).constructHref(this.getHrefBase(), UrlSettings.COLLECTION_STATIONS);
-
-        if (paginated.getCurrent().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getCurrent().get().toString() + "> rel=\"self\"");
-        }
-        if (paginated.getNext().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getNext().get().toString() + "> rel=\"next\"");
-        }
-        if (paginated.getPrevious().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getPrevious().get().toString() + "> rel=\"previous\"");
-        }
-        if (paginated.getFirst().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getFirst().get().toString() + "> rel=\"first\"");
-        }
-        if (paginated.getLast().isPresent()) {
-            response.addHeader(l, "<" + href + "?" + paginated.getLast().get().toString() + "> rel=\"last\"");
-        }
-
-        return response;
-    }
 }

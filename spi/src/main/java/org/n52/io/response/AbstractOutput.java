@@ -34,7 +34,7 @@ import java.util.Objects;
  * @author <a href="mailto:e.h.juerrens@52north.org">Eike Hinderk J&uuml;rrens</a>
  * @since 1.5.0
  */
-public class AbstractOutput extends ParameterOutput {
+public abstract class AbstractOutput extends ParameterOutput {
 
     public static final String SERVICE = "service";
 

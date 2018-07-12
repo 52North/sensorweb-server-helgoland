@@ -29,4 +29,12 @@
 package org.n52.io.response;
 
 public class PhenomenonOutput extends AbstractOutput {
+
+    public static final String COLLECTION_PATH = "phenomena";
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
+
 }
