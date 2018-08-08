@@ -57,7 +57,7 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
         this.metadata = metadata;
     }
 
-    public void addValues(final V... toAdd) {
+    public void addValues(final V[] toAdd) {
         if ((toAdd != null) && (toAdd.length > 0)) {
             this.values.addAll(Arrays.asList(toAdd));
         }

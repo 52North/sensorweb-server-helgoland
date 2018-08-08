@@ -112,7 +112,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
 
         int pointIndex = 0;
         Data<QuantityValue> sampled = new Data<>(metadata);
-        sampled.addValues(data[pointIndex]);
+        sampled.addNewValue(data[pointIndex]);
 
         for (int bucketIndex = 0; bucketIndex < (maxOutputValues - 2);
                 bucketIndex++) {
@@ -174,13 +174,13 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
             }
 
             // Pick this point from the Bucket
-            sampled.addValues(maxAreaPoint);
+            sampled.addNewValue(maxAreaPoint);
             // This a is the next a
             pointIndex = nextPointIndex;
         }
 
         // Always add last value
-        sampled.addValues(data[dataLength - 1]);
+        sampled.addNewValue(data[dataLength - 1]);
         return sampled;
     }
 
@@ -194,7 +194,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
     }
 
     private void addNodataValue(Data<QuantityValue> sampled, long timestamp) {
-        sampled.addValues(new QuantityValue(timestamp, null));
+        sampled.addNewValue(new QuantityValue(timestamp, null));
     }
 
     private static double calcTriangleArea(QuantityValue left,

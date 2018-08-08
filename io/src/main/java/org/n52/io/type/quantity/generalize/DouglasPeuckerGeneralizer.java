@@ -133,11 +133,11 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
     private Data<QuantityValue> generalize(Data<QuantityValue> timeseries) throws
             GeneralizerException {
         QuantityValue[] originalValues = getValueArray(timeseries);
-        if (originalValues.length < 3 || toleranceValue <= 0) {
+        if ((originalValues.length < 3) || (toleranceValue <= 0)) {
             return timeseries;
         }
 
-        if (maxEntries != -1 && originalValues.length > maxEntries) {
+        if ((maxEntries != -1) && (originalValues.length > maxEntries)) {
             throw new GeneralizerException(
                     "Maximum number of entries exceeded ("
                     + originalValues.length + ">"
@@ -150,7 +150,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
         // add first element if new list is empty
         if (generalizedValues.length == 0/* && originalValues.length > 0*/) {
-            generalizedTimeseries.addValues(originalValues[0]);
+            generalizedTimeseries.addNewValue(originalValues[0]);
         }
 
         // add the last one if not already contained!
@@ -158,7 +158,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
             QuantityValue lastOriginialValue = originalValues[originalValues.length - 1];
             QuantityValue lastGeneralizedValue = generalizedValues[generalizedValues.length - 1];
             if (!lastGeneralizedValue.getTimestamp().equals(lastOriginialValue.getTimestamp())) {
-                generalizedTimeseries.addValues(lastOriginialValue);
+                generalizedTimeseries.addNewValue(lastOriginialValue);
             }
         }
         return generalizedTimeseries;
@@ -181,7 +181,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
         double distance;
 
         // start and end value are not mentioned
-        for (int i = 1; i < values.length - 1; i++) {
+        for (int i = 1; i < (values.length - 1); i++) {
             QuantityValue timeseriesValue = values[i];
             distance = calculateDistance(line, timeseriesValue);
             if (distance > maxDist) {
@@ -229,7 +229,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
     private QuantityValue getFirstValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
-        if (values == null || values.length == 0) {
+        if ((values == null) || (values.length == 0)) {
             throwNewMustNotBeEmptyException();
         }
         return values[0];
@@ -237,7 +237,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
     private QuantityValue getLastValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
-        if (values == null || values.length == 0) {
+        if ((values == null) || (values.length == 0)) {
             throwNewMustNotBeEmptyException();
             return null;
         }
