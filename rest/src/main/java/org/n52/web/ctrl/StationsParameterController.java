@@ -71,14 +71,10 @@ public class StationsParameterController extends BaseController implements Resou
 
     private final CountingMetadataService counter;
 
-    private final ProceduresParameterController parameterControllerWithHref;
-
     public StationsParameterController(CountingMetadataService counter,
-                                       ParameterService<StationOutput> service,
-                                       ProceduresParameterController proceduresController) {
+                                       ParameterService<StationOutput> service) {
         ParameterService<StationOutput> transformingService = new TransformingStationOutputService(service);
         this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(transformingService));
-        this.parameterControllerWithHref = proceduresController;
         this.counter = counter;
     }
 
