@@ -28,36 +28,36 @@
  */
 package org.n52.io.request;
 
-import org.n52.io.geojson.old.GeojsonPoint;
+import com.vividsolutions.jts.geom.Point;
 
 public class BBox {
 
-    private GeojsonPoint ll;
+    private Point ll;
 
-    private GeojsonPoint ur;
+    private Point ur;
 
     public BBox() {
         // for serialization
     }
 
-    public BBox(GeojsonPoint ll, GeojsonPoint ur) {
+    public BBox(Point ll, Point ur) {
         this.ll = ll;
         this.ur = ur;
     }
 
-    public GeojsonPoint getLl() {
+    public Point getLl() {
         return ll;
     }
 
-    public void setLl(GeojsonPoint ll) {
+    public void setLl(Point ll) {
         this.ll = ll;
     }
 
-    public GeojsonPoint getUr() {
+    public Point getUr() {
         return ur;
     }
 
-    public void setUr(GeojsonPoint ur) {
+    public void setUr(Point ur) {
         this.ur = ur;
     }
 

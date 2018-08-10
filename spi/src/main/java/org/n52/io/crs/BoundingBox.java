@@ -26,10 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.crs;
 
 import java.io.Serializable;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 public class BoundingBox implements Serializable {
@@ -48,9 +51,12 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * @param ll the lower left corner
-     * @param ur the upper right corner
-     * @param srs the spatial reference system
+     * @param ll
+     *        the lower left corner
+     * @param ur
+     *        the upper right corner
+     * @param srs
+     *        the spatial reference system
      */
     public BoundingBox(Point ll, Point ur, String srs) {
         this.ll = ll;
@@ -59,15 +65,21 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * Indicates if the given point is contained by this instance. The point's
-     * coordinates are assumed to be in the same coordinate reference system.
+     * Indicates if the given geometry is contained completely by this instance. The point's coordinates are
+     * assumed to be in the same coordinate reference system.
      *
-     * @param point the point to check.
-     * @return if this instance contains the given coordiantes.
+     * @param geometry
+     *        the geometry to check
+     * @return if this instance completely contains the given geometry
      */
-    public boolean contains(Point point) {
-        return isWithinXRange(point.getX()) &&
-               isWithinYRange(point.getY());
+    public boolean contains(Geometry geometry) {
+        return geometry.getDimension() > 2
+            ? !(geometry.contains(ll) || geometry.contains(ur))
+            : asEnvelop().contains(geometry.getEnvelopeInternal());
+    }
+
+    public Envelope asEnvelop() {
+        return new Envelope(ll.getCoordinate(), ur.getCoordinate());
     }
 
     /**
@@ -87,14 +99,6 @@ public class BoundingBox implements Serializable {
                                            Math.max(point.getY(), this.ur.getY()),
                                            this.srs);
         }
-    }
-
-    private boolean isWithinXRange(double x) {
-        return ll.getX() <= x && x <= ur.getX();
-    }
-
-    private boolean isWithinYRange(double y) {
-        return ll.getY() <= y && y <= ur.getY();
     }
 
     public void setLl(Point ll) {

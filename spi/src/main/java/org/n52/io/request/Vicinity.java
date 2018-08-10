@@ -28,12 +28,12 @@
  */
 package org.n52.io.request;
 
-import com.vividsolutions.jts.geom.Point;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.crs.WGS84Util;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
+
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * Represents the surrounding area based on a center and a radius. All
@@ -48,7 +48,7 @@ public class Vicinity {
      */
     private String crs = CRSUtils.DEFAULT_CRS;
 
-    private GeojsonPoint center;
+    private Point center;
 
     private double radius;
 
@@ -60,7 +60,7 @@ public class Vicinity {
      * @param center the center point.
      * @param radius the distance around the center
      */
-    public Vicinity(GeojsonPoint center, String radius) {
+    public Vicinity(Point center, String radius) {
         try {
             this.radius = Double.parseDouble(radius);
             this.center = center;
@@ -85,15 +85,13 @@ public class Vicinity {
      * @throws IllegalStateException if invalid crs was set.
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
-        Point point = createPoint(this.center, crsUtils);
-
-        double latInRad = Math.toRadians(point.getY());
+        double latInRad = Math.toRadians(center.getY());
         final double latitudeDelta = WGS84Util.getLatitudeDelta(radius);
         final double longitudeDelta = WGS84Util.getLongitudeDelta(latInRad, radius);
-        double llEasting = WGS84Util.normalizeLongitude(point.getX() - longitudeDelta);
-        double llNorthing = WGS84Util.normalizeLatitude(point.getY() - latitudeDelta);
-        double urEasting = WGS84Util.normalizeLongitude(point.getX() + longitudeDelta);
-        double urNorthing = WGS84Util.normalizeLatitude(point.getY() + latitudeDelta);
+        double llEasting = WGS84Util.normalizeLongitude(center.getX() - longitudeDelta);
+        double llNorthing = WGS84Util.normalizeLatitude(center.getY() - latitudeDelta);
+        double urEasting = WGS84Util.normalizeLongitude(center.getX() + longitudeDelta);
+        double urNorthing = WGS84Util.normalizeLatitude(center.getY() + latitudeDelta);
         try {
             if (crsUtils.isLatLonAxesOrder(crs)) {
                 Point ll = crsUtils.createPoint(llNorthing, llEasting, crs);
@@ -109,17 +107,6 @@ public class Vicinity {
     }
 
     /**
-     * @param point the point as GeoJSON point.
-     * @param crsUtils the reference context.
-     * @return the JTS point.
-     */
-    private Point createPoint(GeojsonPoint point, CRSUtils crsUtils) {
-        Double easting = point.getCoordinates()[0];
-        Double northing = point.getCoordinates()[1];
-        return crsUtils.createPoint(easting, northing, CRSUtils.DEFAULT_CRS);
-    }
-
-    /**
      * @param crs sets the coordinate reference system, e.g. 'EPSG:25832'
      */
     public void setCrs(String crs) {
@@ -131,11 +118,11 @@ public class Vicinity {
     /**
      * @param center the center coordinates.
      */
-    public void setCenter(GeojsonPoint center) {
+    public void setCenter(Point center) {
         this.center = center;
     }
 
-    public GeojsonPoint getCenter() {
+    public Point getCenter() {
         return center;
     }
 

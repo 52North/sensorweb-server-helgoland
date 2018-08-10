@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import static java.util.stream.Collectors.toSet;
@@ -58,7 +59,6 @@ import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.response.PlatformType;
 import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
@@ -73,6 +73,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -87,7 +88,6 @@ public final class IoParameters implements Parameters {
 
     private static final String DEFAULT_CONFIG_FILE = "config-general.json";
 
-    // TODO use global object mapper
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
@@ -137,12 +137,13 @@ public final class IoParameters implements Parameters {
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
         try (InputStream stream = config == null
-                ? getDefaultConfigFile()
-                : new FileInputStream(config)) {
-            return OBJECT_MAPPER.readValue(stream, TypeFactory.defaultInstance()
-                                                              .constructMapLikeType(HashMap.class,
-                                                                                    String.class,
-                                                                                    JsonNode.class));
+            ? getDefaultConfigFile()
+            : new FileInputStream(config)) {
+            return OBJECT_MAPPER.readValue(stream,
+                                           TypeFactory.defaultInstance()
+                                                      .constructMapLikeType(HashMap.class,
+                                                                            String.class,
+                                                                            JsonNode.class));
         } catch (IOException e) {
             LOGGER.trace("Could not load '{}'", DEFAULT_CONFIG_FILE, e);
             LOGGER.info("Config could not be loaded (switch to TRACE to see details).");
@@ -158,9 +159,9 @@ public final class IoParameters implements Parameters {
                               .toFile();
             final String fallbackPath = "/" + DEFAULT_CONFIG_FILE;
             return config.exists()
-                    ? new FileInputStream(config)
-                    : IoParameters.class.getClassLoader()
-                                        .getResourceAsStream(fallbackPath);
+                ? new FileInputStream(config)
+                : IoParameters.class.getClassLoader()
+                                    .getResourceAsStream(fallbackPath);
         } catch (URISyntaxException | IOException e) {
             LOGGER.debug("Could not find default config under '{}'", DEFAULT_CONFIG_FILE, e);
             return null;
@@ -179,10 +180,6 @@ public final class IoParameters implements Parameters {
     public IoParameters setParseExceptionHandle(BiConsumer<String, IoParseException> handle) {
         this.parseExceptionHandle = handle;
         return this;
-    }
-
-    private BiConsumer<String, IoParseException> getParseExceptionHandle() {
-        return parseExceptionHandle;
     }
 
     /**
@@ -281,8 +278,8 @@ public final class IoParameters implements Parameters {
      */
     public StyleProperties getSingleStyle() {
         return containsParameter(STYLE)
-                ? parseStyleProperties()
-                : StyleProperties.createDefaults();
+            ? parseStyleProperties()
+            : StyleProperties.createDefaults();
     }
 
     /**
@@ -292,8 +289,8 @@ public final class IoParameters implements Parameters {
      */
     public Map<String, StyleProperties> getReferencedStyles() {
         return containsParameter(STYLES)
-                ? parseMultipleStyleProperties()
-                : Collections.emptyMap();
+            ? parseMultipleStyleProperties()
+            : Collections.emptyMap();
     }
 
     /**
@@ -335,8 +332,8 @@ public final class IoParameters implements Parameters {
         if (isSetRawFormat()) {
             final JsonNode value = query.getFirst(RAW_FORMAT);
             return value != null
-                    ? value.asText()
-                    : null;
+                ? value.asText()
+                : null;
         }
         return null;
     }
@@ -352,8 +349,8 @@ public final class IoParameters implements Parameters {
      */
     public IntervalWithTimeZone getTimespan() {
         return containsParameter(TIMESPAN)
-                ? validateTimespan(getNormalizedTimespan())
-                : createDefaultTimespan();
+            ? validateTimespan(getNormalizedTimespan())
+            : createDefaultTimespan();
     }
 
     private String getNormalizedTimespan() {
@@ -363,8 +360,8 @@ public final class IoParameters implements Parameters {
     protected String getNormalizedTimespan(DateTimeFormatter dateFormat) {
         String parameterValue = getAsString(TIMESPAN);
         String now = dateFormat == null
-                ? new DateTime().toString()
-                : dateFormat.print(new DateTime());
+            ? new DateTime().toString()
+            : dateFormat.print(new DateTime());
         return parameterValue.replaceAll("(?i)now", now);
     }
 
@@ -395,8 +392,8 @@ public final class IoParameters implements Parameters {
         String timezone = getAsString(OUTPUT_TIMEZONE);
         Set<String> availableIDs = DateTimeZone.getAvailableIDs();
         DateTimeZone zone = availableIDs.contains(timezone)
-                ? DateTimeZone.forID(timezone)
-                : DateTimeZone.UTC;
+            ? DateTimeZone.forID(timezone)
+            : DateTimeZone.UTC;
         return zone.toString();
     }
 
@@ -440,8 +437,7 @@ public final class IoParameters implements Parameters {
         return handleSimpleValueParseException(timestamp, Instant::parse);
     }
 
-
-    public Optional<Filter<?>> getODataFilter() {
+    public Optional<Filter< ? >> getODataFilter() {
         if (!containsParameter(ODATA_FILTER)) {
             return Optional.empty();
         }
@@ -608,8 +604,8 @@ public final class IoParameters implements Parameters {
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
-                ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-                : new HashSet<>(0);
+            ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
+            : new HashSet<>(0);
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
@@ -622,9 +618,10 @@ public final class IoParameters implements Parameters {
 
     private <O> Set<O> csvToSet(String csv, Function<String, O> c) {
         return Optional.ofNullable(csv)
-                .map(str -> str.split(","))
-                .flatMap(values -> Optional.ofNullable(c).map(f -> Arrays.stream(values).map(f).collect(toSet())))
-                .orElseGet(HashSet::new);
+                       .map(str -> str.split(","))
+                       .flatMap(values -> Optional.ofNullable(c)
+                                                  .map(f -> Arrays.stream(values).map(f).collect(toSet())))
+                       .orElseGet(HashSet::new);
     }
 
     public FilterResolver getFilterResolver() {
@@ -708,9 +705,7 @@ public final class IoParameters implements Parameters {
 
         try {
             BBox bbox = handleJsonValueParseException(BBOX, BBox.class, this::parseJson);
-            return new BoundingBox(crsUtils.convertToPointFrom(bbox.getLl(), CRSUtils.DEFAULT_CRS),
-                                   crsUtils.convertToPointFrom(bbox.getUr(), CRSUtils.DEFAULT_CRS),
-                                   CRSUtils.DEFAULT_CRS);
+            return new BoundingBox(bbox.getLl(), bbox.getUr(), CRSUtils.DEFAULT_CRS);
         } catch (IoParseException e) {
             throw e.addHint(createInvalidParameterMessage(Parameters.BBOX))
                    .addHint("Check http://epsg-registry.org for EPSG CRS definitions and codes.")
@@ -744,8 +739,8 @@ public final class IoParameters implements Parameters {
     private <T> T parseJson(String parameter, Class<T> clazz) {
         try {
             String value = getAsString(parameter);
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(value, clazz);
+            return OBJECT_MAPPER.registerModule(new JtsModule())
+                                .readValue(value, clazz);
         } catch (JsonParseException | JsonMappingException e) {
             throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {
@@ -766,9 +761,9 @@ public final class IoParameters implements Parameters {
         try {
             Optional<JsonNode> value = getAsNode(parameter);
             return value.isPresent()
-                    ? new ObjectMapper().readerFor(typeReference)
-                                        .readValue(value.get())
-                    : null;
+                ? OBJECT_MAPPER.readerFor(typeReference)
+                               .readValue(value.get())
+                : null;
         } catch (JsonParseException | JsonMappingException e) {
             throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {
@@ -780,28 +775,25 @@ public final class IoParameters implements Parameters {
         return new IoParseException("The given JSON value is invalid: " + nodeValue, e);
     }
 
-    private GeojsonPoint convertToCrs84(GeojsonPoint point) {
+    private Point convertToCrs84(Point point) {
         // is strict XY axis order?!
         return isForceXY()
-                ? transformToInnerCrs(point, CRSUtils.createEpsgForcedXYAxisOrder())
-                : transformToInnerCrs(point, CRSUtils.createEpsgStrictAxisOrder());
+            ? transformToInnerCrs(point, CRSUtils.createEpsgForcedXYAxisOrder())
+            : transformToInnerCrs(point, CRSUtils.createEpsgStrictAxisOrder());
     }
 
     /**
      * @param point
-     *        a GeoJSON point to be transformed to internally used CRS:84.
+     *        a point to be transformed to internally used CRS:84.
      * @param crsUtils
      *        a reference helper.
      * @return a transformed GeoJSON instance.
      * @throws IoParseException
      *         if point could not be transformed, or if requested CRS object could not be created.
      */
-    private GeojsonPoint transformToInnerCrs(GeojsonPoint point,
-                                             CRSUtils crsUtils) {
+    private Point transformToInnerCrs(Point point, CRSUtils crsUtils) {
         try {
-            Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
-            Point crs84Point = (Point) crsUtils.transformOuterToInner(toTransformed, getCrs());
-            return crsUtils.convertToGeojsonFrom(crs84Point);
+            return crsUtils.transformOuterToInner(point, getCrs());
         } catch (TransformException e) {
             throw new IoParseException("Could not transform to internally used CRS:84.", e);
         } catch (FactoryException e) {
@@ -885,8 +877,8 @@ public final class IoParameters implements Parameters {
 
     public String getAsString(String parameter, String defaultValue) {
         return containsParameter(parameter)
-                ? getAsString(parameter)
-                : defaultValue;
+            ? getAsString(parameter)
+            : defaultValue;
     }
 
     public String getAsString(String parameter) {
@@ -903,8 +895,8 @@ public final class IoParameters implements Parameters {
 
     private List<JsonNode> getAsNodes(String parameter) {
         return query.get(parameter) == null
-                ? query.get(parameter.toLowerCase())
-                : query.get(parameter);
+            ? query.get(parameter.toLowerCase())
+            : query.get(parameter);
     }
 
     private String asCsv(List<JsonNode> list) {
@@ -920,8 +912,8 @@ public final class IoParameters implements Parameters {
 
     public int getAsInteger(String parameter, int defaultValue) {
         return containsParameter(parameter)
-                ? handleSimpleValueParseException(parameter, this::getAsInteger)
-                : defaultValue;
+            ? handleSimpleValueParseException(parameter, this::getAsInteger)
+            : defaultValue;
     }
 
     /**
@@ -942,8 +934,8 @@ public final class IoParameters implements Parameters {
 
     public boolean getAsBoolean(String parameter, boolean defaultValue) {
         return containsParameter(parameter)
-                ? handleSimpleValueParseException(parameter, this::getAsBoolean)
-                : defaultValue;
+            ? handleSimpleValueParseException(parameter, this::getAsBoolean)
+            : defaultValue;
     }
 
     /**
@@ -969,8 +961,8 @@ public final class IoParameters implements Parameters {
 
     private IoParseException createIoParseException(String parameter, Exception e) {
         return e != null
-                ? new IoParseException(createInvalidParameterMessage(parameter), e)
-                : new IoParseException(createInvalidParameterMessage(parameter));
+            ? new IoParseException(createInvalidParameterMessage(parameter), e)
+            : new IoParseException(createInvalidParameterMessage(parameter));
     }
 
     private String createInvalidParameterMessage(String parameter) {
@@ -1059,8 +1051,8 @@ public final class IoParameters implements Parameters {
      */
     public IoParameters extendWith(String key, String... values) {
         return values == null
-                ? extendWith(key, Collections.emptyList())
-                : extendWith(key, Arrays.asList(values));
+            ? extendWith(key, Collections.emptyList())
+            : extendWith(key, Arrays.asList(values));
     }
 
     public IoParameters extendWith(String key, List<String> values) {
@@ -1177,17 +1169,17 @@ public final class IoParameters implements Parameters {
 
     public IoParameters respectBackwardsCompatibility() {
         String[] platformTypes = {
-            PlatformType.PLATFORM_TYPE_STATIONARY,
-            PlatformType.PLATFORM_TYPE_INSITU
+                                  PlatformType.PLATFORM_TYPE_STATIONARY,
+                                  PlatformType.PLATFORM_TYPE_INSITU
         };
 
         return filterResolver.shallBehaveBackwardsCompatible()
-                ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                                                   .extendWith(Parameters.FILTER_VALUE_TYPES,
-                                                               ValueType.DEFAULT_VALUE_TYPE)
-                                                   // set backwards compatibility at the end
-                                                   .setBehaveBackwardsCompatible(true)
-                : this;
+            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
+                                               .extendWith(Parameters.FILTER_VALUE_TYPES,
+                                                           ValueType.DEFAULT_VALUE_TYPE)
+                                               // set backwards compatibility at the end
+                                               .setBehaveBackwardsCompatible(true)
+            : this;
     }
 
     public boolean isPureStationaryInsituQuery() {

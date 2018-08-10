@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.crs;
 
 import org.geotools.factory.Hints;
@@ -33,8 +34,6 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
 import org.geotools.referencing.ReferencingFactoryFinder;
-import org.n52.io.geojson.old.GeojsonCrs;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -74,8 +73,10 @@ public final class CRSUtils {
     /**
      * use static constructors to create an instance.
      *
-     * @param crsFactory a factory used to create authorized reference systems.
-     * @throws IllegalStateException if creating {@link #internCrs} fails.
+     * @param crsFactory
+     *        a factory used to create authorized reference systems.
+     * @throws IllegalStateException
+     *         if creating {@link #internCrs} fails.
      */
     private CRSUtils(CRSAuthorityFactory crsFactory) {
         try {
@@ -86,60 +87,16 @@ public final class CRSUtils {
         }
     }
 
-    public Point convertToPointFrom(GeojsonPoint geometry) {
-        return convertToPointFrom(geometry, DEFAULT_CRS);
-    }
-
-    public Point convertToPointFrom(GeojsonPoint geometry, String crs) {
-        Double[] coordinates = geometry.getCoordinates();
-        return createPoint(coordinates[0], coordinates[1], crs);
-    }
-
-    /**
-     * Creates a GeoJSON representation for the given point.
-     *
-     * @param point the point to convert.
-     * @return a GeoJSON representation of the given point.
-     */
-    public GeojsonPoint convertToGeojsonFrom(Point point) {
-        Coordinate coords = point.getCoordinate();
-        if (point.getDimension() == 2) {
-            return GeojsonPoint.createWithCoordinates(new Double[] {coords.x,
-                coords.y});
-        } else {
-            return GeojsonPoint.createWithCoordinates(new Double[] {coords.x,
-                coords.y,
-                coords.z});
-        }
-    }
-
-    /**
-     * Creates a GeoJSON representation of the given point. Adds a named <code>crs</code> member if
-     * it is different to the internally used CRS:84.
-     *
-     * @param point the point to be converted to GeoJSON.
-     * @param targetCrs the target CRS.
-     * @return a GeoJSON representation of the given point.
-     * @throws TransformException if transforming point fails.
-     * @throws FactoryException if creating the target CRS fails.
-     */
-    public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs)
-            throws TransformException, FactoryException {
-        Point transformedPoint = (Point) transformInnerToOuter(point, targetCrs);
-        GeojsonPoint asGeoJSON = convertToGeojsonFrom(transformedPoint);
-        if (!DEFAULT_CRS.equalsIgnoreCase(targetCrs)) {
-            asGeoJSON.setCrs(GeojsonCrs.createNamedCRS(targetCrs));
-        }
-        return asGeoJSON;
-    }
-
     /**
      * Creates a 2D point geometry within the given reference system.
      *
-     * @param x the coordinate's x value.
-     * @param y the coordinate's y value.
-     * @param srs an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or
-     * <code>CRS:84</code> .
+     * @param x
+     *        the coordinate's x value.
+     * @param y
+     *        the coordinate's y value.
+     * @param srs
+     *        an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or <code>CRS:84</code>
+     *        .
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, String srs) {
@@ -149,17 +106,21 @@ public final class CRSUtils {
     /**
      * Creates a 2D point geometry with respect to its height and given reference system.
      *
-     * @param x the point's x value.
-     * @param y the point's y value.
-     * @param z the height or <code>null</code> or <code>NaN</code> if coordinate is 2D.
-     * @param srs an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or
-     * <code>CRS:84</code> .
+     * @param x
+     *        the point's x value.
+     * @param y
+     *        the point's y value.
+     * @param z
+     *        the height or <code>null</code> or <code>NaN</code> if coordinate is 2D.
+     * @param srs
+     *        an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or <code>CRS:84</code>
+     *        .
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, Double z, String srs) {
         Coordinate coordinate = (z != null) && !z.isNaN()
-                ? new Coordinate(x, y, z)
-                : new Coordinate(x, y);
+            ? new Coordinate(x, y, z)
+            : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createPoint(coordinate);
     }
@@ -176,17 +137,18 @@ public final class CRSUtils {
     public GeometryFactory createGeometryFactory(String srsId) {
         PrecisionModel pm = new PrecisionModel(PrecisionModel.FLOATING);
         return srsId == null
-                ? new GeometryFactory(pm)
-                : new GeometryFactory(pm, getSrsIdFrom(srsId));
+            ? new GeometryFactory(pm)
+            : new GeometryFactory(pm, getSrsIdFrom(srsId));
     }
 
     /**
-     * Extracts the SRS number of the incoming SRS definition string. This can be either an HTTP URL
-     * (like <code>http://www.opengis.net/def/crs/EPSG/0/4326</code>) or a URN (like
+     * Extracts the SRS number of the incoming SRS definition string. This can be either an HTTP URL (like
+     * <code>http://www.opengis.net/def/crs/EPSG/0/4326</code>) or a URN (like
      * <code>urn:ogc:def:crs:EPSG::31466</code>).
      *
-     * @param srs the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN
-     * ('<code>:</code> '-separated).
+     * @param srs
+     *        the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN ('<code>:</code>
+     *        '-separated).
      * @return the SRS number, e.g. 4326
      */
     public static int getSrsIdFrom(final String srs) {
@@ -194,8 +156,9 @@ public final class CRSUtils {
     }
 
     /**
-     * @param srs the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN
-     * ('<code>:</code> '-separated).
+     * @param srs
+     *        the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN ('<code>:</code>
+     *        '-separated).
      * @return SRS string in the form of for example 'EPSG:4326' or 'EPSG:31466'.
      */
     public static String extractSRSCode(String srs) {
@@ -220,55 +183,90 @@ public final class CRSUtils {
     }
 
     /**
-     * Transforms a given geometry from a given reference to inner reference, which is WGS84
-     * (CRS:84).
+     * Transforms a given point from a given reference to inner reference, which is WGS84 (CRS:84).
      *
-     * @param geometry the geometry to transform.
-     * @param srcFrame the CRS authority code the given point is referenced in.
+     * @param point
+     *        the point to transform.
+     * @param srcFrame
+     *        the CRS authority code the given point is referenced in.
+     * @return a point referenced in WGS84
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created
+     * @throws TransformException
+     *         if transformation fails for any other reason
+     */
+    public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
+        return (Point) transform(point, getCrsFor(srcFrame), internCrs);
+    }
+
+    /**
+     * Transforms a given geometry from a given reference to inner reference, which is WGS84 (CRS:84).
+     *
+     * @param geometry
+     *        the geometry to transform.
+     * @param srcFrame
+     *        the CRS authority code the given point is referenced in.
      * @return a geometry referenced in WGS84
-     * @throws FactoryException if the creation of {@link CoordinateReferenceSystem} fails or no
-     * appropriate {@link MathTransform} could be created.
-     * @throws TransformException if transformation fails for any other reason.
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created.
+     * @throws TransformException
+     *         if transformation fails for any other reason.
      */
     public Geometry transformOuterToInner(Geometry geometry, String srcFrame)
-            throws FactoryException, TransformException {
+            throws FactoryException,
+            TransformException {
         return transform(geometry, getCrsFor(srcFrame), internCrs);
     }
 
     /**
-     * Transforms a given geometry from its inner reference (which is WGS84 (CRS:84)) to a given
-     * reference.
+     * Transforms a given geometry from its inner reference (which is WGS84 (CRS:84)) to a given reference.
      *
-     * @param geometry the geometry to transform.
-     * @param destFrame the CRS authority code the given point shall be transformed to.
+     * @param geometry
+     *        the geometry to transform.
+     * @param destFrame
+     *        the CRS authority code the given point shall be transformed to.
      * @return a transformed geometry with dest reference.
-     * @throws FactoryException if the creation of {@link CoordinateReferenceSystem} fails or no
-     * appropriate {@link MathTransform} could be created.
-     * @throws TransformException if transformation fails for any other reason.
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created.
+     * @throws TransformException
+     *         if transformation fails for any other reason.
      */
     public Geometry transformInnerToOuter(Geometry geometry, String destFrame)
-            throws FactoryException, TransformException {
+            throws FactoryException,
+            TransformException {
         return transform(geometry, internCrs, getCrsFor(destFrame));
     }
 
     /**
      * Transforms a given geometry from a given reference to a destinated reference.
      *
-     * @param geometry the geometry to transform.
-     * @param srcFrame the reference the given point is in.
-     * @param destFrame the reference frame the point shall be transformed to.
+     * @param geometry
+     *        the geometry to transform.
+     * @param srcFrame
+     *        the reference the given point is in.
+     * @param destFrame
+     *        the reference frame the point shall be transformed to.
      * @return a transformed point.
-     * @throws FactoryException if the creation of {@link CoordinateReferenceSystem} fails or no
-     * appropriate {@link MathTransform} could be created.
-     * @throws TransformException if transformation fails for any other reason.
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created.
+     * @throws TransformException
+     *         if transformation fails for any other reason.
      */
     public Geometry transform(Geometry geometry, String srcFrame, String destFrame)
-            throws FactoryException, TransformException {
+            throws FactoryException,
+            TransformException {
         return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
-    private Geometry transform(Geometry geometry, CoordinateReferenceSystem srs,
-            CoordinateReferenceSystem dest) throws FactoryException, TransformException {
+    private Geometry transform(Geometry geometry,
+                               CoordinateReferenceSystem srs,
+                               CoordinateReferenceSystem dest)
+            throws FactoryException,
+            TransformException {
         return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
     }
 
@@ -282,28 +280,30 @@ public final class CRSUtils {
     }
 
     /**
-     * Indicates if the given reference frame has switched axes compared to the inner default
-     * (lon/lat).
+     * Indicates if the given reference frame has switched axes compared to the inner default (lon/lat).
      *
-     * @param outer the given reference frame code to check.
+     * @param outer
+     *        the given reference frame code to check.
      * @return <code>true</code> if axes order is switched compared to the inner default.
-     * @throws FactoryException if no proper CRS could be created.
+     * @throws FactoryException
+     *         if no proper CRS could be created.
      */
     public boolean isLatLonAxesOrder(String outer) throws FactoryException {
         return isAxesSwitched(internCrs, getCrsFor(outer));
     }
 
     /**
-     * Gets the propert coordinate reference system defined for the given authority code. If no
-     * matching CRS could be found the default {@link #internCrs} is being returned.
+     * Gets the propert coordinate reference system defined for the given authority code. If no matching CRS
+     * could be found the default {@link #internCrs} is being returned.
      *
-     * @param authorityCode the CRS code, like <code>EPSG:4326</code> or <code>CRS:84</code>.
-     * @return the CRS instance for the given code or {@link #internCrs} if either no matching CRS
-     * could be found or an error occured during resolving code.
-     * @throws FactoryException if creating CRS failed.
+     * @param authorityCode
+     *        the CRS code, like <code>EPSG:4326</code> or <code>CRS:84</code>.
+     * @return the CRS instance for the given code or {@link #internCrs} if either no matching CRS could be
+     *         found or an error occured during resolving code.
+     * @throws FactoryException
+     *         if creating CRS failed.
      */
-    private CoordinateReferenceSystem getCrsFor(String authorityCode) throws
-            FactoryException {
+    private CoordinateReferenceSystem getCrsFor(String authorityCode) throws FactoryException {
         if ((authorityCode == null) || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
             return internCrs;
         }
@@ -311,13 +311,15 @@ public final class CRSUtils {
     }
 
     /**
-     * @param first the first CRS.
-     * @param second the second CRS.
-     * @return <code>true</code> if the first axes of both given CRS do not point in the same
-     * direction, <code>false</code> otherwise.
+     * @param first
+     *        the first CRS.
+     * @param second
+     *        the second CRS.
+     * @return <code>true</code> if the first axes of both given CRS do not point in the same direction,
+     *         <code>false</code> otherwise.
      */
     private boolean isAxesSwitched(CoordinateReferenceSystem first,
-            CoordinateReferenceSystem second) {
+                                   CoordinateReferenceSystem second) {
         AxisOrder axisOrderFirst = CRS.getAxisOrder(first);
         AxisOrder axisOrderSecond = CRS.getAxisOrder(second);
         if ((axisOrderFirst == AxisOrder.INAPPLICABLE)
@@ -329,11 +331,12 @@ public final class CRSUtils {
     }
 
     /**
-     * Creates an {@link CRSUtils} which offers assistance when doing spatial opererations. Strict
-     * means that all CRS defined with lat/lon axis ordering will be handled as defined.
+     * Creates an {@link CRSUtils} which offers assistance when doing spatial opererations. Strict means that
+     * all CRS defined with lat/lon axis ordering will be handled as defined.
      *
      * @return creates a reference helper which (strictly) handles referencing operations.
-     * @throws IllegalStateException if decoding default CRS fails.
+     * @throws IllegalStateException
+     *         if decoding default CRS fails.
      */
     public static CRSUtils createEpsgStrictAxisOrder() {
         /*
@@ -350,11 +353,12 @@ public final class CRSUtils {
     }
 
     /**
-     * Creates a {@link CRSUtils} which offers assistance when doing spatial opererations. Forcing
-     * XY means that CRS axis ordering is considered lon/lat ordering, even if defined lat/lon.
+     * Creates a {@link CRSUtils} which offers assistance when doing spatial opererations. Forcing XY means
+     * that CRS axis ordering is considered lon/lat ordering, even if defined lat/lon.
      *
      * @return creates a reference helper which (strictly) handles referencing operations.
-     * @throws IllegalStateException if decoding default CRS fails.
+     * @throws IllegalStateException
+     *         if decoding default CRS fails.
      */
     public static CRSUtils createEpsgForcedXYAxisOrder() {
         Hints hints = new Hints(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, true);
@@ -364,11 +368,12 @@ public final class CRSUtils {
     /**
      * Creates a {@link CRSUtils} which offers assistance when doing spatial opererations.
      *
-     * @param hints Some Geotools {@link Hints} which set behavior and special considerations
-     * regarding to the spatial operations.
+     * @param hints
+     *        Some Geotools {@link Hints} which set behavior and special considerations regarding to the
+     *        spatial operations.
      * @return an instance of {@link CRSUtils} using given hints
      */
-    public static CRSUtils createEpsgReferenceHelper(Hints hints) throws  IllegalStateException {
+    public static CRSUtils createEpsgReferenceHelper(Hints hints) throws IllegalStateException {
         return new CRSUtils(ReferencingFactoryFinder.getCRSAuthorityFactory("EPSG", hints));
     }
 

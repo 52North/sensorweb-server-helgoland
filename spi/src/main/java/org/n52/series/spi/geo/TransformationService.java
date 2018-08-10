@@ -42,18 +42,9 @@ public class TransformationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
 
-    public Geometry transform(Geometry geometry, IoParameters query) {
-        String crs = query.getCrs();
-        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
-             // no need to transform
-            return geometry;
-        }
-        return transformGeometry(query, geometry, crs);
-    }
-
     /**
-     * @param station the station to transform.
-     * @param parameters the query containing CRS and how to handle axes order.
+     * @param station the station to transform
+     * @param parameters the query containing CRS and how to handle axes order
      */
     protected void transformInline(StationOutput station, IoParameters parameters) {
         String crs = parameters.getCrs();
@@ -63,6 +54,15 @@ public class TransformationService {
         }
         Geometry geometry = transform(station.getGeometry(), parameters);
         station.setValue(StationOutput.GEOMETRY, geometry, parameters, station::setGeometry);
+    }
+
+    public Geometry transform(Geometry geometry, IoParameters query) {
+        String crs = query.getCrs();
+        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
+             // no need to transform
+            return geometry;
+        }
+        return transformGeometry(query, geometry, crs);
     }
 
     private Geometry transformGeometry(IoParameters query, Geometry geometry,
