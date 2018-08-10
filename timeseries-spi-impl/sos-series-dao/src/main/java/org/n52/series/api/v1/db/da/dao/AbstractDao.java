@@ -43,32 +43,31 @@ import org.n52.series.api.v1.db.da.beans.I18nEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
 
 abstract class AbstractDao<T> implements GenericDao<T, Long> {
-    
+
     protected Session session;
-    
+
     public AbstractDao(Session session) {
         if (session == null) {
             throw new NullPointerException("Cannot operate on a null session.");
         }
         this.session = session;
     }
-    
+
     public abstract List<T> find(String search, DbQuery query);
 
     protected boolean hasTranslation(DbQuery parameters, Class<? extends I18nEntity> clazz) {
         Criteria i18nCriteria = session.createCriteria(clazz);
         return parameters.checkTranslationForLocale(i18nCriteria);
     }
-    
-    protected abstract String getDefaultAlias();
-    
-    protected abstract Class<?> getEntityClass();
 
+    protected abstract String getDefaultAlias();
+
+    protected abstract Class<?> getEntityClass();
 
     protected Criteria getDefaultCriteria(String alias) {
         return getDefaultCriteria(alias, createFrom(createDefaults()));
     }
-    
+
     protected Criteria getDefaultCriteria(String alias, DbQuery query) {
         alias = alias != null ? alias : getDefaultAlias();
 //        DetachedCriteria filter = createSeriesSubQuery(alias, query);
@@ -85,7 +84,7 @@ abstract class AbstractDao<T> implements GenericDao<T, Long> {
     }
 
     private DetachedCriteria createSeriesSubQuery(String alias, DbQuery query) {
-        String filterProperty = alias != null && !alias.isEmpty()
+        String filterProperty = (alias != null) && !alias.isEmpty()
                 ? alias + ".pkid"
                 : "pkid";
         return DetachedCriteria.forClass(SeriesEntity.class)

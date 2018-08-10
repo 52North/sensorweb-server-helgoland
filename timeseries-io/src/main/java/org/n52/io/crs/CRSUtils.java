@@ -25,6 +25,7 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.crs;
 
 import static com.vividsolutions.jts.geom.PrecisionModel.FLOATING;
@@ -32,14 +33,11 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.geotools.factory.Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER;
 import static org.geotools.referencing.ReferencingFactoryFinder.getCRSAuthorityFactory;
-import static org.n52.io.geojson.old.GeojsonCrs.createNamedCRS;
-import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.geotools.factory.Hints;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -84,71 +82,21 @@ public final class CRSUtils {
         try {
             internCrs = CRS.decode("CRS:84");
             this.crsFactory = crsFactory;
-        }
-        catch (FactoryException e) {
+        } catch (FactoryException e) {
             throw new IllegalStateException("Could not create intern CRS!", e);
         }
-    }
-
-    public Point convertToPointFrom(GeojsonPoint geometry) {
-        return convertToPointFrom(geometry, DEFAULT_CRS);
-    }
-
-    public Point convertToPointFrom(GeojsonPoint geometry, String crs) {
-        Double[] coordinates = geometry.getCoordinates();
-        return createPoint(coordinates[0], coordinates[1], crs);
-    }
-
-    /**
-     * Creates a GeoJSON representation for the given point.
-     *
-     * @param point
-     *        the point to convert.
-     * @return a GeoJSON representation of the given point.
-     */
-    public GeojsonPoint convertToGeojsonFrom(Point point) {
-        Coordinate coords = point.getCoordinate();
-        if (point.getDimension() == 2) {
-            return createWithCoordinates(new Double[] {coords.x, coords.y});
-        }
-        else {
-            return createWithCoordinates(new Double[] {coords.x, coords.y, coords.z});
-        }
-    }
-
-    /**
-     * Creates a GeoJSON representation of the given point. Adds a named <code>crs</code> member if it is
-     * different to the internally used CRS:84.
-     *
-     * @param point
-     *        the point to be converted to GeoJSON.
-     * @param targetCrs
-     *        the target CRS.
-     * @return a GeoJSON representation of the given point.
-     * @throws TransformException
-     *         if transforming point fails.
-     * @throws FactoryException
-     *         if creating the target CRS fails.
-     */
-    public GeojsonPoint convertToGeojsonFrom(Point point, String targetCrs) throws TransformException, FactoryException {
-        Point transformedPoint = transformInnerToOuter(point, targetCrs);
-        GeojsonPoint asGeoJSON = convertToGeojsonFrom(transformedPoint);
-        if ( !DEFAULT_CRS.equalsIgnoreCase(targetCrs)) {
-            asGeoJSON.setCrs(createNamedCRS(targetCrs));
-        }
-        return asGeoJSON;
     }
 
     /**
      * Creates a 2D point geometry within the given reference system.
      *
      * @param x
-     *        the coordinate's x value.
+     *        the coordinate's x value
      * @param y
-     *        the coordinate's y value.
+     *        the coordinate's y value
      * @param srs
      *        an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or <code>CRS:84</code>
-     *        .
+     *
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, String srs) {
@@ -159,20 +107,20 @@ public final class CRSUtils {
      * Creates a 2D point geometry with respect to its height and given reference system.
      *
      * @param x
-     *        the point's x value.
+     *        the point's x value
      * @param y
-     *        the point's y value.
+     *        the point's y value
      * @param z
-     *        the height or <code>null</code> if coordinate is 2D.
+     *        the height or <code>null</code> if coordinate is 2D
      * @param srs
      *        an authoritive spatial reference system code, e.g. <code>EPSG:4326</code> or <code>CRS:84</code>
-     *        .
-     * @return a point referenced by the given spatial reference system.
+     *
+     * @return a point referenced by the given spatial reference system
      */
     public Point createPoint(Double x, Double y, Double z, String srs) {
         Coordinate coordinate = (z != null) && !z.isNaN()
-                ? new Coordinate(x, y, z)
-                : new Coordinate(x, y);
+            ? new Coordinate(x, y, z)
+            : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
         return factory.createPoint(coordinate);
     }
@@ -193,7 +141,7 @@ public final class CRSUtils {
      *
      * @param srs
      *        the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN ('<code>:</code>
-     *        '-separated).
+     *        '-separated)
      * @return the SRS number, e.g. 4326
      */
     public int getSrsIdFrom(String srs) {
@@ -203,14 +151,13 @@ public final class CRSUtils {
     /**
      * @param srs
      *        the SRS definition string, either as URL ('<code>/</code>'-separated) or as URN ('<code>:</code>
-     *        '-separated).
+     *        '-separated)
      * @return SRS string in the form of for example 'EPSG:4326' or 'EPSG:31466'.
      */
     public String extractSRSCode(String srs) {
         if (isSrsUrlDefinition(srs)) {
             return "EPSG:" + srs.substring(srs.lastIndexOf("/") + 1);
-        }
-        else {
+        } else {
             String[] srsParts = srs.split(":");
             return "EPSG:" + srsParts[srsParts.length - 1];
         }
@@ -238,12 +185,30 @@ public final class CRSUtils {
      * @return a point referenced in WGS84
      * @throws FactoryException
      *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
-     *         {@link MathTransform} could be created.
+     *         {@link MathTransform} could be created
      * @throws TransformException
-     *         if transformation fails for any other reason.
+     *         if transformation fails for any other reason
      */
     public Point transformOuterToInner(Point point, String srcFrame) throws FactoryException, TransformException {
         return (Point) transform(point, getCrsFor(srcFrame), internCrs);
+    }
+
+    /**
+     * Transforms a given point from a given reference to inner reference, which is WGS84 (CRS:84).
+     *
+     * @param geometry
+     *        the geometry to transform.
+     * @param srcFrame
+     *        the CRS authority code the given point is referenced in.
+     * @return a point referenced in WGS84
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created
+     * @throws TransformException
+     *         if transformation fails for any other reason
+     */
+    public Geometry transformOuterToInner(Geometry geometry, String srcFrame) throws FactoryException, TransformException {
+        return transform(geometry, getCrsFor(srcFrame), internCrs);
     }
 
     /**
@@ -262,6 +227,24 @@ public final class CRSUtils {
      */
     public Point transformInnerToOuter(Point point, String destFrame) throws FactoryException, TransformException {
         return (Point) transform(point, internCrs, getCrsFor(destFrame));
+    }
+
+    /**
+     * Transforms a given geometry from its inner reference (which is WGS84 (CRS:84)) to a given reference.
+     *
+     * @param geometry
+     *        the geometry to transform.
+     * @param destFrame
+     *        the CRS authority code the given point shall be transformed to.
+     * @return a transformed point with dest reference.
+     * @throws FactoryException
+     *         if the creation of {@link CoordinateReferenceSystem} fails or no appropriate
+     *         {@link MathTransform} could be created.
+     * @throws TransformException
+     *         if transformation fails for any other reason.
+     */
+    public Geometry transformInnerToOuter(Geometry geometry, String destFrame) throws FactoryException, TransformException {
+        return transform(geometry, internCrs, getCrsFor(destFrame));
     }
 
     /**
@@ -305,9 +288,10 @@ public final class CRSUtils {
         return transform(geometry, getCrsFor(srcFrame), getCrsFor(destFrame));
     }
 
-    private Geometry transform(Geometry point, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException,
+    private Geometry transform(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest)
+            throws FactoryException,
             TransformException {
-        return JTS.transform(point, CRS.findMathTransform(srs, dest));
+        return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
     }
 
     /**

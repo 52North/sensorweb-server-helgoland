@@ -38,7 +38,6 @@ import static org.n52.io.crs.WGS84Util.normalizeLongitude;
 
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 
 import com.vividsolutions.jts.geom.Point;
@@ -54,7 +53,7 @@ public class Vicinity {
      */
     private String crs = DEFAULT_CRS;
 
-    private GeojsonPoint center;
+    private Point center;
 
     private double radius;
 
@@ -68,7 +67,7 @@ public class Vicinity {
      * @param radius
      *        the distance around the center
      */
-    public Vicinity(GeojsonPoint center, String radius) {
+    public Vicinity(Point center, String radius) {
         try {
             this.radius = parseDouble(radius);
             this.center = center;
@@ -87,7 +86,7 @@ public class Vicinity {
 
     /**
      * Calculates bounding box with the given CRS context.
-     * 
+     *
      * @param crsUtils
      *        the reference context.
      * @return a bounding rectangle.
@@ -95,8 +94,6 @@ public class Vicinity {
      *         if invalid crs was set.
      */
     public BoundingBox calculateBounds(CRSUtils crsUtils) {
-        Point center = createCenter(this.center, crsUtils);
-
         double latInRad = toRadians(center.getY());
         double llEasting = normalizeLongitude(center.getX() - getLongitudeDelta(latInRad, radius));
         double llNorthing = normalizeLatitude(center.getY() - getLatitudeDelta(radius));
@@ -118,19 +115,6 @@ public class Vicinity {
     }
 
     /**
-     * @param center
-     *        the center point as GeoJSON point.
-     * @param crsUtils
-     *        the reference context.
-     * @return the center point.
-     */
-    private Point createCenter(GeojsonPoint center, CRSUtils crsUtils) {
-        Double easting = center.getCoordinates()[0];
-        Double northing = center.getCoordinates()[1];
-        return crsUtils.createPoint(easting, northing, DEFAULT_CRS);
-    }
-
-    /**
      * @param crs
      *        sets the coordinate reference system, e.g. 'EPSG:25832'
      */
@@ -144,11 +128,11 @@ public class Vicinity {
      * @param center
      *        the center coordinates.
      */
-    public void setCenter(GeojsonPoint center) {
+    public void setCenter(Point center) {
         this.center = center;
     }
 
-    public GeojsonPoint getCenter() {
+    public Point getCenter() {
         return center;
     }
 

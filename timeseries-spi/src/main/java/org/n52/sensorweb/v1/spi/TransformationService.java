@@ -27,26 +27,25 @@
  */
 package org.n52.sensorweb.v1.spi;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
-import static org.n52.io.crs.CRSUtils.createEpsgStrictAxisOrder;
-
 import org.n52.io.IoParameters;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.v1.data.StationOutput;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Geometry;
 
 public abstract class TransformationService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
+
     /**
-     *
-     * @param query the query parameters.
-     * @param stations the stations to transform.
-     * @return all transformed stations matching the query.
-     * @throws BadQueryParameterException if an invalid CRS has been passed in.
+     * @param query the query parameters
+     * @param stations the stations to transform
+     * @return all transformed stations matching the query
+     * @throws BadQueryParameterException if an invalid CRS has been passed in
      */
     protected StationOutput[] transformStations(IoParameters query, StationOutput[] stations) {
         if (stations != null) {
@@ -58,26 +57,63 @@ public abstract class TransformationService {
     }
 
     /**
-     * @param station the station to transform.
-     * @param query the query containing CRS and how to handle axes order.
-     * @throws BadQueryParameterException if an invalid CRS has been passed in.
+     * @param station the station to transform
+     * @param parameters the parameters containing CRS and how to handle axes order
+     * @throws BadQueryParameterException if an invalid CRS has been passed in
      */
-    protected void transformInline(StationOutput station, IoParameters query) {
-        String crs = query.getCrs();
-        if (DEFAULT_CRS.equals(crs)) {
-            return; // no need to transform
+    protected void transformInline(StationOutput station, IoParameters parameters) {
+//        String crs = query.getCrs();
+//        if (DEFAULT_CRS.equals(crs)) {
+//            return; // no need to transform
+//        }
+//        try {
+//            CRSUtils crsUtils = query.isForceXY()
+//                    ? createEpsgForcedXYAxisOrder()
+//                    : createEpsgStrictAxisOrder();
+//            Point point = crsUtils.convertToPointFrom(station.getGeometry());
+//            station.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+//        } catch (TransformException e) {
+//            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
+//        } catch (FactoryException e) {
+//            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
+//        }
+        String crs = parameters.getCrs();
+        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
+             // no need to transform
+            return;
         }
+        Geometry geometry = transform(station.getGeometry(), parameters);
+        station.setGeometry(geometry);
+    }
+
+    public Geometry transform(Geometry geometry, IoParameters query) {
+        String crs = query.getCrs();
+        if (CRSUtils.DEFAULT_CRS.equals(crs)) {
+             // no need to transform
+            return geometry;
+        }
+        return transformGeometry(query, geometry, crs);
+    }
+
+    private Geometry transformGeometry(IoParameters query, Geometry geometry,
+            String crs) throws RuntimeException {
         try {
             CRSUtils crsUtils = query.isForceXY()
-                    ? createEpsgForcedXYAxisOrder()
-                    : createEpsgStrictAxisOrder();
-            Point point = crsUtils.convertToPointFrom(station.getGeometry());
-            station.setGeometry(crsUtils.convertToGeojsonFrom(point, crs));
+                    ? CRSUtils.createEpsgForcedXYAxisOrder()
+                    : CRSUtils.createEpsgStrictAxisOrder();
+            return geometry != null
+                    ? crsUtils.transformInnerToOuter(geometry, crs)
+                    : geometry;
         } catch (TransformException e) {
-            throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
+            throwRuntimeException(crs, e);
         } catch (FactoryException e) {
-            throw new BadQueryParameterException("Could not create CRS " + crs + ".", e);
+            LOGGER.debug("Couldn't create geometry factory", e);
         }
+        return geometry;
+    }
+
+    private void throwRuntimeException(String crs, TransformException e) throws RuntimeException {
+        throw new RuntimeException("Could not transform to requested CRS: " + crs, e);
     }
 
 }

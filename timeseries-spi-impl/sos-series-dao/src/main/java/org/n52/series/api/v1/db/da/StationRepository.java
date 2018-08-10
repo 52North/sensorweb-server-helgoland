@@ -27,7 +27,6 @@
  */
 package org.n52.series.api.v1.db.da;
 
-import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 
 import java.util.ArrayList;
@@ -36,7 +35,6 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.sensorweb.v1.spi.search.StationSearchResult;
@@ -53,13 +51,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 
 public class StationRepository extends SessionAwareRepository implements OutputAssembler<StationOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationRepository.class);
 
-    private CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
+    private final CRSUtils crsUtil = createEpsgForcedXYAxisOrder();
 
     public StationRepository(ServiceInfo serviceInfo) {
         super(serviceInfo);
@@ -82,7 +79,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     @Override
     protected List<SearchResult> convertToSearchResults(List< ? extends DescribableEntity< ? extends I18nEntity>> found,
                                                         String locale) {
-        List<SearchResult> results = new ArrayList<SearchResult>();
+        List<SearchResult> results = new ArrayList<>();
         for (DescribableEntity< ? extends I18nEntity> searchResult : found) {
             String pkid = searchResult.getPkid().toString();
             String label = getLabelFrom(searchResult,locale);
@@ -106,7 +103,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public List<StationOutput> getAllCondensed(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
-        List<StationOutput> results = new ArrayList<StationOutput>();
+        List<StationOutput> results = new ArrayList<>();
         for (FeatureEntity featureEntity : allFeatures) {
             results.add(createCondensed(featureEntity, parameters));
         }
@@ -128,7 +125,7 @@ public class StationRepository extends SessionAwareRepository implements OutputA
     public List<StationOutput> getAllExpanded(DbQuery parameters, Session session) throws DataAccessException {
         FeatureDao featureDao = new FeatureDao(session);
         List<FeatureEntity> allFeatures = featureDao.getAllInstances(parameters);
-        List<StationOutput> results = new ArrayList<StationOutput>();
+        List<StationOutput> results = new ArrayList<>();
         for (FeatureEntity featureEntity : allFeatures) {
             results.add(createExpanded(featureEntity, parameters, session));
         }
@@ -165,34 +162,40 @@ public class StationRepository extends SessionAwareRepository implements OutputA
         SeriesDao seriesDao = new SeriesDao(session);
         List<SeriesEntity> series = seriesDao.getInstancesWith(feature);
         StationOutput stationOutput = createCondensed(feature, parameters);
-        stationOutput.addProperty("timeseries", createTimeseriesList(series, parameters));
+        stationOutput.setTimeseries(createTimeseriesList(series, parameters));
         return stationOutput;
     }
 
     private StationOutput createCondensed(FeatureEntity entity, DbQuery parameters) {
         StationOutput stationOutput = new StationOutput();
         stationOutput.setGeometry(createPoint(entity));
-        stationOutput.addProperty("id", entity.getPkid());
-        stationOutput.addProperty("label", getLabelFrom(entity, parameters.getLocale()));
+        stationOutput.setId(entity.getPkid() + "");
+        stationOutput.setLabel(getLabelFrom(entity, parameters.getLocale()));
         return stationOutput;
     }
 
-    private GeojsonPoint createPoint(FeatureEntity featureEntity) {
-        try {
-            if (featureEntity.isSetGeom() && "point".equalsIgnoreCase(featureEntity.getGeom().getGeometryType())) {
+    private Geometry createPoint(FeatureEntity featureEntity) {
+        if (featureEntity.isSetGeom()) {
+            try {
                 Geometry geometry = featureEntity.getGeom();
-                String fromCrs = "EPSG:" +geometry.getSRID();
-                Point location = crsUtil.transformOuterToInner((Point) geometry, fromCrs);
-                return crsUtil.convertToGeojsonFrom(location, DEFAULT_CRS);
+                return transformGeometry(featureEntity, geometry);
+            } catch (Exception e) {
+                LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
+                return null;
             }
+        }
+        return null;
+    }
+
+    private Geometry transformGeometry(FeatureEntity featureEntity, Geometry geometry) throws TransformException, FactoryException {
+        try {
+            String fromCrs = "EPSG:" + geometry.getSRID();
+            return crsUtil.transformOuterToInner(geometry, fromCrs);
         }
         catch (FactoryException e) {
             LOGGER.info("Unable to create CRS factory for station/feature: {}" + featureEntity.getDomainId());
+            return crsUtil.transformOuterToInner(geometry, CRSUtils.DEFAULT_CRS);
         }
-        catch (TransformException e) {
-            LOGGER.info("Unable to transform station/feature: {}" + featureEntity.getDomainId());
-        }
-        return null;
     }
 
 }

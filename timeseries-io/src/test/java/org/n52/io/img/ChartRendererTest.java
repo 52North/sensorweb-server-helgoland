@@ -143,8 +143,8 @@ public class ChartRendererTest {
         metadata.setUom("");
 
         StationOutput stationOutput = new StationOutput();
-        stationOutput.addProperty("id", "sta_1");
-        stationOutput.addProperty("label", "station");
+        stationOutput.setId("sta_1");
+        stationOutput.setLabel("station");
         metadata.setStation(stationOutput);
 
         // build expected title

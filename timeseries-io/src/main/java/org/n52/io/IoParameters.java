@@ -51,7 +51,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
@@ -69,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -81,7 +81,7 @@ public class IoParameters {
     private final static Logger LOGGER = LoggerFactory.getLogger(IoParameters.class);
 
     private final static String DEFAULT_CONFIG_FILE = "config-general.json";
-    
+
     private static final ObjectMapper om = new ObjectMapper();
 
     // XXX refactor ParameterSet, DesignedParameterSet, UndesingedParameterSet and QueryMap
@@ -90,7 +90,7 @@ public class IoParameters {
      * How detailed the output shall be.
      */
     static final String EXPANDED = "expanded";
-    
+
     /**
      * The default expansion of collection items.
      *
@@ -238,7 +238,7 @@ public class IoParameters {
      * Determines how raw data shall be formatted.
      */
     static final String FORMAT = "format";
-    
+
     /**
      * Determines how raw data shall be queried from service.
      */
@@ -274,7 +274,7 @@ public class IoParameters {
      * Determines the services filter
      */
     static final String SERVICES = "services";
-    
+
     /**
      * Determines the feature filter
      */
@@ -285,7 +285,7 @@ public class IoParameters {
      * Determines the features filter
      */
     static final String FEATURES = "features";
-    
+
     /**
      * Determines the service filter
      */
@@ -296,7 +296,7 @@ public class IoParameters {
      * Determines the offerings filter
      */
     static final String OFFERINGS = "offerings";
-    
+
     /**
      * Determines the procedure filter
      */
@@ -307,7 +307,7 @@ public class IoParameters {
      * Determines the procedures filter
      */
     static final String PROCEDURES = "procedures";
-    
+
     /**
      * Determines the phenomenon filter
      */
@@ -318,7 +318,7 @@ public class IoParameters {
      * Determines the phenomena filter
      */
     static final String PHENOMENA = "phenomena";
-    
+
     /**
      * Determines the station filter
      */
@@ -329,7 +329,7 @@ public class IoParameters {
      * Determines the stations filter
      */
     static final String STATIONS = "stations";
-    
+
     /**
      * Determines the category filter
      */
@@ -345,7 +345,7 @@ public class IoParameters {
      * Determines the categories filter
      */
     static final String TIMESERIES = "timeseries";
-    
+
     /**
      * Determines the reference system to be used for input/output coordinates.
      */
@@ -370,17 +370,17 @@ public class IoParameters {
      * Determines the bbox filter
      */
     static final String BBOX = "bbox";
-    
+
     /**
      * Determines the fields filter
      */
     static final String FILTER_FIELDS = "fields";
-    
+
     private final String OUTPUT_TIMEZONE = "outputTimezone";
-    
+
     private final String DEFAULT_OUTPUT_TIMEZONE = "UTC";
 
-    private MultiValueMap<String, JsonNode> query;
+    private final MultiValueMap<String, JsonNode> query;
 
     private static InputStream getDefaultConfigFile() {
         try {
@@ -604,7 +604,7 @@ public class IoParameters {
         }
         return getAsString(FORMAT);
     }
-    
+
     public boolean isSetRawFormat() {
         return containsParameter(RAW_FORMAT);
     }
@@ -678,7 +678,7 @@ public class IoParameters {
         }
         return getAsString(OUTPUT_TIMEZONE);
     }
-    
+
     /**
      * @return the category filter
      * @deprecated use {@link #getCategories()}
@@ -779,38 +779,38 @@ public class IoParameters {
         values.addAll(getValuesOf(STATION));
         return values;
     }
-    
+
     public Set<String> getTimeseries() {
         return getValuesOf(TIMESERIES);
     }
-    
+
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
     }
-    
+
     public boolean hasFilterParameters() {
         return !(getCategories().isEmpty()
-                && getCategory() != null
+                && (getCategory() != null)
                 && getServices().isEmpty()
-                && getService() != null
+                && (getService() != null)
                 && getOffering().isEmpty()
-                && getOffering() != null
+                && (getOffering() != null)
                 && getFeatures().isEmpty()
-                && getFeature() != null
+                && (getFeature() != null)
                 && getProcedures().isEmpty()
-                && getProcedure() != null
+                && (getProcedure() != null)
                 && getPhenomena().isEmpty()
-                && getPhenomenon() != null
+                && (getPhenomenon() != null)
                 && getStations().isEmpty()
-                && getStation() != null
+                && (getStation() != null)
                 && getTimeseries().isEmpty());
-                
+
     }
-    
+
 
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
-                ? new HashSet<String>(csvToLowerCasedSet(getAsString(parameterName)))
+                ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
                 : new HashSet<String>();
     }
 
@@ -846,16 +846,13 @@ public class IoParameters {
             // nothing to merge
             return bounds;
         }
-        CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
-        Point lowerLeft = crsUtils.convertToPointFrom(bboxBounds.getLl());
-        Point upperRight = crsUtils.convertToPointFrom(bboxBounds.getUr());
         if (bounds == null) {
-            bounds = new BoundingBox(lowerLeft, upperRight, DEFAULT_CRS);
+            bounds = new BoundingBox(bboxBounds.getLl(), bboxBounds.getUr(), DEFAULT_CRS);
             LOGGER.debug("Parsed bbox bounds: {}", bounds.toString());
         }
         else {
-            bounds.extendBy(lowerLeft);
-            bounds.extendBy(upperRight);
+            bounds.extendBy(bboxBounds.getLl());
+            bounds.extendBy(bboxBounds.getUr());
             LOGGER.debug("Merged bounds: {}", bounds.toString());
         }
         return bounds;
@@ -905,6 +902,7 @@ public class IoParameters {
     private <T> T parseJson(String jsonString, Class<T> clazz) {
         try {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JtsModule());
             return mapper.readValue(jsonString, clazz);
         }
         catch (JsonParseException e) {
@@ -918,7 +916,7 @@ public class IoParameters {
         }
     }
 
-    private GeojsonPoint convertToCrs84(GeojsonPoint point) {
+    private Point convertToCrs84(Point point) {
         return isForceXY() // is strict XY axis order?!
             ? transformToInnerCrs(point, createEpsgForcedXYAxisOrder())
             : transformToInnerCrs(point, createEpsgStrictAxisOrder());
@@ -926,18 +924,16 @@ public class IoParameters {
 
     /**
      * @param point
-     *        a GeoJSON point to be transformed to internally used CRS:84.
+     *        a point to be transformed to internally used CRS:84
      * @param crsUtils
-     *        a reference helper.
-     * @return a transformed GeoJSON instance.
+     *        a reference helper
+     * @return a transformed GeoJSON instance
      * @throws IoParseException
      *         if point could not be transformed, or if requested CRS object could not be created.
      */
-    private GeojsonPoint transformToInnerCrs(GeojsonPoint point, CRSUtils crsUtils) {
+    private Point transformToInnerCrs(Point point, CRSUtils crsUtils) {
         try {
-            Point toTransformed = crsUtils.convertToPointFrom(point, getCrs());
-            Point crs84Point = crsUtils.transformOuterToInner(toTransformed, getCrs());
-            return crsUtils.convertToGeojsonFrom(crs84Point);
+            return crsUtils.transformOuterToInner(point, getCrs());
         }
         catch (TransformException e) {
             throw new IoParseException("Could not transform to internally used CRS:84.", e);
@@ -949,7 +945,7 @@ public class IoParameters {
 
     /**
      * @return the requested reference context, or the default ({@value #DEFAULT_CRS} which will be
-     *         interpreted as lon/lat ordered axes).
+     *         interpreted as lon/lat ordered axes)
      */
     public String getCrs() {
         if ( !containsParameter(CRS)) {
@@ -1006,23 +1002,23 @@ public class IoParameters {
     public String getOther(String parameter) {
         return getAsString(parameter);
     }
-    
+
     public String getAsString(String parameter) {
         if ( !containsParameter(parameter)) {
             return null;
-        } 
+        }
         List<JsonNode> value = query.get(parameter) == null
                 ? query.get(parameter.toLowerCase())
                 : query.get(parameter);
         return asCsv(value);
     }
-    
+
     public JsonNode getAsJsonNode(String parameter) {
         return !containsParameter(parameter)
                 ? query.getFirst(parameter.toLowerCase())
                 : query.getFirst(parameter);
     }
-    
+
     private String asCsv(List<JsonNode> list) {
         StringBuilder sb = new StringBuilder();
         for (JsonNode jsonNode : list) {
@@ -1069,7 +1065,7 @@ public class IoParameters {
             throw new IoParseException("Parameter '" + parameter + "' has to be 'false' or 'true'!", e);
         }
     }
-    
+
     protected static Map<String, JsonNode> convertValuesToJsonNodes(Map<String, String> queryParameters) {
         Map<String, JsonNode> parameters = new HashMap<>();
         for (Entry<String, String> entry : queryParameters.entrySet()) {
@@ -1090,7 +1086,7 @@ public class IoParameters {
         }
         return parameters;
     }
-    
+
     public static JsonNode getJsonNodeFrom(Object object) {
         if (object == null) {
             return null;
@@ -1160,16 +1156,16 @@ public class IoParameters {
     public String toString() {
         return "IoParameters{" + "query=" + query + '}';
     }
-    
+
 
     /* ****************************************************************
      *                    FACTORY METHODS
      * ************************************************************** */
-    
+
     public static IoParameters createDefaults() {
         return createDefaults(null);
     }
-    
+
     static IoParameters createDefaults(File defaultConfig) {
         return new IoParameters(Collections.<String, JsonNode>emptyMap(), defaultConfig);
     }
@@ -1189,7 +1185,7 @@ public class IoParameters {
     static IoParameters createFromSingleValueMap(Map<String, String> query, File defaultConfig) {
         return new IoParameters(convertValuesToJsonNodes(query), defaultConfig);
     }
-    
+
     /**
      * @param queryParameters
      *        the parameters sent via GET payload.
@@ -1216,7 +1212,7 @@ public class IoParameters {
         }
         return queryParameters;
     }
-    
+
     private static MultiValueMap<String, JsonNode> collapseEntriesToLowerCasedKeys(MultiValueMap<String, JsonNode> parameters) {
         MultiValueMap<String, JsonNode> queryParameters = new LinkedMultiValueMap<>();
         for (String parameter : parameters.keySet()) {

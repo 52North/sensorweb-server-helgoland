@@ -25,12 +25,15 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
+
 package org.n52.io.crs;
 
 import static org.n52.io.crs.CRSUtils.createEpsgForcedXYAxisOrder;
 
 import java.io.Serializable;
 
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
 public class BoundingBox implements Serializable {
@@ -61,23 +64,29 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * Indicates if the given point is contained by this instance. The point's coordinates are assumed to be
+     * Indicates if the given geometry is contained completely by this instance. The point's coordinates are assumed to be
      * in the same coordinate reference system.
-     * 
-     * @param point
-     *        the point to check.
-     * @return if this instance contains the given coordiantes.
+     *
+     * @param geometry
+     *        the geometry to check
+     * @return if this instance completely contains the given geometry
      */
-    public boolean contains(Point point) {
-        return isWithinXRange(point.getX()) && isWithinYRange(point.getY());
+    public boolean contains(Geometry geometry) {
+        return geometry.getDimension() > 2
+                ? !(geometry.contains(ll) || geometry.contains(ur))
+                : asEnvelop().contains(geometry.getEnvelopeInternal());
+    }
+
+    public Envelope asEnvelop() {
+        return new Envelope(ll.getCoordinate(), ur.getCoordinate());
     }
 
     /**
      * Extends the bounding box with the given point. If point is contained by this instance nothing is
      * changed.
-     * 
+     *
      * @param point
-     *        the point in CRS:84 which shall extend the bounding box.
+     *        the point in CRS:84 which shall extend the bounding box
      */
     public void extendBy(Point point) {
         if (this.contains(point)) {
@@ -87,18 +96,10 @@ public class BoundingBox implements Serializable {
         double llY = Math.max(point.getX(), ur.getX());
         double urX = Math.min(point.getY(), ll.getY());
         double urY = Math.max(point.getY(), ur.getY());
-        
+
         CRSUtils crsUtils = createEpsgForcedXYAxisOrder();
         this.ll = crsUtils.createPoint(llX, llY, srs);
         this.ur = crsUtils.createPoint(urX, urY, srs);
-    }
-
-    private boolean isWithinXRange(double x) {
-        return ll.getX() <= x && x <= ur.getX();
-    }
-
-    private boolean isWithinYRange(double y) {
-        return ll.getY() <= y && y <= ur.getY();
     }
 
     /**
@@ -109,14 +110,14 @@ public class BoundingBox implements Serializable {
     }
 
     /**
-     * @return the upper right corner coordinate.
+     * @return the upper right corner coordinate
      */
     public Point getUpperRight() {
         return ur;
     }
 
     /**
-     * @return the system this instance is referenced in.
+     * @return the system this instance is referenced in
      */
     public String getSrs() {
         return srs;
