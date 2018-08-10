@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.n52.sensorweb.v1.spi.search.StationSearchResult;

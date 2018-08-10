@@ -25,46 +25,61 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GeojsonFeature extends GeojsonObject {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    private static final long serialVersionUID = 863297394860249486L;
+public class GeojsonCrs extends GeojsonObject {
+    
+    private static final long serialVersionUID = 5964748458745655509L;
 
-    private static final String GEOJSON_TYPE_FEATURE = "Feature";
+    private static final String TYPE_NAME = "name";
     
-    protected Map<String, Object> properties = null;
+    private Map<String, String> properties;
+
+    private String type = TYPE_NAME;
     
-    private GeojsonPoint geometry; // XXX should be GeojsonGeometry, but generics are different here 
-    
-    public String getType() {
-        return GEOJSON_TYPE_FEATURE;
+    GeojsonCrs() {
+        this.properties = new HashMap<String, String>();
     }
     
-    public GeojsonPoint getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(GeojsonPoint geometry) {
-        this.geometry = geometry;
+    public void addProperty(String key, String value) {
+        properties.put(key, value);
     }
     
-    public void addProperty(String property, Object value) {
-        if (properties == null) {
-            properties = new HashMap<String, Object>();
-        }
-        properties.put(property, value);
-    }
-
-    public Map<String, Object> getProperties() {
+    public Map<String, String> getProperties() {
         return properties;
     }
 
-    public void setProperties(Map<String, Object> properties) {
+    public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+    
+    void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public String getType() {
+        return type;
+    }
+    
+    @JsonIgnore
+    public String getName() {
+        return properties.get("name");
+    }
+    
+    public static GeojsonCrs createNamedCRS(String name) {
+        if (name == null) {
+            throw new NullPointerException("Argument 'name' must not be null.");
+        }
+        GeojsonCrs namedCrs = new GeojsonCrs();
+        namedCrs.addProperty("name", name);
+        namedCrs.setType(TYPE_NAME);
+        return namedCrs;
     }
     
 }

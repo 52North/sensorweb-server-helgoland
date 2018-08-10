@@ -29,7 +29,7 @@ package org.n52.io.v1.data;
 
 import java.text.Collator;
 
-import org.n52.io.geojson.GeojsonFeature;
+import org.n52.io.geojson.old.GeojsonFeature;
 
 public class StationOutput extends GeojsonFeature implements CollatorComparable<StationOutput> {
 

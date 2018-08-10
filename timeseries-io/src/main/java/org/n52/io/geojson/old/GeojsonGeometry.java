@@ -25,39 +25,27 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import org.n52.io.Utils;
+import java.util.Arrays;
 
+public abstract class GeojsonGeometry extends GeojsonObject {
 
-public class GeojsonPoint extends GeojsonGeometry {
+    private static final long serialVersionUID = -2611259809054586079L;
 
-    private static final long serialVersionUID = 4348077077881433456L;
-    
-    private static final String GEOJSON_TYPE_POINT = "Point";
-
-    protected Double[] coordinates;
-    
-    public static GeojsonPoint createWithCoordinates(Double[] coordinates) {
-        GeojsonPoint sfGeometry = new GeojsonPoint();
-        sfGeometry.setCoordinates(Utils.copy(coordinates));
-        return sfGeometry;
-    }
-    
-    public void setCoordinates(Double[] coordinates) {
-        this.coordinates = checkCoordinates(Utils.copy(coordinates));
-    }
-
-    void setType(String type) {
-        // keep for serialization
-    }
-
-    public String getType() {
-        return GEOJSON_TYPE_POINT;
-    }
-    
-    public Double[] getCoordinates() {
-        return Utils.copy(coordinates);
+    /**
+     * @throws IllegalArgumentException
+     *         if coordinates are <code>null</code> or do not contain two dimensional point.
+     */
+    protected Double[] checkCoordinates(Double[] coordinates) {
+        if (coordinates == null) {
+            throw new NullPointerException("Coordinates must not be null.");
+        }
+        if (coordinates.length != 2 && coordinates.length != 3) {
+            String asString = Arrays.toString(coordinates);
+            throw new IllegalArgumentException("Invalid Point coordinates: " + asString);
+        }
+        return coordinates;
     }
 
 }

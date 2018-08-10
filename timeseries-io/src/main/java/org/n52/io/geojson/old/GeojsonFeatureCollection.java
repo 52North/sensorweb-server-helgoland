@@ -25,61 +25,38 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.n52.io.Utils;
 
-public class GeojsonCrs extends GeojsonObject {
+public final class GeojsonFeatureCollection {
+
+    private GeojsonFeature[] features;
     
-    private static final long serialVersionUID = 5964748458745655509L;
-
-    private static final String TYPE_NAME = "name";
-    
-    private Map<String, String> properties;
-
-    private String type = TYPE_NAME;
-    
-    GeojsonCrs() {
-        this.properties = new HashMap<String, String>();
+    public static GeojsonFeatureCollection create(Collection<? extends GeojsonFeature> features) {
+        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
+        collection.setFeatures(features.toArray(new GeojsonFeature[0]));
+        return collection;
     }
     
-    public void addProperty(String key, String value) {
-        properties.put(key, value);
+    public static <T extends GeojsonFeature> GeojsonFeatureCollection create(T[] features) {
+        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
+        collection.setFeatures(features);
+        return collection;
     }
     
-    public Map<String, String> getProperties() {
-        return properties;
+    private GeojsonFeatureCollection() {
+        // for serialization
     }
 
-    public void setProperties(Map<String, String> properties) {
-        this.properties = properties;
-    }
-    
-    void setType(String type) {
-        this.type = type;
+    public GeojsonFeature[] getFeatures() {
+        return Utils.copy(features);
     }
 
-    @Override
-    public String getType() {
-        return type;
-    }
-    
-    @JsonIgnore
-    public String getName() {
-        return properties.get("name");
-    }
-    
-    public static GeojsonCrs createNamedCRS(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument 'name' must not be null.");
-        }
-        GeojsonCrs namedCrs = new GeojsonCrs();
-        namedCrs.addProperty("name", name);
-        namedCrs.setType(TYPE_NAME);
-        return namedCrs;
+    public void setFeatures(GeojsonFeature[] features) {
+        this.features = Utils.copy(features);
     }
     
 }

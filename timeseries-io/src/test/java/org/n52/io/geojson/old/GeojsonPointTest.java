@@ -25,38 +25,28 @@
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.geojson.old;
 
-import java.util.Collection;
 
-import org.n52.io.Utils;
+import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
-public final class GeojsonFeatureCollection {
+import org.junit.Test;
+import org.n52.io.geojson.old.GeojsonPoint;
 
-    private GeojsonFeature[] features;
-    
-    public static GeojsonFeatureCollection create(Collection<? extends GeojsonFeature> features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features.toArray(new GeojsonFeature[0]));
-        return collection;
+
+
+public class GeojsonPointTest {
+
+    @Test(expected = NullPointerException.class) public void 
+    shouldThrowIAEIfNullCoordinatesShallBeSet()
+    {
+        GeojsonPoint.createWithCoordinates(null);
     }
     
-    public static <T extends GeojsonFeature> GeojsonFeatureCollection create(T[] features) {
-        GeojsonFeatureCollection collection = new GeojsonFeatureCollection();
-        collection.setFeatures(features);
-        return collection;
-    }
-    
-    private GeojsonFeatureCollection() {
-        // for serialization
-    }
-
-    public GeojsonFeature[] getFeatures() {
-        return Utils.copy(features);
-    }
-
-    public void setFeatures(GeojsonFeature[] features) {
-        this.features = Utils.copy(features);
+    @Test(expected = IllegalArgumentException.class) public void
+    shouldThrowIAEIfCoordinatesOfDifferentDimensionShallBeSet() 
+    {
+        createWithCoordinates(new Double[0]);
     }
     
 }

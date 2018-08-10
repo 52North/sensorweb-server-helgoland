@@ -27,7 +27,7 @@
  */
 package org.n52.io.v1.data;
 
-import org.n52.io.geojson.GeojsonPoint;
+import org.n52.io.geojson.old.GeojsonPoint;
 
 public class BBox {
     
