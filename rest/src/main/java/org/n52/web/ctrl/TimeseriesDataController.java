@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
@@ -427,7 +428,15 @@ public class TimeseriesDataController extends BaseController {
     }
 
     private DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue> createDefaultIoFactory() {
-        return new DefaultIoFactory<TimeseriesMetadataOutput, QuantityValue>();
+        return new DefaultIoFactory<>();
+    }
+
+    public boolean isHandlingPreRenderingTask() {
+        return handlingPreRenderingTask;
+    }
+
+    public void setHandlingPreRenderingTask(boolean handlingPreRenderingTask) {
+        this.handlingPreRenderingTask = handlingPreRenderingTask;
     }
 
     public PreRenderingJob getPreRenderingTask() {

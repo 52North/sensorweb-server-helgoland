@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.crs;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -34,16 +35,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
-import static org.n52.io.geojson.old.GeojsonPoint.createWithCoordinates;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.n52.io.geojson.old.GeojsonPoint;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
 
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.io.ParseException;
 
 public class CRSUtilsTest {
 
@@ -56,8 +57,6 @@ public class CRSUtilsTest {
         referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
         Point ll = referenceHelper.createPoint(6.4, 51.9, DEFAULT_CRS);
         Point ur = referenceHelper.createPoint(8.9, 53.4, DEFAULT_CRS);
-//        EastingNorthing ll = new EastingNorthing(6.4, 51.9, DEFAULT_CRS);
-//        EastingNorthing ur = new EastingNorthing(8.9, 53.4, DEFAULT_CRS);
         bbox = new BoundingBox(ll, ur, DEFAULT_CRS);
     }
 
@@ -76,23 +75,24 @@ public class CRSUtilsTest {
     @Test
     public void testIsStationContainedByBBox() throws NoSuchAuthorityCodeException,
             FactoryException,
-            TransformException {
-        GeojsonPoint stationWithin = getStationWithinBBox();
-        GeojsonPoint stationOutside = getStationOutsideBBox();
-        assertTrue(bbox.contains(referenceHelper.convertToPointFrom(stationWithin)));
-        assertFalse(bbox.contains(referenceHelper.convertToPointFrom(stationOutside)));
+            TransformException,
+            ParseException {
+        Geometry stationWithin = getStationWithinBBox();
+        Geometry stationOutside = getStationOutsideBBox();
+        assertTrue(bbox.contains(stationWithin));
+        assertFalse(bbox.contains(stationOutside));
     }
 
-    private GeojsonPoint getStationWithinBBox() {
+    private Geometry getStationWithinBBox() throws ParseException {
         // TODO make random station within bbox
         // TODO add different epsg codes!
-        return createWithCoordinates(new Double[]{7.0, 52.0});
+        return referenceHelper.createPoint(7.0, 52.0, DEFAULT_CRS);
     }
 
-    private GeojsonPoint getStationOutsideBBox() {
+    private Geometry getStationOutsideBBox() throws ParseException {
         // TODO make random station within bbox
         // TODO add different epsg codes!
-        return createWithCoordinates(new Double[]{10.4, 52.0});
+        return referenceHelper.createPoint(10.4, 52.0, DEFAULT_CRS);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class CRSUtilsTest {
     }
 
     private void assertValidCodeFromEpsg(int expected, String code) {
-        assertEquals("Unexpected EPSG code!", expected, referenceHelper.getSrsIdFromEPSG(code));
+        assertEquals("Unexpected EPSG code!", expected, CRSUtils.getSrsIdFromEPSG(code));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class CRSUtilsTest {
     }
 
     private void assertValidEpsgShortCut(String expected, String epsgCode) {
-        assertEquals("Unexpected EPSG string!", expected, referenceHelper.extractSRSCode(epsgCode));
+        assertEquals("Unexpected EPSG string!", expected, CRSUtils.extractSRSCode(epsgCode));
     }
 
     // TODO add tests for creating coordinates
