@@ -1,0 +1,5 @@
+{
+    "generalizing_algorithm": "dp",
+    "tolerance_value": 0.1,
+    "generalize": true
+}
