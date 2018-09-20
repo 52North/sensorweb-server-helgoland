@@ -1,10 +1,8 @@
 {
     "timeformat": "YYYY-MM-DD, HH:mm",
     "width": "2000",
-    "generalizer": {
-        "defaultGeneralizer": "lttb",
-        "noDataGapThreshold": 5
-    },
+    "generaling_algorithm": "lttb",
+    "noDataGapThreshold": 5,
     "generalize": true,
     "outputTimezone" : "UTC"
 }

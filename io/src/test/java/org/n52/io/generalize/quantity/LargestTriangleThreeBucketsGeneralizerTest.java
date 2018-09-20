@@ -26,45 +26,58 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.generalize.quantity;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Random;
 
-import org.joda.time.DateTime;
-import org.junit.Before;
+import org.hamcrest.core.Is;
 import org.junit.Test;
+import org.n52.io.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.type.quantity.generalize.Generalizer;
 import org.n52.io.type.quantity.generalize.GeneralizerException;
 import org.n52.io.type.quantity.generalize.LargestTriangleThreeBucketsGeneralizer;
 
 public class LargestTriangleThreeBucketsGeneralizerTest {
 
-    private LargestTriangleThreeBucketsGeneralizer generalizer;
-    private DataCollection<Data<QuantityValue>> collection;
-
-    @Before
-    public void setUp() {
-        Random random = new Random();
-        generalizer = new LargestTriangleThreeBucketsGeneralizer(IoParameters.createDefaults());
-        Data<QuantityValue> data = new Data<>();
-        DateTime now = DateTime.now();
-        for (int i = 0; i < 10000; i++) {
-            data.addNewValue(new QuantityValue(now.plusSeconds(i).getMillis(), BigDecimal.valueOf(100*random.nextDouble())));
-        }
-        collection = new DataCollection<>();
-        collection.addNewSeries("test", data);
-    }
+    private final Random random = new Random();
 
     @Test
-    public void testGeneralizer() throws GeneralizerException {
-        DataCollection<Data<QuantityValue>> generalizedValues = generalizer.generalize(collection);
-        assertThat(generalizedValues != null, is(true));
+    public void when_quotientHasNonterminatingDecimals_then_noArithmeticExceptionIsThrown()
+            throws GeneralizerException {
+        // https://github.com/52North/series-rest-api/issues/446
+
+        TvpDataCollection<Data<QuantityValue>> collection = new TvpDataCollection<>();
+        collection.addNewSeries("test", getData(10000));
+
+        long threshold = 100L;
+        IoParameters defaults = IoParameters.createDefaults().extendWith("threshold", Long.toString(threshold));
+        Generalizer<Data<QuantityValue>> generalizer = new LargestTriangleThreeBucketsGeneralizer(defaults);
+        DataCollection<Data<QuantityValue>> generalizedData = generalizer.generalize(collection);
+        assertThat(generalizedData.getSeries("test").size(), Is.is(threshold));
+    }
+
+    private Data<QuantityValue> getData(int maxValues) {
+        long timestamp = System.currentTimeMillis();
+        BigDecimal startValue = BigDecimal.valueOf(0);
+        QuantityValue current = new QuantityValue(timestamp, startValue);
+
+        Data<QuantityValue> data = new Data<>();
+        for (int i = 0; i < maxValues; i++) {
+            data.addNewValue(current);
+            current = getNextDataValue(current);
+        }
+        return data;
+    }
+
+    private QuantityValue getNextDataValue(QuantityValue value) {
+        return new QuantityValue(value.getTimestamp() + 1, BigDecimal.valueOf(random.nextDouble()));
     }
 }

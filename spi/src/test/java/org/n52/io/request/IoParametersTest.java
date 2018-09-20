@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -78,13 +79,6 @@ public class IoParametersTest {
                 .getOffset();
     }
 
-    private File getAlternativeConfigFile() throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/")
-                                        .toURI());
-        return root.resolve("test-config.json")
-                   .toFile();
-    }
-
     @Test
     public void when_defaultTimezone_then_timezoneIsUTC() {
         IoParameters config = IoParameters.createDefaults();
@@ -94,9 +88,17 @@ public class IoParametersTest {
 
     @Test
     public void when_jsonBbox_then_parsingSpatialFilter() throws ParseException {
-        Map<String,
-            String> map = Collections.singletonMap("bbox",
-                                                   "{\"ll\":{\"type\":\"Point\",\"coordinates\":[6.7,51.7]},\"ur\":{\"type\":\"Point\",\"coordinates\":[7.9,51.9]}}");
+        String bboxJson = "{"
+                + "  \"ll\":{"
+                + "    \"type\":\"Point\","
+                + "    \"coordinates\":[6.7,51.7]"
+                + "  },"
+                + "  \"ur\":{"
+                + "    \"type\":\"Point\","
+                + "    \"coordinates\":[7.9,51.9]"
+                + "  }"
+                + "}";
+        Map<String, String> map = Collections.singletonMap("bbox", bboxJson);
         IoParameters parameters = createFromSingleValueMap(map);
         BoundingBox actual = parameters.getSpatialFilter();
         WKTReader wktReader = new WKTReader();
@@ -230,12 +232,14 @@ public class IoParametersTest {
 
     @Test
     public void when_singleFilter_then_filterPresentViaMultipleGetter() {
+        @SuppressWarnings("deprecation")
         IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo"));
     }
 
     @Test
     public void when_singleAndMultipleFilter_then_filterGetsMerged() {
+        @SuppressWarnings("deprecation")
         IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo")
                                                   .extendWith(Parameters.PROCEDURES, "foo", "bar");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
@@ -252,6 +256,13 @@ public class IoParametersTest {
     public void when_backwardsCompatibleParameters_then_extendingParametersWillStayBackwardsCompatible() {
         IoParameters defaults = IoParameters.createDefaults();
         MatcherAssert.assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
+    }
+
+    private File getAlternativeConfigFile() throws URISyntaxException {
+        Path root = Paths.get(getClass().getResource("/")
+                                        .toURI());
+        return root.resolve("test-config.json")
+                   .toFile();
     }
 
 }

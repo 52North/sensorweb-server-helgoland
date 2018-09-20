@@ -1135,7 +1135,7 @@ public final class IoParameters implements Parameters {
         return createDefaults(null);
     }
 
-    static IoParameters createDefaults(File defaultConfig) {
+    public static IoParameters createDefaults(File defaultConfig) {
         return new IoParameters(Collections.<String, JsonNode> emptyMap(), defaultConfig);
     }
 
