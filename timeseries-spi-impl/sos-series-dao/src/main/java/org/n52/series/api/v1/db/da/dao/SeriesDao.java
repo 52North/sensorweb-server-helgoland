@@ -153,7 +153,7 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
 
     private Criteria createDataCriteria(SeriesEntity dataset, DbQuery query, Order order) {
         return session.createCriteria(ObservationEntity.class)
-                      .add(Restrictions.eq("pkid", dataset.getPkid()))
+                      .add(Restrictions.eq("seriesPkid", dataset.getPkid()))
                       .addOrder(order);
     }
 
