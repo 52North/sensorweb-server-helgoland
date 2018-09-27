@@ -77,14 +77,6 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
             List<Number> list = new ArrayList<>();
             list.add(currentValue.getTimestamp());
             list.add(currentValue.getValue());
-            if (currentValue.isSetGeometry()) {
-                Coordinate coordinate = currentValue.getGeometry().getCoordinate();
-                list.add(coordinate.x);
-                list.add(coordinate.y);
-                if (!Double.isNaN(coordinate.z)) {
-                    list.add(coordinate.z);
-                }
-            }
             series.add(list.toArray(new Number[0]));
         }
         return series;
