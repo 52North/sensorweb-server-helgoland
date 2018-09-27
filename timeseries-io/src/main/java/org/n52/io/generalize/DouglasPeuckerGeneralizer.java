@@ -33,9 +33,8 @@ import static java.lang.Integer.parseInt;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Arrays;
-import java.util.Properties;
-import org.n52.io.IoParameters;
 
+import org.n52.io.IoParameters;
 import org.n52.io.format.TvpDataCollection;
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesValue;
@@ -126,11 +125,11 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
 
     private TimeseriesData generalize(TimeseriesData timeseries) throws GeneralizerException {
         TimeseriesValue[] originalValues = timeseries.getValues();
-        if (originalValues.length < 3 || toleranceValue <= 0) {
+        if ((originalValues.length < 3) || (toleranceValue <= 0)) {
             return timeseries;
         }
 
-        if (maxEntries != -1 && originalValues.length > maxEntries) {
+        if ((maxEntries != -1) && (originalValues.length > maxEntries)) {
             throw new GeneralizerException("Maximum number of entries exceeded (" + originalValues.length + ">"
                     + maxEntries + ")!");
         }
@@ -140,12 +139,12 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
         generalizedTimeseries.addValues(generalizedValues);
 
         // add first element if new list is empty
-        if (generalizedValues.length == 0 && originalValues.length > 0) {
+        if ((generalizedValues.length == 0) && (originalValues.length > 0)) {
             generalizedTimeseries.addValues(originalValues[0]);
         }
 
         // add the last one if not already contained!
-        if (generalizedValues.length > 0 && originalValues.length > 0) {
+        if ((generalizedValues.length > 0) && (originalValues.length > 0)) {
             TimeseriesValue lastOriginialValue = originalValues[originalValues.length - 1];
             TimeseriesValue lastGeneralizedValue = generalizedValues[generalizedValues.length - 1];
             if (lastGeneralizedValue.getTimestamp() != lastOriginialValue.getTimestamp()) {
@@ -167,7 +166,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
         double distance;
 
         // start and end value are not mentioned
-        for (int i = 1; i < values.length - 1; i++) {
+        for (int i = 1; i < (values.length - 1); i++) {
             TimeseriesValue timeseriesValue = values[i];
             distance = calculateDistance(line, timeseriesValue);
             if (distance > maxDist) {
@@ -216,7 +215,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
 
     private TimeseriesValue getFirstValue(TimeseriesData timeseries) {
         TimeseriesValue[] values = timeseries.getValues();
-        if (values == null || values.length == 0) {
+        if ((values == null) || (values.length == 0)) {
             throw new IllegalArgumentException("Timeseries must not be empty.");
         }
         return values[0];
@@ -224,7 +223,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
 
     private TimeseriesValue getLastValue(TimeseriesData timeseries) {
         TimeseriesValue[] values = timeseries.getValues();
-        if (values == null || values.length == 0) {
+        if ((values == null) || (values.length == 0)) {
             throw new IllegalArgumentException("Timeseries must not be empty.");
         }
         return values[values.length - 1];
