@@ -135,7 +135,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer {
                     + maxEntries + ")!");
         }
 
-        TimeseriesData generalizedTimeseries = new TimeseriesData();
+        TimeseriesData generalizedTimeseries = new TimeseriesData(timeseries.getMetadata());
         TimeseriesValue[] generalizedValues = recursiveGeneralize(timeseries);
         generalizedTimeseries.addValues(generalizedValues);
 
