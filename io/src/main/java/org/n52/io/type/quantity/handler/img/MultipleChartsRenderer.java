@@ -160,9 +160,9 @@ public class MultipleChartsRenderer extends ChartIoHandler {
 
     private class ChartIndexConfiguration {
 
-        private int timeseriesIndex;
+        private final int timeseriesIndex;
 
-        private String chartId;
+        private final String chartId;
 
         ChartIndexConfiguration(String chartId, int index) {
             if (chartId == null) {
@@ -261,11 +261,11 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             if (value == null) {
                 throw new IllegalArgumentException("TimeseriesValue must not be null.");
             }
-            return interval == null
-                    || interval.getStart()
-                               .getTime() <= value.getTimestamp()
-                            && value.getTimestamp() < interval.getEnd()
-                                                              .getTime();
+            return (interval == null)
+                    || ((interval.getStart()
+                               .getTime() <= value.getTimestamp())
+                            && (value.getTimestamp() < interval.getEnd()
+                                                              .getTime()));
         }
 
     }

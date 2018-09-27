@@ -76,7 +76,7 @@ public class FlotData {
     public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
         this.valueBeforeTimespan = valueBeforeTimespan != null
                 ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
-                : null;;
+                : null;
     }
 
     public Number[] getValueAfterTimespan() {
