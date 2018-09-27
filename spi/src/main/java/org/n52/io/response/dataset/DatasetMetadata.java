@@ -44,25 +44,25 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @param <T>
  *        the data type
  */
-public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> implements Serializable {
+public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = -2670379436251511249L;
 
-    private Map<String, T> referenceValues = new HashMap<>();
+    private Map<String, Data<T>> referenceValues = new HashMap<>();
 
-    private AbstractValue< ? > valueBeforeTimespan;
+    private T valueBeforeTimespan;
 
-    private AbstractValue< ? > valueAfterTimespan;
+    private T valueAfterTimespan;
 
     public boolean hasReferenceValues() {
         return (referenceValues != null) && !referenceValues.isEmpty();
     }
 
-    public Map<String, T> getReferenceValues() {
+    public Map<String, Data<T>> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(final Map<String, T> referenceValues) {
+    public void setReferenceValues(final Map<String, Data<T>> referenceValues) {
         this.referenceValues = referenceValues;
     }
 
@@ -70,7 +70,7 @@ public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> impl
      * @return the value before to the lower timespan bounds
      */
     @JsonInclude(Include.ALWAYS)
-    public AbstractValue< ? > getValueBeforeTimespan() {
+    public T getValueBeforeTimespan() {
         return valueBeforeTimespan;
     }
 
@@ -78,7 +78,7 @@ public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> impl
      * @param valueBeforeTimespan
      *        sets the value before to the lower timespan bounds
      */
-    public void setValueBeforeTimespan(final AbstractValue< ? > valueBeforeTimespan) {
+    public void setValueBeforeTimespan(final T valueBeforeTimespan) {
         this.valueBeforeTimespan = valueBeforeTimespan;
     }
 
@@ -86,7 +86,7 @@ public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> impl
      * @return the value after to the upper timespan bounds
      */
     @JsonInclude(Include.ALWAYS)
-    public AbstractValue< ? > getValueAfterTimespan() {
+    public T getValueAfterTimespan() {
         return valueAfterTimespan;
     }
 
@@ -94,7 +94,7 @@ public class DatasetMetadata<T extends Data< ? extends AbstractValue< ? >>> impl
      * @param valueBeforeTimespan
      *        sets the value after to the upper timespan bounds
      */
-    public void setValueAfterTimespan(final AbstractValue< ? > valueBeforeTimespan) {
+    public void setValueAfterTimespan(final T valueBeforeTimespan) {
         this.valueAfterTimespan = valueBeforeTimespan;
     }
 

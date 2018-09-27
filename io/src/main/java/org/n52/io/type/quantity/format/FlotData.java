@@ -28,6 +28,7 @@
  */
 package org.n52.io.type.quantity.format;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,10 @@ public class FlotData {
     private List<Number[]> values;
 
     private Map<String, List<Number[]>> referenceValues;
+
+    private Number[] valueBeforeTimespan;
+
+    private Number[] valueAfterTimespan;
 
     public FlotData() {
         referenceValues = new HashMap<>();
@@ -60,6 +65,30 @@ public class FlotData {
 
     public void addReferenceValues(String id, List<Number[]> toAdd) {
         this.referenceValues.put(id, toAdd);
+    }
+
+    public Number[] getValueBeforeTimespan() {
+        return valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;
+    }
+
+    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;;
+    }
+
+    public Number[] getValueAfterTimespan() {
+        return valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
+    }
+
+    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
     }
 
 }

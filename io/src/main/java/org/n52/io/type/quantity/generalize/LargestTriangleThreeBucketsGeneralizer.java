@@ -105,7 +105,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
     }
 
     private Data<QuantityValue> generalizeData(final QuantityValue[] data,
-                                               final DatasetMetadata<Data<QuantityValue>> metadata) {
+                                               final DatasetMetadata<QuantityValue> metadata) {
         final int dataLength = data.length;
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);

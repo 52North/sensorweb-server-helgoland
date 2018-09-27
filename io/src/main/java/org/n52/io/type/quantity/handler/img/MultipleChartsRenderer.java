@@ -98,7 +98,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                  * Configure timeseries reference value renderers with the same metadata and add it at the end
                  * of the plot's renderer list.
                  */
-                DatasetMetadata<Data<QuantityValue>> metadata = timeseriesData.getMetadata();
+                DatasetMetadata<QuantityValue> metadata = timeseriesData.getMetadata();
                 Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, Data<QuantityValue>> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();

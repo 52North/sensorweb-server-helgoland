@@ -28,6 +28,7 @@
  */
 package org.n52.io.type.quantity.format;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,6 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-
-import com.vividsolutions.jts.geom.Coordinate;
 
 public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotData> {
 
@@ -56,26 +55,38 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
     private FlotData createFlotSeries(Data<QuantityValue> seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatSeries(seriesToFormat));
-        DatasetMetadata<Data<QuantityValue>> metadata = seriesToFormat.getMetadata();
-        if (metadata != null) {
-            Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
-            for (String referenceValueId : referenceValues.keySet()) {
-                Data<QuantityValue> referenceValueData = metadata.getReferenceValues().get(referenceValueId);
-                flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
-            }
+        if (seriesToFormat.hasMetadata()) {
+            formatMetadata(seriesToFormat, flotSeries);
         }
         return flotSeries;
+    }
+
+    private void formatMetadata(Data<QuantityValue> seriesToFormat, FlotData flotSeries) {
+        DatasetMetadata<QuantityValue> metadata = seriesToFormat.getMetadata();
+        Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
+        for (String referenceValueId : referenceValues.keySet()) {
+            Data<QuantityValue> referenceValueData = metadata.getReferenceValues().get(referenceValueId);
+            flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
+        }
+        flotSeries.setValueBeforeTimespan(formatValue(metadata.getValueBeforeTimespan()));
+        flotSeries.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
     }
 
     private List<Number[]> formatSeries(Data<QuantityValue> referenceValueData) {
         List<Number[]> series = new ArrayList<>();
         for (QuantityValue currentValue : referenceValueData.getValues()) {
-            List<Number> list = new ArrayList<>();
-            list.add(currentValue.getTimestamp());
-            list.add(currentValue.getValue());
-            series.add(list.toArray(new Number[0]));
+            series.add(formatValue(currentValue));
         }
         return series;
+    }
+
+    private Number[] formatValue(QuantityValue currentValue) {
+        if (currentValue == null) {
+            return null;
+        }
+        BigDecimal value = currentValue.getValue();
+        Long timestamp = currentValue.getTimestamp();
+        return new Number[] { timestamp, value };
     }
 
 }

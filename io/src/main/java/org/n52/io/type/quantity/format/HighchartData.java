@@ -28,6 +28,7 @@
  */
 package org.n52.io.type.quantity.format;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class HighchartData {
@@ -35,6 +36,10 @@ public class HighchartData {
     private String name;
 
     private List<Number[]> data;
+
+    private Number[] valueBeforeTimespan;
+
+    private Number[] valueAfterTimespan;
 
     public String getName() {
         return name;
@@ -50,6 +55,30 @@ public class HighchartData {
 
     public void setData(List<Number[]> series) {
         this.data = series;
+    }
+
+    public Number[] getValueBeforeTimespan() {
+        return valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;
+    }
+
+    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;
+    }
+
+    public Number[] getValueAfterTimespan() {
+        return valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
+    }
+
+    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
     }
 
 }
