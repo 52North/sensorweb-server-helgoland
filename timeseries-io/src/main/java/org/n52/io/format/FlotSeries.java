@@ -32,13 +32,17 @@ import java.util.List;
 import java.util.Map;
 
 public class FlotSeries {
-    
+
     private List<Number[]> values;
-    
+
     private Map<String, List<Number[]>> referenceValues;
 
+    private Number[] valueBeforeTimespan;
+
+    private Number[] valueAfterTimespan;
+
     public FlotSeries() {
-        referenceValues = new HashMap<String, List<Number[]>>();
+        referenceValues = new HashMap<>();
     }
 
     public List<Number[]> getValues() {
@@ -56,9 +60,25 @@ public class FlotSeries {
     public void setReferenceValues(Map<String, List<Number[]>> referenceValues) {
         this.referenceValues = referenceValues;
     }
-    
+
     public void addReferenceValues(String id, List<Number[]> values) {
         this.referenceValues.put(id, values);
     }
-    
+
+    public Number[] getValueBeforeTimespan() {
+        return valueBeforeTimespan;
+    }
+
+    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan;
+    }
+
+    public Number[] getValueAfterTimespan() {
+        return valueAfterTimespan;
+    }
+
+    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan;
+    }
+
 }

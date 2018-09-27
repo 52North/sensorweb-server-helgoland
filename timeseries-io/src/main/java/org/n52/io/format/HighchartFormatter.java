@@ -45,15 +45,19 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
             TimeseriesData seriesToFormat = toFormat.getTimeseries(timeseriesId);
             HighchartSeries series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewTimeseries(timeseriesId, series);
-            
-            TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
-            if (metadata != null) {
-                Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
-                for (String referenceValueId : referenceValues.keySet()) {
-                    TimeseriesData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
-                    HighchartSeries referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
-                    dataCollection.addNewTimeseries(referenceValueId, referenceSeries);
+
+            if (seriesToFormat.hasMetadata()) {
+                TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
+                if (metadata.hasReferenceValues()) {
+                    Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
+                    for (String referenceValueId : referenceValues.keySet()) {
+                        TimeseriesData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
+                        HighchartSeries referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
+                        dataCollection.addNewTimeseries(referenceValueId, referenceSeries);
+                    }
                 }
+                series.setValueBeforeTimespan(formatValue(metadata.getValueBeforeTimespan()));
+                series.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
             }
         }
         return dataCollection;
@@ -68,13 +72,20 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
     }
 
     private List<Number[]> formatSeries(TimeseriesData timeseries) {
-        List<Number[]> series = new ArrayList<Number[]>();
+        List<Number[]> series = new ArrayList<>();
         for (TimeseriesValue currentValue : timeseries.getValues()) {
-            Long timestamp = currentValue.getTimestamp();
-            Double value = currentValue.getValue();
-            series.add(new Number[] {timestamp, value});
+            series.add(formatValue(currentValue));
         }
         return series;
+    }
+
+    private Number[] formatValue(TimeseriesValue currentValue) {
+        if (currentValue == null) {
+            return null;
+        }
+        Long timestamp = currentValue.getTimestamp();
+        Double value = currentValue.getValue();
+        return new Number[] { timestamp, value };
     }
 
 }

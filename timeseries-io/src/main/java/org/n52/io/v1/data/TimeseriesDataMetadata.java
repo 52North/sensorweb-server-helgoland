@@ -28,6 +28,7 @@
 package org.n52.io.v1.data;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +46,13 @@ public class TimeseriesDataMetadata implements Serializable {
     private TimeseriesValue valueAfterTimespan;
 
     public Map<String, TimeseriesData> getReferenceValues() {
-        return referenceValues;
+        return referenceValues == null
+                ? Collections.<String, TimeseriesData>emptyMap()
+                : referenceValues;
+    }
+
+    public boolean hasReferenceValues() {
+        return (referenceValues != null) && !referenceValues.isEmpty();
     }
 
     public void setReferenceValues(Map<String, TimeseriesData> referenceValues) {

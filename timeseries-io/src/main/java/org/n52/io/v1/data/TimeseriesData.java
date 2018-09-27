@@ -44,10 +44,10 @@ public class TimeseriesData implements Serializable {
 
     private List<TimeseriesValue> values = new ArrayList<>();
 
-    private final TimeseriesDataMetadata metadata;
+    private TimeseriesDataMetadata metadata;
 
     public TimeseriesData() {
-        this(new TimeseriesDataMetadata());
+        this((TimeseriesDataMetadata) null);
     }
 
     public TimeseriesData(TimeseriesDataMetadata metadata) {
@@ -105,10 +105,18 @@ public class TimeseriesData implements Serializable {
     }
 
     @JsonIgnore
+    public boolean hasMetadata() {
+        return metadata != null;
+    }
+
+    @JsonIgnore
     public boolean hasReferenceValues() {
-        return (metadata != null)
-                && (metadata.getReferenceValues() != null)
-                && !metadata.getReferenceValues().isEmpty();
+        return hasMetadata() && metadata.hasReferenceValues();
+    }
+
+    public void setMetadata(TimeseriesDataMetadata metadata) {
+        this.metadata = metadata;
+
     }
 
 }
