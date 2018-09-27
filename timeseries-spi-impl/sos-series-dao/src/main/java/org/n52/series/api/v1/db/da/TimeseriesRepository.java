@@ -191,7 +191,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             SeriesDao seriesDao = new SeriesDao(session);
             SeriesEntity timeseries = seriesDao.getInstance(parseId(timeseriesId), dbQuery);
-            return createTimeseriesData(timeseries, dbQuery, session);
+            return createTimeseriesWithoutMetadata(timeseries, dbQuery, session);
         }
         finally {
             returnSession(session);
@@ -203,18 +203,17 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         try {
             SeriesDao dao = new SeriesDao(session);
             SeriesEntity timeseries = dao.getInstance(parseId(timeseriesId), dbQuery);
-            TimeseriesData result = createTimeseriesData(timeseries, dbQuery, session);
-            TimeseriesDataMetadata metadata = result.getMetadata();
-            Interval timespan = dbQuery.getTimespan();
+            TimeseriesData result = createTimeseriesWithoutMetadata(timeseries, dbQuery, session);
+            TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
+            result.setMetadata(metadata);
 
+            Interval timespan = dbQuery.getTimespan();
             DateTime lowerBound = timespan.getStart();
             ObservationEntity previousValue = dao.getClosestOuterPreviousValue(timeseries, lowerBound, dbQuery);
             metadata.setValueBeforeTimespan(createTimeseriesValueFor(previousValue, timeseries));
-
             DateTime upperBound = timespan.getEnd();
             ObservationEntity nextValue = dao.getClosestOuterNextValue(timeseries, upperBound, dbQuery);
             metadata.setValueAfterTimespan(createTimeseriesValueFor(nextValue, timeseries));
-
 
             Set<SeriesEntity> referenceValues = timeseries.getReferenceValues();
             if ((referenceValues != null) && !referenceValues.isEmpty()) {
@@ -312,10 +311,10 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
     private TimeseriesData getReferenceDataValues(SeriesEntity referenceSeries, DbQuery query, Session session)
             throws DataAccessException {
-        TimeseriesData referenceSeriesData = createTimeseriesData(referenceSeries, query, session);
+        TimeseriesData referenceSeriesData = createTimeseriesWithoutMetadata(referenceSeries, query, session);
         return haveToExpandReferenceData(referenceSeriesData)
                 ? expandReferenceDataIfNecessary(referenceSeries, query, session)
-                : createTimeseriesData(referenceSeries, query, session);
+                : createTimeseriesWithoutMetadata(referenceSeries, query, session);
     }
 
     private boolean haveToExpandReferenceData(TimeseriesData referenceSeriesData) {
@@ -346,7 +345,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         return observations.size() == 1;
     }
 
-    private TimeseriesData createTimeseriesData(SeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
+    private TimeseriesData createTimeseriesWithoutMetadata(SeriesEntity seriesEntity, DbQuery query, Session session) throws DataAccessException {
         TimeseriesData result = new TimeseriesData();
         ObservationDao dao = new ObservationDao(session);
         List<ObservationEntity> observations = dao.getAllInstancesFor(seriesEntity, query);

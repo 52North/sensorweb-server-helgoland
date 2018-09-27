@@ -30,6 +30,7 @@ package org.n52.io.format;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.n52.io.v1.data.TimeseriesData;
 import org.n52.io.v1.data.TimeseriesDataCollection;
 import org.n52.io.v1.data.TimeseriesDataMetadata;
@@ -51,25 +52,40 @@ public class FlotFormatter implements TimeseriesDataFormatter<FlotDataCollection
     private FlotSeries createFlotSeries(TimeseriesData seriesToFormat) {
         FlotSeries flotSeries = new FlotSeries();
         flotSeries.setValues(formatSeries(seriesToFormat));
+        if (seriesToFormat.hasMetadata()) {
+            formatMetadata(seriesToFormat, flotSeries);
+        }
+        return flotSeries;
+    }
+
+    private void formatMetadata(TimeseriesData seriesToFormat, FlotSeries flotSeries) {
         TimeseriesDataMetadata metadata = seriesToFormat.getMetadata();
-        if (metadata != null) {
+        if (metadata.hasReferenceValues()) {
             Map<String, TimeseriesData> referenceValues = metadata.getReferenceValues();
             for (String referenceValueId : referenceValues.keySet()) {
                 TimeseriesData referenceValueData = metadata.getReferenceValues().get(referenceValueId);
                 flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
             }
         }
-        return flotSeries;
+        flotSeries.setValueBeforeTimespan(formatValue(metadata.getValueBeforeTimespan()));
+        flotSeries.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
     }
 
     private List<Number[]> formatSeries(TimeseriesData timeseries) {
-        List<Number[]> series = new ArrayList<Number[]>();
+        List<Number[]> series = new ArrayList<>();
         for (TimeseriesValue currentValue : timeseries.getValues()) {
-            Long timestamp = currentValue.getTimestamp();
-            Double value = currentValue.getValue();
-            series.add(new Number[]{timestamp, value});
+            series.add(formatValue(currentValue));
         }
         return series;
+    }
+
+    private Number[] formatValue(TimeseriesValue currentValue) {
+        if (currentValue == null) {
+            return null;
+        }
+        Double value = currentValue.getValue();
+        Long timestamp = currentValue.getTimestamp();
+        return new Number[] { timestamp, value };
     }
 
 }

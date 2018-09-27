@@ -30,10 +30,14 @@ package org.n52.io.format;
 import java.util.List;
 
 public class HighchartSeries {
-    
+
     private String name;
-    
+
     private List<Number[]> data;
+
+    private Number[] valueBeforeTimespan;
+
+    private Number[] valueAfterTimespan;
 
     public String getName() {
         return name;
@@ -50,5 +54,21 @@ public class HighchartSeries {
     public void setData(List<Number[]> series) {
         this.data = series;
     }
-    
+
+    public Number[] getValueBeforeTimespan() {
+        return valueBeforeTimespan;
+    }
+
+    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan;
+    }
+
+    public Number[] getValueAfterTimespan() {
+        return valueAfterTimespan;
+    }
+
+    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan;
+    }
+
 }
