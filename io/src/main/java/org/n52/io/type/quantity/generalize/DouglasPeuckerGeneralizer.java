@@ -144,7 +144,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
                     + maxEntries + ")!");
         }
 
-        Data<QuantityValue> generalizedTimeseries = new Data<>();
+        Data<QuantityValue> generalizedTimeseries = new Data<>(timeseries.getMetadata());
         QuantityValue[] generalizedValues = recursiveGeneralize(timeseries);
         generalizedTimeseries.addValues(generalizedValues);
 

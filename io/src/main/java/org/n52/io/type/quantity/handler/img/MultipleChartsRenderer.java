@@ -98,7 +98,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                  * Configure timeseries reference value renderers with the same metadata and add it at the end
                  * of the plot's renderer list.
                  */
-                DatasetMetadata<Data<QuantityValue>> metadata = timeseriesData.getMetadata();
+                DatasetMetadata<QuantityValue> metadata = timeseriesData.getMetadata();
                 Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
                 for (Entry<String, Data<QuantityValue>> referencedTimeseries : referenceValues.entrySet()) {
                     String referenceTimeseriesId = referencedTimeseries.getKey();
@@ -160,9 +160,9 @@ public class MultipleChartsRenderer extends ChartIoHandler {
 
     private class ChartIndexConfiguration {
 
-        private int timeseriesIndex;
+        private final int timeseriesIndex;
 
-        private String chartId;
+        private final String chartId;
 
         ChartIndexConfiguration(String chartId, int index) {
             if (chartId == null) {
@@ -261,11 +261,11 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             if (value == null) {
                 throw new IllegalArgumentException("TimeseriesValue must not be null.");
             }
-            return interval == null
-                    || interval.getStart()
-                               .getTime() <= value.getTimestamp()
-                            && value.getTimestamp() < interval.getEnd()
-                                                              .getTime();
+            return (interval == null)
+                    || ((interval.getStart()
+                               .getTime() <= value.getTimestamp())
+                            && (value.getTimestamp() < interval.getEnd()
+                                                              .getTime()));
         }
 
     }

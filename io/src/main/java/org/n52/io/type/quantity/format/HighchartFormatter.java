@@ -28,6 +28,7 @@
  */
 package org.n52.io.type.quantity.format;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,6 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-
-import com.vividsolutions.jts.geom.Coordinate;
 
 public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, HighchartData> {
 
@@ -50,14 +49,18 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
             HighchartData series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewSeries(timeseriesId, series);
 
-            DatasetMetadata<Data<QuantityValue>> metadata = seriesToFormat.getMetadata();
-            if (metadata != null) {
-                Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
-                for (String referenceValueId : referenceValues.keySet()) {
-                    Data<QuantityValue> timeseriesData = metadata.getReferenceValues().get(referenceValueId);
-                    HighchartData referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
-                    dataCollection.addNewSeries(referenceValueId, referenceSeries);
+            if (seriesToFormat.hasMetadata()) {
+                DatasetMetadata<QuantityValue> metadata = seriesToFormat.getMetadata();
+                if (metadata.hasReferenceValues()) {
+                    Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
+                    for (String referenceValueId : referenceValues.keySet()) {
+                        Data<QuantityValue> timeseriesData = metadata.getReferenceValues().get(referenceValueId);
+                        HighchartData referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
+                        dataCollection.addNewSeries(referenceValueId, referenceSeries);
+                    }
                 }
+                series.setValueBeforeTimespan(formatValue(metadata.getValueBeforeTimespan()));
+                series.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
             }
         }
         return dataCollection;
@@ -74,20 +77,18 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
     private List<Number[]> formatSeries(Data<QuantityValue> timeseriesData) {
         List<Number[]> series = new ArrayList<>();
         for (QuantityValue currentValue : timeseriesData.getValues()) {
-            List<Number> list = new ArrayList<>();
-            list.add(currentValue.getTimestamp());
-            list.add(currentValue.getValue());
-            if (currentValue.isSetGeometry()) {
-                Coordinate coordinate = currentValue.getGeometry().getCoordinate();
-                list.add(coordinate.x);
-                list.add(coordinate.y);
-                if (!Double.isNaN(coordinate.z)) {
-                    list.add(coordinate.z);
-                }
-            }
-            series.add(list.toArray(new Number[0]));
+            series.add(formatValue(currentValue));
         }
         return series;
+    }
+
+    private Number[] formatValue(QuantityValue currentValue) {
+        if (currentValue == null) {
+            return null;
+        }
+        Long timestamp = currentValue.getTimestamp();
+        BigDecimal value = currentValue.getValue();
+        return new Number[] { timestamp, value };
     }
 
 }
