@@ -70,6 +70,7 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
     @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
+        nullSafePut("id", getId(), properties);
         nullSafePut("label", getLabel(), properties);
         nullSafePut("domainId", getDomainId(), properties);
 //        nullSafePut("rawFormats", getRawFormats(), properties);
