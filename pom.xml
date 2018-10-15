@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
-        <version>12</version>
+        <version>13-SNAPSHOT</version>
     </parent>
 
     <groupId>org.n52.series-api</groupId>
@@ -66,6 +65,8 @@
         <currentYearDynamic>${maven.build.timestamp}</currentYearDynamic>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
+
+        <version.java>1.8</version.java>
     </properties>
 
     <dependencyManagement>
@@ -238,7 +239,7 @@
                 <artifactId>jts-core</artifactId>
                 <version>1.15.0</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.bedatadriven</groupId>
                 <artifactId>jackson-datatype-jts</artifactId>
@@ -322,62 +323,6 @@
             </resource>
         </resources>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.groovy.maven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -425,7 +370,7 @@
                     <!-- dependencies' licenses -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.14</version>
+                    <version>1.16</version>
                     <configuration>
                         <useMissingFile>true</useMissingFile>
                         <fileTemplate>etc/license-as-csv.ftl</fileTemplate>

@@ -40,9 +40,9 @@ import java.util.Optional;
  */
 public final class OptionalOutput<T> {
 
-    private Optional<T> value;
+    private final Optional<T> value;
 
-    private boolean serialize;
+    private final boolean serialize;
 
     private OptionalOutput(T value, boolean serialize) {
         this.value = Optional.ofNullable(value);
@@ -53,7 +53,7 @@ public final class OptionalOutput<T> {
      * Creates an instance which is serialized by default.
      *
      * @param value
-     *        the output value (can be <tt>null</tt>)
+     *        the output value (can be <code>null</code>)
      * @return a optional value which is serialized by default.
      */
     public static <T> OptionalOutput<T> of(T value) {
@@ -64,13 +64,13 @@ public final class OptionalOutput<T> {
      * Creates an instance with a flag indicating if given value shall be serialized or not.
      *
      * @param value
-     *        the output value (can be <tt>null</tt>)
+     *        the output value (can be <code>null</code>)
      * @param serialize
-     *        <tt>true</tt> if the value shall be serialized, <tt>false</tt> otherwise.
+     *        <code>true</code> if the value shall be serialized, <code>false</code> otherwise.
      * @return a optional value indicating if it shall be serialied or not.
      */
     public static <T> OptionalOutput<T> of(T value, boolean serialize) {
-        return new OptionalOutput<T>(value, serialize);
+        return new OptionalOutput<>(value, serialize);
     }
 
     public boolean isSerialize() {
@@ -86,7 +86,7 @@ public final class OptionalOutput<T> {
     }
 
     /**
-     * @return the value if it shall be serialized, <tt>null</tt> otherwise.
+     * @return the value if it shall be serialized, <code>null</code> otherwise.
      */
     public T getValue() {
         return getValue(false);
@@ -95,7 +95,7 @@ public final class OptionalOutput<T> {
     /**
      * @param forced
      *        if value shall be returned independent of serialization flag is set or not.
-     * @return the acutal set value (can be <tt>null</tt>).
+     * @return the acutal set value (can be <code>null</code>).
      */
     public T getValue(boolean forced) {
         return forced || isSerialize()

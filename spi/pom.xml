@@ -9,7 +9,9 @@
     <artifactId>spi</artifactId>
     <name>Series REST API - SPI module</name>
     <packaging>jar</packaging>
+    
     <dependencies>
+    
         <dependency>
             <groupId>org.n52.arctic-sea</groupId>
             <artifactId>svalbard-odata</artifactId>

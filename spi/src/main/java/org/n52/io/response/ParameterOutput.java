@@ -113,7 +113,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     protected <T> boolean isSet(OptionalOutput<T> optional) {
-        return optional != null && optional.isPresent();
+        return (optional != null) && optional.isPresent();
     }
 
     protected <T> boolean resolvesToNonNullValue(OptionalOutput<T> optional) {
@@ -130,10 +130,10 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     public String getHref() {
-        if (getHrefBase() == null && href == null) {
+        if ((getHrefBase() == null) && (href == null)) {
             return null;
         }
-        return !isSet(href) && getHrefBase() != null
+        return !isSet(href) && (getHrefBase() != null)
                 ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
                 : href.getValue();
     }
@@ -205,7 +205,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * @return a list of extra identifiers available via <tt>/{resource}/extras</tt>
+     * @return a list of extra identifiers available via <code>/{resource}/extras</code>
      */
     public Collection<String> getExtras() {
         return getIfSerializedCollection(extras);
@@ -241,7 +241,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof ParameterOutput)) {
+        if ((obj == null) || !(obj instanceof ParameterOutput)) {
             return false;
         }
         ParameterOutput other = (ParameterOutput) obj;
