@@ -6,6 +6,7 @@
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
         <version>13-SNAPSHOT</version>
+        <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>org.n52.series-api</groupId>
@@ -515,6 +516,36 @@
                     </plugins>
                 </pluginManagement>
             </build>
+        </profile>
+        
+        <profile>
+            <id>java-9</id>
+            <activation>
+                <jdk>9</jdk>
+            </activation>
+            <properties>
+                <version.java>9</version.java>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>java-10</id>
+            <activation>
+                <jdk>10</jdk>
+            </activation>
+            <properties>
+                <version.java>10</version.java>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>java-11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <properties>
+                <version.java>11</version.java>
+            </properties>
         </profile>
     </profiles>
 
