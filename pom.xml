@@ -24,10 +24,10 @@
         <module>web-resources</module>
     </modules>
 
-    <organization>
-        <name>52North Initiative for Geospatial Open Source Software GmbH</name>
-        <url>http://52north.org</url>
-    </organization>
+     <organization> 
+         <name>52North Initiative for Geospatial Open Source Software GmbH</name> 
+         <url>http://52north.org</url> 
+     </organization> 
 
     <developers>
         <developer>
@@ -55,19 +55,15 @@
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <version.swc>3.2.0</version.swc>
-        <jackson.version>2.8.5</jackson.version>
-        <version.geotools>19.0</version.geotools>
+        <swc.version>3.2.0</swc.version>
+        <geotools.version>20.0</geotools.version>
         <arctic-sea.version>5.0.0</arctic-sea.version>
-        <spring-boot.version>2.0.2.RELEASE</spring-boot.version>
+        <spring-boot.version>2.0.6.RELEASE</spring-boot.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <currentYearDynamic>${maven.build.timestamp}</currentYearDynamic>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
-
-        <version.java>1.8</version.java>
     </properties>
 
     <dependencyManagement>
@@ -121,7 +117,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-api</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -136,7 +132,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -151,7 +147,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-opengis</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -166,7 +162,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-epsg-hsql</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -181,7 +177,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -196,7 +192,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-metadata</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -211,7 +207,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-shapefile</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -254,7 +250,7 @@
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
                 <exclusions>
                     <exclusion>
                         <!--jcl-over-slf4j is used instead -->
@@ -391,8 +387,8 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.codehaus.groovy.maven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
                     <configuration>
                         <source>
                             import java.util.Date
@@ -400,27 +396,6 @@
                             def vartimestamp = MessageFormat.format("{0,date,yyyy}", new Date())
                             project.properties['currentYearDynamic'] = vartimestamp
                         </source>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <configuration>
-                        <dateFormat>yyyy-MM-dd HH:mm:ssZ</dateFormat>
-                        <gitDescribe>
-                            <skip>true</skip>
-                        </gitDescribe>
-                        <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
-                        <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ss}</timestampFormat>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <preparationGoals>clean</preparationGoals>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
 
@@ -433,9 +408,11 @@
                         </descriptors>
                     </configuration>
                 </plugin>
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <rules>
                             <requireNoRepositories>
@@ -447,16 +424,16 @@
                         </rules>
                     </configuration>
                 </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <failOnWarning>false</failOnWarning>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
-        <extensions>
-            <extension>
-                <!-- used to deploy to 52n repo via webdav -->
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.12</version>
-            </extension>
-        </extensions>
     </build>
 
     <profiles>
@@ -506,35 +483,6 @@
             </build>
         </profile>
         
-        <profile>
-            <id>java-9</id>
-            <activation>
-                <jdk>9</jdk>
-            </activation>
-            <properties>
-                <version.java>9</version.java>
-            </properties>
-        </profile>
-        
-        <profile>
-            <id>java-10</id>
-            <activation>
-                <jdk>10</jdk>
-            </activation>
-            <properties>
-                <version.java>10</version.java>
-            </properties>
-        </profile>
-        
-        <profile>
-            <id>java-11</id>
-            <activation>
-                <jdk>11</jdk>
-            </activation>
-            <properties>
-                <version.java>11</version.java>
-            </properties>
-        </profile>
     </profiles>
 
     <repositories>
