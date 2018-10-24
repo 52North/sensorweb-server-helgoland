@@ -28,6 +28,7 @@
  */
 package org.n52.series.spi.geo;
 
+import org.locationtech.jts.geom.Geometry;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.StationOutput;
@@ -35,8 +36,6 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 public class TransformationService {
 

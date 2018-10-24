@@ -28,42 +28,36 @@
  */
 package org.n52.io.request;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
 import org.locationtech.jts.geom.Point;
+import org.n52.io.geojson.GeoJSONEncoder;
+import org.n52.io.geojson.GeoJSONException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+public class VicinitySerializer extends JsonSerializer<Vicinity> {
 
-@JsonSerialize(using = BBoxSerializer.class)
-@JsonDeserialize(using = BBoxDeserializer.class)
-public class BBox {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VicinitySerializer.class);
 
-    private Point ll;
-
-    private Point ur;
-
-    public BBox() {
-        // for serialization
+    @Override
+    public void serialize(Vicinity value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        gen.writeStartObject();
+        gen.writeNumberField("radius", value.getRadius());
+        gen.writeObjectField("center", encodeGeometry(value));
+        gen.writeEndObject();
     }
 
-    public BBox(Point ll, Point ur) {
-        this.ll = ll;
-        this.ur = ur;
+    private Object encodeGeometry(Vicinity value) {
+        try {
+            final GeoJSONEncoder enc = new GeoJSONEncoder();
+            final Point geometry = value.getCenter();
+            return enc.encodeGeometry(geometry);
+        } catch (GeoJSONException e) {
+            LOGGER.error("could not properly encode geometry.", e);
+            return null;
+        }
     }
-
-    public Point getLl() {
-        return ll;
-    }
-
-    public void setLl(Point ll) {
-        this.ll = ll;
-    }
-
-    public Point getUr() {
-        return ur;
-    }
-
-    public void setUr(Point ur) {
-        this.ur = ur;
-    }
-
 }

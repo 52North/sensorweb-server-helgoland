@@ -33,11 +33,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 public class BoundingBoxTest {
 
@@ -63,7 +63,7 @@ public class BoundingBoxTest {
 
     private Geometry createGeometry(String wkt) throws ParseException {
         WKTReader wktReader = new WKTReader(new GeometryFactory());
-         return wktReader.read(wkt);
+        return wktReader.read(wkt);
     }
 
 }

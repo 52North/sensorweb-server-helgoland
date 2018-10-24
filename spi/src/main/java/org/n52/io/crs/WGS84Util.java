@@ -28,7 +28,7 @@
  */
 package org.n52.io.crs;
 
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 
 /**
  * Some utility methods for WGS84 points. Note that all calculations are being

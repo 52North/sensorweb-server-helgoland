@@ -38,7 +38,7 @@ import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.OptionalOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>

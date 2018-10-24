@@ -73,14 +73,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Point;
 
 public final class IoParameters implements Parameters {
 
@@ -739,8 +738,7 @@ public final class IoParameters implements Parameters {
     private <T> T parseJson(String parameter, Class<T> clazz) {
         try {
             String value = getAsString(parameter);
-            return OBJECT_MAPPER.registerModule(new JtsModule())
-                                .readValue(value, clazz);
+            return OBJECT_MAPPER.readValue(value, clazz);
         } catch (JsonParseException | JsonMappingException e) {
             throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {

@@ -26,51 +26,57 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.geojson;
+package org.n52.io.request;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 import java.io.IOException;
-import java.util.Map;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
+import org.n52.io.geojson.GeoJSONDecoder;
+import org.n52.io.geojson.GeoJSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
+public class BBoxDeserializer extends JsonDeserializer<BBox> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FeatureOutputSerializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BBoxDeserializer.class);
 
     @Override
-    public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers)
-            throws IOException, JsonProcessingException {
-            writeFeature(value, gen);
+    public BBox deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+        JsonNode node = p.getCodec().readTree(p);
+        Point ll = (Point) decodeGeometry(getLowerLeft(node));
+        Point ur = (Point) decodeGeometry(getUpperRight(node));
+        return new BBox(ll, ur);
     }
 
-    private void writeFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {
-        gen.writeStartObject();
-        gen.writeStringField("id", value.getId());
-        Map<String, Object> properties = value.getProperties();
-        if (!properties.isEmpty()) {
-            gen.writeObjectField("properties", properties);
-        }
-        if (value.isSetGeometry()) {
-            gen.writeStringField("type", "Feature");
-            gen.writeObjectField("geometry", encodeGeometry(value));
-        }
-        gen.writeEndObject();
+    private JsonNode getLowerLeft(JsonNode node) {
+        return getObjectNode("ll", node);
     }
 
-    private Object encodeGeometry(GeoJSONFeature value) {
+    private JsonNode getUpperRight(JsonNode node) {
+        return getObjectNode("ur", node);
+    }
+
+    private JsonNode getObjectNode(String path, JsonNode node) {
+        return !node.path(path).isObject()
+                ? MissingNode.getInstance()
+                : node.path(path);
+    }
+
+    private Geometry decodeGeometry(JsonNode value) {
         try {
-            final GeoJSONEncoder enc = new GeoJSONEncoder();
-            final Geometry geometry = value.getGeometry();
-            return enc.encodeGeometry(geometry);
+            final GeoJSONDecoder dec = new GeoJSONDecoder();
+            return dec.decodeGeometry(value);
         } catch (GeoJSONException e) {
-            LOGGER.error("could not properly encode geometry.", e);
+            LOGGER.error("could not properly decode geometry.", e);
             return null;
         }
     }
+
 
 }
