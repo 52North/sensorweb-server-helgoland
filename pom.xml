@@ -418,6 +418,7 @@
                                 <allowedRepositories>
                                     <id>geotools</id>
                                     <id>n52-releases</id>
+                                    <id>sonatype-nexus-snapshots</id>
                                 </allowedRepositories>
                             </requireNoRepositories>
                         </rules>
@@ -501,31 +502,6 @@
             </build>
         </profile>
         
-        <profile>
-            <id>snapshot-dist</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-enforcer-plugin</artifactId>
-                            <configuration>
-                                <rules>
-                                    <requireNoRepositories>
-                                        <allowedRepositories>
-                                            <id>geotools</id>
-                                            <id>n52-releases</id>
-                                            <id>sonatype-nexus-snapshots</id>
-                                        </allowedRepositories>
-                                    </requireNoRepositories>
-                                </rules>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        
     </profiles>
     
     <repositories>
@@ -533,6 +509,12 @@
             <id>n52-releases</id>
             <name>52n Releases</name>
             <url>http://52north.org/maven/repo/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>geotools</id>
@@ -540,8 +522,38 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
             <!--<url>https://boundless.artifactoryonline.com/boundless/main</url> -->
             <!--<url>http://repo.boundlessgeo.com/main/</url> -->
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snaphots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>        
     </repositories>
     
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snaphots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 
