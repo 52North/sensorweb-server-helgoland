@@ -31,6 +31,7 @@ package org.n52.web.ctrl;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.spi.search.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,7 @@ public class SearchController extends BaseController {
 
     private final SearchService searchService;
 
+    @Autowired
     public SearchController(SearchService service) {
         this.searchService = service;
     }

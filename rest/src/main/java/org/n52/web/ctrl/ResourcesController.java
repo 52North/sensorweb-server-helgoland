@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,7 +49,12 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public class ResourcesController {
 
-    private CountingMetadataService metadataService;
+    private final CountingMetadataService metadataService;
+
+    @Autowired
+    public ResourcesController(CountingMetadataService metadataService) {
+        this.metadataService = metadataService;
+    }
 
     @RequestMapping("/")
     public ModelAndView getResources(HttpServletResponse response,
@@ -77,17 +83,17 @@ public class ResourcesController {
         ResourceCollection procedures = add("procedures", "Procedure", i18n.get("msg.web.resources.procedures"));
         ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
-            services.setSize(getMetadataService().getServiceCount(parameters));
+            services.setSize(metadataService.getServiceCount(parameters));
             if (parameters.shallBehaveBackwardsCompatible()) {
                 // ensure backwards compatibility
-                stations.setSize(getMetadataService().getStationCount());
-                timeseries.setSize(getMetadataService().getTimeseriesCount());
+                stations.setSize(metadataService.getStationCount());
+                timeseries.setSize(metadataService.getTimeseriesCount());
             }
-            categories.setSize(getMetadataService().getCategoryCount(parameters));
-            offerings.setSize(getMetadataService().getOfferingCount(parameters));
-            features.setSize(getMetadataService().getFeatureCount(parameters));
-            procedures.setSize(getMetadataService().getProcedureCount(parameters));
-            phenomena.setSize(getMetadataService().getPhenomenaCount(parameters));
+            categories.setSize(metadataService.getCategoryCount(parameters));
+            offerings.setSize(metadataService.getOfferingCount(parameters));
+            features.setSize(metadataService.getFeatureCount(parameters));
+            procedures.setSize(metadataService.getProcedureCount(parameters));
+            phenomena.setSize(metadataService.getPhenomenaCount(parameters));
         }
 
         List<ResourceCollection> resources = new ArrayList<>();
@@ -108,8 +114,8 @@ public class ResourcesController {
         resources.add(datasets);
         resources.add(geometries);
         if (parameters.isExpanded()) {
-            platforms.setSize(getMetadataService().getPlatformCount(parameters));
-            datasets.setSize(getMetadataService().getDatasetCount(parameters));
+            platforms.setSize(metadataService.getPlatformCount(parameters));
+            datasets.setSize(metadataService.getDatasetCount(parameters));
         }
 
         return resources;
@@ -122,14 +128,6 @@ public class ResourcesController {
                 ? implementationVersion
                 : "unknown";
         response.addHeader("API-Version", version);
-    }
-
-    public CountingMetadataService getMetadataService() {
-        return metadataService;
-    }
-
-    public void setMetadataService(CountingMetadataService metadataService) {
-        this.metadataService = metadataService;
     }
 
     public static final class ResourceCollection {

@@ -46,6 +46,7 @@ import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +56,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
 
+    @Autowired
     public TimeseriesMetadataController(CountingMetadataService counter,
                                         ParameterService<TimeseriesMetadataOutput> service) {
         super(counter, service);

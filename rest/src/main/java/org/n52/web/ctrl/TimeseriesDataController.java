@@ -73,6 +73,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -103,6 +104,7 @@ public class TimeseriesDataController extends BaseController {
     @Value("${request.interval.restriction}")
     private String requestIntervalRestriction;
 
+    @Autowired
     public TimeseriesDataController(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService,
                                     DataService<Data<QuantityValue>> timeseriesDataService) {
         this.timeseriesMetadataService = new SpiAssertionExceptionAdapter<>(timeseriesMetadataService);

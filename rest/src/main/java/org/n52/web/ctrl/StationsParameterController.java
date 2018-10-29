@@ -49,6 +49,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -71,6 +72,7 @@ public class StationsParameterController extends BaseController implements Resou
 
     private final CountingMetadataService counter;
 
+    @Autowired
     public StationsParameterController(CountingMetadataService counter,
                                        ParameterService<StationOutput> service) {
         ParameterService<StationOutput> transformingService = new TransformingStationOutputService(service);

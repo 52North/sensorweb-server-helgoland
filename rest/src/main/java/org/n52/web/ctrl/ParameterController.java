@@ -59,7 +59,6 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -72,7 +71,6 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private final ParameterService<T> parameterService;
 
-    @Autowired
     public ParameterController(ParameterService<T> parameterService) {
         ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);

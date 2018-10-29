@@ -33,6 +33,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OfferingOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = UrlSettings.COLLECTION_OFFERINGS)
 public class OfferingsParameterController extends ParameterRequestMappingAdapter<OfferingOutput> {
 
+    @Autowired
     public OfferingsParameterController(CountingMetadataService counter, ParameterService<OfferingOutput> service) {
         super(counter, service);
     }

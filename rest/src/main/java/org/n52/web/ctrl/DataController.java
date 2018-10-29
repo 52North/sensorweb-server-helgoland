@@ -67,6 +67,7 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -100,6 +101,7 @@ public class DataController extends BaseController {
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
+    @Autowired
     public DataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue< ? >> ioFactory,
                           ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
                           DataService<Data<AbstractValue< ? >>> dataService) {
