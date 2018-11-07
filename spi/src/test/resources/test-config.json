@@ -3,6 +3,5 @@
     "width": "1000",
     "generaling_algorithm": "lttb",
     "noDataGapThreshold": 5,
-    "generalize": true,
     "generalize": true
 }
