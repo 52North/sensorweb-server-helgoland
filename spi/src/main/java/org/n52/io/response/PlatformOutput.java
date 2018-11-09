@@ -48,6 +48,8 @@ public class PlatformOutput extends OutputWithParameters {
 
     public static final String PLATFORMTYPE = "platformtype";
 
+    public static final String DATASETS = "datasets";
+
     private OptionalOutput<PlatformType> platformType;
 
     private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;

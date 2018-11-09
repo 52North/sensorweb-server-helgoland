@@ -121,21 +121,15 @@ public class JSONUtils {
     }
 
     public static JsonNode loadPath(final String path) throws IOException {
-        final JsonNode ret;
         try (FileInputStream in = new FileInputStream(path)) {
-            ret = getReader().readTree(in);
+            return getReader().readTree(in);
         }
-        return ret;
     }
 
     public static JsonNode loadFile(final File file) throws IOException {
-        final JsonNode ret;
-
         try (FileInputStream in = new FileInputStream(file)) {
-            ret = getReader().readTree(in);
+            return getReader().readTree(in);
         }
-
-        return ret;
     }
 
     public static JsonNode loadStream(final InputStream in) throws IOException {
