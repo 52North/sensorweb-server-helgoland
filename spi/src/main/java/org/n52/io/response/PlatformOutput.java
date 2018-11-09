@@ -31,13 +31,10 @@ package org.n52.io.response;
 
 import java.util.Collection;
 
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.locationtech.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc
@@ -49,15 +46,11 @@ public class PlatformOutput extends OutputWithParameters {
 
     public static final String COLLECTION_PATH = "platforms";
 
-    public static final String DATASETS = "datasets";
-    public static final String GEOMETRY = "geometry";
     public static final String PLATFORMTYPE = "platformtype";
 
     private OptionalOutput<PlatformType> platformType;
 
     private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;
-
-    private OptionalOutput<Geometry> geometry;
 
     @Override
     protected String getCollectionName() {
@@ -109,16 +102,6 @@ public class PlatformOutput extends OutputWithParameters {
 
     public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> series) {
         this.datasets = series;
-        return this;
-    }
-
-    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
-    public Geometry getGeometry() {
-        return getIfSerialized(geometry);
-    }
-
-    public PlatformOutput setGeometry(OptionalOutput<Geometry> geometry) {
-        this.geometry = geometry;
         return this;
     }
 
