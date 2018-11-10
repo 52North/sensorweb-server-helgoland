@@ -51,6 +51,9 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
+import edu.umd.cs.findbugs.annotations.DischargesObligation;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * borrowed from
  * https://github.com/52North/SOS/blob/4.3.4/coding/json-common/src/main/java/org/n52/sos/coding/json/JSONUtils.java
@@ -120,12 +123,14 @@ public class JSONUtils {
         return getReader().readTree(url.openStream());
     }
 
+    @SuppressFBWarnings(value="OBL_UNSATISFIED_OBLIGATION", justification="Ignore false positive")
     public static JsonNode loadPath(final String path) throws IOException {
         try (FileInputStream in = new FileInputStream(path)) {
             return getReader().readTree(in);
         }
     }
 
+    @SuppressFBWarnings(value="OBL_UNSATISFIED_OBLIGATION", justification="Ignore false positive")
     public static JsonNode loadFile(final File file) throws IOException {
         try (FileInputStream in = new FileInputStream(file)) {
             return getReader().readTree(in);
