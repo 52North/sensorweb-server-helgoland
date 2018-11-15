@@ -32,36 +32,28 @@ import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OptionalOutput;
-import org.n52.io.response.ParameterOutput;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
+public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractDatasetOutput {
 
     public static final String COLLECTION_PATH = "datasets";
 
+    public static final String DATASET_TYPE = "datasettype";
     public static final String VALUE_TYPE = "valuetype";
-    public static final String PLATFORM_TYPE = "platformtype";
-    public static final String DATASET_PARAMETERS = "parameters";
     public static final String REFERENCE_VALUES = "referencevalues";
     public static final String FIRST_VALUE = "firstvalue";
     public static final String LAST_VALUE = "lastvalue";
-    public static final String UOM = "uom";
+
+    private OptionalOutput<String> datasetType;
 
     private OptionalOutput<String> valueType;
-
-    private OptionalOutput<String> platformType;
-
-    private OptionalOutput<DatasetParameters> datasetParameters;
 
     private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
 
     private OptionalOutput<V> firstValue;
 
     private OptionalOutput<V> lastValue;
-
-    private OptionalOutput<String> uom;
 
     protected DatasetOutput() {
         // use static constructor method
@@ -72,57 +64,25 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return COLLECTION_PATH;
     }
 
-    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(String type, IoParameters params) {
+    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(IoParameters params) {
         DatasetOutput<V> output = new DatasetOutput<>();
-        output.setValue(VALUE_TYPE, type, params, output::setValueType);
         return output;
     }
 
-    @Override
-    public DatasetOutput<V> setId(String id) {
-        String type = getIfSet(valueType, true);
-        super.setId(ValueType.createId(type, id));
-        return this;
+    public String getDatasetType() {
+        return getIfSerialized(datasetType);
+    }
+
+    public void setDatasetType(OptionalOutput<String> datasetType) {
+        this.datasetType = datasetType;
     }
 
     public String getValueType() {
         return getIfSerialized(valueType);
     }
 
-    protected void setValueType(OptionalOutput<String> valueType) {
+    public void setValueType(OptionalOutput<String> valueType) {
         this.valueType = valueType;
-    }
-
-    public String getPlatformType() {
-        return getIfSerialized(platformType);
-    }
-
-    public DatasetOutput<V> setPlatformType(OptionalOutput<String> platformType) {
-        this.platformType = platformType;
-        return this;
-    }
-
-    @JsonProperty("parameters")
-    public DatasetParameters getDatasetParameters() {
-        return getDatasetParameters(false);
-    }
-
-    public DatasetParameters getDatasetParameters(boolean forced) {
-        return getIfSet(datasetParameters, forced);
-    }
-
-    public DatasetOutput<V> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
-        this.datasetParameters = parameters;
-        return this;
-    }
-
-    public String getUom() {
-        return getIfSerialized(uom);
-    }
-
-    public DatasetOutput<V> setUom(OptionalOutput<String> uom) {
-        this.uom = uom;
-        return this;
     }
 
     // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
