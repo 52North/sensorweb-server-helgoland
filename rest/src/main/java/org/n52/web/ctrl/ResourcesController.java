@@ -60,8 +60,8 @@ public class ResourcesController {
     public ModelAndView getResources(HttpServletResponse response,
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = IoParameters.createFromMultiValueMap(parameters)
-                                         .respectBackwardsCompatibility();
+        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
+//                                         .respectBackwardsCompatibility();
         return new ModelAndView().addObject(createResources(query));
     }
 
@@ -109,14 +109,26 @@ public class ResourcesController {
         // since 2.0.0
         ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
         ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
-        ResourceCollection geometries = add("geometries", "Geometries", i18n.get("msg.web.resources.geometries"));
+        ResourceCollection individualObservations = add("individualObservations", "IndividualObservations", i18n.get("msg.web.resources.individualObservations"));
+        ResourceCollection profiles = add("profiles", "Profiles", i18n.get("msg.web.resources.profiles"));
+        ResourceCollection trajectories = add("trajectories", "Trajectories", i18n.get("msg.web.resources.trajectories"));
+        //ResourceCollection geometries = add("geometries", "Geometries", i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
-        resources.add(geometries);
+        resources.add(individualObservations);
+        resources.add(profiles);
+        resources.add(trajectories);
+
+        //resources.add(geometries);
         if (parameters.isExpanded()) {
             platforms.setSize(metadataService.getPlatformCount(parameters));
             datasets.setSize(metadataService.getDatasetCount(parameters));
         }
+
+        ResourceCollection samplings = add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"));
+        ResourceCollection measuringPrograms = add("measuringPrograms", "MeasuringPrograms", i18n.get("msg.web.resources.measuringPrograms"));
+        resources.add(samplings);
+        resources.add(measuringPrograms);
 
         return resources;
     }
