@@ -34,8 +34,6 @@ import java.util.Collection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 /**
  * TODO: JavaDoc
  *
@@ -46,56 +44,13 @@ public class PlatformOutput extends OutputWithParameters {
 
     public static final String COLLECTION_PATH = "platforms";
 
-    public static final String PLATFORMTYPE = "platformtype";
-
     public static final String DATASETS = "datasets";
-
-    private OptionalOutput<PlatformType> platformType;
 
     private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
-    }
-
-    @Override
-    public String getHrefBase() {
-        String base = super.getHrefBase();
-        String suffix = getType().getPlatformType();
-        return (base != null) && base.endsWith(suffix)
-            ? base.substring(0, base.lastIndexOf(suffix) - 1)
-            : base;
-    }
-
-    public String getPlatformType() {
-        if (getIfSerialized(platformType) != null) {
-            return getType().getPlatformType();
-        } else {
-            return null;
-        }
-    }
-
-    public PlatformOutput setPlatformType(OptionalOutput<PlatformType> platformtype) {
-        this.platformType = platformtype;
-        return this;
-    }
-
-    @JsonIgnore
-    public PlatformType getType() {
-        PlatformType type = getIfSet(platformType, true);
-        return type != null
-            ? type
-            // stay backward compatible
-            : PlatformType.STATIONARY_INSITU;
-    }
-
-    @Override
-    public PlatformOutput setId(String id) {
-        if (getType() != null) {
-            super.setId(getType().createId(id));
-        }
-        return this;
     }
 
     public Collection<DatasetOutput<AbstractValue<?>>> getDatasets() {
