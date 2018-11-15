@@ -36,7 +36,6 @@ import java.util.Set;
 
 import org.joda.time.DateTimeZone;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.response.dataset.ValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -328,13 +327,13 @@ abstract class RequestParameterSet {
         return getDatasets();
     }
 
-    public String getValueType() {
-        String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String[] datasetIds = getDatasets();
-        return datasetIds.length > 0
-                ? ValueType.extractType(datasetIds[0], handleAs)
-                : ValueType.DEFAULT_VALUE_TYPE;
-    }
+//    public String getValueType() {
+//        String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+//        String[] datasetIds = getDatasets();
+//        return datasetIds.length > 0
+//                ? ValueType.extractType(datasetIds[0], handleAs)
+//                : ValueType.DEFAULT_VALUE_TYPE;
+//    }
 
     public IoParameters toParameters() {
         return IoParameters.createFromSingleJsonValueMap(parameters)

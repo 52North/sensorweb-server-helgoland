@@ -35,10 +35,15 @@ import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.SamplingOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.IndividualObservationOutput;
+import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.TrajectoryOutput;
+import org.n52.shetland.ogc.sos.ProcedureDescriptionFormat;
 
 /**
  * <p>
@@ -104,6 +109,26 @@ public interface UrlSettings {
      * Subpaths identifying datasets collections available.
      */
     String COLLECTION_DATASETS = "/" + DatasetOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying individual observation collections available.
+     */
+    String COLLECTION_INDIVIDUAL_OBSERVATIONS = "/" + IndividualObservationOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying profile collections available.
+     */
+    String COLLECTION_PROFILES = "/" + ProfileOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying trajectories collections available.
+     */
+    String COLLECTION_TRAJECTORIES = "/" + TrajectoryOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying datasets collections available.
+     */
+    String COLLECTION_SAMPLINGS = "/" + SamplingOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying geometries collections available.

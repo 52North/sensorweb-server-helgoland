@@ -71,11 +71,6 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
         return super.getValueType();
     }
 
-    @Override
-    public String getId() {
-        return ValueType.extractId(super.getId());
-    }
-
     public StationOutput getStation() {
         return getIfSerialized(station);
     }

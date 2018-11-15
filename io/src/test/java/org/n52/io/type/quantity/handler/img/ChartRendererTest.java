@@ -50,7 +50,6 @@ import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
-import org.n52.io.response.PlatformType;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.Data;
@@ -147,13 +146,12 @@ public class ChartRendererTest {
         datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
         String valueType = QuantityValue.TYPE;
         IoParameters parameters = IoParameters.createDefaults();
-        DatasetOutput< ? > metadata = DatasetOutput.create(valueType, parameters);
+        DatasetOutput< ? > metadata = DatasetOutput.create(parameters);
         metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
                 .setUom(OptionalOutput.of(""))
                 .setId("timeseries");
 
         PlatformOutput platformOutput = new PlatformOutput();
-        platformOutput.setPlatformType(OptionalOutput.of(PlatformType.STATIONARY_INSITU));
         platformOutput.setId("sta_1");
         platformOutput.setLabel(OptionalOutput.of("station"));
         datasetParameters.setPlatform(platformOutput);

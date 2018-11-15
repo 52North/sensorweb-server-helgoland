@@ -325,7 +325,13 @@ public interface Parameters {
      */
     String FILTER_FIELDS = "fields";
 
-    String FILTER_PLATFORM_TYPES = "platformTypes";
+    String FILTER_MOBILE = "mobile";
+
+    String FILTER_INSITU = "insitu";
+
+    String FILTER_DATASET_TYPES = "datasetTypes";
+
+    String FILTER_AGGREGATIONS = "aggregations";
 
     String FILTER_VALUE_TYPES = "valueTypes";
 

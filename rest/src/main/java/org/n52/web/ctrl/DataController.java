@@ -31,7 +31,6 @@ package org.n52.web.ctrl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,11 +52,11 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.ValueType;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -129,8 +128,9 @@ public class DataController extends BaseController {
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);
-        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+//        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        String valueType = getDataType(map);
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
@@ -139,6 +139,12 @@ public class DataController extends BaseController {
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
                 : new ModelAndView().addObject(processed.get(datasetId));
+    }
+
+    private String getDataType(IoParameters map) {
+        OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters = datasetService.getCondensedParameters(map);
+        DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
+        return item.getAggregation().equals("profile") || item.getDatasetType().equals("profile") ? "profile" : item.getValueType();
     }
 
     @RequestMapping(value = "/data",
@@ -156,7 +162,8 @@ public class DataController extends BaseController {
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         IoProcessChain< ? > ioChain = createIoFactory(datasetType).setParameters(parameters)
                                                                   .createProcessChain();
 
@@ -164,14 +171,14 @@ public class DataController extends BaseController {
         return new ModelAndView().addObject(processed.getAllSeries());
     }
 
-    private String getValueType(IoParameters parameters) {
-        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
-        Set<String> datasetIds = parameters.getDatasets();
-        Iterator<String> iterator = datasetIds.iterator();
-        return iterator.hasNext()
-                ? ValueType.extractType(iterator.next(), handleAs)
-                : ValueType.DEFAULT_VALUE_TYPE;
-    }
+//    private String getValueType(IoParameters parameters) {
+//        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
+//        Set<String> datasetIds = parameters.getDatasets();
+//        Iterator<String> iterator = datasetIds.iterator();
+//        return iterator.hasNext()
+//                ? ValueType.extractType(iterator.next(), handleAs)
+//                : ValueType.DEFAULT_VALUE_TYPE;
+//    }
 
     @RequestMapping(value = "/data",
         params = {
@@ -237,7 +244,8 @@ public class DataController extends BaseController {
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).setParameters(parameters)
@@ -261,7 +269,8 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).setParameters(parameters)
@@ -288,7 +297,8 @@ public class DataController extends BaseController {
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_ZIP);
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.APPLICATION_ZIP)
                                     .writeBinary(response.getOutputStream());
@@ -317,7 +327,8 @@ public class DataController extends BaseController {
             response.setContentType(Constants.TEXT_CSV);
         }
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.TEXT_CSV)
                                     .writeBinary(response.getOutputStream());
@@ -337,7 +348,8 @@ public class DataController extends BaseController {
         LOGGER.debug("get data collection chart with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).setParameters(parameters)
@@ -361,8 +373,9 @@ public class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
-        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+//        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        String valueType = getDataType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).setParameters(parameters)

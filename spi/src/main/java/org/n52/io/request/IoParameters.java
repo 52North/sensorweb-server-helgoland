@@ -55,12 +55,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
+import org.locationtech.jts.geom.Point;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.response.PlatformType;
-import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.n52.shetland.ogc.filter.Filter;
@@ -79,7 +78,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import org.locationtech.jts.geom.Point;
 
 public final class IoParameters implements Parameters {
 
@@ -577,16 +575,28 @@ public final class IoParameters implements Parameters {
         return getValuesOf(FILTER_FIELDS);
     }
 
-    public Set<String> getPlatformTypes() {
-        return getValuesOf(FILTER_PLATFORM_TYPES);
-    }
-
     public Set<String> getPlatformGeometryTypes() {
         return getValuesOf(FILTER_PLATFORM_GEOMETRIES);
     }
 
     public Set<String> getObservedGeometryTypes() {
         return getValuesOf(FILTER_OBSERVED_GEOMETRIES);
+    }
+
+    public String getMobile() {
+        return getAsString(FILTER_MOBILE);
+    }
+
+    public String getInsitu() {
+        return getAsString(FILTER_INSITU);
+    }
+
+    public Set<String> getDatasetTypes() {
+        return getValuesOf(FILTER_DATASET_TYPES);
+    }
+
+    public Set<String> getAggregations() {
+        return getValuesOf(FILTER_AGGREGATIONS);
     }
 
     public Set<String> getValueTypes() {
@@ -1166,36 +1176,31 @@ public final class IoParameters implements Parameters {
     }
 
     public IoParameters respectBackwardsCompatibility() {
-        String[] platformTypes = {
-                                  PlatformType.PLATFORM_TYPE_STATIONARY,
-                                  PlatformType.PLATFORM_TYPE_INSITU
-        };
-
         return filterResolver.shallBehaveBackwardsCompatible()
-            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                                               .extendWith(Parameters.FILTER_VALUE_TYPES,
-                                                           ValueType.DEFAULT_VALUE_TYPE)
+            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, "false")
+                                               .extendWith(Parameters.FILTER_INSITU, "true")
+                                               .extendWith(Parameters.FILTER_VALUE_TYPES, "quantity")
+                                               .extendWith(Parameters.FILTER_AGGREGATIONS, "none")
+                                               .extendWith(Parameters.FILTER_DATASET_TYPES, "timeseries")
                                                // set backwards compatibility at the end
                                                .setBehaveBackwardsCompatible(true)
             : this;
     }
 
     public boolean isPureStationaryInsituQuery() {
-        Set<String> platformTypes = getPlatformTypes();
         Set<String> datasetTypes = getValueTypes();
-        return isStationaryInsituOnly(platformTypes)
+        return isStationaryInsituOnly()
                 && isQuantityOnly(datasetTypes);
     }
 
-    private boolean isStationaryInsituOnly(Set<String> platformTypes) {
-        return (platformTypes.size() == 2)
-                && platformTypes.contains(PlatformType.PLATFORM_TYPE_STATIONARY)
-                && platformTypes.contains(PlatformType.PLATFORM_TYPE_INSITU);
+    private boolean isStationaryInsituOnly() {
+        return (getMobile() != null && Boolean.parseBoolean(getMobile()) == false)
+                && (getInsitu() != null && Boolean.parseBoolean(getInsitu()) == true);
     }
 
     private boolean isQuantityOnly(Set<String> valueTypes) {
         return (valueTypes.size() == 1)
-                && valueTypes.contains(ValueType.DEFAULT_VALUE_TYPE);
+                && valueTypes.contains("quantity");
     }
 
 }
