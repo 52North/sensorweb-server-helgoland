@@ -28,13 +28,35 @@
  */
 package org.n52.io.response;
 
+import org.locationtech.jts.geom.Geometry;
+import org.n52.io.geojson.GeoJSONGeometrySerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class FeatureOutput extends OutputWithParameters {
 
     public static final String COLLECTION_PATH = "features";
+    public static final String GEOMETRY = "geometry";
+
+    private OptionalOutput<Geometry> geometry;
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
     }
+
+    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
+    public Geometry getGeometry() {
+        return getIfSerialized(geometry);
+    }
+
+    public void setGeometry(OptionalOutput<Geometry> geometry) {
+        this.geometry = geometry;
+    }
+
+    public boolean isSetGeometry() {
+        return isSet(geometry) && geometry.isSerialize();
+    }
+
 
 }
