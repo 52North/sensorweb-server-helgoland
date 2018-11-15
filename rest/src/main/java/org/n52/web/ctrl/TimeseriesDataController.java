@@ -58,7 +58,6 @@ import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
-import org.n52.io.response.dataset.ValueType;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.type.quantity.format.FormatterFactory;
 import org.n52.io.type.quantity.generalize.GeneralizingQuantityService;
@@ -386,13 +385,12 @@ public class TimeseriesDataController extends BaseController {
 
         // XXX fix task setup/config
 
-        String datasetId = ValueType.createId(ValueType.DEFAULT_VALUE_TYPE, timeseriesId);
-        if (!preRenderingTask.hasPrerenderedImage(datasetId, chartQualifier)) {
+        if (!preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '"
                     + timeseriesId
                     + "'.");
         }
-        preRenderingTask.writePrerenderedGraphToOutputStream(datasetId, chartQualifier, response.getOutputStream());
+        preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
     }
 
     private void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
