@@ -34,7 +34,9 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -82,9 +84,9 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         return new String[] {
             "station",
             "phenomenon",
+            "procedure",
             "uom",
-            "timestart",
-            "timeend",
+            "time",
             "value"
         };
     }
@@ -126,7 +128,27 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private void writeAsZipStream(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-            zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
+        	String filename = "";
+        	Data<QuantityValue> series;
+        	if (seriesMetadatas.size() == 1) {
+        		Map<String,String> metadataMap =  parseMetadata(seriesMetadatas.get(0));
+        		filename += metadataMap.get("station") + "_";
+        		filename += metadataMap.get("procedure") + "_";
+        		filename += metadataMap.get("phenomenon") + "_";
+        		series = data.getSeries(seriesMetadatas.get(0).getId());                
+        		
+        		// Assuming Elements are in order (by date)
+        		Long startValue = series.getValues().get(0).getTimestart();
+                Long start = (startValue != null)? startValue : series.getValues().get(0).getTimeend(); 
+        		filename += getISO8601Time(start, series.getValues().get(series.getValues().size()-1).getTimeend());
+        		
+        	} else {
+        		//TODO: create useful naming scheme for downloading multiple Datasets with different timestamps at once
+        		filename += "multiple-datasets-";
+        	}
+        	filename += ".csv";
+        	
+            zipStream.putNextEntry(new ZipEntry(filename));
             writeHeader(zipStream);
             writeData(data, zipStream);
             zipStream.closeEntry();
@@ -150,32 +172,21 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
     }
 
     private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
-        String station = null;
-        ParameterOutput platform = metadata.getDatasetParameters()
-                                           .getPlatform();
-        if (platform == null) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
-            station = output.getStation()
-                            .getLabel();
-        } else {
-            station = platform.getLabel();
-        }
-        String phenomenon = metadata.getDatasetParameters()
-                                    .getPhenomenon()
-                                    .getLabel();
-        String uom = metadata.getUom();
+        Map<String,String> metadataMap = parseMetadata(metadata); 
+        String value0 = metadataMap.get(getHeader()[0]);
+        String value1 = metadataMap.get(getHeader()[1]);
+        String value2 = metadataMap.get(getHeader()[2]);
+        String value3 = metadataMap.get(getHeader()[3]);
+        
         for (QuantityValue timeseriesValue : series.getValues()) {
             String[] values = new String[getHeader().length];
-            values[0] = station;
-            values[1] = phenomenon;
-            values[2] = uom;
-
+            values[0] = value0;
+            values[1] = value1;
+            values[2] = value2;
+            values[3] = value3;
             Long timestart = timeseriesValue.getTimestart();
             Long timeend = timeseriesValue.getTimestamp();
-            values[3] = timestart != null
-                    ? new DateTime(timestart).toString()
-                    : null;
-            values[4] = new DateTime(timeend).toString();
+            values[4] = getISO8601Time(timestart, timeend);
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);
         }
@@ -194,6 +205,34 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         sb.deleteCharAt(sb.lastIndexOf(tokenSeparator));
         return sb.append("\n")
                  .toString();
+    }
+    
+    private Map<String,String> parseMetadata(DatasetOutput metadata) {
+        Map<String,String> map = new HashMap<String,String>();
+        String station = null;
+        ParameterOutput platform = metadata.getDatasetParameters(true)
+                                           .getPlatform();
+        if (platform == null) {
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
+            station = output.getStation()
+                            .getLabel();
+        } else {
+            station = platform.getLabel();
+        }
+        map.put("station", station);
+        map.put("phenomenon", metadata.getDatasetParameters(true)
+                                      .getPhenomenon()
+                                      .getLabel());
+        
+        map.put("procedure", metadata.getDatasetParameters(true)
+        						     .getProcedure()
+        						     .getLabel());
+        map.put("uom", metadata.getUom());
+        return map;
+    }
+    
+    private String getISO8601Time(Long start, Long end) {
+        return ((start == null)? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
     }
 
 }
