@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.handler.csv;
 
 import java.io.BufferedOutputStream;
@@ -55,6 +56,13 @@ import org.n52.io.response.dataset.quantity.QuantityValue;
 // TODO extract non quantity specifics to csvhandler
 
 public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
+    
+    private static final String STATION = "station";
+    private static final String PHENOMENON = "phenomenon";
+    private static final String PROCEDURE = "procedure";
+    private static final String UOM = "uom";
+    private static final String TIME = "time";
+    private static final String VALUE = "value";
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -81,20 +89,11 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     @Override
     protected String[] getHeader() {
-        return new String[] {
-            "station",
-            "phenomenon",
-            "procedure",
-            "uom",
-            "time",
-            "value"
-        };
+        return new String[] {STATION, PHENOMENON, PROCEDURE, UOM, TIME, VALUE};
     }
 
     public void setTokenSeparator(String tokenSeparator) {
-        this.tokenSeparator = tokenSeparator == null
-                ? this.tokenSeparator
-                : tokenSeparator;
+        this.tokenSeparator = tokenSeparator == null ? this.tokenSeparator : tokenSeparator;
     }
 
     public void setIncludeByteOrderMark(boolean byteOrderMark) {
@@ -128,26 +127,27 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private void writeAsZipStream(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-        	String filename = "";
-        	Data<QuantityValue> series;
-        	if (seriesMetadatas.size() == 1) {
-        		Map<String,String> metadataMap =  parseMetadata(seriesMetadatas.get(0));
-        		filename += metadataMap.get("station") + "_";
-        		filename += metadataMap.get("procedure") + "_";
-        		filename += metadataMap.get("phenomenon") + "_";
-        		series = data.getSeries(seriesMetadatas.get(0).getId());                
-        		
-        		// Assuming Elements are in order (by date)
-        		Long startValue = series.getValues().get(0).getTimestart();
-                Long start = (startValue != null)? startValue : series.getValues().get(0).getTimeend(); 
-        		filename += getISO8601Time(start, series.getValues().get(series.getValues().size()-1).getTimeend());
-        		
-        	} else {
-        		//TODO: create useful naming scheme for downloading multiple Datasets with different timestamps at once
-        		filename += "multiple-datasets-";
-        	}
-        	filename += ".csv";
-        	
+            String filename = "";
+            Data<QuantityValue> series;
+            if (seriesMetadatas.size() == 1) {
+                Map<String, String> metadataMap = parseMetadata(seriesMetadatas.get(0));
+                filename += metadataMap.get(STATION) + "_";
+                filename += metadataMap.get(PHENOMENON) + "_";
+                filename += metadataMap.get(PROCEDURE) + "_";
+                series = data.getSeries(seriesMetadatas.get(0).getId());
+
+                // Assuming Elements are in order (by date)
+                Long startValue = series.getValues().get(0).getTimestart();
+                Long start = (startValue != null) ? startValue : series.getValues().get(0).getTimeend();
+                filename += getISO8601Time(start, series.getValues().get(series.getValues().size() - 1).getTimeend());
+
+            } else {
+                // TODO: create useful naming scheme for downloading multiple Datasets with
+                // different timestamps at once
+                filename += "multiple-datasets-";
+            }
+            filename += ".csv";
+
             zipStream.putNextEntry(new ZipEntry(filename));
             writeHeader(zipStream);
             writeData(data, zipStream);
@@ -172,12 +172,12 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
     }
 
     private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
-        Map<String,String> metadataMap = parseMetadata(metadata); 
+        Map<String, String> metadataMap = parseMetadata(metadata);
         String value0 = metadataMap.get(getHeader()[0]);
         String value1 = metadataMap.get(getHeader()[1]);
         String value2 = metadataMap.get(getHeader()[2]);
         String value3 = metadataMap.get(getHeader()[3]);
-        
+
         for (QuantityValue timeseriesValue : series.getValues()) {
             String[] values = new String[getHeader().length];
             values[0] = value0;
@@ -203,36 +203,29 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
             sb.append(tokenSeparator);
         }
         sb.deleteCharAt(sb.lastIndexOf(tokenSeparator));
-        return sb.append("\n")
-                 .toString();
+        return sb.append("\n").toString();
     }
-    
-    private Map<String,String> parseMetadata(DatasetOutput metadata) {
-        Map<String,String> map = new HashMap<String,String>();
+
+    private Map<String, String> parseMetadata(DatasetOutput metadata) {
+        Map<String, String> map = new HashMap<String, String>();
         String station = null;
-        ParameterOutput platform = metadata.getDatasetParameters(true)
-                                           .getPlatform();
+        ParameterOutput platform = metadata.getDatasetParameters(true).getPlatform();
         if (platform == null) {
             TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
-            station = output.getStation()
-                            .getLabel();
+            station = output.getStation().getLabel();
         } else {
             station = platform.getLabel();
         }
-        map.put("station", station);
-        map.put("phenomenon", metadata.getDatasetParameters(true)
-                                      .getPhenomenon()
-                                      .getLabel());
-        
-        map.put("procedure", metadata.getDatasetParameters(true)
-        						     .getProcedure()
-        						     .getLabel());
-        map.put("uom", metadata.getUom());
+        map.put(STATION, station);
+        map.put(PHENOMENON, metadata.getDatasetParameters(true).getPhenomenon().getLabel());
+
+        map.put(PROCEDURE, metadata.getDatasetParameters(true).getProcedure().getLabel());
+        map.put(UOM, metadata.getUom());
         return map;
     }
-    
+
     private String getISO8601Time(Long start, Long end) {
-        return ((start == null)? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
+        return ((start == null) ? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
     }
 
 }
