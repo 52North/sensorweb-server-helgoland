@@ -32,4 +32,8 @@ public class TrajectoryOutput extends AbstractDatasetOutput {
 
     public static final String COLLECTION_PATH = "trajectories";
 
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
 }
