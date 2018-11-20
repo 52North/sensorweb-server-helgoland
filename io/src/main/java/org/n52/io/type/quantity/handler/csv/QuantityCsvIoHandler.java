@@ -134,24 +134,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
                 Map<String, String> metadataMap = parseMetadata(seriesMetadatas.get(0));
                 filename += metadataMap.get(STATION) + "_";
                 filename += metadataMap.get(PHENOMENON) + "_";
-                filename += metadataMap.get(PROCEDURE) + "_";
-                series = data.getSeries(seriesMetadatas.get(0).getId());
-
-                // Assuming Elements are in order (by date)
-                // This might fail if there are no Elements.
-                try {
-                    List<QuantityValue> values = series.getValues();
-                    // Determines if Time Intervals or Timestamps are used
-                    Long start = values.get(0).getTimestart();
-                    
-                    Long startTime = (start != null) ? start : values.get(0).getTimestamp();
-                    Long endTime = (start != null) ? values.get(values.size() - 1).getTimeend() :
-                                                     values.get(series.getValues().size() - 1).getTimestamp();
-                    filename += getISO8601Time(startTime, endTime, "%2F");
-                } catch (Exception e) {
-                    // Remove trailing underscore
-                    filename = filename.substring(0, filename.length() - 1);
-                }
+                filename += metadataMap.get(PROCEDURE);
+                
                 // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
                 // Fallback to only station name if that is the case
                 if (filename.length() > 251) {
@@ -208,7 +192,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         for (QuantityValue timeseriesValue : series.getValues()) {
             Long timestart = timeseriesValue.getTimestart();
             Long timeend = (timestart != null) ? timeseriesValue.getTimeend() : timeseriesValue.getTimestamp();
-            values[4] = getISO8601Time(timestart, timeend, "/");
+            values[4] = getISO8601Time(timestart, timeend);
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);
         }
@@ -237,8 +221,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         return map;
     }
 
-    private String getISO8601Time(Long start, Long end, String separator) {
-        return ((start == null) ? "" : (new DateTime(start).toString() + separator)) + new DateTime(end).toString();
+    private String getISO8601Time(Long start, Long end) {
+        return ((start == null) ? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
     }
 
     private String getStation(DatasetOutput metadata) {
