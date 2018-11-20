@@ -128,37 +128,37 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private void writeAsZipStream(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-            String filename = "";
+            StringBuilder filename = new StringBuilder();
             Data<QuantityValue> series;
             if (seriesMetadatas.size() == 1) {
                 Map<String, String> metadataMap = parseMetadata(seriesMetadatas.get(0));
-                filename += metadataMap.get(STATION) + "_";
-                filename += metadataMap.get(PHENOMENON) + "_";
-                filename += metadataMap.get(PROCEDURE);
+                filename.append(metadataMap.get(STATION) + "_");
+                filename.append(metadataMap.get(PHENOMENON) + "_");
+                filename.append(metadataMap.get(PROCEDURE));
                 
                 // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
                 // Fallback to only station name if that is the case
                 if (filename.length() > 251) {
-                    filename = metadataMap.get(STATION);
+                    filename.append(metadataMap.get(STATION));
                 }
             } else {
                 String prefix = "multiple_datasets_";
-                filename = prefix;
+                filename.append(prefix);
                 for (DatasetOutput metadata : seriesMetadatas) {
-                    filename += getStation(metadata) + "_";
+                    filename.append(getStation(metadata) + "_");
                 }
                 // Remove trailing underscore
-                filename = filename.substring(0, filename.length() - 1);
+                filename.deleteCharAt(filename.length() - 1);
 
                 // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
                 // Fallback to UUID if that is the case
                 if (filename.length() > 251) {
-                    filename = prefix + UUID.randomUUID();
+                    filename.append(prefix + UUID.randomUUID());
                 }
             }
-            filename += ".csv";
+            filename.append(".csv");
 
-            zipStream.putNextEntry(new ZipEntry(filename));
+            zipStream.putNextEntry(new ZipEntry(filename.toString()));
             writeHeader(zipStream);
             writeData(data, zipStream);
             zipStream.closeEntry();
