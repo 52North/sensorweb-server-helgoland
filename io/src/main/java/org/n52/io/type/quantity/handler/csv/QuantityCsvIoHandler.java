@@ -38,6 +38,7 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -56,7 +57,7 @@ import org.n52.io.response.dataset.quantity.QuantityValue;
 // TODO extract non quantity specifics to csvhandler
 
 public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
-    
+
     private static final String STATION = "station";
     private static final String PHENOMENON = "phenomenon";
     private static final String PROCEDURE = "procedure";
@@ -137,14 +138,39 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
                 series = data.getSeries(seriesMetadatas.get(0).getId());
 
                 // Assuming Elements are in order (by date)
-                Long startValue = series.getValues().get(0).getTimestart();
-                Long start = (startValue != null) ? startValue : series.getValues().get(0).getTimeend();
-                filename += getISO8601Time(start, series.getValues().get(series.getValues().size() - 1).getTimeend());
-
+                // This might fail if there are no Elements.
+                try {
+                    List<QuantityValue> values = series.getValues();
+                    // Determines if Time Intervals or Timestamps are used
+                    Long start = values.get(0).getTimestart();
+                    
+                    Long startTime = (start != null) ? start : values.get(0).getTimestamp();
+                    Long endTime = (start != null) ? values.get(values.size() - 1).getTimeend() :
+                                                     values.get(series.getValues().size() - 1).getTimestamp();
+                    filename += getISO8601Time(startTime, endTime, "%2F");
+                } catch (Exception e) {
+                    // Remove trailing underscore
+                    filename = filename.substring(0, filename.length() - 1);
+                }
+                // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
+                // Fallback to only station name if that is the case
+                if (filename.length() > 251) {
+                    filename = metadataMap.get(STATION);
+                }
             } else {
-                // TODO: create useful naming scheme for downloading multiple Datasets with
-                // different timestamps at once
-                filename += "multiple-datasets-";
+                String prefix = "multiple_datasets_";
+                filename = prefix;
+                for (DatasetOutput metadata : seriesMetadatas) {
+                    filename += getStation(metadata) + "_";
+                }
+                // Remove trailing underscore
+                filename = filename.substring(0, filename.length() - 1);
+
+                // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
+                // Fallback to UUID if that is the case
+                if (filename.length() > 251) {
+                    filename = prefix + UUID.randomUUID();
+                }
             }
             filename += ".csv";
 
@@ -173,20 +199,16 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
         Map<String, String> metadataMap = parseMetadata(metadata);
-        String value0 = metadataMap.get(getHeader()[0]);
-        String value1 = metadataMap.get(getHeader()[1]);
-        String value2 = metadataMap.get(getHeader()[2]);
-        String value3 = metadataMap.get(getHeader()[3]);
+        String[] values = new String[getHeader().length];
+        values[0] = metadataMap.get(getHeader()[0]);
+        values[1] = metadataMap.get(getHeader()[1]);
+        values[2] = metadataMap.get(getHeader()[2]);
+        values[3] = metadataMap.get(getHeader()[3]);
 
         for (QuantityValue timeseriesValue : series.getValues()) {
-            String[] values = new String[getHeader().length];
-            values[0] = value0;
-            values[1] = value1;
-            values[2] = value2;
-            values[3] = value3;
             Long timestart = timeseriesValue.getTimestart();
-            Long timeend = timeseriesValue.getTimestamp();
-            values[4] = getISO8601Time(timestart, timeend);
+            Long timeend = (timestart != null) ? timeseriesValue.getTimeend() : timeseriesValue.getTimestamp();
+            values[4] = getISO8601Time(timestart, timeend, "/");
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);
         }
@@ -208,24 +230,25 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private Map<String, String> parseMetadata(DatasetOutput metadata) {
         Map<String, String> map = new HashMap<String, String>();
-        String station = null;
-        ParameterOutput platform = metadata.getDatasetParameters(true).getPlatform();
-        if (platform == null) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
-            station = output.getStation().getLabel();
-        } else {
-            station = platform.getLabel();
-        }
-        map.put(STATION, station);
+        map.put(STATION, getStation(metadata));
         map.put(PHENOMENON, metadata.getDatasetParameters(true).getPhenomenon().getLabel());
-
         map.put(PROCEDURE, metadata.getDatasetParameters(true).getProcedure().getLabel());
         map.put(UOM, metadata.getUom());
         return map;
     }
 
-    private String getISO8601Time(Long start, Long end) {
-        return ((start == null) ? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
+    private String getISO8601Time(Long start, Long end, String separator) {
+        return ((start == null) ? "" : (new DateTime(start).toString() + separator)) + new DateTime(end).toString();
+    }
+
+    private String getStation(DatasetOutput metadata) {
+        ParameterOutput platform = metadata.getDatasetParameters(true).getPlatform();
+        if (platform == null) {
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
+            return output.getStation().getLabel();
+        } else {
+            return platform.getLabel();
+        }
     }
 
 }
