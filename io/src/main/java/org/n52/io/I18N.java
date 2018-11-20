@@ -95,13 +95,13 @@ public final class I18N {
         if (language == null) {
             return new Locale(DEFAULT_LOCALE);
         }
-        
         try {
-        	return Locale.forLanguageTag(Locale.LanguageRange.parse(language).get(0).getRange());
+            return Locale.forLanguageTag(Locale.LanguageRange.parse(language).get(0).getRange());
         } catch (Exception e) {
             throw new IllegalArgumentException("Unparsable language parameter:" + language);
         }
     }
+    
     /**
      * Overrides {@link Control#newBundle(String, Locale, String, ClassLoader, boolean)} as given in
      * {@link Control}'s JavaDoc example to handle UTF-8 localization bundles.
