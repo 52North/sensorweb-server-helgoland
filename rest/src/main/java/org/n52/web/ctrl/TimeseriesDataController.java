@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -89,6 +90,14 @@ import org.springframework.web.servlet.ModelAndView;
     "application/json"
 })
 public class TimeseriesDataController extends BaseController {
+
+    private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+
+    private static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Data_for_Timeseries_";
+
+    private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
+
+    private static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
 
@@ -171,6 +180,9 @@ public class TimeseriesDataController extends BaseController {
         IoParameters parameters = createParameters(timeseriesId, request, locale);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
+
+        response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
+        response.setContentType(Constants.APPLICATION_JSON);
 
         // TODO add paging
         DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
@@ -278,7 +290,10 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
+        response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_PDF);
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + timeseriesId + ".pdf\"");
+
         createIoFactory(parameters).createHandler(Constants.APPLICATION_PDF)
                                    .writeBinary(response.getOutputStream());
     }
@@ -294,9 +309,12 @@ public class TimeseriesDataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        // Needed to retrieve Time Ends from Database
+        query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
+
         IoParameters parameters = createParameters(timeseriesId, query, locale);
         parameters = parameters.extendWith(Parameters.ZIP, Boolean.TRUE.toString());
-        response.setContentType(Constants.APPLICATION_ZIP);
+
         getTimeseriesAsCsv(timeseriesId, parameters, response);
     }
 
@@ -308,23 +326,34 @@ public class TimeseriesDataController extends BaseController {
     public void getAsCsv(HttpServletResponse response,
                          @PathVariable String timeseriesId,
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
-                         @RequestParam(required = false) MultiValueMap<String, String> request)
+                         @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(timeseriesId, request, locale);
+        // Needed to retrieve Time Ends from Database
+        query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
+
+        IoParameters parameters = createParameters(timeseriesId, query, locale);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
-    }
+}
+
 
     private void getTimeseriesAsCsv(String timeseriesId, IoParameters parameters, HttpServletResponse response)
             throws IoHandlerException, DatasetFactoryException, URISyntaxException, MalformedURLException, IOException {
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
-        response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
+        String extension = ".";
         if (Boolean.parseBoolean(parameters.getOther(Parameters.ZIP))) {
             response.setContentType(Constants.APPLICATION_ZIP);
+            extension += Parameters.ZIP;
         } else {
             response.setContentType(Constants.TEXT_CSV);
+            extension += "csv";
         }
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE
+                           + timeseriesId
+                           + extension
+                           + "\"");
         createIoFactory(parameters).createHandler(Constants.TEXT_CSV)
                                    .writeBinary(response.getOutputStream());
     }
@@ -363,6 +392,8 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
         response.setContentType(Constants.IMAGE_PNG);
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + timeseriesId + ".png\"");
+
         createIoFactory(parameters).createHandler(Constants.IMAGE_PNG)
                                    .writeBinary(response.getOutputStream());
     }

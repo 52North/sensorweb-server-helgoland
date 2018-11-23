@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.handler.csv;
 
 import java.io.BufferedOutputStream;
@@ -34,7 +35,10 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -53,6 +57,13 @@ import org.n52.io.response.dataset.quantity.QuantityValue;
 // TODO extract non quantity specifics to csvhandler
 
 public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
+
+    private static final String STATION = "station";
+    private static final String PHENOMENON = "phenomenon";
+    private static final String PROCEDURE = "procedure";
+    private static final String UOM = "uom";
+    private static final String TIME = "time";
+    private static final String VALUE = "value";
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
@@ -79,20 +90,11 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     @Override
     protected String[] getHeader() {
-        return new String[] {
-            "station",
-            "phenomenon",
-            "uom",
-            "timestart",
-            "timeend",
-            "value"
-        };
+        return new String[] {STATION, PHENOMENON, PROCEDURE, UOM, TIME, VALUE};
     }
 
     public void setTokenSeparator(String tokenSeparator) {
-        this.tokenSeparator = tokenSeparator == null
-                ? this.tokenSeparator
-                : tokenSeparator;
+        this.tokenSeparator = tokenSeparator == null ? this.tokenSeparator : tokenSeparator;
     }
 
     public void setIncludeByteOrderMark(boolean byteOrderMark) {
@@ -126,7 +128,37 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
 
     private void writeAsZipStream(DataCollection<Data<QuantityValue>> data, OutputStream stream) throws IOException {
         try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
-            zipStream.putNextEntry(new ZipEntry("csv-zip-content.csv"));
+            StringBuilder filename = new StringBuilder();
+            Data<QuantityValue> series;
+            if (seriesMetadatas.size() == 1) {
+                Map<String, String> metadataMap = parseMetadata(seriesMetadatas.get(0));
+                filename.append(metadataMap.get(STATION) + "_");
+                filename.append(metadataMap.get(PHENOMENON) + "_");
+                filename.append(metadataMap.get(PROCEDURE));
+                
+                // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
+                // Fallback to only station name if that is the case
+                if (filename.length() > 251) {
+                    filename.append(metadataMap.get(STATION));
+                }
+            } else {
+                String prefix = "multiple_datasets_";
+                filename.append(prefix);
+                for (DatasetOutput metadata : seriesMetadatas) {
+                    filename.append(getStation(metadata) + "_");
+                }
+                // Remove trailing underscore
+                filename.deleteCharAt(filename.length() - 1);
+
+                // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
+                // Fallback to UUID if that is the case
+                if (filename.length() > 251) {
+                    filename.append(prefix + UUID.randomUUID());
+                }
+            }
+            filename.append(".csv");
+
+            zipStream.putNextEntry(new ZipEntry(filename.toString()));
             writeHeader(zipStream);
             writeData(data, zipStream);
             zipStream.closeEntry();
@@ -150,32 +182,17 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
     }
 
     private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
-        String station = null;
-        ParameterOutput platform = metadata.getDatasetParameters()
-                                           .getPlatform();
-        if (platform == null) {
-            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
-            station = output.getStation()
-                            .getLabel();
-        } else {
-            station = platform.getLabel();
-        }
-        String phenomenon = metadata.getDatasetParameters()
-                                    .getPhenomenon()
-                                    .getLabel();
-        String uom = metadata.getUom();
-        for (QuantityValue timeseriesValue : series.getValues()) {
-            String[] values = new String[getHeader().length];
-            values[0] = station;
-            values[1] = phenomenon;
-            values[2] = uom;
+        Map<String, String> metadataMap = parseMetadata(metadata);
+        String[] values = new String[getHeader().length];
+        values[0] = metadataMap.get(getHeader()[0]);
+        values[1] = metadataMap.get(getHeader()[1]);
+        values[2] = metadataMap.get(getHeader()[2]);
+        values[3] = metadataMap.get(getHeader()[3]);
 
+        for (QuantityValue timeseriesValue : series.getValues()) {
             Long timestart = timeseriesValue.getTimestart();
-            Long timeend = timeseriesValue.getTimestamp();
-            values[3] = timestart != null
-                    ? new DateTime(timestart).toString()
-                    : null;
-            values[4] = new DateTime(timeend).toString();
+            Long timeend = (timestart != null) ? timeseriesValue.getTimeend() : timeseriesValue.getTimestamp();
+            values[4] = getISO8601Time(timestart, timeend);
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);
         }
@@ -192,8 +209,30 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
             sb.append(tokenSeparator);
         }
         sb.deleteCharAt(sb.lastIndexOf(tokenSeparator));
-        return sb.append("\n")
-                 .toString();
+        return sb.append("\n").toString();
+    }
+
+    private Map<String, String> parseMetadata(DatasetOutput metadata) {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(STATION, getStation(metadata));
+        map.put(PHENOMENON, metadata.getDatasetParameters(true).getPhenomenon().getLabel());
+        map.put(PROCEDURE, metadata.getDatasetParameters(true).getProcedure().getLabel());
+        map.put(UOM, metadata.getUom());
+        return map;
+    }
+
+    private String getISO8601Time(Long start, Long end) {
+        return ((start == null) ? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
+    }
+
+    private String getStation(DatasetOutput metadata) {
+        ParameterOutput platform = metadata.getDatasetParameters(true).getPlatform();
+        if (platform == null) {
+            TimeseriesMetadataOutput output = (TimeseriesMetadataOutput) metadata;
+            return output.getStation().getLabel();
+        } else {
+            return platform.getLabel();
+        }
     }
 
 }

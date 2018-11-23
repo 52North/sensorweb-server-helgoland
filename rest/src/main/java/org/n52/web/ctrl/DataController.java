@@ -30,6 +30,7 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -83,6 +84,12 @@ import org.springframework.web.servlet.ModelAndView;
     "application/json"
 })
 public class DataController extends BaseController {
+
+    private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+
+    private static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Data_for_Dataset_";
+
+    private static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
@@ -273,6 +280,8 @@ public class DataController extends BaseController {
         final String datasetType = getDataType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".pdf\"");
+
         createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(outputFormat)
                                     .writeBinary(response.getOutputStream());
@@ -289,6 +298,9 @@ public class DataController extends BaseController {
                                          required = false) String locale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        // Needed to retrieve Time Ends from Database
+        query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
+
         IoParameters parameters = createParameters(datasetId, query, locale);
         LOGGER.debug("get data collection zip for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -296,6 +308,7 @@ public class DataController extends BaseController {
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_ZIP);
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".zip\"");
 
 //        final String datasetType = getValueType(parameters);
         final String datasetType = getDataType(parameters);
@@ -315,17 +328,27 @@ public class DataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
+        // Needed to retrieve Time Ends from Database
+        query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
+
         IoParameters parameters = createParameters(datasetId, query, locale);
         LOGGER.debug("get data collection csv for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
+        String extension = ".";
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
-        if (Boolean.parseBoolean(parameters.getOther("zip"))) {
+        if (Boolean.parseBoolean(parameters.getOther(Parameters.ZIP))) {
             response.setContentType(Constants.APPLICATION_ZIP);
+            extension += Parameters.ZIP;
         } else {
             response.setContentType(Constants.TEXT_CSV);
+            extension += "csv";
         }
+        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE
+                            + datasetId
+                            + extension
+                            + "\"");
 
 //        final String datasetType = getValueType(parameters);
         final String datasetType = getDataType(parameters);
