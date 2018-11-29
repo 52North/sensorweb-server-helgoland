@@ -56,9 +56,9 @@
         <env>dev</env>
 
         <version.swc>3.2.0</version.swc>
-        <jackson.version>2.8.5</jackson.version>
+        <jackson.version>2.9.7</jackson.version>
         <version.geotools>19.0</version.geotools>
-        <arctic-sea.version>5.0.0</arctic-sea.version>
+        <arctic-sea.version>5.1.0</arctic-sea.version>
         <spring-boot.version>2.0.2.RELEASE</spring-boot.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -236,7 +236,13 @@
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
-                <version>1.15.0</version>
+                <version>1.16.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.xmlbeans</groupId>
+                <artifactId>xmlbeans</artifactId>
+                <version>3.0.2</version>
             </dependency>
             
             <dependency>
@@ -308,7 +314,7 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>2.6</version>
             </dependency>
 
         </dependencies>
