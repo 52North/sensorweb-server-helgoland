@@ -31,7 +31,7 @@ package org.n52.io.response.dataset;
 public class ProfileOutput extends AbstractDatasetOutput {
 
     public static final String COLLECTION_PATH = "profiles";
-    
+
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;

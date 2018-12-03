@@ -135,7 +135,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
                 filename.append(metadataMap.get(STATION) + "_");
                 filename.append(metadataMap.get(PHENOMENON) + "_");
                 filename.append(metadataMap.get(PROCEDURE));
-                
+
                 // Check if filename is exceeding 255 (including extension) character bound of most Filesystems.
                 // Fallback to only station name if that is the case
                 if (filename.length() > 251) {
