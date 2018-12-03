@@ -40,11 +40,13 @@ public abstract class AbstractDatasetOutput extends ParameterOutput {
     public static final String INSITU = "insitu";
     public static final String UOM = "uom";
     public static final String DATASET_PARAMETERS = "parameters";
+    public static final String ORIGIN_TIMEZONE = "originTimezone";
 
     private OptionalOutput<String> aggregation;
     private OptionalOutput<Boolean> mobile;
     private OptionalOutput<Boolean> insitu;
     private OptionalOutput<String> uom;
+    private OptionalOutput<String> originTimezone;
     private OptionalOutput<DatasetParameters> datasetParameters;
 
     public String getAggregation() {
@@ -81,6 +83,20 @@ public abstract class AbstractDatasetOutput extends ParameterOutput {
     public AbstractDatasetOutput setUom(OptionalOutput<String> uom) {
         this.uom = uom;
         return this;
+    }
+
+    /**
+     * @return the originTimezone
+     */
+    public OptionalOutput<String> getOriginTimezone() {
+        return originTimezone;
+    }
+
+    /**
+     * @param originTimezone the originTimezone to set
+     */
+    public void setOriginTimezone(OptionalOutput<String> originTimezone) {
+        this.originTimezone = originTimezone;
     }
 
     public DatasetParameters getDatasetParameters(boolean forced) {
