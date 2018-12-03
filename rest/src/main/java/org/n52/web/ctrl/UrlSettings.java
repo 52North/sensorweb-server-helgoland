@@ -35,7 +35,6 @@ import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
-import org.n52.io.response.SamplingOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.IndividualObservationOutput;
@@ -43,6 +42,7 @@ import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.TrajectoryOutput;
+import org.n52.io.response.sampling.SamplingOutput;
 import org.n52.shetland.ogc.sos.ProcedureDescriptionFormat;
 
 /**
