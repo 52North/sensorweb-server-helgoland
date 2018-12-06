@@ -205,7 +205,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * @return a list of extra identifiers available via <tt>/{resource}/extras</tt>
+     * @return a list of extra identifiers available via <code>/{resource}/extras</code>
      */
     public Collection<String> getExtras() {
         return getIfSerializedCollection(extras);

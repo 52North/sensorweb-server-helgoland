@@ -294,7 +294,7 @@ public final class IoParameters implements Parameters {
     }
 
     /**
-     * @return in case of either <tt>style</tt> for single or <tt>styles</tt> for multiple datasets are
+     * @return in case of either <code>style</code> for single or <code>styles</code> for multiple datasets are
      *         available.
      */
     public boolean hasStyles() {
@@ -415,7 +415,7 @@ public final class IoParameters implements Parameters {
 
     /**
      * parses csv parameter {@link Parameters#RESULTTIMES} to a set of values. Validates each result time
-     * value after removing special value <tt>all</tt>. Use {@link #isAllResultTimes()} to check if client
+     * value after removing special value <code>all</code>. Use {@link #isAllResultTimes()} to check if client
      * requests all result times available.
      *
      * @return a (probably empty) set of result times.
