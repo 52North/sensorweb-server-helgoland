@@ -45,8 +45,6 @@ public class DatasetParameters {
 
     private ParameterOutput offering;
 
-//    private ParameterOutput feature;
-
     private ParameterOutput service;
 
     private ParameterOutput platform;
@@ -82,14 +80,6 @@ public class DatasetParameters {
     public void setOffering(ParameterOutput offering) {
         this.offering = offering;
     }
-
-//    public ParameterOutput getFeature() {
-//        return feature;
-//    }
-//
-//    public void setFeature(ParameterOutput feature) {
-//        this.feature = feature;
-//    }
 
     public ParameterOutput getService() {
         return service;
