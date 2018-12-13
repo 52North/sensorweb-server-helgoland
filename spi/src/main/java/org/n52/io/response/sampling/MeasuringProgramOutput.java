@@ -32,8 +32,11 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import org.n52.io.response.CategoryOutput;
+import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -46,9 +49,11 @@ public class MeasuringProgramOutput extends ParameterOutput {
     public static final String MEASURING_PROGRAM_TIME_END = "measuringProgramTimeEnd";
     public static final String OBSERVED_AREA = "observedArea";
     public static final String PRODUCER = "producer";
-    public static final String SAMPLINGS = "samplings";
     public static final String DATASETS = "datasets";
-
+    public static final String SAMPLINGS = "samplings";
+    public static final String FEATURES = "features";
+    public static final String PHENOMENA = "phenomeny";
+    public static final String CATEGROIES = "categories";
     private OptionalOutput<String> orderId;
     private OptionalOutput<Long> measuringProgramTimeStart;
     private OptionalOutput<Long> measuringProgramTimeEnd;
@@ -57,6 +62,9 @@ public class MeasuringProgramOutput extends ParameterOutput {
 
     private OptionalOutput<List<DatasetOutput<?>>> datasets;
     private OptionalOutput<List<SamplingOutput>> samplings;
+    private OptionalOutput<List<FeatureOutput>> features;
+    private OptionalOutput<List<PhenomenonOutput>> phenomena;
+    private OptionalOutput<List<CategoryOutput>> categories;
 
     @Override
     protected String getCollectionName() {
@@ -66,8 +74,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the orderId
      */
-    public OptionalOutput<String> getOrderId() {
-        return orderId;
+    public String getOrderId() {
+        return getIfSerialized(orderId);
     }
 
     /**
@@ -80,8 +88,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the measuringProgramTimeStart
      */
-    public OptionalOutput<Long> getMeasuringProgramTimeStart() {
-        return measuringProgramTimeStart;
+    public Long getMeasuringProgramTimeStart() {
+        return getIfSerialized(measuringProgramTimeStart);
     }
 
     /**
@@ -94,8 +102,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the measuringProgramTimeEnd
      */
-    public OptionalOutput<Long> getMeasuringProgramTimeEnd() {
-        return measuringProgramTimeEnd;
+    public Long getMeasuringProgramTimeEnd() {
+        return getIfSerialized(measuringProgramTimeEnd);
     }
 
     /**
@@ -109,8 +117,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
      * @return the observedArea
      */
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
-    public OptionalOutput<Geometry> getObservedArea() {
-        return observedArea;
+    public Geometry getObservedArea() {
+        return getIfSerialized(observedArea);
     }
 
     /**
@@ -123,8 +131,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the producer
      */
-    public OptionalOutput<ProducerOutput> getProducer() {
-        return producer;
+    public ProducerOutput getProducer() {
+        return getIfSerialized(producer);
     }
 
     /**
@@ -137,8 +145,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the datasets
      */
-    public OptionalOutput<List<DatasetOutput<?>>> getDatasets() {
-        return datasets;
+    public List<DatasetOutput<?>> getDatasets() {
+        return getIfSerialized(datasets);
     }
 
     /**
@@ -151,8 +159,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the samplings
      */
-    public OptionalOutput<List<SamplingOutput>> getSamplings() {
-        return samplings;
+    public List<SamplingOutput> getSamplings() {
+        return getIfSerialized(samplings);
     }
 
     /**
@@ -160,5 +168,47 @@ public class MeasuringProgramOutput extends ParameterOutput {
      */
     public void setSamplings(OptionalOutput<List<SamplingOutput>> samplings) {
         this.samplings = samplings;
+    }
+
+    /**
+     * @return the features
+     */
+    public List<FeatureOutput> getFeatures() {
+        return getIfSerialized(features);
+    }
+
+    /**
+     * @param features the features to set
+     */
+    public void setFeatures(OptionalOutput<List<FeatureOutput>> features) {
+        this.features = features;
+    }
+
+    /**
+     * @return the phenomena
+     */
+    public List<PhenomenonOutput> getPhenomena() {
+        return getIfSerialized(phenomena);
+    }
+
+    /**
+     * @param phenomena the phenomena to set
+     */
+    public void setPhenomena(OptionalOutput<List<PhenomenonOutput>> phenomena) {
+        this.phenomena = phenomena;
+    }
+
+    /**
+     * @return the categories
+     */
+    public List<CategoryOutput> getCategories() {
+        return getIfSerialized(categories);
+    }
+
+    /**
+     * @param categories the categories to set
+     */
+    public void setCategories(OptionalOutput<List<CategoryOutput>> categories) {
+        this.categories = categories;
     }
 }

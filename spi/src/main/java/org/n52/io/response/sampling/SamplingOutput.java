@@ -53,7 +53,7 @@ public class SamplingOutput extends ParameterOutput {
     private OptionalOutput<Long> samplingTimeStart;
     private OptionalOutput<Long> samplingTimeEnd;
 
-    private OptionalOutput<List<Object>> lastSamplingObservations;
+    private OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations;
 
     @Override
     protected String getCollectionName() {
@@ -63,8 +63,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the comment
      */
-    public OptionalOutput<String> getComment() {
-        return comment;
+    public String getComment() {
+        return getIfSerialized(comment);
     }
 
     /**
@@ -77,8 +77,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the measuringProgram
      */
-    public OptionalOutput<MeasuringProgramOutput> getMeasuringProgram() {
-        return measuringProgram;
+    public MeasuringProgramOutput getMeasuringProgram() {
+        return getIfSerialized(measuringProgram);
     }
 
     /**
@@ -91,8 +91,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the sampler
      */
-    public OptionalOutput<SamplerOutput> getSampler() {
-        return sampler;
+    public SamplerOutput getSampler() {
+        return getIfSerialized(sampler);
     }
 
     /**
@@ -105,8 +105,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the samplingMehtod
      */
-    public OptionalOutput<String> getSamplingMehtod() {
-        return samplingMehtod;
+    public String getSamplingMehtod() {
+        return getIfSerialized(samplingMehtod);
     }
 
     /**
@@ -119,8 +119,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the environmentalConditions
      */
-    public OptionalOutput<String> getEnvironmentalConditions() {
-        return environmentalConditions;
+    public String getEnvironmentalConditions() {
+        return getIfSerialized(environmentalConditions);
     }
 
     /**
@@ -133,8 +133,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the samplingTimeStart
      */
-    public OptionalOutput<Long> getSamplingTimeStart() {
-        return samplingTimeStart;
+    public Long getSamplingTimeStart() {
+        return getIfSerialized(samplingTimeStart);
     }
 
     /**
@@ -147,8 +147,8 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the samplingTimeEnd
      */
-    public OptionalOutput<Long> getSamplingTimeEnd() {
-        return samplingTimeEnd;
+    public Long getSamplingTimeEnd() {
+        return getIfSerialized(samplingTimeEnd);
     }
 
     /**
@@ -161,14 +161,14 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the lastSamplingObservations
      */
-    public OptionalOutput<List<Object>> getLastSamplingObservations() {
-        return lastSamplingObservations;
+    public List<SamplingObservationOutput> getLastSamplingObservations() {
+        return getIfSerialized(lastSamplingObservations);
     }
 
     /**
      * @param lastSamplingObservations the lastSamplingObservations to set
      */
-    public void setLastSamplingObservations(OptionalOutput<List<Object>> lastSamplingObservations) {
+    public void setLastSamplingObservations(OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations) {
         this.lastSamplingObservations = lastSamplingObservations;
     }
 }
