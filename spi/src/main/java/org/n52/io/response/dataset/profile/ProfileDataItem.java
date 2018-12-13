@@ -33,9 +33,9 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-    private String verticalUnit;
+public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private BigDecimal verticalFrom;
 
@@ -57,18 +57,11 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.value = value;
     }
 
-    public String getVerticalUnit() {
-        return verticalUnit;
-    }
-
-    public void setVerticalUnit(String verticalUnit) {
-        this.verticalUnit = verticalUnit;
-    }
-
     public BigDecimal getVerticalFrom() {
         return verticalFrom;
     }
 
+    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
     public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
@@ -77,12 +70,14 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return this.verticalFrom != null;
     }
 
+    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
     public BigDecimal getVertical() {
         return !isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
 
+    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
     public BigDecimal getVerticalTo() {
         return isSetVerticalFrom()
                 ? this.vertical
@@ -115,7 +110,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, vertical, verticalFrom, vertical, verticalUnit);
+        return Objects.hash(value, vertical, verticalFrom, vertical);
     }
 
     @Override
@@ -129,8 +124,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return Objects.equals(this.value, other.value)
                 && Objects.equals(this.vertical, other.vertical)
                 && Objects.equals(this.verticalFrom, other.verticalFrom)
-                && Objects.equals(this.vertical, other.vertical)
-                && Objects.equals(this.verticalUnit, other.verticalUnit);
+                && Objects.equals(this.vertical, other.vertical);
     }
 
 }
