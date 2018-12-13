@@ -331,7 +331,7 @@ public interface Parameters {
 
     String FILTER_DATASET_TYPES = "datasetTypes";
 
-    String FILTER_AGGREGATIONS = "aggregations";
+    String FILTER_OBSERVATION_TYPES = "observationTypes";
 
     String FILTER_VALUE_TYPES = "valueTypes";
 

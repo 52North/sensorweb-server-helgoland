@@ -595,8 +595,8 @@ public final class IoParameters implements Parameters {
         return getValuesOf(FILTER_DATASET_TYPES);
     }
 
-    public Set<String> getAggregations() {
-        return getValuesOf(FILTER_AGGREGATIONS);
+    public Set<String> getObservationTypes() {
+        return getValuesOf(FILTER_OBSERVATION_TYPES);
     }
 
     public Set<String> getValueTypes() {
@@ -1180,7 +1180,7 @@ public final class IoParameters implements Parameters {
             ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, "false")
                                                .extendWith(Parameters.FILTER_INSITU, "true")
                                                .extendWith(Parameters.FILTER_VALUE_TYPES, "quantity")
-                                               .extendWith(Parameters.FILTER_AGGREGATIONS, "none")
+                                               .extendWith(Parameters.FILTER_OBSERVATION_TYPES, "discrete")
                                                .extendWith(Parameters.FILTER_DATASET_TYPES, "timeseries")
                                                // set backwards compatibility at the end
                                                .setBehaveBackwardsCompatible(true)

@@ -201,7 +201,7 @@ public class FilterResolver {
     }
 
     private boolean isSetAggregationTypeFilter() {
-        return !parameters.getAggregations()
+        return !parameters.getObservationTypes()
                           .isEmpty();
     }
 
