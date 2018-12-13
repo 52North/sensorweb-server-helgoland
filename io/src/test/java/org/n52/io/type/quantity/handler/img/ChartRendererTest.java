@@ -139,7 +139,7 @@ public class ChartRendererTest {
 
         DatasetParameters datasetParameters = new DatasetParameters();
         datasetParameters.setCategory(createParameter(new CategoryOutput(), "cat_1", "category"));
-        datasetParameters.setFeature(createParameter(new FeatureOutput(), "feat_1", "feature"));
+        FeatureOutput feature = createParameter(new FeatureOutput(), "feat_1", "feature");
         datasetParameters.setOffering(createParameter(new OfferingOutput(), "off_1", "offering"));
         datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
         datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
@@ -147,31 +147,32 @@ public class ChartRendererTest {
         String valueType = QuantityValue.TYPE;
         IoParameters parameters = IoParameters.createDefaults();
         DatasetOutput< ? > metadata = DatasetOutput.create(parameters);
+        metadata.setFeature(OptionalOutput.of(feature));
         metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
                 .setUom(OptionalOutput.of(""))
                 .setId("timeseries");
 
         PlatformOutput platformOutput = new PlatformOutput();
-        platformOutput.setId("sta_1");
-        platformOutput.setLabel(OptionalOutput.of("station"));
+        platformOutput.setId("plat_1");
+        platformOutput.setLabel(OptionalOutput.of("platform"));
         datasetParameters.setPlatform(platformOutput);
 
         // build expected title
         StringBuilder expected = new StringBuilder();
-        ParameterOutput platform = datasetParameters.getPlatform();
-        expected.append(platform.getLabel());
+//        ParameterOutput platform = datasetParameters.getPlatform();
+//        expected.append(platform.getLabel());
         ParameterOutput phenomenon = datasetParameters.getPhenomenon();
         ParameterOutput procedure = datasetParameters.getProcedure();
         ParameterOutput offering = datasetParameters.getOffering();
-        ParameterOutput feature = datasetParameters.getFeature();
         ParameterOutput service = datasetParameters.getService();
         ParameterOutput category = datasetParameters.getCategory();
-        expected.append(" ")
+        expected.append(platformOutput.getLabel())
+                .append(" ")
                 .append(phenomenon.getLabel())
                 .append(" ")
                 .append(procedure.getLabel())
-                // .append(" ")
-                // .append(category.getLabel())
+//                .append(" ")
+//                .append(category.getLabel())
                 .append(" (4 opted-out)")
                 .append(" ")
                 .append(offering.getLabel())

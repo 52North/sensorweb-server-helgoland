@@ -123,8 +123,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
     }
 
     private String createChartId(DatasetOutput< ? > metadata, String referenceId) {
-        ParameterOutput feature = metadata.getDatasetParameters()
-                                          .getFeature();
+        ParameterOutput feature = metadata.getFeature();
         StringBuilder timeseriesLabel = new StringBuilder();
         timeseriesLabel.append(feature.getLabel());
         if (referenceId != null) {

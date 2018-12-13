@@ -314,7 +314,7 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
                                       .getLabel(),
                             parameters.getOffering()
                                       .getLabel(),
-                            parameters.getFeature()
+                            metadata.getFeature()
                                       .getLabel(),
                             parameters.getService()
                                       .getLabel(),

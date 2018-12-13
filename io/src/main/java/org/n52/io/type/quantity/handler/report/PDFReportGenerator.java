@@ -195,7 +195,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         TimeSeries timeseries = report.addNewTimeSeries();
 
         DatasetParameters parameters = output.getDatasetParameters();
-        timeseries.setFeatureOfInterestID(parameters.getFeature()
+        timeseries.setFeatureOfInterestID(output.getFeature()
                                                     .getLabel());
         timeseries.setPhenomenID(parameters.getPhenomenon()
                                            .getLabel());
