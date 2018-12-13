@@ -28,14 +28,21 @@
  */
 package org.n52.io.response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.locationtech.jts.geom.Geometry;
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import org.n52.io.geojson.FeatureOutputSerializer;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class FeatureOutput extends OutputWithParameters {
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
+public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
 
     public static final String COLLECTION_PATH = "features";
+    public static final String PROPERTIES = "properties";
     public static final String GEOMETRY = "geometry";
 
     private OptionalOutput<Geometry> geometry;
@@ -45,17 +52,34 @@ public class FeatureOutput extends OutputWithParameters {
         return COLLECTION_PATH;
     }
 
-    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
+    @Override
     public Geometry getGeometry() {
         return getIfSerialized(geometry);
     }
 
+    @Override
     public void setGeometry(OptionalOutput<Geometry> geometry) {
         this.geometry = geometry;
     }
 
+    @Override
     public boolean isSetGeometry() {
         return isSet(geometry) && geometry.isSerialize();
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        nullSafePut("label", getLabel(), properties);
+        nullSafePut("domainId", getDomainId(), properties);
+        nullSafePut("href", getHref(), properties);
+        return properties;
+    }
+
+    private void nullSafePut(String key, Object value, Map<String, Object> container) {
+        if (value != null) {
+            container.put(key, value);
+        }
     }
 
 
