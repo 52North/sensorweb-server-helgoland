@@ -55,4 +55,8 @@ public interface CountingMetadataService {
 
     int getTimeseriesCount();
 
+    int getSamplingCounter(IoParameters parameters);
+
+    int getMeasuringProgramCounter(IoParameters parameters);
+
 }
