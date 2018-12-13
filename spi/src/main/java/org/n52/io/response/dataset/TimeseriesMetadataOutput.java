@@ -144,10 +144,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             parameters.setOffering(offering);
         }
 
-        @Override
-        public void setFeature(ParameterOutput feature) {
-            parameters.setFeature(feature);
-        }
+//        @Override
+//        public void setFeature(ParameterOutput feature) {
+//            parameters.setFeature(feature);
+//        }
 
         @Override
         public void setService(ParameterOutput service) {
@@ -179,10 +179,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             return parameters.getOffering();
         }
 
-        @Override
-        public ParameterOutput getFeature() {
-            return parameters.getFeature();
-        }
+//        @Override
+//        public ParameterOutput getFeature() {
+//            return parameters.getFeature();
+//        }
 
         @Override
         public ParameterOutput getService() {
