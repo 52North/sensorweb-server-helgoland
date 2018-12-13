@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.dataset;
 
-public class IndividualObservationOutput extends AbstractDatasetOutput {
+public class IndividualObservationOutput extends DatasetOutput {
 
     public static final String COLLECTION_PATH = "individualObservations";
 

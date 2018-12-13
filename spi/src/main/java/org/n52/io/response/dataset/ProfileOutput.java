@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.dataset;
 
-public class ProfileOutput extends AbstractDatasetOutput {
+public class ProfileOutput extends DatasetOutput {
 
     public static final String COLLECTION_PATH = "profiles";
 
