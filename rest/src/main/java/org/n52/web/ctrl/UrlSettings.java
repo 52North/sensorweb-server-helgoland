@@ -42,6 +42,7 @@ import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.TrajectoryOutput;
+import org.n52.io.response.sampling.MeasuringProgramOutput;
 import org.n52.io.response.sampling.SamplingOutput;
 import org.n52.shetland.ogc.sos.ProcedureDescriptionFormat;
 
@@ -126,9 +127,14 @@ public interface UrlSettings {
     String COLLECTION_TRAJECTORIES = "/" + TrajectoryOutput.COLLECTION_PATH;
 
     /**
-     * Subpaths identifying datasets collections available.
+     * Subpath identifying a collection of samplings available.
      */
     String COLLECTION_SAMPLINGS = "/" + SamplingOutput.COLLECTION_PATH;
+
+    /**
+     * Subpath identifying a collection of measuring programs available.
+     */
+    String COLLECTION_MEASURING_PROGRAMS = "/" + MeasuringProgramOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying geometries collections available.
