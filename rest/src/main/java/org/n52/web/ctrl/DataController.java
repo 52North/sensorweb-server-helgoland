@@ -151,7 +151,7 @@ public class DataController extends BaseController {
     private String getDataType(IoParameters map) {
         OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters = datasetService.getCondensedParameters(map);
         DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
-        return item.getAggregation().equals("profile") || item.getDatasetType().equals("profile") ? "profile" : item.getValueType();
+        return item.getObservationType().equals("profile") || item.getDatasetType().equals("profile") ? "profile" : item.getValueType();
     }
 
     @RequestMapping(value = "/data",

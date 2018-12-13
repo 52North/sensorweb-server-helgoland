@@ -29,7 +29,6 @@
 package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.IndividualObservationOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
