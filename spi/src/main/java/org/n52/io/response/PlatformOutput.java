@@ -51,7 +51,7 @@ public class PlatformOutput extends OutputWithParameters {
 
     public static final String DATASETS = "datasets";
     public static final String GEOMETRY = "geometry";
-    public static final String PLATFORMTYPE = "platformtype";
+    public static final String PLATFORMTYPE = "platformType";
 
     private OptionalOutput<PlatformType> platformType;
 

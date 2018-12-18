@@ -39,13 +39,13 @@ public class ServiceOutput extends ParameterOutput {
 
     public static final String COLLECTION_PATH = "services";
 
-    public static final String SERVICE_URL = "serviceurl";
+    public static final String SERVICE_URL = "serviceUrl";
     public static final String VERSION = "version";
     public static final String TYPE = "type";
     public static final String FEATURES = "features";
     public static final String QUANTITIES = "quantities";
-    public static final String SUPPORTS_FIRST_LATEST = "supportsfirstlatest";
-    public static final String SUPPORTED_MIME_TYPES = "supportedmimetypes";
+    public static final String SUPPORTS_FIRST_LATEST = "supportsFirstLatest";
+    public static final String SUPPORTED_MIME_TYPES = "supportedMimeTypes";
 
     private OptionalOutput<String> serviceUrl;
 

@@ -47,10 +47,8 @@ import com.vividsolutions.jts.geom.Geometry;
 public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     public static final String COLLECTION_PATH = "stations";
-
     public static final String TIMESERIES = "timeseries";
-    public static final String PROPERTIES = "properties";
-    public static final String GEOMETRY = "geometry";
+    public static final String RAW_FORMATS = "rawFormats";
 
     private OptionalOutput<Map<String, DatasetParameters>> timeseries;
 
@@ -86,11 +84,11 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     @Override
     public Map<String, Object> getProperties() {
-        Map<String, Object> properties = new HashMap<>();
-        nullSafePut("label", getLabel(), properties);
-        nullSafePut("domainId", getDomainId(), properties);
-        nullSafePut("href", getHref(), properties);
-        nullSafePut("rawFormats", getRawFormats(), properties);
+        Map<String, Object> properties = new HashMap<>(5);
+        nullSafePut(LABEL, getLabel(), properties);
+        nullSafePut(DOMAIN_ID, getDomainId(), properties);
+        nullSafePut(HREF, getHref(), properties);
+        nullSafePut(RAW_FORMATS, getRawFormats(), properties);
         nullSafePut(TIMESERIES, getTimeseries(), properties);
         return properties;
     }
