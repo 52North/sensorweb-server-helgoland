@@ -66,19 +66,14 @@ public abstract class MetadataExtension<T extends ParameterOutput> {
                 || containsIgnoreCase(parameters.getFields());
     }
 
+
     private boolean containsIgnoreCase(Set<String> fields) {
-        for (String field : fields) {
-            final String fieldName = field.toLowerCase();
-            final String extensionName = getExtensionName().toLowerCase();
-            if (fieldName.equals(extensionName)) {
-                return true;
-            }
-        }
-        return false;
+        return fields.stream().map(String::toLowerCase)
+                .anyMatch(getExtensionName().toLowerCase()::equals);
     }
 
     protected Map<String, Object> wrapSingleIntoMap(Object metadata) {
-        Map<String, Object> extras = new HashMap<>();
+        Map<String, Object> extras = new HashMap<>(1);
         extras.put(getExtensionName(), metadata);
         return extras;
     }

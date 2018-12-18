@@ -49,7 +49,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     public static final String ID = "id";
     public static final String HREF = "href";
     public static final String HREF_BASE = HREF;
-    public static final String DOMAIN_ID = "domainid";
+    public static final String DOMAIN_ID = "domainId";
     public static final String LABEL = "label";
     public static final String EXTRAS = "extras";
     public static final String RAWFORMATS = "service";
@@ -205,7 +205,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     /**
-     * @return a list of extra identifiers available via <tt>/{resource}/extras</tt>
+     * @return a list of extra identifiers available via <code>/{resource}/extras</code>
      */
     public Collection<String> getExtras() {
         return getIfSerializedCollection(extras);

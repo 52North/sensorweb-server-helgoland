@@ -41,12 +41,12 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
 
     public static final String COLLECTION_PATH = "datasets";
 
-    public static final String VALUE_TYPE = "valuetype";
-    public static final String PLATFORM_TYPE = "platformtype";
+    public static final String VALUE_TYPE = "valueType";
+    public static final String PLATFORM_TYPE = "platformType";
     public static final String DATASET_PARAMETERS = "parameters";
-    public static final String REFERENCE_VALUES = "referencevalues";
-    public static final String FIRST_VALUE = "firstvalue";
-    public static final String LAST_VALUE = "lastvalue";
+    public static final String REFERENCE_VALUES = "referenceValues";
+    public static final String FIRST_VALUE = "firstValue";
+    public static final String LAST_VALUE = "lastValue";
     public static final String UOM = "uom";
 
     private OptionalOutput<String> valueType;
