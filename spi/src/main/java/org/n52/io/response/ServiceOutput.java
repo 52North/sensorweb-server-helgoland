@@ -33,6 +33,8 @@ import java.util.Objects;
 
 import org.n52.io.Utils;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+
 public class ServiceOutput extends ParameterOutput {
 
     public static final String COLLECTION_PATH = "services";
@@ -97,7 +99,7 @@ public class ServiceOutput extends ParameterOutput {
     // addFeature("supportedMimeTypes", mimeTypesByDatasetTypes);
     // }
 
-//    @JsonAnyGetter
+    @JsonAnyGetter
     public Map<String, Object> getFeatures() {
         return getIfSerializedMap(features);
     }
