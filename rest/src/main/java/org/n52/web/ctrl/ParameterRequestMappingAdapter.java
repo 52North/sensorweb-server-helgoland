@@ -67,7 +67,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(response, locale, addHrefBase(query));
+        return super.getCollection(response, locale, addAdditionalParameter(query));
     }
 
     @Override
@@ -76,7 +76,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam MultiValueMap<String, String> query) {
-        return super.getItem(id, locale, addHrefBase(query));
+        return super.getItem(id, locale, addAdditionalParameter(query));
     }
 
     @Override
@@ -88,7 +88,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                required = false) String locale,
                            @RequestParam MultiValueMap<String, String> query) {
-        super.getRawData(response, id, locale, addHrefBase(query));
+        super.getRawData(response, id, locale, addAdditionalParameter(query));
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
-        return super.getExtras(resourceId, locale, addHrefBase(query));
+        return super.getExtras(resourceId, locale, addAdditionalParameter(query));
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
@@ -105,6 +105,11 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         query.put(Parameters.HREF_BASE, value);
         return query;
     }
+
+    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
+        return addHrefBase(query);
+    }
+
 
     protected CountingMetadataService getEntityCounter() {
         return counter;

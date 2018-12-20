@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.dataset.TrajectoryOutput;
+import org.n52.io.response.dataset.TimeseriesOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +43,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = UrlSettings.COLLECTION_TRAJECTORIES, method = RequestMethod.GET)
-public class TrajectoriesController extends ParameterRequestMappingAdapter<TrajectoryOutput> {
+@RequestMapping(path = UrlSettings.COLLECTION_TIMESERIES, method = RequestMethod.GET)
+public class TimeseriesController extends ParameterRequestMappingAdapter<TimeseriesOutput> {
 
     @Autowired
-    public TrajectoriesController(CountingMetadataService counter, ParameterService<TrajectoryOutput> service) {
+    public TimeseriesController(CountingMetadataService counter, ParameterService<TimeseriesOutput> service) {
         super(counter, service);
     }
 
     @Override
     public String getCollectionName() {
-        return UrlSettings.COLLECTION_TRAJECTORIES;
+        return UrlSettings.COLLECTION_TIMESERIES;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TrajectoriesController extends ParameterRequestMappingAdapter<Traje
 
     @Override
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
-        List<String> value = Collections.singletonList("trajectory");
+        List<String> value = Collections.singletonList("timeseries");
         query.put(Parameters.FILTER_DATASET_TYPES, value);
         return super.addAdditionalParameter(query);
     }
