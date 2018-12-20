@@ -28,7 +28,7 @@
  */
 package org.n52.io.response.dataset;
 
-public class TrajectoryOutput extends DatasetOutput {
+public class TrajectoryOutput extends DatasetOutput<AbstractValue<?>> {
 
     public static final String COLLECTION_PATH = "trajectories";
 

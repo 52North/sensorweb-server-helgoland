@@ -28,13 +28,12 @@
  */
 package org.n52.io.response.dataset;
 
-public class IndividualObservationOutput extends DatasetOutput<AbstractValue<?>> {
+public class TimeseriesOutput extends DatasetOutput<AbstractValue<?>> {
 
-    public static final String COLLECTION_PATH = "individualObservations";
+    public static final String COLLECTION_PATH = "timeseries";
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
     }
-
 }
