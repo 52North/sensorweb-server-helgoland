@@ -41,7 +41,7 @@ public class FilterResolver {
     }
 
     boolean shallBehaveBackwardsCompatible() {
-        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() || isSetValueTypeFilter() || isSetAggregationTypeFilter());
+        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() || isSetValueTypeFilter() || isSetObservationTypeFilter());
     }
 
     public boolean shallIncludeMobileDatasets() {
@@ -184,9 +184,9 @@ public class FilterResolver {
     }
 
     public boolean shallIncludeAllDatasetTypes() {
-        Set<String> datasetTypes = parameters.getDatasetTypes();
-        return !isSetDatasetTypeFilter()
-                || datasetTypes.contains(ALL);
+        Set<String> types = parameters.getDatasetTypes();
+        return (!isSetDatasetTypeFilter() && !isSetObservationTypeFilter() && !isSetValueTypeFilter())
+                || types.contains(ALL);
     }
 
     public boolean shallIncludeDatasetType(String datasetType) {
@@ -195,12 +195,24 @@ public class FilterResolver {
                 || datasetTypes.contains(ALL);
     }
 
+    public boolean shallIncludeAllObservationTypes() {
+        Set<String> types = parameters.getObservationTypes();
+        return !isSetObservationTypeFilter()
+                || types.contains(ALL);
+    }
+
+    public boolean shallIncludeAllValueTypes() {
+        Set<String> types = parameters.getValueTypes();
+        return !isSetValueTypeFilter()
+                || types.contains(ALL);
+    }
+
     private boolean isSetDatasetTypeFilter() {
         return !parameters.getDatasetTypes()
                           .isEmpty();
     }
 
-    private boolean isSetAggregationTypeFilter() {
+    private boolean isSetObservationTypeFilter() {
         return !parameters.getObservationTypes()
                           .isEmpty();
     }
