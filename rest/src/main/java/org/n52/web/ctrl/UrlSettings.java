@@ -44,7 +44,6 @@ import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.dataset.TrajectoryOutput;
 import org.n52.io.response.sampling.MeasuringProgramOutput;
 import org.n52.io.response.sampling.SamplingOutput;
-import org.n52.shetland.ogc.sos.ProcedureDescriptionFormat;
 
 /**
  * <p>
