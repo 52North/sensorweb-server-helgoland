@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,10 +41,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.io.FileUtils;
-import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.ParameterOutput;
 
 public class LicenseExtension extends MetadataExtension<ParameterOutput> {
 
@@ -71,7 +73,7 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
                     ? root.resolve(configFile).toFile()
                     : target.toFile();
             if (file.exists()) {
-                return FileUtils.readFileToString(file);
+                return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             }
             ClassLoader classLoader = getClass().getClassLoader();
             InputStream is = classLoader.getResourceAsStream("/" + configFile);

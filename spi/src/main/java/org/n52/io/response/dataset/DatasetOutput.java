@@ -53,9 +53,9 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     public static final String SMAPLING_TIME_START = "samplingTimeStart";
     public static final String SMAPLING_TIME_END = "samplingTimeEnd";
     public static final String FEATURE = "feature";
-    public static final String REFERENCE_VALUES = "referencevalues";
-    public static final String FIRST_VALUE = "firstvalue";
-    public static final String LAST_VALUE = "lastvalue";
+    public static final String REFERENCE_VALUES = "referenceValues";
+    public static final String FIRST_VALUE = "firstValue";
+    public static final String LAST_VALUE = "lastValue";
     private OptionalOutput<String> datasetType;
     private OptionalOutput<String> observationType;
     private OptionalOutput<String> valueType;

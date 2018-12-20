@@ -291,8 +291,8 @@ public final class IoParameters implements Parameters {
     }
 
     /**
-     * @return in case of either <code>style</code> for single or <code>styles</code> for multiple datasets
-     *         are available.
+     * @return in case of either <code>style</code> for single or <code>styles</code> for multiple datasets are
+     *         available.
      */
     public boolean hasStyles() {
         return (getSingleStyle() != null) || !getReferencedStyles().isEmpty();
