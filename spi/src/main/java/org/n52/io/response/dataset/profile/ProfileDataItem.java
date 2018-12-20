@@ -34,7 +34,9 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({ "verticalFrom", "verticalTo", "vertical", "value" })
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private BigDecimal verticalFrom;
@@ -71,15 +73,15 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     }
 
     @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
-    public BigDecimal getVertical() {
-        return !isSetVerticalFrom()
+    public BigDecimal getVerticalTo() {
+        return isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
 
     @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
-    public BigDecimal getVerticalTo() {
-        return isSetVerticalFrom()
+    public BigDecimal getVertical() {
+        return !isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
