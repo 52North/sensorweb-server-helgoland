@@ -29,6 +29,7 @@
 package org.n52.web.ctrl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -75,7 +76,7 @@ public class ResourcesController {
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
 
         ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));
-        ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
+//        ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
         ResourceCollection timeseries = add("timeseries", "Timeseries", i18n.get("msg.web.resources.timeseries"));
         ResourceCollection categories = add("categories", "Category", i18n.get("msg.web.resources.categories"));
         ResourceCollection offerings = add("offerings", "Offering", i18n.get("msg.web.resources.offerings"));
@@ -84,11 +85,11 @@ public class ResourcesController {
         ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
         if (parameters.isExpanded()) {
             services.setSize(metadataService.getServiceCount(parameters));
-            if (parameters.shallBehaveBackwardsCompatible()) {
+//            if (parameters.shallBehaveBackwardsCompatible()) {
                 // ensure backwards compatibility
-                stations.setSize(metadataService.getStationCount());
-                timeseries.setSize(metadataService.getTimeseriesCount());
-            }
+//                stations.setSize(metadataService.getStationCount());
+//                timeseries.setSize(metadataService.getTimeseriesCount());
+//            }
             categories.setSize(metadataService.getCategoryCount(parameters));
             offerings.setSize(metadataService.getOfferingCount(parameters));
             features.setSize(metadataService.getFeatureCount(parameters));
@@ -98,7 +99,7 @@ public class ResourcesController {
 
         List<ResourceCollection> resources = new ArrayList<>();
         resources.add(services);
-        resources.add(stations);
+//        resources.add(stations);
         resources.add(timeseries);
         resources.add(categories);
         resources.add(offerings);
@@ -110,19 +111,28 @@ public class ResourcesController {
         ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
         ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
         ResourceCollection individualObservations = add("individualObservations", "IndividualObservations", i18n.get("msg.web.resources.individualObservations"));
-        ResourceCollection profiles = add("profiles", "Profiles", i18n.get("msg.web.resources.profiles"));
+//        ResourceCollection profiles = add("profiles", "Profiles", i18n.get("msg.web.resources.profiles"));
         ResourceCollection trajectories = add("trajectories", "Trajectories", i18n.get("msg.web.resources.trajectories"));
         //ResourceCollection geometries = add("geometries", "Geometries", i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
         resources.add(individualObservations);
-        resources.add(profiles);
+//        resources.add(profiles);
         resources.add(trajectories);
 
         //resources.add(geometries);
         if (parameters.isExpanded()) {
             platforms.setSize(metadataService.getPlatformCount(parameters));
             datasets.setSize(metadataService.getDatasetCount(parameters));
+
+            List<String> datasetTypes = new LinkedList<String>(parameters.getDatasetTypes());
+            timeseries.setSize(metadataService
+                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "timeseries")));
+            individualObservations.setSize(metadataService.getDatasetCount(
+                    parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "individualObservations")));
+            trajectories.setSize(metadataService
+                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "trajectories")));
+            parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
         }
 
         ResourceCollection samplings = add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"));
