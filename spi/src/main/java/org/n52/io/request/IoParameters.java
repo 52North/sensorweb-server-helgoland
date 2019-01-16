@@ -1179,7 +1179,7 @@ public final class IoParameters implements Parameters {
             ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, "false")
                                                .extendWith(Parameters.FILTER_INSITU, "true")
                                                .extendWith(Parameters.FILTER_VALUE_TYPES, "quantity")
-                                               .extendWith(Parameters.FILTER_OBSERVATION_TYPES, "discrete")
+                                               .extendWith(Parameters.FILTER_OBSERVATION_TYPES, "simple")
                                                .extendWith(Parameters.FILTER_DATASET_TYPES, "timeseries")
                                                // set backwards compatibility at the end
                                                .setBehaveBackwardsCompatible(true)
