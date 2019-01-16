@@ -81,6 +81,10 @@ public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializab
         this.valueBeforeTimespan = valueBeforeTimespan;
     }
 
+    public boolean hasValueBeforeTimespan() {
+        return valueBeforeTimespan != null;
+    }
+
     /**
      * @return the value after to the upper timespan bounds
      */
@@ -95,6 +99,10 @@ public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializab
      */
     public void setValueAfterTimespan(final T valueBeforeTimespan) {
         this.valueAfterTimespan = valueBeforeTimespan;
+    }
+
+    public boolean hasValueAfterTimespan() {
+        return valueAfterTimespan != null;
     }
 
 }
