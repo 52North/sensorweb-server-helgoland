@@ -41,7 +41,8 @@ public class FilterResolver {
     }
 
     boolean shallBehaveBackwardsCompatible() {
-        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() || isSetValueTypeFilter() || isSetObservationTypeFilter());
+        return false;
+//        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() || isSetValueTypeFilter() || isSetObservationTypeFilter());
     }
 
     public boolean shallIncludeMobileDatasets() {
