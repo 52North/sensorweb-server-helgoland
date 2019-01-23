@@ -314,7 +314,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         TimeseriesData referenceSeriesData = createTimeseriesWithoutMetadata(referenceSeries, query, session);
         return haveToExpandReferenceData(referenceSeriesData)
                 ? expandReferenceDataIfNecessary(referenceSeries, query, session)
-                : createTimeseriesWithoutMetadata(referenceSeries, query, session);
+                : referenceSeriesData;
     }
 
     private boolean haveToExpandReferenceData(TimeseriesData referenceSeriesData) {
