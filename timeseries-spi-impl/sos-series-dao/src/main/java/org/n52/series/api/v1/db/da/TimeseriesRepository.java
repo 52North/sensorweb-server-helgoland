@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -314,7 +314,7 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         TimeseriesData referenceSeriesData = createTimeseriesWithoutMetadata(referenceSeries, query, session);
         return haveToExpandReferenceData(referenceSeriesData)
                 ? expandReferenceDataIfNecessary(referenceSeries, query, session)
-                : createTimeseriesWithoutMetadata(referenceSeries, query, session);
+                : referenceSeriesData;
     }
 
     private boolean haveToExpandReferenceData(TimeseriesData referenceSeriesData) {
