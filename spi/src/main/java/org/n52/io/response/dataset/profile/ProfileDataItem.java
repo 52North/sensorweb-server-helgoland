@@ -62,7 +62,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return verticalFrom;
     }
 
-    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
@@ -71,14 +71,14 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return this.verticalFrom != null;
     }
 
-    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     public BigDecimal getVerticalTo() {
         return isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
 
-    @JsonFormat(shape=JsonFormat.Shape.NUMBER_FLOAT)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     public BigDecimal getVertical() {
         return !isSetVerticalFrom()
                 ? this.vertical

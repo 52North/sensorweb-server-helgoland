@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 
 public class VerticalExtentValueOutput implements Serializable {
 
+    private static final long serialVersionUID = -8180810916760143563L;
     private String label;
     private BigDecimal value;
 
@@ -43,15 +44,19 @@ public class VerticalExtentValueOutput implements Serializable {
        this.label = label;
        this.value = value;
     }
+
     public String getLabel() {
         return label;
     }
+
     public void setLabel(String label) {
         this.label = label;
     }
+
     public BigDecimal getValue() {
         return value;
     }
+
     public void setValue(BigDecimal value) {
         this.value = value;
     }

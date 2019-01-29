@@ -42,55 +42,36 @@ public class FilterResolver {
 
     boolean shallBehaveBackwardsCompatible() {
         return false;
-//        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() || isSetValueTypeFilter() || isSetObservationTypeFilter());
+        // return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() ||
+        // isSetValueTypeFilter() || isSetObservationTypeFilter());
     }
 
-    public boolean shallIncludeMobileDatasets() {
-        return shallIncludeAllDatasets()
-                || isSetMobileFilter()
-                || !isSetStationaryFilter();
+    // public boolean shallIncludeMobileDatasets() {
+//        return hasMobileFilter() ? isSetMobileFilter() : shallIncludeAllDatasets();
+//    }
+//
+//    public boolean shallIncludeInsituDatasets() {
+//        return hasInsituFilter() ? isSetInsituFilter() : shallIncludeAllDatasets();
+//    }
+
+    public boolean hasMobileFilter() {
+        return parameters.getMobile() != null;
     }
 
-    public boolean shallIncludeStationaryDatasets() {
-        return shallIncludeAllDatasets()
-                || isSetStationaryFilter()
-                || !isSetMobileFilter();
+    public boolean hasInsituFilter() {
+        return parameters.getInsitu() != null;
     }
 
-    public boolean shallIncludeInsituDatasets() {
-        return shallIncludeAllDatasets()
-                || isSetInsituFilter()
-                || !isSetRemoteFilter();
+    public boolean isMobileFilter() {
+        return hasMobileFilter() && Boolean.parseBoolean(parameters.getMobile());
     }
 
-    public boolean shallIncludeRemoteDatasets() {
-        return shallIncludeAllDatasets()
-                || isSetRemoteFilter()
-                || !isSetInsituFilter();
-    }
-
-    public boolean isSetStationaryFilter() {
-        return parameters.getMobile() == null
-                || (parameters.getMobile() != null && !Boolean.parseBoolean(parameters.getMobile()));
-    }
-
-    public boolean isSetMobileFilter() {
-        return parameters.getMobile() == null
-                || (parameters.getMobile() != null && Boolean.parseBoolean(parameters.getMobile()));
-    }
-
-    public boolean isSetInsituFilter() {
-        return parameters.getInsitu() == null
-                || (parameters.getInsitu() != null && Boolean.parseBoolean(parameters.getInsitu()));
-    }
-
-    public boolean isSetRemoteFilter() {
-        return parameters.getInsitu() == null
-                || (parameters.getInsitu() != null && !Boolean.parseBoolean(parameters.getInsitu()));
+    public boolean isInsituFilter() {
+        return hasInsituFilter() && Boolean.parseBoolean(parameters.getInsitu());
     }
 
     public boolean shallIncludeAllDatasets() {
-        return isSetMobileFilter() && isSetInsituFilter() && isSetStationaryFilter() && isSetRemoteFilter();
+        return !hasMobileFilter() && !hasInsituFilter();
     }
 
     public boolean isSetPlatformTypeFilter() {
@@ -191,7 +172,7 @@ public class FilterResolver {
     }
 
     public boolean shallIncludeDatasetType(String datasetType) {
-        Set<String> datasetTypes = parameters.getValueTypes();
+        Set<String> datasetTypes = parameters.getDatasetTypes();
         return datasetTypes.contains(datasetType)
                 || datasetTypes.contains(ALL);
     }
@@ -202,10 +183,22 @@ public class FilterResolver {
                 || types.contains(ALL);
     }
 
+    public boolean shallIncludeObservationType(String observationType) {
+        Set<String> observationTypes = parameters.getObservationTypes();
+        return observationTypes.contains(observationType)
+                || observationTypes.contains(ALL);
+    }
+
     public boolean shallIncludeAllValueTypes() {
         Set<String> types = parameters.getValueTypes();
         return !isSetValueTypeFilter()
                 || types.contains(ALL);
+    }
+
+    public boolean shallIncludeValueType(String valueType) {
+        Set<String> valueTypes = parameters.getValueTypes();
+        return valueTypes.contains(valueType)
+                || valueTypes.contains(ALL);
     }
 
     private boolean isSetDatasetTypeFilter() {

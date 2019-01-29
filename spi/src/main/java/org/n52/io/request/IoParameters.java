@@ -88,6 +88,8 @@ public final class IoParameters implements Parameters {
 
     private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
 
+    private static final String QUANTITY = "quantity";
+
     private final MultiValueMap<String, JsonNode> query;
 
     private final FilterResolver filterResolver;
@@ -954,7 +956,7 @@ public final class IoParameters implements Parameters {
      */
     public boolean getAsBoolean(String parameter) {
         String value = getAsString(parameter);
-        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+        if (Boolean.toString(true).equalsIgnoreCase(value) || Boolean.toString(false).equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
         } else {
             IoParseException ex = createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
@@ -1176,9 +1178,9 @@ public final class IoParameters implements Parameters {
 
     public IoParameters respectBackwardsCompatibility() {
         return filterResolver.shallBehaveBackwardsCompatible()
-            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, "false")
-                                               .extendWith(Parameters.FILTER_INSITU, "true")
-                                               .extendWith(Parameters.FILTER_VALUE_TYPES, "quantity")
+            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, Boolean.toString(false))
+                                               .extendWith(Parameters.FILTER_INSITU, Boolean.toString(true))
+                                               .extendWith(Parameters.FILTER_VALUE_TYPES, QUANTITY)
                                                .extendWith(Parameters.FILTER_OBSERVATION_TYPES, "simple")
                                                .extendWith(Parameters.FILTER_DATASET_TYPES, "timeseries")
                                                // set backwards compatibility at the end
@@ -1193,13 +1195,13 @@ public final class IoParameters implements Parameters {
     }
 
     private boolean isStationaryInsituOnly() {
-        return (getMobile() != null && Boolean.parseBoolean(getMobile()) == false)
-                && (getInsitu() != null && Boolean.parseBoolean(getInsitu()) == true);
+        return getMobile() != null && getMobile().equals(Boolean.toString(false))
+                && getInsitu() != null && getInsitu().equals(Boolean.toString(true));
     }
 
     private boolean isQuantityOnly(Set<String> valueTypes) {
         return (valueTypes.size() == 1)
-                && valueTypes.contains("quantity");
+                && valueTypes.contains(QUANTITY);
     }
 
 }

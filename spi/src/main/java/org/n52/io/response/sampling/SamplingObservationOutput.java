@@ -28,8 +28,6 @@
  */
 package org.n52.io.response.sampling;
 
-import java.io.Serializable;
-
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.CategoryOutput;
@@ -44,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class SamplingObservationOutput implements Comparable<SamplingObservationOutput>, Serializable {
+public class SamplingObservationOutput {
 
     private AbstractValue<?> value;
     private DetectionLimitOutput detectionLimit;
@@ -152,13 +150,6 @@ public class SamplingObservationOutput implements Comparable<SamplingObservation
 
     public void setOffering(OfferingOutput offering) {
         this.offering = offering;
-    }
-
-
-    @Override
-    public int compareTo(SamplingObservationOutput o) {
-        // TODO check odering when `showtimeintervals=true`
-        return getAbstractValue().getTimestamp().compareTo(o.getAbstractValue().getTimestamp());
     }
 
 }

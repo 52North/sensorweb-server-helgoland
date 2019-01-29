@@ -36,7 +36,6 @@ import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
@@ -163,14 +162,14 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return getIfSet(datasetParameters, forced);
     }
 
-    public DatasetOutput<?> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
-        this.datasetParameters = parameters;
-        return this;
-    }
-
     @JsonProperty("parameters")
     public DatasetParameters getDatasetParameters() {
         return getDatasetParameters(false);
+    }
+
+    public DatasetOutput<?> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
+        this.datasetParameters = parameters;
+        return this;
     }
 
     @Override
