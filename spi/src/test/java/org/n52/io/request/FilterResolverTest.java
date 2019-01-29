@@ -28,40 +28,37 @@
  */
 package org.n52.io.request;
 
-import static org.junit.Assert.assertTrue;
 import static org.n52.io.request.IoParameters.createDefaults;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class FilterResolverTest {
 
     private FilterResolver createResolver(IoParameters resolver) {
         return new FilterResolver(resolver);
     }
 
-    @Test
-    public void when_defaults_then_behaveBackwardsCompatible() {
-        FilterResolver resolver = createResolver(createDefaults());
-        assertTrue(resolver.shallBehaveBackwardsCompatible());
-    }
-
-    @Test
-    public void when_setPlatformTypeFilter_then_dontBehaveBackwardsCompatible() {
-        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_DATASET_TYPES, "blah");
-        FilterResolver resolver = createResolver(parameters);
-        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
-    }
-
-    @Test
-    public void when_setValueTypeFiltre_then_dontBehaveBackwardsCompatible() {
-        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "blah");
-        FilterResolver resolver = createResolver(parameters);
-        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
-    }
-
+//    @Test
+//    public void when_defaults_then_behaveBackwardsCompatible() {
+//        FilterResolver resolver = createResolver(createDefaults());
+//        assertTrue(resolver.shallBehaveBackwardsCompatible());
+//    }
+//
+//    @Test
+//    public void when_setDatasetTypeFilter_then_dontBehaveBackwardsCompatible() {
+//        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_DATASET_TYPES, "blah");
+//        FilterResolver resolver = createResolver(parameters);
+//        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+//    }
+//
+//    @Test
+//    public void when_setValueTypeFiltre_then_dontBehaveBackwardsCompatible() {
+//        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "blah");
+//        FilterResolver resolver = createResolver(parameters);
+//        Assert.assertFalse(resolver.shallBehaveBackwardsCompatible());
+//    }
+//
 //    @Test
 //    public void when_defaults_then_allPlatformGeometryFiltersActive() {
 //        FilterResolver resolver = createResolver(createDefaults());
@@ -210,44 +207,41 @@ public class FilterResolverTest {
     @Test
     public void when_defaults_then_insituFilterActive() {
         FilterResolver resolver = createResolver(createDefaults());
-        Assert.assertTrue(resolver.shallIncludeInsituDatasets());
+        Assert.assertFalse(resolver.hasInsituFilter());
     }
 
     @Test
     public void when_defaults_then_stationaryFilterActive() {
         FilterResolver resolver = createResolver(createDefaults());
-        Assert.assertTrue(resolver.shallIncludeStationaryDatasets());
+        Assert.assertFalse(resolver.hasMobileFilter());
     }
 
     @Test
-    public void when_defaults_then_remoteFilterInactive() {
+    public void when_defaults_then_remoteFilterActive() {
         FilterResolver resolver = createResolver(createDefaults());
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
+        Assert.assertFalse(resolver.hasInsituFilter());
     }
 
     @Test
-    public void when_defaults_then_mobileFilterInactive() {
+    public void when_defaults_then_mobileFilterActive() {
         FilterResolver resolver = createResolver(createDefaults());
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
+        Assert.assertFalse(resolver.hasMobileFilter());
     }
 
     @Test
     public void when_setMobile_then_allMobilesFilterActive() {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_MOBILE, "true");
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
-        Assert.assertTrue(resolver.shallIncludeInsituDatasets());
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
-        Assert.assertFalse(resolver.shallIncludeStationaryDatasets());
+        Assert.assertTrue(resolver.hasMobileFilter());
+        Assert.assertTrue(resolver.isMobileFilter());
+        Assert.assertFalse(resolver.hasInsituFilter());
     }
 
     @Test
     public void when_setRemote_then_allRemotesFilterActive() {
         FilterResolver resolver = createResolver(createDefaults().extendWith(Parameters.FILTER_INSITU, "false"));
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
-        Assert.assertTrue(resolver.shallIncludeStationaryDatasets());
-        Assert.assertFalse(resolver.shallIncludeInsituDatasets());
+        Assert.assertTrue(resolver.hasInsituFilter());
+        Assert.assertFalse(resolver.isInsituFilter());
     }
 
     @Test
@@ -255,10 +249,10 @@ public class FilterResolverTest {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_MOBILE, "true")
                 .extendWith(Parameters.FILTER_INSITU, "false");
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
-        Assert.assertFalse(resolver.shallIncludeInsituDatasets());
-        Assert.assertFalse(resolver.shallIncludeStationaryDatasets());
+        Assert.assertTrue(resolver.hasMobileFilter());
+        Assert.assertTrue(resolver.isMobileFilter());
+        Assert.assertTrue(resolver.hasInsituFilter());
+        Assert.assertFalse(resolver.isInsituFilter());
     }
 
     @Test
@@ -266,10 +260,10 @@ public class FilterResolverTest {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_MOBILE, "true")
                 .extendWith(Parameters.FILTER_INSITU, "true");
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
-        Assert.assertTrue(resolver.shallIncludeInsituDatasets());
-        Assert.assertFalse(resolver.shallIncludeStationaryDatasets());
-        Assert.assertFalse(resolver.shallIncludeRemoteDatasets());
+        Assert.assertTrue(resolver.hasMobileFilter());
+        Assert.assertTrue(resolver.isMobileFilter());
+        Assert.assertTrue(resolver.hasInsituFilter());
+        Assert.assertTrue(resolver.isInsituFilter());
     }
 
     @Test
@@ -277,10 +271,10 @@ public class FilterResolverTest {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_MOBILE, "false")
                 .extendWith(Parameters.FILTER_INSITU, "true");
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeInsituDatasets());
-        Assert.assertTrue(resolver.shallIncludeStationaryDatasets());
-        Assert.assertFalse(resolver.shallIncludeMobileDatasets());
-        Assert.assertFalse(resolver.shallIncludeRemoteDatasets());
+        Assert.assertTrue(resolver.hasMobileFilter());
+        Assert.assertFalse(resolver.isMobileFilter());
+        Assert.assertTrue(resolver.hasInsituFilter());
+        Assert.assertTrue(resolver.isInsituFilter());
     }
 
     @Test
@@ -288,53 +282,69 @@ public class FilterResolverTest {
         IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_MOBILE, "false")
                 .extendWith(Parameters.FILTER_INSITU, "false");
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeStationaryDatasets());
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
-        Assert.assertFalse(resolver.shallIncludeInsituDatasets());
-        Assert.assertFalse(resolver.shallIncludeMobileDatasets());
+        Assert.assertTrue(resolver.hasMobileFilter());
+        Assert.assertFalse(resolver.isMobileFilter());
+        Assert.assertTrue(resolver.hasInsituFilter());
+        Assert.assertFalse(resolver.isInsituFilter());
     }
 
     @Test
     public void when_setAllDatasets_then_insituFilterActive() {
         IoParameters parameters = createDefaults();
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeInsituDatasets());
+        Assert.assertFalse(resolver.hasInsituFilter());
     }
 
     @Test
     public void when_setAllDatasets_then_stationaryFilterActive() {
         IoParameters parameters = createDefaults();
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeStationaryDatasets());
+        Assert.assertFalse(resolver.hasMobileFilter());
     }
 
     @Test
     public void when_setAllDatasets_then_remoteFilterActive() {
         IoParameters parameters = createDefaults();
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeRemoteDatasets());
+        Assert.assertFalse(resolver.hasInsituFilter());
     }
 
     @Test
     public void when_setAllDatasets_then_mobileFilterActive() {
         IoParameters parameters = createDefaults();
         FilterResolver resolver = createResolver(parameters);
-        Assert.assertTrue(resolver.shallIncludeMobileDatasets());
+        Assert.assertFalse(resolver.hasMobileFilter());
     }
 
     @Test
     public void when_setAllDatasetTypes_then_noFilterActive() {
-        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "all");
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_DATASET_TYPES, "all");
         FilterResolver resolver = createResolver(parameters);
         Assert.assertTrue(resolver.shallIncludeAllDatasetTypes());
     }
 
     @Test
     public void when_setDatasetTypeFilter_then_filterActive() {
-        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "foobar");
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_DATASET_TYPES, "foobar");
         FilterResolver resolver = createResolver(parameters);
         Assert.assertFalse(resolver.shallIncludeAllDatasetTypes());
         Assert.assertTrue(resolver.shallIncludeDatasetType("foobar"));
+    }
+
+    @Test
+    public void when_setObservationTypeFilter_then_filterActive() {
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_OBSERVATION_TYPES, "foobar");
+        FilterResolver resolver = createResolver(parameters);
+        Assert.assertFalse(resolver.shallIncludeAllObservationTypes());
+        Assert.assertTrue(resolver.shallIncludeObservationType("foobar"));
+    }
+
+    @Test
+    public void when_setValueTypeFilter_then_filterActive() {
+        IoParameters parameters = createDefaults().extendWith(Parameters.FILTER_VALUE_TYPES, "foobar");
+        FilterResolver resolver = createResolver(parameters);
+        Assert.assertFalse(resolver.shallIncludeAllValueTypes());
+        Assert.assertTrue(resolver.shallIncludeValueType("foobar"));
     }
 
 }
