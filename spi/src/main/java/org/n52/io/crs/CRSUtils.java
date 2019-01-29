@@ -266,7 +266,14 @@ public final class CRSUtils {
                                CoordinateReferenceSystem dest)
             throws FactoryException,
             TransformException {
-        return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
+        return checkSrid(JTS.transform(geometry, CRS.findMathTransform(srs, dest)), srs, dest);
+    }
+
+    private Geometry checkSrid(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException {
+        if (!srs.equals(dest) && CRS.equalsIgnoreMetadata(dest, getCrsFor(DEFAULT_CRS))) {
+                geometry.setSRID(EPSG_WGS84);
+        }
+        return geometry;
     }
 
     public Geometry parseWkt(String wkt) {
