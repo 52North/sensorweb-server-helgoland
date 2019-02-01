@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -45,9 +46,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.avalon.framework.configuration.Configuration;
+import org.apache.avalon.framework.configuration.ConfigurationException;
+import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.joda.time.DateTime;
 import org.n52.io.IoHandler;
 import org.n52.io.IoParseException;
@@ -66,6 +71,7 @@ import org.n52.oxf.TableType;
 import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 public class PDFReportGenerator extends ReportGenerator implements IoHandler {
 
@@ -128,7 +134,12 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
     @Override
     public void encodeAndWriteTo(OutputStream stream) throws IoParseException {
         try {
-            FopFactory fopFactory = FopFactory.newInstance();
+//            FopFactory fopFactory = FopFactory.newInstance();
+            DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+            Configuration cfg = cfgBuilder.build(document.newInputStream());
+
+            URI baseURI = new File(".").toURI();
+            FopFactory fopFactory = new FopFactoryBuilder(baseURI).setConfiguration(cfg).build();
             Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
 
             // Create PDF via XSLT transformation
@@ -142,6 +153,9 @@ public class PDFReportGenerator extends ReportGenerator implements IoHandler {
         }
         catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
+        }
+        catch (SAXException | ConfigurationException | IOException e) {
+            throw new IoParseException("Failed to read config for Formatting Object Processor (FOP)", e);
         }
         catch (TransformerConfigurationException e) {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);
