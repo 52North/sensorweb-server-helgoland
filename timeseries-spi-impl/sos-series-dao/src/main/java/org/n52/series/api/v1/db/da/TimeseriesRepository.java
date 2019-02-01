@@ -209,11 +209,13 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
 
             Interval timespan = dbQuery.getTimespan();
             DateTime lowerBound = timespan.getStart();
-            ObservationEntity previousValue = dao.getClosestOuterPreviousValue(timeseries, lowerBound, dbQuery);
-            metadata.setValueBeforeTimespan(createTimeseriesValueFor(previousValue, timeseries));
-            DateTime upperBound = timespan.getEnd();
-            ObservationEntity nextValue = dao.getClosestOuterNextValue(timeseries, upperBound, dbQuery);
-            metadata.setValueAfterTimespan(createTimeseriesValueFor(nextValue, timeseries));
+            if (dbQuery.expandWithNextValuesBeyondInterval()) {
+                ObservationEntity previousValue = dao.getClosestOuterPreviousValue(timeseries, lowerBound, dbQuery);
+                metadata.setValueBeforeTimespan(createTimeseriesValueFor(previousValue, timeseries));
+                DateTime upperBound = timespan.getEnd();
+                ObservationEntity nextValue = dao.getClosestOuterNextValue(timeseries, upperBound, dbQuery);
+                metadata.setValueAfterTimespan(createTimeseriesValueFor(nextValue, timeseries));
+            }
 
             Set<SeriesEntity> referenceValues = timeseries.getReferenceValues();
             if ((referenceValues != null) && !referenceValues.isEmpty()) {

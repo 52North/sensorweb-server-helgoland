@@ -238,6 +238,10 @@ public class DbQuery {
         }
         return criteria;
     }
+    
+    public boolean expandWithNextValuesBeyondInterval() {
+        return parameters.isExpandWithNextValuesBeyondInterval();
+    }
 
     public static DbQuery createFrom(IoParameters parameters) {
         return new DbQuery(parameters);
