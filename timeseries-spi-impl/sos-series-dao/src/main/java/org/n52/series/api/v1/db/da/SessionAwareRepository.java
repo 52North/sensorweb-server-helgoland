@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.CategoryOutput;
@@ -118,7 +119,7 @@ public abstract class SessionAwareRepository {
         if (locale == null) {
             return DbQuery.createFrom(IoParameters.createDefaults());
         }
-        Map<String, String> parameters = new HashMap<String, String>();
+        Map<String, String> parameters = new HashMap<>();
         parameters.put("locale", locale);
         return DbQuery.createFrom(createFromQuery(parameters));
     }
@@ -165,7 +166,7 @@ public abstract class SessionAwareRepository {
     }
 
     protected Map<String, TimeseriesOutput> createTimeseriesList(List<SeriesEntity> series, DbQuery parameters) throws DataAccessException {
-        Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<String, TimeseriesOutput>();
+        Map<String, TimeseriesOutput> timeseriesOutputs = new HashMap<>();
         for (SeriesEntity timeseries : series) {
             if ( !timeseries.getProcedure().isReference()) {
                 String timeseriesId = timeseries.getPkid().toString();

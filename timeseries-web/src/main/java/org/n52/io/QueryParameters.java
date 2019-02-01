@@ -29,7 +29,6 @@ package org.n52.io;
 
 import java.util.Map;
 
-import org.joda.time.Interval;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.img.ChartDimension;
 import org.n52.io.v1.data.StyleProperties;
@@ -161,6 +160,7 @@ public final class QueryParameters extends IoParameters {
         return super.getFormat();
     }
 
+    @Override
     public IntervalWithTimeZone getTimespan() {
         try {
             return super.getTimespan();

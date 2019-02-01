@@ -27,7 +27,6 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_PROCEDURES;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -55,35 +54,44 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = COLLECTION_PROCEDURES)
 public class ProceduresParameterController extends ParameterController {
 	
-	private final static Logger LOGGER = LoggerFactory.getLogger(ProceduresParameterController.class);
-    
-	@RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
-	public void getRawData(HttpServletResponse response,
-			@PathVariable("item") String id,
-			@RequestParam MultiValueMap<String, String> query) {
-		if (getParameterService() instanceof RawDataService) {
-			IoParameters queryMap = createFromQuery(query);
-			InputStream inputStream = ((RawDataService)getParameterService()).getRawData(id, queryMap);
-			if (inputStream == null) {
-				throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
-			}
-			try {
-				IOUtils.copyLarge(inputStream, response.getOutputStream());
-			} catch (IOException e) {
-				throw new InternalServerException("Error while querying raw procedure data", e);
-			} finally {
-				if (inputStream != null) {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						LOGGER.error("Error while closing InputStream", e);
-					}
-				}
-			}
-		} else {
-			throw new BadRequestException(
-					"Querying of raw procedure data is not supported by the underlying service!");
-		}
-	}
+    private final static Logger LOGGER = LoggerFactory.getLogger(ProceduresParameterController.class);
+
+    @RequestMapping(value = "/{item}", method = GET, params = { RawFormats.RAW_FORMAT })
+    public void getRawData(HttpServletResponse response, @PathVariable("item") String id,
+            @RequestParam MultiValueMap<String, String> query) {
+        if (getParameterService() instanceof RawDataService) {
+            IoParameters queryMap = preProcess(query, response);
+            InputStream inputStream = ((RawDataService) getParameterService()).getRawData(id, queryMap);
+            if (inputStream == null) {
+                throw new ResourceNotFoundException("Found no parameter for id '" + id + "'.");
+            }
+            try {
+                IOUtils.copyLarge(inputStream, response.getOutputStream());
+            } catch (IOException e) {
+                throw new InternalServerException("Error while querying raw procedure data", e);
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        LOGGER.error("Error while closing InputStream", e);
+                    }
+                }
+            }
+        } else {
+            throw new BadRequestException(
+                    "Querying of raw procedure data is not supported by the underlying service!");
+        }
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_PROCEDURES))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_PROCEDURES)).asLong(0));
+        }
+    }
+
 
 }

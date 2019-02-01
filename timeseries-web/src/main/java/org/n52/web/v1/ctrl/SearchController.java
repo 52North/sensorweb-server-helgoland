@@ -31,8 +31,11 @@ import static org.n52.web.v1.ctrl.RestfulUrls.SEARCH;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.web.BadRequestException;
 import org.n52.web.BaseController;
+import org.n52.io.IoParameters;
 import org.n52.sensorweb.v1.spi.SearchService;
 import org.n52.sensorweb.v1.spi.search.SearchResult;
 import org.springframework.stereotype.Controller;
@@ -65,6 +68,11 @@ public class SearchController extends BaseController {
 
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        // Do nothing
     }
 
 }

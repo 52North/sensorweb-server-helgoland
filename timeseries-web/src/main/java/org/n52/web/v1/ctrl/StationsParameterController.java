@@ -27,18 +27,19 @@
  */
 package org.n52.web.v1.ctrl;
 
-import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_STATIONS;
 import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.IoParameters;
 import org.n52.io.v1.data.StationOutput;
-import org.n52.web.BaseController;
-import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.TransformingStationService;
+import org.n52.web.BaseController;
+import org.n52.web.ResourceNotFoundException;
 import org.n52.web.WebExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +59,9 @@ public class StationsParameterController extends BaseController {
     private ParameterService<StationOutput> parameterService;
 
     @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
-
+    public ModelAndView getCollection(@RequestParam(required = false) MultiValueMap<String, String> query,
+            final HttpServletResponse response) {
+        IoParameters map = preProcess(query, response);
         if (map.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
             Object[] result = parameterService.getExpandedParameters(map);
@@ -83,8 +84,8 @@ public class StationsParameterController extends BaseController {
 
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createFromQuery(query);
+              @RequestParam(required = false) MultiValueMap<String, String> query, final HttpServletResponse response) {
+        IoParameters map = preProcess(query, response);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
 
@@ -105,7 +106,16 @@ public class StationsParameterController extends BaseController {
 
     public void setParameterService(ParameterService<StationOutput> stationParameterService) {
         ParameterService<StationOutput> service = new TransformingStationService(stationParameterService);
-        this.parameterService = new LocaleAwareSortService<StationOutput>(new WebExceptionAdapter<StationOutput>(service));
+        this.parameterService = new LocaleAwareSortService<>(new WebExceptionAdapter<>(service));
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_STATIONS))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_STATIONS)).asLong(0));
+        }
     }
 
 }

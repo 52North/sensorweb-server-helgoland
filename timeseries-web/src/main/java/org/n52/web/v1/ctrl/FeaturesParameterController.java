@@ -29,12 +29,24 @@ package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_FEATURES;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.n52.io.IoParameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = COLLECTION_FEATURES)
 public class FeaturesParameterController extends ParameterController {
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_FEATURES))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_FEATURES)).asLong(0));
+        }
+    }
 
     // resource controller for features
     

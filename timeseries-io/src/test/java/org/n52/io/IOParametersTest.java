@@ -54,6 +54,7 @@ import org.n52.io.v1.data.UndesignedParameterSet;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -176,6 +177,26 @@ public class IOParametersTest {
         IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value");
         Assert.assertFalse(defaults == extended);
+    }
+    
+    @Test
+    public void testExpandWithNextValuesBeyondInterval() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.isExpandWithNextValuesBeyondInterval());
+    }
+    
+    @Test
+    public void testCache() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.hasCache());
+    }
+    
+    @Test
+    public void testGetCache() {
+        IoParameters parameters = createDefaults();
+        JsonNode cache = parameters.getCache();
+        Assert.assertTrue(cache.has("stations"));
+        Assert.assertTrue(cache.get("stations").asLong(0) == 1440);
     }
     
 }

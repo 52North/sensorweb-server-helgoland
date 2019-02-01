@@ -31,12 +31,15 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static org.n52.io.MimeType.APPLICATION_JSON;
 import static org.n52.io.MimeType.APPLICATION_PDF;
 import static org.n52.io.MimeType.IMAGE_PNG;
+import static org.n52.io.QueryParameters.createFromQuery;
 import static org.n52.web.ExceptionResponse.createExceptionResponse;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,13 +47,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.web.v1.ctrl.ResourcesController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
+import org.n52.io.IoParameters;
+import org.n52.io.v1.data.DesignedParameterSet;
+import org.n52.io.v1.data.ParameterSet;
 import org.n52.sensorweb.v1.spi.BadQueryParameterException;
 
 /**
@@ -131,6 +141,37 @@ public abstract class BaseController {
 
     protected ObjectMapper createObjectMapper() {
         return new ObjectMapper().setSerializationInclusion(NON_NULL);
+    }
+    
+    protected IoParameters preProcess(ParameterSet query, HttpServletResponse response) {
+        IoParameters map = createFromQuery(query);
+        addCacheHeader(map, response);
+        return map;
+    }
+    
+    protected IoParameters preProcess(MultiValueMap<String, String> query, HttpServletResponse response) {
+        IoParameters map = createFromQuery(query);
+        addCacheHeader(map, response);
+        return map;
+    }
+    
+    protected IoParameters preProcess(Map<String, String> query, HttpServletResponse response) {
+        IoParameters map = createFromQuery(query);
+        addCacheHeader(map, response);
+        return map;
+    }
+    
+    protected abstract void addCacheHeader(IoParameters parameter, HttpServletResponse response);
+    
+    protected void addCacheHeader(HttpServletResponse response, long maxAge) {
+        if (maxAge > 0) {
+            String maxAgeHeader = CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue();
+            response.setHeader(HttpHeaders.CACHE_CONTROL, maxAgeHeader);
+        }
+    }
+    
+    protected String getResourcePathFrom(String path) {
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 
 }

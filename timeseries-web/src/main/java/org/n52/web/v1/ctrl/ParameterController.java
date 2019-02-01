@@ -27,6 +27,9 @@
  */
 package org.n52.web.v1.ctrl;
 
+import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,23 +38,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.IoParameters;
-import static org.n52.io.QueryParameters.createFromQuery;
 import org.n52.io.response.ext.MetadataExtension;
 import org.n52.io.v1.data.ParameterOutput;
-import org.n52.web.BaseController;
-import org.n52.web.ResourceNotFoundException;
 import org.n52.sensorweb.v1.spi.LocaleAwareSortService;
 import org.n52.sensorweb.v1.spi.ParameterService;
 import org.n52.sensorweb.v1.spi.ServiceParameterService;
+import org.n52.web.BaseController;
+import org.n52.web.ResourceNotFoundException;
 import org.n52.web.WebExceptionAdapter;
-import static org.n52.web.v1.ctrl.Stopwatch.startStopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -60,7 +62,7 @@ public abstract class ParameterController extends BaseController implements Rest
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
-    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<MetadataExtension<ParameterOutput>>();
+    private List<MetadataExtension<ParameterOutput>> metadataExtensions = new ArrayList<>();
 
     private ParameterService<ParameterOutput> parameterService;
     
@@ -68,8 +70,8 @@ public abstract class ParameterController extends BaseController implements Rest
 
     @RequestMapping(value = "/{item}/extras", method = GET)
     public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
-            @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters queryMap = createFromQuery(query);
+            @RequestParam(required = false) MultiValueMap<String, String> query, final HttpServletResponse response) {
+        IoParameters queryMap = preProcess(query, response);
         
         Map<String, Object> extras = new HashMap<>();
         for (MetadataExtension<ParameterOutput> extension : metadataExtensions) {
@@ -86,15 +88,15 @@ public abstract class ParameterController extends BaseController implements Rest
     }
 
     private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {
-        Map<String, Object> currentData = new HashMap<String, Object>(data);
+        Map<String, Object> currentData = new HashMap<>(data);
         Set<String> overridableKeys = currentData.keySet();
         overridableKeys.retainAll(dataToAdd.keySet());
         return overridableKeys;
     }
 
     @RequestMapping(method = GET)
-    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query) {
-        IoParameters queryMap = createFromQuery(query);
+    public ModelAndView getCollection(@RequestParam(required=false) MultiValueMap<String, String> query, final HttpServletResponse response) {
+        IoParameters queryMap = preProcess(query, response);
 
         if (queryMap.isExpanded()) {
             Stopwatch stopwatch = startStopwatch();
@@ -122,8 +124,8 @@ public abstract class ParameterController extends BaseController implements Rest
 
     @RequestMapping(value = "/{item}", method = GET)
     public ModelAndView getItem(@PathVariable("item") String id,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters queryMap = createFromQuery(query);
+                                @RequestParam(required = false) MultiValueMap<String, String> query, final HttpServletResponse response) {
+        IoParameters queryMap = preProcess(query, response);
         ParameterOutput parameter = addExtensionInfo(parameterService.getParameter(id, queryMap));
 
         if (parameter == null) {
@@ -177,8 +179,8 @@ public abstract class ParameterController extends BaseController implements Rest
     }
 
     public void setParameterService(ParameterService<ParameterOutput> parameterService) {
-        ParameterService<ParameterOutput> service = new WebExceptionAdapter<ParameterOutput>(parameterService);
-        this.parameterService = new LocaleAwareSortService<ParameterOutput>(service);
+        ParameterService<ParameterOutput> service = new WebExceptionAdapter<>(parameterService);
+        this.parameterService = new LocaleAwareSortService<>(service);
     }
 
     public List<MetadataExtension<ParameterOutput>> getMetadataExtensions() {

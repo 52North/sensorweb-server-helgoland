@@ -28,10 +28,23 @@
 package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_TIMESERIES;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.n52.io.IoParameters;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping(value = COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterController {
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_TIMESERIES))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_TIMESERIES)).asLong(0));
+        }
+    }
 
     // resource controller for timeseries metadata
 }

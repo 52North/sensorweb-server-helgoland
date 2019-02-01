@@ -109,6 +109,7 @@ public class TimeseriesDataController extends BaseController {
                                                     @RequestBody UndesignedParameterSet parameters) throws Exception {
 
         checkIfUnknownTimeseries(parameters.getTimeseries());
+        preProcess(parameters, response);
         if (parameters.isSetRawFormat()) {
         	getRawTimeseriesCollectionData(response, parameters);
         	return null;
@@ -126,7 +127,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = preProcess(query, response);
         IntervalWithTimeZone timespan = map.getTimespan();
         checkAgainstTimespanRestriction(timespan.toString());
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
@@ -154,6 +155,7 @@ public class TimeseriesDataController extends BaseController {
 												@RequestBody UndesignedParameterSet parameters) throws Exception {
 		checkIfUnknownTimeseries(parameters.getTimeseries());
 		if (timeseriesDataService instanceof RawDataService) {
+		        preProcess(parameters, response);
 			InputStream inputStream = ((RawDataService) timeseriesDataService).getRawData(parameters);
 			if (inputStream == null) {
 				throw new ResourceNotFoundException("Found no data for timeseries.");
@@ -184,7 +186,7 @@ public class TimeseriesDataController extends BaseController {
     									@PathVariable String timeseriesId,
 										@RequestParam MultiValueMap<String, String> query) {
     	checkIfUnknownTimeseries(timeseriesId);
-        IoParameters map = createFromQuery(query);
+        IoParameters map =  preProcess(query, response);
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
     	if (timeseriesDataService instanceof RawDataService ) {
     		InputStream inputStream = ((RawDataService)timeseriesDataService).getRawData(parameters);
@@ -221,7 +223,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = preProcess(requestParameters, response);
         UndesignedParameterSet parameters = map.mergeToUndesigned(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         parameters.setGeneralize(map.isGeneralize());
@@ -245,7 +247,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = preProcess(query, response);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -274,7 +276,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = preProcess(query, response);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         UndesignedParameterSet parameters = createForSingleTimeseries(timeseriesId, map);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -299,7 +301,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(requestParameters.getTimeseries());
 
-        IoParameters map = createFromQuery(requestParameters);
+        IoParameters map = preProcess(requestParameters, response);
         
         UndesignedParameterSet parameters = map.mergeToUndesigned(requestParameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -323,7 +325,7 @@ public class TimeseriesDataController extends BaseController {
 
         checkIfUnknownTimeseries(timeseriesId);
 
-        IoParameters map = createFromQuery(query);
+        IoParameters map = preProcess(query, response);
         TimeseriesMetadataOutput metadata = timeseriesMetadataService.getParameter(timeseriesId, map);
         RenderingContext context = createContextForSingleTimeseries(metadata, map);
         context.setDimensions(map.getChartDimension());
@@ -352,7 +354,7 @@ public class TimeseriesDataController extends BaseController {
         if ( !preRenderingTask.hasPrerenderedImage(timeseriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for timeseries '" + timeseriesId + "'.");
         }
-
+        preProcess(query, response);
         response.setContentType("image/png");
         preRenderingTask.writePrerenderedGraphToOutputStream(timeseriesId, chartQualifier, response.getOutputStream());
     }
@@ -429,7 +431,7 @@ public class TimeseriesDataController extends BaseController {
     }
 
     public void setTimeseriesMetadataService(ParameterService<TimeseriesMetadataOutput> timeseriesMetadataService) {
-        this.timeseriesMetadataService = new WebExceptionAdapter<TimeseriesMetadataOutput>(timeseriesMetadataService);
+        this.timeseriesMetadataService = new WebExceptionAdapter<>(timeseriesMetadataService);
     }
 
     public TimeseriesDataService getTimeseriesDataService() {
@@ -456,6 +458,13 @@ public class TimeseriesDataController extends BaseController {
         // validate requestIntervalRestriction, if it's no period an exception occured
         Period.parse(requestIntervalRestriction);
         this.requestIntervalRestriction = requestIntervalRestriction;
+    }
+    
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache() && parameter.getCache().has("data")) {
+            addCacheHeader(response, parameter.getCache().get("data").asLong(0));
+        }
     }
 
 }

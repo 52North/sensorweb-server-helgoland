@@ -28,13 +28,26 @@
 package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_CATEGORIES;
+import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_STATIONS;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.n52.io.IoParameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping(value = COLLECTION_CATEGORIES)
 public class CategoriesParameterController extends ParameterController {
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_CATEGORIES))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_CATEGORIES)).asLong(0));
+        }
+    }
 
     // resource controller for categories
     

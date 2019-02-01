@@ -29,6 +29,9 @@ package org.n52.web.v1.ctrl;
 
 import static org.n52.web.v1.ctrl.RestfulUrls.COLLECTION_SERVICES;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.n52.io.IoParameters;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -36,6 +39,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = COLLECTION_SERVICES)
 public class ServicesParameterController extends ParameterController {
 
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().has(getResourcePathFrom(COLLECTION_SERVICES))) {
+            addCacheHeader(response, parameter.getCache()
+                    .get(getResourcePathFrom(COLLECTION_SERVICES)).asLong(0));
+        }
+    }
+    
     // resource controller for services
     
 }

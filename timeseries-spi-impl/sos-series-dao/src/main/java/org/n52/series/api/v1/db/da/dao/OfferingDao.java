@@ -84,7 +84,7 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
 
         criteria = parameters.addDetachedFilters("offering", criteria);
         parameters.addPagingTo(criteria);
-        return (List<OfferingEntity>) criteria.list();
+        return criteria.list();
     }
 
     @Override
@@ -104,10 +104,11 @@ public class OfferingDao extends AbstractDao<OfferingEntity> {
         return OfferingEntity.class;
     }
     
-    protected Criteria getDefaultCriteria(String alias) {
-        Criteria criteria = super.getDefaultCriteria(alias);
-        // Behave backwards compatible with ProcedureEntity
-        // in cases where mapping is Procedure == Offering 
-        return criteria.add(Restrictions.eq("reference", Boolean.FALSE));
-    }
+//    @Override
+//    protected Criteria getDefaultCriteria(String alias) {
+//        Criteria criteria = super.getDefaultCriteria(alias);
+//        // Behave backwards compatible with ProcedureEntity
+//        // in cases where mapping is Procedure == Offering 
+//        return criteria.add(Restrictions.eq("reference", Boolean.FALSE));
+//    }
 }

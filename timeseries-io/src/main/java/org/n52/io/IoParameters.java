@@ -379,6 +379,10 @@ public class IoParameters {
     private final String OUTPUT_TIMEZONE = "outputTimezone";
 
     private final String DEFAULT_OUTPUT_TIMEZONE = "UTC";
+    
+    private final String EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL = "expandWithNextValuesBeyondInterval";
+    
+    private final String CACHE = "cache";
 
     private final MultiValueMap<String, JsonNode> query;
 
@@ -1150,6 +1154,21 @@ public class IoParameters {
             }
         }
         return parameterSet;
+    }
+    
+    public boolean isExpandWithNextValuesBeyondInterval() {
+        if ( !containsParameter(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL)) {
+            return true;
+        }
+        return getAsBoolean(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL);
+    }
+
+    public boolean hasCache() {
+        return containsParameter(CACHE);
+    }
+    
+    public JsonNode getCache() {
+        return getAsJsonNode(CACHE);
     }
 
     @Override
