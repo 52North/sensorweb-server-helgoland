@@ -164,10 +164,10 @@ public abstract class BaseController {
     protected abstract void addCacheHeader(IoParameters parameter, HttpServletResponse response);
     
     protected void addCacheHeader(HttpServletResponse response, long maxAge) {
-        if (maxAge > 0) {
-            String maxAgeHeader = CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue();
-            response.setHeader(HttpHeaders.CACHE_CONTROL, maxAgeHeader);
-        }
+        String maxAgeHeader = maxAge > 0 
+                ? CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue()
+                : CacheControl.noStore().getHeaderValue();
+        response.setHeader(HttpHeaders.CACHE_CONTROL, maxAgeHeader);
     }
     
     protected String getResourcePathFrom(String path) {
