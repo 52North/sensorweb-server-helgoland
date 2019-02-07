@@ -274,7 +274,7 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         public void setSamplingsSize(Integer countSamplings) {
-            this.amountSamplings = countSamplings >= 0 ? countSamplings : null; 
+            this.amountSamplings = countSamplings;
         }
 
         public Integer getSamplings() {
@@ -282,7 +282,7 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         public void setMeasuringProgramsSize(int countMeasuringPrograms) {
-            this.amountMeasuringProgram = countMeasuringPrograms >= 0 ? countMeasuringPrograms : null;
+            this.amountMeasuringProgram = countMeasuringPrograms;
         }
 
         public Integer getMeasuringPrograms() {
