@@ -187,9 +187,9 @@ public class ServiceOutput extends ParameterOutput {
 
         private Integer amountTimeseries;
 
-        private int amountSamplings;
+        private Integer amountSamplings;
 
-        private int amountMeasuringProgram;
+        private Integer amountMeasuringProgram;
 
         public String[] getSelectedPlatformTypes() {
             return Utils.copy(selectedPlatformTypes);
@@ -265,7 +265,7 @@ public class ServiceOutput extends ParameterOutput {
             this.amountStations = size;
         }
 
-        public void setTimeseriesSize(int countTimeseries) {
+        public void setTimeseriesSize(Integer countTimeseries) {
             this.amountTimeseries = countTimeseries;
         }
 
@@ -273,8 +273,8 @@ public class ServiceOutput extends ParameterOutput {
             return this.amountTimeseries;
         }
 
-        public void setSamplingsSize(int countSamplings) {
-            this.amountSamplings = countSamplings;
+        public void setSamplingsSize(Integer countSamplings) {
+            this.amountSamplings = countSamplings >= 0 ? countSamplings : null; 
         }
 
         public Integer getSamplings() {
@@ -282,7 +282,7 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         public void setMeasuringProgramsSize(int countMeasuringPrograms) {
-            this.amountMeasuringProgram = countMeasuringPrograms;
+            this.amountMeasuringProgram = countMeasuringPrograms >= 0 ? countMeasuringPrograms : null;
         }
 
         public Integer getMeasuringPrograms() {
