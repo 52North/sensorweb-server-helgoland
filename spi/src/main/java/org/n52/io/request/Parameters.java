@@ -385,6 +385,10 @@ public interface Parameters {
      */
     String ODATA_FILTER = "$filter";
 
+    String EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL = "expandWithNextValuesBeyondInterval";
+
+    String CACHE = "cache";
+
     /*
      *############### DEPRECATED CONSTANTS
      */
@@ -483,5 +487,4 @@ public interface Parameters {
     interface HttpHeader {
         String ACCEPT_LANGUAGE = "accept-language";
     }
-
 }

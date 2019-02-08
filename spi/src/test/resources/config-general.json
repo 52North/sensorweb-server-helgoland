@@ -4,5 +4,17 @@
     "generaling_algorithm": "lttb",
     "noDataGapThreshold": 5,
     "generalize": true,
-    "outputTimezone" : "UTC"
+    "outputTimezone" : "UTC",
+    "expandWithNextValuesBeyondInterval": true,
+    "cache" : {
+       "stations": 1440,
+       "categories": 1440,
+       "features": 1440,
+       "offerings": 1440,
+       "phenomena": 1440,
+       "procedures": 1440,
+       "services": 1440,
+       "datasets": 2,
+       "data": 0
+    }
 }

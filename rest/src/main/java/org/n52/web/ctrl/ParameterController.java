@@ -85,7 +85,7 @@ public abstract class ParameterController<T extends ParameterOutput>
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
-        IoParameters queryMap = createParameters(query, locale);
+        IoParameters queryMap = createParameters(query, locale, response);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
         try (InputStream inputStream = parameterService.getRawDataService()
@@ -100,8 +100,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public Map<String, Object> getExtras(String resourceId, String locale, MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale);
+    public Map<String, Object> getExtras(HttpServletResponse response, String resourceId, String locale, MultiValueMap<String, String> query) {
+        IoParameters map = createParameters(query, locale, response);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
@@ -138,7 +138,7 @@ public abstract class ParameterController<T extends ParameterOutput>
                                       String locale,
                                       MultiValueMap<String, String> query) {
         Stopwatch stopwatch = Stopwatch.startStopwatch();
-        IoParameters parameters = createParameters(query, locale);
+        IoParameters parameters = createParameters(query, locale, response);
         try {
             LOGGER.debug("getCollection() with query '{}'", parameters);
             preparePagingHeaders(parameters, response);
@@ -169,8 +169,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(query, locale);
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query, HttpServletResponse response) {
+        IoParameters parameters = createParameters(query, locale, response);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, parameters);
         return createModelAndView(getItem(id, parameters), parameters);
     }
@@ -219,5 +219,14 @@ public abstract class ParameterController<T extends ParameterOutput>
      * @return the number of elements available, or negative number if paging is not supported.
      */
     protected abstract int getElementCount(IoParameters queryMap);
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom(getCollectionName()))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom(getCollectionName())).asLong(0));
+        }
+    }
 
 }

@@ -74,8 +74,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
-                                @RequestParam MultiValueMap<String, String> query) {
-        return super.getItem(id, locale, addAdditionalParameter(query));
+                                @RequestParam MultiValueMap<String, String> query,
+                                HttpServletResponse response) {
+        return super.getItem(id, locale, addAdditionalParameter(query), response);
     }
 
     @Override
@@ -92,11 +93,12 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(value = "/{item}/extras", produces = Constants.APPLICATION_JSON)
-    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
+    public Map<String, Object> getExtras(HttpServletResponse response,
+                                         @PathVariable("item") String resourceId,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
-        return super.getExtras(resourceId, locale, addAdditionalParameter(query));
+        return super.getExtras(response, resourceId, locale, addAdditionalParameter(query));
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {

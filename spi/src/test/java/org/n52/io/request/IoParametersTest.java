@@ -42,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -61,6 +62,8 @@ import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.crs.BoundingBox;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class IoParametersTest {
 
@@ -258,6 +261,28 @@ public class IoParametersTest {
         IoParameters defaults = IoParameters.createDefaults();
         MatcherAssert.assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
     }
+
+    @Test
+    public void testExpandWithNextValuesBeyondInterval() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.isExpandWithNextValuesBeyondInterval());
+    }
+
+    @Test
+    public void testCache() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.hasCache());
+    }
+
+    @Test
+    public void testGetCache() {
+        IoParameters parameters = createDefaults();
+        Optional<JsonNode> cache = parameters.getCache();
+        Assert.assertTrue(cache.isPresent());
+        Assert.assertTrue(cache.get().has("stations"));
+        Assert.assertTrue(cache.get().get("stations").asLong(0) == 1440);
+    }
+
 
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/")

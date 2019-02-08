@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.spi.search.SearchService;
@@ -57,10 +59,16 @@ public class SearchController extends BaseController {
     public ModelAndView searchResources(@RequestParam String q,
                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                             required = false) String locale,
-                                        @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(query, locale).extendWith(Parameters.SEARCH_TERM, q)
+                                        @RequestParam(required = false) MultiValueMap<String, String> query,
+                                        HttpServletResponse response) {
+        IoParameters parameters = createParameters(query, locale, response).extendWith(Parameters.SEARCH_TERM, q)
                                                                  .respectBackwardsCompatibility();
         return new ModelAndView().addObject(searchService.searchResources(parameters));
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        // TODO Auto-generated method stub
     }
 
 }

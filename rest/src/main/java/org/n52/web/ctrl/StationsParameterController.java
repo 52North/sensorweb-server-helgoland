@@ -91,7 +91,7 @@ public class StationsParameterController extends BaseController implements Resou
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                         required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale).respectBackwardsCompatibility();
+        IoParameters map = createParameters(query, locale, response).respectBackwardsCompatibility();
         OutputCollection< ? > result;
 
         if (map.isExpanded()) {
@@ -128,8 +128,9 @@ public class StationsParameterController extends BaseController implements Resou
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
-                                @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(query, locale);
+                                @RequestParam(required = false) MultiValueMap<String, String> query,
+                                HttpServletResponse response) {
+        IoParameters parameters = createParameters(query, locale, response);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
         Stopwatch stopwatch = Stopwatch.startStopwatch();
@@ -139,13 +140,21 @@ public class StationsParameterController extends BaseController implements Resou
         if (result == null) {
             throw new ResourceNotFoundException("Found no station with given id.");
         }
-
         return new ModelAndView().addObject(result);
     }
 
 
     private void logRequestTime(Stopwatch stopwatch) {
         LOGGER.debug("Processing request took {} seconds.", stopwatch.stopInSeconds());
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom(UrlSettings.COLLECTION_STATIONS))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom(UrlSettings.COLLECTION_STATIONS)).asLong(0));
+        }
     }
 
 }

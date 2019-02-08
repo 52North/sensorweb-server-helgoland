@@ -1204,4 +1204,20 @@ public final class IoParameters implements Parameters {
                 && valueTypes.contains(QUANTITY);
     }
 
+
+    public boolean isExpandWithNextValuesBeyondInterval() {
+        if ( !containsParameter(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL)) {
+            return true;
+        }
+        return getAsBoolean(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL);
+    }
+
+    public boolean hasCache() {
+        return containsParameter(CACHE);
+    }
+
+    public Optional<JsonNode> getCache() {
+        return getAsNode(CACHE);
+    }
+
 }

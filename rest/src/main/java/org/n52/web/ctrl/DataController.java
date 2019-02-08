@@ -127,7 +127,7 @@ public class DataController extends BaseController {
                                           required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(datasetId, query, locale);
+        IoParameters map = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan());
         checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
@@ -166,7 +166,7 @@ public class DataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale);
+        IoParameters parameters = createParameters(simpleParameters, locale, response);
         LOGGER.debug("get data collection with parameter set: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -199,7 +199,7 @@ public class DataController extends BaseController {
                                                required = false) String locale,
                                            @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale);
+        IoParameters parameters = createParameters(simpleParameters, locale, response);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         writeRawData(parameters, response);
     }
@@ -214,7 +214,7 @@ public class DataController extends BaseController {
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                      required = false) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         checkForUnknownDatasetId(parameters, datasetId);
         writeRawData(parameters, response);
     }
@@ -248,7 +248,7 @@ public class DataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         LOGGER.debug("get data collection report with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -273,7 +273,7 @@ public class DataController extends BaseController {
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection report for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -303,7 +303,7 @@ public class DataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection zip for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -333,7 +333,7 @@ public class DataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection csv for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -369,7 +369,7 @@ public class DataController extends BaseController {
                                              required = false) String locale,
                                          @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         LOGGER.debug("get data collection chart with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
@@ -393,7 +393,7 @@ public class DataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -522,6 +522,15 @@ public class DataController extends BaseController {
                     + " (qualifier: "
                     + chartQualifier
                     + ")'.");
+        }
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom("data"))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom("data")).asLong(0));
         }
     }
 

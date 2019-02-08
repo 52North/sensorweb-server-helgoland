@@ -119,33 +119,33 @@ public class TimeseriesDataController extends BaseController {
     }
 
     @Override
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale, HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale, HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
-        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
+        return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(Map<String, String> query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(Map<String, String> query, String locale, HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
-        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale, HttpServletResponse response) {
+        return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
     @RequestMapping(value = "/getData", produces = {
@@ -156,7 +156,7 @@ public class TimeseriesDataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestSimpleParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         checkIfUnknownTimeseriesIds(parameters, parameters.getDatasets());
         if (parameters.isSetRawFormat()) {
             getRawCollectionData(response, locale, request);
@@ -176,7 +176,7 @@ public class TimeseriesDataController extends BaseController {
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> request) {
-        IoParameters parameters = createParameters(timeseriesId, request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale, response);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
@@ -213,7 +213,7 @@ public class TimeseriesDataController extends BaseController {
                                          required = false) String locale,
                                      @RequestBody RequestSimpleParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         checkIfUnknownTimeseriesIds(parameters, parameters.getDatasets());
         processRawDataRequest(response, parameters);
     }
@@ -228,7 +228,7 @@ public class TimeseriesDataController extends BaseController {
                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                required = false) String locale,
                            @RequestParam MultiValueMap<String, String> request) {
-        IoParameters parameters = createParameters(timeseriesId, request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale, response);
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
         processRawDataRequest(response, parameters);
     }
@@ -266,7 +266,7 @@ public class TimeseriesDataController extends BaseController {
                                         required = false) String locale,
                                     @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         checkIfUnknownTimeseriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
@@ -285,7 +285,7 @@ public class TimeseriesDataController extends BaseController {
                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                           @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        IoParameters parameters = createParameters(timeseriesId, request, locale);
+        IoParameters parameters = createParameters(timeseriesId, request, locale, response);
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
@@ -311,7 +311,7 @@ public class TimeseriesDataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(timeseriesId, query, locale);
+        IoParameters parameters = createParameters(timeseriesId, query, locale, response);
         parameters = parameters.extendWith(Parameters.ZIP, Boolean.TRUE.toString());
 
         getTimeseriesAsCsv(timeseriesId, parameters, response);
@@ -330,7 +330,7 @@ public class TimeseriesDataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(timeseriesId, query, locale);
+        IoParameters parameters = createParameters(timeseriesId, query, locale, response);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
 }
 
@@ -367,7 +367,7 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         checkIfUnknownTimeseriesIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
@@ -386,7 +386,7 @@ public class TimeseriesDataController extends BaseController {
                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE, required = false) String locale,
                          @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(timeseriesId, query, locale);
+        IoParameters parameters = createParameters(timeseriesId, query, locale, response);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
@@ -490,6 +490,15 @@ public class TimeseriesDataController extends BaseController {
     private void throwNewRawDataQueryNotSupportedException() {
         throw new BadRequestException("Querying of raw procedure data is "
                 + "not supported by the underlying service!");
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES)).asLong(0));
+        }
     }
 
 }
