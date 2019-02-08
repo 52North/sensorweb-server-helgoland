@@ -112,22 +112,26 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
+            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
+            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
         return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
@@ -137,7 +141,8 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
+            HttpServletResponse response) {
         return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 

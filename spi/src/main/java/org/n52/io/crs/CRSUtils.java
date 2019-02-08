@@ -269,9 +269,10 @@ public final class CRSUtils {
         return checkSrid(JTS.transform(geometry, CRS.findMathTransform(srs, dest)), srs, dest);
     }
 
-    private Geometry checkSrid(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest) throws FactoryException {
+    private Geometry checkSrid(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest)
+            throws FactoryException {
         if (!srs.equals(dest) && CRS.equalsIgnoreMetadata(dest, getCrsFor(DEFAULT_CRS))) {
-                geometry.setSRID(EPSG_WGS84);
+            geometry.setSRID(EPSG_WGS84);
         }
         return geometry;
     }

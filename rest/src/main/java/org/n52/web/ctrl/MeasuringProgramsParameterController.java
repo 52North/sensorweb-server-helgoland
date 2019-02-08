@@ -41,7 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeasuringProgramsParameterController extends ParameterRequestMappingAdapter<MeasuringProgramOutput> {
 
     @Autowired
-    public MeasuringProgramsParameterController(CountingMetadataService counter, ParameterService<MeasuringProgramOutput> service) {
+    public MeasuringProgramsParameterController(CountingMetadataService counter,
+            ParameterService<MeasuringProgramOutput> service) {
         super(counter, service);
     }
 

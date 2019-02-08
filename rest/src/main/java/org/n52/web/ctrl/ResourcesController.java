@@ -50,6 +50,10 @@ import org.springframework.web.servlet.ModelAndView;
 })
 public class ResourcesController {
 
+    private static final String TIMESERIES = "timeseries";
+    private static final String TAJECTORIES = "trajectories";
+    private static final String INDIVIDUAL_OBSERVATIONS = "individualObservations";
+
     private final CountingMetadataService metadataService;
 
     @Autowired
@@ -77,7 +81,7 @@ public class ResourcesController {
 
         ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));
 //        ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
-        ResourceCollection timeseries = add("timeseries", "Timeseries", i18n.get("msg.web.resources.timeseries"));
+        ResourceCollection timeseries = add(TIMESERIES, "Timeseries", i18n.get("msg.web.resources.timeseries"));
         ResourceCollection categories = add("categories", "Category", i18n.get("msg.web.resources.categories"));
         ResourceCollection offerings = add("offerings", "Offering", i18n.get("msg.web.resources.offerings"));
         ResourceCollection features = add("features", "Feature", i18n.get("msg.web.resources.features"));
@@ -110,14 +114,18 @@ public class ResourcesController {
         // since 2.0.0
         ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
         ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
-        ResourceCollection individualObservations = add("individualObservations", "IndividualObservations", i18n.get("msg.web.resources.individualObservations"));
-//        ResourceCollection profiles = add("profiles", "Profiles", i18n.get("msg.web.resources.profiles"));
-        ResourceCollection trajectories = add("trajectories", "Trajectories", i18n.get("msg.web.resources.trajectories"));
-        //ResourceCollection geometries = add("geometries", "Geometries", i18n.get("msg.web.resources.geometries"));
+        ResourceCollection individualObservations = add(INDIVIDUAL_OBSERVATIONS, "IndividualObservations",
+                i18n.get("msg.web.resources.individualObservations"));
+        // ResourceCollection profiles = add("profiles", "Profiles",
+        // i18n.get("msg.web.resources.profiles"));
+        ResourceCollection trajectories =
+                add(TAJECTORIES, "Trajectories", i18n.get("msg.web.resources.trajectories"));
+        // ResourceCollection geometries = add("geometries", "Geometries",
+        // i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
         resources.add(individualObservations);
-//        resources.add(profiles);
+        // resources.add(profiles);
         resources.add(trajectories);
 
         //resources.add(geometries);
@@ -125,18 +133,19 @@ public class ResourcesController {
             platforms.setSize(metadataService.getPlatformCount(parameters));
             datasets.setSize(metadataService.getDatasetCount(parameters));
 
-            List<String> datasetTypes = new LinkedList<String>(parameters.getDatasetTypes());
+            List<String> datasetTypes = new LinkedList<>(parameters.getDatasetTypes());
             timeseries.setSize(metadataService
-                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "timeseries")));
+                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, TIMESERIES)));
             individualObservations.setSize(metadataService.getDatasetCount(
-                    parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "individualObservations")));
+                    parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, INDIVIDUAL_OBSERVATIONS)));
             trajectories.setSize(metadataService
-                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, "trajectories")));
+                    .getDatasetCount(parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, TAJECTORIES)));
             parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
         }
 
         ResourceCollection samplings = add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"));
-        ResourceCollection measuringPrograms = add("measuringPrograms", "MeasuringPrograms", i18n.get("msg.web.resources.measuringPrograms"));
+        ResourceCollection measuringPrograms =
+                add("measuringPrograms", "MeasuringPrograms", i18n.get("msg.web.resources.measuringPrograms"));
         resources.add(samplings);
         resources.add(measuringPrograms);
 

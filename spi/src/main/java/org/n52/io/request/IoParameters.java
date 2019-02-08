@@ -1206,7 +1206,7 @@ public final class IoParameters implements Parameters {
 
 
     public boolean isExpandWithNextValuesBeyondInterval() {
-        if ( !containsParameter(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL)) {
+        if (!containsParameter(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL)) {
             return true;
         }
         return getAsBoolean(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL);

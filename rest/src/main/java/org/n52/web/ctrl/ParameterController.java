@@ -100,7 +100,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public Map<String, Object> getExtras(HttpServletResponse response, String resourceId, String locale, MultiValueMap<String, String> query) {
+    public Map<String, Object> getExtras(HttpServletResponse response, String resourceId, String locale,
+            MultiValueMap<String, String> query) {
         IoParameters map = createParameters(query, locale, response);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
@@ -169,7 +170,8 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query, HttpServletResponse response) {
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query,
+            HttpServletResponse response) {
         IoParameters parameters = createParameters(query, locale, response);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, parameters);
         return createModelAndView(getItem(id, parameters), parameters);

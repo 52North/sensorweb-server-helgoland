@@ -47,7 +47,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndividualObservationsController extends ParameterRequestMappingAdapter<IndividualObservationOutput> {
 
     @Autowired
-    public IndividualObservationsController(CountingMetadataService counter, ParameterService<IndividualObservationOutput> service) {
+    public IndividualObservationsController(CountingMetadataService counter,
+            ParameterService<IndividualObservationOutput> service) {
         super(counter, service);
     }
 

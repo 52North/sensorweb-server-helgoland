@@ -44,7 +44,8 @@ public interface ResourceController {
 
     ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query, HttpServletResponse response);
 
-    default Map<String, Object> getExtras(HttpServletResponse response, String id, String locale, MultiValueMap<String, String> query) {
+    default Map<String, Object> getExtras(HttpServletResponse response, String id, String locale,
+            MultiValueMap<String, String> query) {
         return Collections.emptyMap();
     }
 }

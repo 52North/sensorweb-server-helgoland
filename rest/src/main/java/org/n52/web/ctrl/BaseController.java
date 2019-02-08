@@ -114,21 +114,25 @@ public abstract class BaseController {
         };
     }
 
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
+            HttpServletResponse response) {
         return createParameters(query.toParameters(), locale, response);
     }
 
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
+            HttpServletResponse response) {
         return createParameters(query.toParameters(), locale, response);
     }
 
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
         return createParameters(IoParameters.createFromMultiValueMap(query), locale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
-        IoParameters parameters = IoParameters.createFromMultiValueMap(query)
-                                              .replaceWith(Parameters.DATASETS, datasetId);
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
+        IoParameters parameters =
+                IoParameters.createFromMultiValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
         return createParameters(parameters, locale, response);
     }
 
@@ -136,9 +140,10 @@ public abstract class BaseController {
         return createParameters(IoParameters.createFromSingleValueMap(query), locale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale, HttpServletResponse response) {
-        IoParameters parameters = IoParameters.createFromSingleValueMap(query)
-                                              .replaceWith(Parameters.DATASETS, datasetId);
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
+            HttpServletResponse response) {
+        IoParameters parameters =
+                IoParameters.createFromSingleValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
         return createParameters(parameters, locale, response);
     }
 
@@ -228,25 +233,6 @@ public abstract class BaseController {
     protected ObjectMapper createObjectMapper() {
         return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
-
-
-//    protected IoParameters preProcess(RequestStyledParameterSet query, String locale, HttpServletResponse response) {
-//        IoParameters map = createParameters(query, locale);
-//        addCacheHeader(map, response);
-//        return map;
-//    }
-//
-//    protected IoParameters preProcess(MultiValueMap<String, String> query, String locale, HttpServletResponse response) {
-//        IoParameters map = createParameters(query, locale);
-//        addCacheHeader(map, response);
-//        return map;
-//    }
-//
-//    protected IoParameters preProcess(Map<String, String> query, String locale, HttpServletResponse response) {
-//        IoParameters map = createParameters(query, locale);
-//        addCacheHeader(map, response);
-//        return map;
-//    }
 
     protected abstract void addCacheHeader(IoParameters parameter, HttpServletResponse response);
 

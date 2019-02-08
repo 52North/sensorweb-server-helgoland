@@ -91,6 +91,10 @@ public class DataController extends BaseController {
 
     private static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
+    private static final String PROFILE = "profile";
+
+    private static final String DATA = "data";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
@@ -152,7 +156,7 @@ public class DataController extends BaseController {
         OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters =
                 datasetService.getCondensedParameters(map);
         DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
-        return item.getObservationType().equals("profile") || item.getDatasetType().equals("profile") ? "profile"
+        return item.getObservationType().equals(PROFILE) || item.getDatasetType().equals(PROFILE) ? PROFILE
                 : item.getValueType();
     }
 
@@ -528,9 +532,9 @@ public class DataController extends BaseController {
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
         if (parameter.hasCache()
-                && parameter.getCache().get().has(getResourcePathFrom("data"))) {
+                && parameter.getCache().get().has(getResourcePathFrom(DATA))) {
             addCacheHeader(response, parameter.getCache().get()
-                    .get(getResourcePathFrom("data")).asLong(0));
+                    .get(getResourcePathFrom(DATA)).asLong(0));
         }
     }
 
