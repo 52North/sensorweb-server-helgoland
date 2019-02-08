@@ -245,9 +245,6 @@ public class TimeseriesDataController extends BaseController {
         }
         final RawDataService rawDataService = timeseriesDataService.getRawDataService();
         try (InputStream inputStream = rawDataService.getRawData(parameters)) {
-            if (inputStream == null) {
-                throw new ResourceNotFoundException("No raw data found.");
-            }
             response.setContentType(parameters.getFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {

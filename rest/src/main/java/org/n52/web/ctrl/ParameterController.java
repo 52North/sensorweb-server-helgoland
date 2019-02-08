@@ -90,9 +90,6 @@ public abstract class ParameterController<T extends ParameterOutput>
 
         try (InputStream inputStream = parameterService.getRawDataService()
                                                             .getRawData(id, queryMap)) {
-            if (inputStream == null) {
-                throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
-            }
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);

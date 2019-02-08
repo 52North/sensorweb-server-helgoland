@@ -232,9 +232,6 @@ public class DataController extends BaseController {
         }
         final RawDataService rawDataService = dataService.getRawDataService();
         try (InputStream inputStream = rawDataService.getRawData(parameters)) {
-            if (inputStream == null) {
-                throw new ResourceNotFoundException("No raw data found.");
-            }
             response.setContentType(parameters.getRawFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
