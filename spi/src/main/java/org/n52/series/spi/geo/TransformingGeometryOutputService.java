@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,12 +28,11 @@
  */
 package org.n52.series.spi.geo;
 
+import org.locationtech.jts.geom.Geometry;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.GeometryOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.series.spi.srv.ParameterService;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 // TODO consolidate
 // -> TransformingGeometryOutputService

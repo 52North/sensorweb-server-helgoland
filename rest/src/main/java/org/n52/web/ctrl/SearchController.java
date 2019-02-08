@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,9 +28,12 @@
  */
 package org.n52.web.ctrl;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.series.spi.search.SearchService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +50,7 @@ public class SearchController extends BaseController {
 
     private final SearchService searchService;
 
+    @Autowired
     public SearchController(SearchService service) {
         this.searchService = service;
     }
@@ -55,10 +59,16 @@ public class SearchController extends BaseController {
     public ModelAndView searchResources(@RequestParam String q,
                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                             required = false) String locale,
-                                        @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(query, locale).extendWith(Parameters.SEARCH_TERM, q)
+                                        @RequestParam(required = false) MultiValueMap<String, String> query,
+                                        HttpServletResponse response) {
+        IoParameters parameters = createParameters(query, locale, response).extendWith(Parameters.SEARCH_TERM, q)
                                                                  .respectBackwardsCompatibility();
         return new ModelAndView().addObject(searchService.searchResources(parameters));
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        // TODO Auto-generated method stub
     }
 
 }

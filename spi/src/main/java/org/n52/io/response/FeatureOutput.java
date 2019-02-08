@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,13 +28,59 @@
  */
 package org.n52.io.response;
 
-public class FeatureOutput extends OutputWithParameters {
+import java.util.HashMap;
+import java.util.Map;
+
+import org.locationtech.jts.geom.Geometry;
+import org.n52.io.geojson.FeatureOutputSerializer;
+import org.n52.io.geojson.GeoJSONFeature;
+import org.n52.io.geojson.GeoJSONObject;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+@JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
+public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
 
     public static final String COLLECTION_PATH = "features";
+    public static final String PROPERTIES = "properties";
+    public static final String GEOMETRY = "geometry";
+
+    private OptionalOutput<Geometry> geometry;
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
     }
+
+    @Override
+    public Geometry getGeometry() {
+        return getIfSerialized(geometry);
+    }
+
+    @Override
+    public void setGeometry(OptionalOutput<Geometry> geometry) {
+        this.geometry = geometry;
+    }
+
+    @Override
+    public boolean isSetGeometry() {
+        return isSet(geometry) && geometry.isSerialize();
+    }
+
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<>();
+        nullSafePut("label", getLabel(), properties);
+        nullSafePut("domainId", getDomainId(), properties);
+        nullSafePut("href", getHref(), properties);
+        return properties;
+    }
+
+    private void nullSafePut(String key, Object value, Map<String, Object> container) {
+        if (value != null) {
+            container.put(key, value);
+        }
+    }
+
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -43,8 +43,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opengis.referencing.FactoryException;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 
 public class WGS84UtilTest {
 

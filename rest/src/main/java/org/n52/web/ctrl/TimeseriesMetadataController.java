@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,13 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.extension.RenderingHintsExtension;
 import org.n52.io.extension.StatusIntervalsExtension;
@@ -46,6 +47,7 @@ import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES)
 public class TimeseriesMetadataController extends ParameterRequestMappingAdapter<TimeseriesMetadataOutput> {
 
+    @Autowired
     public TimeseriesMetadataController(CountingMetadataService counter,
                                         ParameterService<TimeseriesMetadataOutput> service) {
         super(counter, service);
@@ -109,33 +112,38 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
+            HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
+            HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
-        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
+        return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(Map<String, String> query, String locale) {
-        return super.createParameters(query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(Map<String, String> query, String locale, HttpServletResponse response) {
+        return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
-        return super.createParameters(datasetId, query, locale).respectBackwardsCompatibility();
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
+            HttpServletResponse response) {
+        return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override

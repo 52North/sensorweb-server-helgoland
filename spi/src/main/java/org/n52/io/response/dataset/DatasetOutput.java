@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -31,57 +31,63 @@ package org.n52.io.response.dataset;
 import java.util.List;
 
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
     public static final String COLLECTION_PATH = "datasets";
 
+    public static final String DATASET_TYPE = "datasetType";
+    public static final String OBSERVATION_TYPE = "observationType";
     public static final String VALUE_TYPE = "valueType";
-    public static final String PLATFORM_TYPE = "platformType";
+    public static final String MOBILE = "mobile";
+    public static final String INSITU = "insitu";
+    public static final String UOM = "uom";
     public static final String DATASET_PARAMETERS = "parameters";
+    public static final String ORIGIN_TIMEZONE = "originTimezone";
+    public static final String SMAPLING_TIME_START = "samplingTimeStart";
+    public static final String SMAPLING_TIME_END = "samplingTimeEnd";
+    public static final String FEATURE = "feature";
     public static final String REFERENCE_VALUES = "referenceValues";
     public static final String FIRST_VALUE = "firstValue";
     public static final String LAST_VALUE = "lastValue";
-    public static final String UOM = "uom";
-
+    private OptionalOutput<String> datasetType;
+    private OptionalOutput<String> observationType;
     private OptionalOutput<String> valueType;
-
-    private OptionalOutput<String> platformType;
-
-    private OptionalOutput<DatasetParameters> datasetParameters;
-
-    private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
-
-    private OptionalOutput<V> firstValue;
-
-    private OptionalOutput<V> lastValue;
-
+    private OptionalOutput<Boolean> mobile;
+    private OptionalOutput<Boolean> insitu;
     private OptionalOutput<String> uom;
+    private OptionalOutput<String> originTimezone;
+    private OptionalOutput<String> samplingTimeStart;
+    private OptionalOutput<String> samplingTimeEnd;
+    private OptionalOutput<FeatureOutput> feature;
+    private OptionalOutput<DatasetParameters> datasetParameters;
+    private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
+    private OptionalOutput<V> firstValue;
+    private OptionalOutput<V> lastValue;
 
     protected DatasetOutput() {
         // use static constructor method
     }
 
-    @Override
-    protected String getCollectionName() {
-        return COLLECTION_PATH;
+    public String getDatasetType() {
+        return getIfSerialized(datasetType);
     }
 
-    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(String type, IoParameters params) {
-        DatasetOutput<V> output = new DatasetOutput<>();
-        output.setValue(VALUE_TYPE, type, params, output::setValueType);
-        return output;
+    public void setDatasetType(OptionalOutput<String> datasetType) {
+        this.datasetType = datasetType;
     }
 
-    @Override
-    public DatasetOutput<V> setId(String id) {
-        String type = getIfSet(valueType, true);
-        super.setId(ValueType.createId(type, id));
+    public String getObservationType() {
+        return getIfSerialized(observationType);
+    }
+
+    public DatasetOutput<?> setObservationType(OptionalOutput<String> observationType) {
+        this.observationType = observationType;
         return this;
     }
 
@@ -89,30 +95,25 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return getIfSerialized(valueType);
     }
 
-    protected void setValueType(OptionalOutput<String> valueType) {
+    public void setValueType(OptionalOutput<String> valueType) {
         this.valueType = valueType;
     }
 
-    public String getPlatformType() {
-        return getIfSerialized(platformType);
+    public Boolean getMobile() {
+        return getIfSerialized(mobile);
     }
 
-    public DatasetOutput<V> setPlatformType(OptionalOutput<String> platformType) {
-        this.platformType = platformType;
+    public DatasetOutput setMobile(OptionalOutput<Boolean> mobile) {
+        this.mobile = mobile;
         return this;
     }
 
-    @JsonProperty("parameters")
-    public DatasetParameters getDatasetParameters() {
-        return getDatasetParameters(false);
+    public Boolean getInsitu() {
+        return getIfSerialized(insitu);
     }
 
-    public DatasetParameters getDatasetParameters(boolean forced) {
-        return getIfSet(datasetParameters, forced);
-    }
-
-    public DatasetOutput<V> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
-        this.datasetParameters = parameters;
+    public DatasetOutput<?> setInsitu(OptionalOutput<Boolean> insitu) {
+        this.insitu = insitu;
         return this;
     }
 
@@ -120,14 +121,67 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return getIfSerialized(uom);
     }
 
-    public DatasetOutput<V> setUom(OptionalOutput<String> uom) {
+    public DatasetOutput<?> setUom(OptionalOutput<String> uom) {
         this.uom = uom;
         return this;
     }
 
-    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
-    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
-    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
+    public String getOriginTimezone() {
+        return getIfSerialized(originTimezone);
+    }
+
+    public void setOriginTimezone(OptionalOutput<String> originTimezone) {
+        this.originTimezone = originTimezone;
+    }
+
+    public String getSamplingTmeStart() {
+        return getIfSerialized(samplingTimeStart);
+    }
+
+    public void setSamplingTimeStart(OptionalOutput<String> samplingTimeStart) {
+        this.samplingTimeStart = samplingTimeStart;
+    }
+
+    public String getSamplingTimeEnd() {
+        return getIfSerialized(samplingTimeEnd);
+    }
+
+    public void setSamplingTimeEnd(OptionalOutput<String> samplingTimeEnd) {
+        this.samplingTimeEnd = samplingTimeEnd;
+    }
+
+    public FeatureOutput getFeature() {
+        return getIfSerialized(feature);
+    }
+
+    public void setFeature(OptionalOutput<FeatureOutput> feature) {
+        this.feature = feature;
+    }
+
+    public DatasetParameters getDatasetParameters(boolean forced) {
+        return getIfSet(datasetParameters, forced);
+    }
+
+    @JsonProperty("parameters")
+    public DatasetParameters getDatasetParameters() {
+        return getDatasetParameters(false);
+    }
+
+    public DatasetOutput<?> setDatasetParameters(OptionalOutput<DatasetParameters> parameters) {
+        this.datasetParameters = parameters;
+        return this;
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
+
+    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(IoParameters params) {
+        DatasetOutput<V> output = new DatasetOutput<>();
+        return output;
+    }
+
     public V getFirstValue() {
         return getIfSerialized(firstValue);
     }
@@ -137,9 +191,6 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return this;
     }
 
-    // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
-    // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
-    @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
     public V getLastValue() {
         return getIfSerialized(lastValue);
     }

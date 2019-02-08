@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -59,7 +59,6 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -72,7 +71,6 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private final ParameterService<T> parameterService;
 
-    @Autowired
     public ParameterController(ParameterService<T> parameterService) {
         ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
         this.parameterService = new LocaleAwareSortService<>(service);
@@ -87,14 +85,11 @@ public abstract class ParameterController<T extends ParameterOutput>
             throw new BadRequestException("Querying raw procedure data is not supported!");
         }
 
-        IoParameters queryMap = createParameters(query, locale);
+        IoParameters queryMap = createParameters(query, locale, response);
         LOGGER.debug("getRawData() with id '{}' and query '{}'", id, queryMap);
 
         try (InputStream inputStream = parameterService.getRawDataService()
                                                             .getRawData(id, queryMap)) {
-            if (inputStream == null) {
-                throw new ResourceNotFoundException("No raw data found for id '" + id + "'.");
-            }
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
             throw new InternalServerException("Error while querying raw data", e);
@@ -102,8 +97,9 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public Map<String, Object> getExtras(String resourceId, String locale, MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale);
+    public Map<String, Object> getExtras(HttpServletResponse response, String resourceId, String locale,
+            MultiValueMap<String, String> query) {
+        IoParameters map = createParameters(query, locale, response);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
@@ -140,7 +136,7 @@ public abstract class ParameterController<T extends ParameterOutput>
                                       String locale,
                                       MultiValueMap<String, String> query) {
         Stopwatch stopwatch = Stopwatch.startStopwatch();
-        IoParameters parameters = createParameters(query, locale);
+        IoParameters parameters = createParameters(query, locale, response);
         try {
             LOGGER.debug("getCollection() with query '{}'", parameters);
             preparePagingHeaders(parameters, response);
@@ -171,8 +167,9 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(query, locale);
+    public ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query,
+            HttpServletResponse response) {
+        IoParameters parameters = createParameters(query, locale, response);
         LOGGER.debug("getItem() with id '{}' and query '{}'", id, parameters);
         return createModelAndView(getItem(id, parameters), parameters);
     }
@@ -221,5 +218,14 @@ public abstract class ParameterController<T extends ParameterOutput>
      * @return the number of elements available, or negative number if paging is not supported.
      */
     protected abstract int getElementCount(IoParameters queryMap);
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom(getCollectionName()))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom(getCollectionName())).asLong(0));
+        }
+    }
 
 }

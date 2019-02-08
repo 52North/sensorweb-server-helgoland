@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -30,18 +30,18 @@ package org.n52.io.request;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
 
 import org.junit.Test;
 import org.n52.io.crs.BoundingBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.bedatadriven.jackson.datatype.jts.JtsModule;
-import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import org.locationtech.jts.geom.Point;
+import org.n52.io.geojson.GeoJSONDecoder;
+import org.n52.io.geojson.GeoJSONException;
 
 public class VicinityTest {
 
@@ -49,16 +49,28 @@ public class VicinityTest {
 
     private static final double ERROR_DELTA = 0.1;
 
-    private final String circleAroundNorthPole = "{ \"center\": {  \"type\": \"Point\", \"coordinates\": [-89.99,89.999] }, \"radius\": 500  }";
+    private final String circleAroundNorthPole = ""
+            + "{"
+            + "  \"type\": \"Point\", "
+            + "  \"coordinates\": [-89.99,89.999] "
+            + "}";
 
-    private final String circleAroundSouthPole = "{ \"center\": { \"type\": \"Point\", \"coordinates\": [-89.99,89.999] }, \"radius\": 500}";
+    private final String circleAroundSouthPole = ""
+            + "{"
+            + "  \"type\": \"Point\","
+            + "  \"coordinates\": [-89.99,-89.999]"
+            + "}";
 
-    private final String circleCenterAtGreenwhichAndEquator = "{ \"center\": { \"type\": \"Point\", \"coordinates\": [ 0,0 ] },\"radius\": 500 }";
+    private final String circleCenterAtGreenwhichAndEquator = ""
+            + "{"
+            + "   \"type\": \"Point\","
+            + "   \"coordinates\": [ 0,0 ]"
+            + "}";
 
     @Test
     public void
-            shouldHaveInversedLatitudesWhenCenterIsOnEquator() {
-        Vicinity vicinity = createRadiusAtNorthPole(circleCenterAtGreenwhichAndEquator);
+            shouldHaveInversedLatitudesWhenCenterIsOnEquator() throws GeoJSONException, IOException {
+        Vicinity vicinity = createVicinity(circleCenterAtGreenwhichAndEquator, 500);
         BoundingBox bounds = vicinity.calculateBounds();
         double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
         double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
@@ -67,8 +79,8 @@ public class VicinityTest {
 
     @Test
     public void
-            shouldHaveInversedLongitudesWhenCenterIsOnGreenwhich() {
-        Vicinity vicinity = createRadiusAtNorthPole(circleCenterAtGreenwhichAndEquator);
+            shouldHaveInversedLongitudesWhenCenterIsOnGreenwhich() throws GeoJSONException, IOException {
+        Vicinity vicinity = createVicinity(circleCenterAtGreenwhichAndEquator, 500);
         BoundingBox bounds = vicinity.calculateBounds();
         double llLongitudeOfGreatCircle = bounds.getLowerLeft().getX();
         double urLongitudeOnGreatCircle = bounds.getUpperRight().getX();
@@ -77,8 +89,8 @@ public class VicinityTest {
 
     @Test
     public void
-            shouldHaveCommonLatitudeCircleWhenCenterIsNorthPole() {
-        Vicinity vicinity = createRadiusAtNorthPole(circleAroundNorthPole);
+            shouldHaveCommonLatitudeCircleWhenCenterIsNorthPole() throws GeoJSONException, IOException {
+        Vicinity vicinity = createVicinity(circleAroundNorthPole, 500);
         BoundingBox bounds = vicinity.calculateBounds();
         double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
         double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
@@ -87,26 +99,22 @@ public class VicinityTest {
 
     @Test
     public void
-            shouldHaveCommonLatitudeCircleWhenCenterIsSouthPole() {
-        Vicinity vicinity = createRadiusAtNorthPole(circleAroundSouthPole);
+            shouldHaveCommonLatitudeCircleWhenCenterIsSouthPole() throws GeoJSONException, IOException {
+        Vicinity vicinity = createVicinity(circleAroundSouthPole, 500);
         BoundingBox bounds = vicinity.calculateBounds();
         double llLatitudeOfSmallCircle = bounds.getLowerLeft().getY();
         double urLatitudeOfSmallCircle = bounds.getUpperRight().getY();
         assertThat(llLatitudeOfSmallCircle, closeTo(urLatitudeOfSmallCircle, ERROR_DELTA));
     }
 
-    private Vicinity createRadiusAtNorthPole(String circleJson) {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new JtsModule());
-            return mapper.readValue(circleJson, Vicinity.class);
-        } catch (JsonParseException e) {
-            fail("Could not parse GeoJson");
-        } catch (IOException e) {
-            LOGGER.error("Could not read GeoJSON: {}", circleJson, e);
-            fail("Could not read GeoJson");
-        }
-        return null;
+    private Vicinity createVicinity(String center, int radius) throws GeoJSONException, IOException {
+        Vicinity vicinity = new Vicinity();
+        vicinity.setRadius(radius);
+        ObjectMapper mapper = new ObjectMapper();
+        final JsonNode node = mapper.readTree(center);
+        Point p = (Point) new GeoJSONDecoder().decodeGeometry(node);
+        vicinity.setCenter(p);
+        return vicinity;
     }
 
 }

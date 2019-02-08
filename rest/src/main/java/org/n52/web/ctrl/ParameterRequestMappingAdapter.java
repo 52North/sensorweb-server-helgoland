@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
 import java.util.Collections;
@@ -67,7 +66,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String locale,
                                       @RequestParam MultiValueMap<String, String> query) {
-        return super.getCollection(response, locale, addHrefBase(query));
+        return super.getCollection(response, locale, addAdditionalParameter(query));
     }
 
     @Override
@@ -75,8 +74,9 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
     public ModelAndView getItem(@PathVariable("item") String id,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String locale,
-                                @RequestParam MultiValueMap<String, String> query) {
-        return super.getItem(id, locale, addHrefBase(query));
+                                @RequestParam MultiValueMap<String, String> query,
+                                HttpServletResponse response) {
+        return super.getItem(id, locale, addAdditionalParameter(query), response);
     }
 
     @Override
@@ -88,16 +88,17 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                required = false) String locale,
                            @RequestParam MultiValueMap<String, String> query) {
-        super.getRawData(response, id, locale, addHrefBase(query));
+        super.getRawData(response, id, locale, addAdditionalParameter(query));
     }
 
     @Override
     @RequestMapping(value = "/{item}/extras", produces = Constants.APPLICATION_JSON)
-    public Map<String, Object> getExtras(@PathVariable("item") String resourceId,
+    public Map<String, Object> getExtras(HttpServletResponse response,
+                                         @PathVariable("item") String resourceId,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String locale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
-        return super.getExtras(resourceId, locale, addHrefBase(query));
+        return super.getExtras(response, resourceId, locale, addAdditionalParameter(query));
     }
 
     protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
@@ -105,6 +106,11 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         query.put(Parameters.HREF_BASE, value);
         return query;
     }
+
+    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
+        return addHrefBase(query);
+    }
+
 
     protected CountingMetadataService getEntityCounter() {
         return counter;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -177,7 +177,7 @@ public class ServiceOutput extends ParameterOutput {
 
         private Integer amountPlatforms;
 
-        private Integer amountDatasets;
+        private DatasetCount amountDatasets;
 
         /**
          * @deprecated since 2.0.0
@@ -185,11 +185,11 @@ public class ServiceOutput extends ParameterOutput {
         @Deprecated
         private Integer amountStations;
 
-        /**
-         * @deprecated since 2.0.0
-         */
-        @Deprecated
         private Integer amountTimeseries;
+
+        private Integer amountSamplings;
+
+        private Integer amountMeasuringProgram;
 
         public String[] getSelectedPlatformTypes() {
             return Utils.copy(selectedPlatformTypes);
@@ -247,12 +247,12 @@ public class ServiceOutput extends ParameterOutput {
             this.amountPlatforms = size;
         }
 
-        public Integer getDatasets() {
+        public DatasetCount getDatasets() {
             return amountDatasets;
         }
 
-        public void setDatasetsSize(Integer size) {
-            this.amountDatasets = size;
+        public void setDatasets(DatasetCount datasets) {
+            this.amountDatasets = datasets;
         }
 
         @Deprecated
@@ -265,15 +265,83 @@ public class ServiceOutput extends ParameterOutput {
             this.amountStations = size;
         }
 
-        @Deprecated
-        public void setTimeseriesSize(int countTimeseries) {
+        public void setTimeseriesSize(Integer countTimeseries) {
             this.amountTimeseries = countTimeseries;
         }
 
-        @Deprecated
         public Integer getTimeseries() {
             return this.amountTimeseries;
         }
+
+        public void setSamplingsSize(Integer countSamplings) {
+            this.amountSamplings = countSamplings;
+        }
+
+        public Integer getSamplings() {
+            return this.amountSamplings;
+        }
+
+        public void setMeasuringProgramsSize(int countMeasuringPrograms) {
+            this.amountMeasuringProgram = countMeasuringPrograms;
+        }
+
+        public Integer getMeasuringPrograms() {
+            return this.amountMeasuringProgram;
+        }
+    }
+
+    public static class DatasetCount {
+
+        private Integer totalAmount;
+
+        private Integer amountIndividualObservations;
+
+        private Integer amountTimeseries;
+
+        private Integer amountProfiles;
+
+        private Integer amountTrajectories;
+
+        public Integer getTotal() {
+            return totalAmount;
+        }
+
+        public void setTotalAmount(Integer totalAmount) {
+            this.totalAmount = totalAmount;
+        }
+
+        public Integer getIndividualObservations() {
+            return amountIndividualObservations;
+        }
+
+        public void setAmountIndividualObservations(Integer amountIndividualObservations) {
+            this.amountIndividualObservations = amountIndividualObservations;
+        }
+
+        public Integer getTimeseries() {
+            return amountTimeseries;
+        }
+
+        public void setAmountTimeseries(Integer amountTimeseries) {
+            this.amountTimeseries = amountTimeseries;
+        }
+
+        public Integer getProfiles() {
+            return amountProfiles;
+        }
+
+        public void setAmountProfiles(Integer amountProfiles) {
+            this.amountProfiles = amountProfiles;
+        }
+
+        public Integer getTrajectories() {
+            return amountTrajectories;
+        }
+
+        public void setAmountTrajectories(Integer amountTrajectories) {
+            this.amountTrajectories = amountTrajectories;
+        }
+
     }
 
 }

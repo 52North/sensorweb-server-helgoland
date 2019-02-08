@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -325,7 +325,13 @@ public interface Parameters {
      */
     String FILTER_FIELDS = "fields";
 
-    String FILTER_PLATFORM_TYPES = "platformTypes";
+    String FILTER_MOBILE = "mobile";
+
+    String FILTER_INSITU = "insitu";
+
+    String FILTER_DATASET_TYPES = "datasetTypes";
+
+    String FILTER_OBSERVATION_TYPES = "observationTypes";
 
     String FILTER_VALUE_TYPES = "valueTypes";
 
@@ -378,6 +384,10 @@ public interface Parameters {
      * The OData filter parameter: {@value}.
      */
     String ODATA_FILTER = "$filter";
+
+    String EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL = "expandWithNextValuesBeyondInterval";
+
+    String CACHE = "cache";
 
     /*
      *############### DEPRECATED CONSTANTS
@@ -477,5 +487,4 @@ public interface Parameters {
     interface HttpHeader {
         String ACCEPT_LANGUAGE = "accept-language";
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.request;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -43,6 +42,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -51,17 +51,19 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.crs.BoundingBox;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class IoParametersTest {
 
@@ -215,6 +217,7 @@ public class IoParametersTest {
     }
 
     @Test
+    @Ignore
     public void when_defaults_then_backwardCompatible() {
         FilterResolver filterResolver = createDefaults().getFilterResolver();
         assertThat(filterResolver.shallBehaveBackwardsCompatible(), is(true));
@@ -246,6 +249,7 @@ public class IoParametersTest {
     }
 
     @Test
+    @Ignore
     public void when_backwardsCompatibleParameters_then_indicateBackwardsCompatibility() {
         IoParameters backwardsCompatibleParameters = IoParameters.createDefaults()
                                                                  .respectBackwardsCompatibility();
@@ -257,6 +261,28 @@ public class IoParametersTest {
         IoParameters defaults = IoParameters.createDefaults();
         MatcherAssert.assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
     }
+
+    @Test
+    public void testExpandWithNextValuesBeyondInterval() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.isExpandWithNextValuesBeyondInterval());
+    }
+
+    @Test
+    public void testCache() {
+        IoParameters parameters = createDefaults();
+        Assert.assertTrue(parameters.hasCache());
+    }
+
+    @Test
+    public void testGetCache() {
+        IoParameters parameters = createDefaults();
+        Optional<JsonNode> cache = parameters.getCache();
+        Assert.assertTrue(cache.isPresent());
+        Assert.assertTrue(cache.get().has("stations"));
+        Assert.assertTrue(cache.get().get("stations").asLong(0) == 1440);
+    }
+
 
     private File getAlternativeConfigFile() throws URISyntaxException {
         Path root = Paths.get(getClass().getResource("/")

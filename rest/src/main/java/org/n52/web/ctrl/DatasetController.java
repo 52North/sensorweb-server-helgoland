@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
 public class DatasetController extends ParameterRequestMappingAdapter<DatasetOutput< ? >> {
 
+    @Autowired
     public DatasetController(CountingMetadataService counter, ParameterService<DatasetOutput< ? >> service) {
         super(counter, service);
     }

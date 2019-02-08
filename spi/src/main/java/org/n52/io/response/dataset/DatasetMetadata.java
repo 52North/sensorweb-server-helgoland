@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
@@ -82,6 +81,10 @@ public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializab
         this.valueBeforeTimespan = valueBeforeTimespan;
     }
 
+    public boolean hasValueBeforeTimespan() {
+        return valueBeforeTimespan != null;
+    }
+
     /**
      * @return the value after to the upper timespan bounds
      */
@@ -96,6 +99,10 @@ public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializab
      */
     public void setValueAfterTimespan(final T valueBeforeTimespan) {
         this.valueAfterTimespan = valueBeforeTimespan;
+    }
+
+    public boolean hasValueAfterTimespan() {
+        return valueAfterTimespan != null;
     }
 
 }

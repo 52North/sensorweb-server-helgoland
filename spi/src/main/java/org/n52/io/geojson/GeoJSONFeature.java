@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -29,10 +29,9 @@
 package org.n52.io.geojson;
 
 import java.util.Map;
+import org.locationtech.jts.geom.Geometry;
 
 import org.n52.io.response.OptionalOutput;
-
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc

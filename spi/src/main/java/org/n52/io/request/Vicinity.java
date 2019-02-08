@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,18 +28,21 @@
  */
 package org.n52.io.request;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.locationtech.jts.geom.Point;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.crs.WGS84Util;
 import org.opengis.referencing.FactoryException;
-
-import com.vividsolutions.jts.geom.Point;
 
 /**
  * Represents the surrounding area based on a center and a radius. All
  * coordinate calculations are based on a EPSG:4326, lon-lat ordered reference
  * frame.
  */
+@JsonSerialize(using = VicinitySerializer.class)
+@JsonDeserialize(using = VicinityDeserializer.class)
 public class Vicinity {
 
     /**
@@ -60,9 +63,9 @@ public class Vicinity {
      * @param center the center point.
      * @param radius the distance around the center
      */
-    public Vicinity(Point center, String radius) {
+    public Vicinity(Point center, double radius) {
         try {
-            this.radius = Double.parseDouble(radius);
+            this.radius = radius;
             this.center = center;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Could not parse radius.");
@@ -115,6 +118,18 @@ public class Vicinity {
         }
     }
 
+    public String getCrs() {
+        return crs;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
     /**
      * @param center the center coordinates.
      */
@@ -124,15 +139,6 @@ public class Vicinity {
 
     public Point getCenter() {
         return center;
-    }
-
-    /**
-     * @param radius the vicinity's radius.
-     * @throws NumberFormatException if radius could not be parsed to a double
-     * value.
-     */
-    public void setRadius(String radius) {
-        this.radius = Double.parseDouble(radius);
     }
 
     @Override

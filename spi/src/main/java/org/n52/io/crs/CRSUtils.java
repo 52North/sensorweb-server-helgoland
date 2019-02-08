@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.crs;
 
 import org.geotools.factory.Hints;
@@ -34,6 +33,13 @@ import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.CRS.AxisOrder;
 import org.geotools.referencing.ReferencingFactoryFinder;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -42,13 +48,6 @@ import org.opengis.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
 
 public final class CRSUtils {
 
@@ -267,7 +266,15 @@ public final class CRSUtils {
                                CoordinateReferenceSystem dest)
             throws FactoryException,
             TransformException {
-        return JTS.transform(geometry, CRS.findMathTransform(srs, dest));
+        return checkSrid(JTS.transform(geometry, CRS.findMathTransform(srs, dest)), srs, dest);
+    }
+
+    private Geometry checkSrid(Geometry geometry, CoordinateReferenceSystem srs, CoordinateReferenceSystem dest)
+            throws FactoryException {
+        if (!srs.equals(dest) && CRS.equalsIgnoreMetadata(dest, getCrsFor(DEFAULT_CRS))) {
+            geometry.setSRID(EPSG_WGS84);
+        }
+        return geometry;
     }
 
     public Geometry parseWkt(String wkt) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -28,17 +28,20 @@
  */
 package org.n52.io.response.dataset.profile;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.n52.io.response.dataset.AbstractValue;
 
-public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> implements Serializable {
 
     private static final long serialVersionUID = -7292181682632614697L;
 
-    private String verticalUnit;
+    private VerticalExtentOutput verticalExtent;
 
     public ProfileValue() {
         // for serialization
@@ -53,18 +56,19 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> {
     }
 
     @Override
+    @JsonProperty("values")
     public List<ProfileDataItem<T>> getValue() {
         List<ProfileDataItem<T>> profileValue = new ArrayList<>(super.getValue());
         Collections.sort(profileValue);
         return profileValue;
     }
 
-    public String getVerticalUnit() {
-        return verticalUnit;
+    public VerticalExtentOutput getVerticalExtent() {
+        return verticalExtent;
     }
 
-    public void setVerticalUnit(String verticalUnit) {
-        this.verticalUnit = verticalUnit;
+    public void setVerticalExtent(VerticalExtentOutput verticalExtent) {
+        this.verticalExtent = verticalExtent;
     }
 
 }

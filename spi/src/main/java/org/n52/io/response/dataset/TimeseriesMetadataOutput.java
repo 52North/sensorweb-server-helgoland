@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -69,11 +69,6 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
     @JsonIgnore
     public String getValueType() {
         return super.getValueType();
-    }
-
-    @Override
-    public String getId() {
-        return ValueType.extractId(super.getId());
     }
 
     public StationOutput getStation() {
@@ -149,10 +144,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             parameters.setOffering(offering);
         }
 
-        @Override
-        public void setFeature(ParameterOutput feature) {
-            parameters.setFeature(feature);
-        }
+//        @Override
+//        public void setFeature(ParameterOutput feature) {
+//            parameters.setFeature(feature);
+//        }
 
         @Override
         public void setService(ParameterOutput service) {
@@ -184,10 +179,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             return parameters.getOffering();
         }
 
-        @Override
-        public ParameterOutput getFeature() {
-            return parameters.getFeature();
-        }
+//        @Override
+//        public ParameterOutput getFeature() {
+//            return parameters.getFeature();
+//        }
 
         @Override
         public ParameterOutput getService() {

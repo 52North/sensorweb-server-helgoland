@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.handler;
 
 import java.io.BufferedInputStream;
@@ -93,8 +94,8 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
             } else {
                 InputStream stream = ConfigTypedFactory.class.getResourceAsStream(configLocation);
                 return stream == null
-                        ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
-                        : stream;
+                    ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
+                    : stream;
             }
         } catch (URISyntaxException | FileNotFoundException e) {
             LOGGER.info("Could not find config file '{}'. Load from compiled default.", configLocation, e);
@@ -111,17 +112,22 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
     }
 
     private InputStream createConfigStream(File file, Class< ? > clazz) throws FileNotFoundException {
-        if (file != null && file.exists()) {
+        if ((file != null) && file.exists()) {
             LOGGER.debug("loading factory config from '{}'", file.getAbsolutePath());
             return new FileInputStream(file);
         }
-        if (file != null && !file.exists()) {
+        if ((file != null) && !file.exists()) {
             LOGGER.debug("Config file not found: '{}'", file.getAbsolutePath());
         }
 
-        LOGGER.debug("loading fallback config.");
-        final String jarResource = getFallbackConfigResource();
-        return new BufferedInputStream(getTargetType().getResourceAsStream(jarResource));
+        LOGGER.debug("Try to find default config for type {}", getTargetType());
+        final String configPath = getFallbackConfigResource();
+        InputStream defaultConfig = getTargetType().getResourceAsStream(configPath);
+        if (defaultConfig == null) {
+            throw new IllegalStateException("Unable not find default configuration from '" + configPath + "'!\n"
+                    + "Make sure the configuration file can be found by the target's classloader.");
+        }
+        return new BufferedInputStream(defaultConfig);
     }
 
     public boolean isKnown(String type) {
@@ -176,7 +182,18 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
         }
     }
 
+    /**
+     * Tries to load a default config file which can be found by the target type's classloader.
+     *
+     * @return a relative path to the config within the jar
+     * @see #getTargetType()
+     */
     protected abstract String getFallbackConfigResource();
+
+    /**
+     * @return the type this factory creates
+     */
+    protected abstract Class< ? > getTargetType();
 
     // override if needed
     protected T initInstance(T instance) {
@@ -185,8 +202,6 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
         }
         return instance;
     }
-
-    protected abstract Class< ? > getTargetType();
 
     private void throwNewNoDatasetsAvailableForTypeException(String type) throws DatasetFactoryException {
         throw new DatasetFactoryException("No datasets available for '" + type + "'.");

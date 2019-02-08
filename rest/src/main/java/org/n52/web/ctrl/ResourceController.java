@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
 import java.util.Collections;
@@ -43,9 +42,10 @@ public interface ResourceController {
 
     String getCollectionName();
 
-    ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query);
+    ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query, HttpServletResponse response);
 
-    default Map<String, Object> getExtras(String id, String locale, MultiValueMap<String, String> query) {
+    default Map<String, Object> getExtras(HttpServletResponse response, String id, String locale,
+            MultiValueMap<String, String> query) {
         return Collections.emptyMap();
     }
 }

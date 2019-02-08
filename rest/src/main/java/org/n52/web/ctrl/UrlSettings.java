@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -37,8 +37,13 @@ import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.IndividualObservationOutput;
+import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
+import org.n52.io.response.dataset.TrajectoryOutput;
+import org.n52.io.response.sampling.MeasuringProgramOutput;
+import org.n52.io.response.sampling.SamplingOutput;
 
 /**
  * <p>
@@ -104,6 +109,31 @@ public interface UrlSettings {
      * Subpaths identifying datasets collections available.
      */
     String COLLECTION_DATASETS = "/" + DatasetOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying individual observation collections available.
+     */
+    String COLLECTION_INDIVIDUAL_OBSERVATIONS = "/" + IndividualObservationOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying profile collections available.
+     */
+    String COLLECTION_PROFILES = "/" + ProfileOutput.COLLECTION_PATH;
+
+    /**
+     * Subpaths identifying trajectories collections available.
+     */
+    String COLLECTION_TRAJECTORIES = "/" + TrajectoryOutput.COLLECTION_PATH;
+
+    /**
+     * Subpath identifying a collection of samplings available.
+     */
+    String COLLECTION_SAMPLINGS = "/" + SamplingOutput.COLLECTION_PATH;
+
+    /**
+     * Subpath identifying a collection of measuring programs available.
+     */
+    String COLLECTION_MEASURING_PROGRAMS = "/" + MeasuringProgramOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying geometries collections available.

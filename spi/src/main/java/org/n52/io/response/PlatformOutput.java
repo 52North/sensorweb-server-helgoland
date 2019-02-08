@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,18 +26,12 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.response;
 
 import java.util.Collection;
 
-import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * TODO: JavaDoc
@@ -50,57 +44,12 @@ public class PlatformOutput extends OutputWithParameters {
     public static final String COLLECTION_PATH = "platforms";
 
     public static final String DATASETS = "datasets";
-    public static final String GEOMETRY = "geometry";
-    public static final String PLATFORMTYPE = "platformType";
-
-    private OptionalOutput<PlatformType> platformType;
 
     private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;
-
-    private OptionalOutput<Geometry> geometry;
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
-    }
-
-    @Override
-    public String getHrefBase() {
-        String base = super.getHrefBase();
-        String suffix = getType().getPlatformType();
-        return (base != null) && base.endsWith(suffix)
-            ? base.substring(0, base.lastIndexOf(suffix) - 1)
-            : base;
-    }
-
-    public String getPlatformType() {
-        if (getIfSerialized(platformType) != null) {
-            return getType().getPlatformType();
-        } else {
-            return null;
-        }
-    }
-
-    public PlatformOutput setPlatformType(OptionalOutput<PlatformType> platformtype) {
-        this.platformType = platformtype;
-        return this;
-    }
-
-    @JsonIgnore
-    public PlatformType getType() {
-        PlatformType type = getIfSet(platformType, true);
-        return type != null
-            ? type
-            // stay backward compatible
-            : PlatformType.STATIONARY_INSITU;
-    }
-
-    @Override
-    public PlatformOutput setId(String id) {
-        if (getType() != null) {
-            super.setId(getType().createId(id));
-        }
-        return this;
     }
 
     public Collection<DatasetOutput<AbstractValue<?>>> getDatasets() {
@@ -109,16 +58,6 @@ public class PlatformOutput extends OutputWithParameters {
 
     public PlatformOutput setDatasets(OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> series) {
         this.datasets = series;
-        return this;
-    }
-
-    @JsonSerialize(using = GeoJSONGeometrySerializer.class)
-    public Geometry getGeometry() {
-        return getIfSerialized(geometry);
-    }
-
-    public PlatformOutput setGeometry(OptionalOutput<Geometry> geometry) {
-        this.geometry = geometry;
         return this;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@ package org.n52.web.ctrl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,8 @@ import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.MultiValueMap;
@@ -111,35 +114,43 @@ public abstract class BaseController {
         };
     }
 
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale) {
-        return createParameters(query.toParameters(), locale);
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
+            HttpServletResponse response) {
+        return createParameters(query.toParameters(), locale, response);
     }
 
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale) {
-        return createParameters(query.toParameters(), locale);
+    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
+            HttpServletResponse response) {
+        return createParameters(query.toParameters(), locale, response);
     }
 
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale) {
-        return createParameters(IoParameters.createFromMultiValueMap(query), locale);
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
+        return createParameters(IoParameters.createFromMultiValueMap(query), locale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale) {
-        IoParameters parameters = IoParameters.createFromMultiValueMap(query)
-                                              .replaceWith(Parameters.DATASETS, datasetId);
-        return createParameters(parameters, locale);
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
+            HttpServletResponse response) {
+        IoParameters parameters =
+                IoParameters.createFromMultiValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale, response);
     }
 
-    protected IoParameters createParameters(Map<String, String> query, String locale) {
-        return createParameters(IoParameters.createFromSingleValueMap(query), locale);
+    protected IoParameters createParameters(Map<String, String> query, String locale, HttpServletResponse response) {
+        return createParameters(IoParameters.createFromSingleValueMap(query), locale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale) {
-        IoParameters parameters = IoParameters.createFromSingleValueMap(query)
-                                              .replaceWith(Parameters.DATASETS, datasetId);
-        return createParameters(parameters, locale);
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
+            HttpServletResponse response) {
+        IoParameters parameters =
+                IoParameters.createFromSingleValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
+        return createParameters(parameters, locale, response);
     }
 
-    private IoParameters createParameters(IoParameters parameters, String locale) {
+    private IoParameters createParameters(IoParameters parameters, String locale, HttpServletResponse response) {
+        if (parameters != null && response != null) {
+            addCacheHeader(parameters, response);
+        }
         return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
                            .setParseExceptionHandle(getExceptionHandle());
     }
@@ -221,6 +232,19 @@ public abstract class BaseController {
 
     protected ObjectMapper createObjectMapper() {
         return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    }
+
+    protected abstract void addCacheHeader(IoParameters parameter, HttpServletResponse response);
+
+    protected void addCacheHeader(HttpServletResponse response, long maxAge) {
+        String maxAgeHeader = maxAge > 0
+                ? CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue()
+                : CacheControl.noStore().getHeaderValue();
+        response.setHeader(HttpHeaders.CACHE_CONTROL, maxAgeHeader);
+    }
+
+    protected String getResourcePathFrom(String path) {
+        return path.substring(path.lastIndexOf("/") + 1);
     }
 
 }

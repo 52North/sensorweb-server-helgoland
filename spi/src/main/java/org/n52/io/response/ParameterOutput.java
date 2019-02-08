@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -113,7 +113,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     protected <T> boolean isSet(OptionalOutput<T> optional) {
-        return optional != null && optional.isPresent();
+        return (optional != null) && optional.isPresent();
     }
 
     protected <T> boolean resolvesToNonNullValue(OptionalOutput<T> optional) {
@@ -130,10 +130,10 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     }
 
     public String getHref() {
-        if (getHrefBase() == null && href == null) {
+        if ((getHrefBase() == null) && (href == null)) {
             return null;
         }
-        return !isSet(href) && getHrefBase() != null
+        return !isSet(href) && (getHrefBase() != null)
                 ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
                 : href.getValue();
     }
@@ -241,7 +241,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof ParameterOutput)) {
+        if ((obj == null) || !(obj instanceof ParameterOutput)) {
             return false;
         }
         ParameterOutput other = (ParameterOutput) obj;

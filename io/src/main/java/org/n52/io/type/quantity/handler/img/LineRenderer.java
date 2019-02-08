@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ final class LineRenderer implements Renderer {
             this.lineRenderer.setSeriesStroke(0, getDashedLineDefinition(style));
         } else if (lineType.equals("dotted")) {
             this.lineRenderer = new XYLineAndShapeRenderer(false, true);
-            lineRenderer.setBaseShape(getDotsDefinition(style));
+            lineRenderer.setDefaultShape(getDotsDefinition(style));
         } else if (lineType.equals("solidWithDots")) {
             this.lineRenderer = new XYLineAndShapeRenderer(true, true);
             this.lineRenderer.setSeriesStroke(0, getSolidLineDefinition(style));

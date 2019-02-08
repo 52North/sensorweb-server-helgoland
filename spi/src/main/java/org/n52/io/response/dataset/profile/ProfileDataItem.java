@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,16 +26,17 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.response.dataset.profile;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 
-public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-    private String verticalUnit;
+@JsonPropertyOrder({ "verticalFrom", "verticalTo", "vertical", "value" })
+public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private BigDecimal verticalFrom;
 
@@ -57,18 +58,11 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.value = value;
     }
 
-    public String getVerticalUnit() {
-        return verticalUnit;
-    }
-
-    public void setVerticalUnit(String verticalUnit) {
-        this.verticalUnit = verticalUnit;
-    }
-
     public BigDecimal getVerticalFrom() {
         return verticalFrom;
     }
 
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
     public void setVerticalFrom(BigDecimal verticalFrom) {
         this.verticalFrom = verticalFrom;
     }
@@ -77,14 +71,16 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return this.verticalFrom != null;
     }
 
-    public BigDecimal getVertical() {
-        return !isSetVerticalFrom()
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
+    public BigDecimal getVerticalTo() {
+        return isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
 
-    public BigDecimal getVerticalTo() {
-        return isSetVerticalFrom()
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER_FLOAT)
+    public BigDecimal getVertical() {
+        return !isSetVerticalFrom()
                 ? this.vertical
                 : null;
     }
@@ -115,7 +111,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, vertical, verticalFrom, vertical, verticalUnit);
+        return Objects.hash(value, vertical, verticalFrom, vertical);
     }
 
     @Override
@@ -129,8 +125,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return Objects.equals(this.value, other.value)
                 && Objects.equals(this.vertical, other.vertical)
                 && Objects.equals(this.verticalFrom, other.verticalFrom)
-                && Objects.equals(this.vertical, other.vertical)
-                && Objects.equals(this.verticalUnit, other.verticalUnit);
+                && Objects.equals(this.vertical, other.vertical);
     }
 
 }

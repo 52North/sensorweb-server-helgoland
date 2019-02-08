@@ -6,7 +6,7 @@
         <artifactId>parent</artifactId>
         <version>14</version>
     </parent>
-
+    
     <groupId>org.n52.series-api</groupId>
     <artifactId>series-rest-api</artifactId>
     <version>2.0.1-SNAPSHOT</version>
@@ -14,19 +14,19 @@
     <name>Series REST API</name>
     <url>http://52north.org/communities/sensorweb/</url>
     <inceptionYear>2013</inceptionYear>
-
+    
     <modules>
         <module>io</module>
         <module>rest</module>
         <module>spi</module>
         <module>web-resources</module>
     </modules>
-
-    <organization>
-        <name>52North Initiative for Geospatial Open Source Software GmbH</name>
-        <url>http://52north.org</url>
-    </organization>
-
+    
+    <organization> 
+        <name>52North Initiative for Geospatial Open Source Software GmbH</name> 
+        <url>http://52north.org</url> 
+    </organization> 
+    
     <developers>
         <developer>
             <id>bredel</id>
@@ -34,28 +34,28 @@
             <email>h.bredel@52north.org</email>
         </developer>
     </developers>
-
+    
     <licenses>
         <license>
             <name>GNU General Public License, Version 2.0</name>
             <url>http://www.gnu.de/documents/gpl-2.0.en.html</url>
         </license>
     </licenses>
-
+    
     <scm>
         <connection>scm:git:https://github.com/52North/series-rest-api.git</connection>
         <developerConnection>scm:git:https://github.com/52North/series-rest-api.git</developerConnection>
         <url>https://github.com/52North/series-rest-api</url>
         <tag>HEAD</tag>
     </scm>
-
+    
     <properties>
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <version.swc>3.2.0</version.swc>
+        <swc.version>3.2.0</swc.version>
         <jackson.version>2.9.7</jackson.version>
-        <version.geotools>19.0</version.geotools>
+        <geotools.version>20.1</geotools.version>
         <arctic-sea.version>5.1.0</arctic-sea.version>
         <spring-boot.version>2.1.1.RELEASE</spring-boot.version>
         <spring.version>5.1.3.RELEASE</spring.version>
@@ -63,10 +63,9 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
         <currentYearDynamic>${maven.build.timestamp}</currentYearDynamic>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <file.encoding>UTF-8</file.encoding>
     </properties>
-
+    
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -77,7 +76,7 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-
+            
             <!-- jackson-bom includes 2.9.0 instead of 2.9.7 -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -120,12 +119,12 @@
                 <artifactId>shetland</artifactId>
                 <version>${arctic-sea.version}</version>
             </dependency>
-
+            
             <!-- geotools dependencies -->
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-api</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -140,7 +139,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -155,7 +154,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-opengis</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -170,7 +169,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-epsg-hsql</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -185,7 +184,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-referencing</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -200,7 +199,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-metadata</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -215,7 +214,7 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-shapefile</artifactId>
-                <version>${version.geotools}</version>
+                <version>${geotools.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.media</groupId>
@@ -270,17 +269,17 @@
             <dependency>
                 <groupId>org.jfree</groupId>
                 <artifactId>jfreechart</artifactId>
-                <version>1.0.19</version>
+                <version>1.5.0</version>
             </dependency>
             <dependency>
                 <groupId>org.jfree</groupId>
                 <artifactId>jcommon</artifactId>
-                <version>1.0.23</version>
+                <version>1.0.24</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>fop</artifactId>
-                <version>2.1</version>
+                <version>2.2</version>
                 <exclusions>
                     <exclusion>
                         <!--jcl-over-slf4j is used instead -->
@@ -308,7 +307,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.apache.avalon.framework</groupId>
                 <artifactId>avalon-framework-api</artifactId>
@@ -319,7 +318,7 @@
                 <artifactId>avalon-framework-impl</artifactId>
                 <version>4.3.1</version>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math</artifactId>
@@ -330,10 +329,17 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.6</version>
             </dependency>
-
+            
+            <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>3.1.8</version>
+                <scope>provided</scope>
+            </dependency>
+            
         </dependencies>
     </dependencyManagement>
-
+    
     <build>
         <resources>
             <resource>
@@ -341,63 +347,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>sources</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>format</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.groovy.maven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-        </plugins>
-
+        
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -414,7 +364,7 @@
                         </archive>
                     </configuration>
                 </plugin>
-
+                
                 <plugin>
                     <!-- license headers -->
                     <groupId>com.mycila</groupId>
@@ -440,12 +390,12 @@
                         <strictCheck>true</strictCheck>
                     </configuration>
                 </plugin>
-
+                
                 <plugin>
                     <!-- dependencies' licenses -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>1.14</version>
+                    <version>1.16</version>
                     <configuration>
                         <useMissingFile>true</useMissingFile>
                         <fileTemplate>etc/license-as-csv.ftl</fileTemplate>
@@ -461,7 +411,7 @@
                         </licenseMerges>
                     </configuration>
                 </plugin>
-
+                
                 <plugin>
                     <!-- assemble licenses -->
                     <groupId>org.jasig.maven</groupId>
@@ -470,15 +420,14 @@
                         <noticeTemplate>etc/NOTICE.template</noticeTemplate>
                         <licenseMapping>
                             <param>etc/license-mappings.xml</param>
-                            <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
                         </licenseMapping>
                         <generateChildNotices>false</generateChildNotices>
                     </configuration>
                 </plugin>
-
+                
                 <plugin>
-                    <groupId>org.codehaus.groovy.maven</groupId>
-                    <artifactId>gmaven-plugin</artifactId>
+                    <groupId>org.codehaus.gmaven</groupId>
+                    <artifactId>groovy-maven-plugin</artifactId>
                     <version>1.0</version>
                     <configuration>
                         <source>
@@ -489,28 +438,7 @@
                         </source>
                     </configuration>
                 </plugin>
-
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <configuration>
-                        <dateFormat>yyyy-MM-dd HH:mm:ssZ</dateFormat>
-                        <gitDescribe>
-                            <skip>true</skip>
-                        </gitDescribe>
-                        <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
-                        <timestampFormat>{0,date,yyyy-MM-dd HH:mm:ss}</timestampFormat>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <configuration>
-                        <preparationGoals>clean</preparationGoals>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                    </configuration>
-                </plugin>
-
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -520,33 +448,80 @@
                         </descriptors>
                     </configuration>
                 </plugin>
+                
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.0.0-M1</version>
                     <configuration>
                         <rules>
                             <requireNoRepositories>
                                 <allowedRepositories>
                                     <id>geotools</id>
                                     <id>n52-releases</id>
+                                    <id>sonatype-nexus-snapshots</id>
                                 </allowedRepositories>
                             </requireNoRepositories>
                         </rules>
                     </configuration>
                 </plugin>
+                
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <failOnWarning>false</failOnWarning>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
-        <extensions>
-            <extension>
-                <!-- used to deploy to 52n repo via webdav -->
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.12</version>
-            </extension>
-        </extensions>
     </build>
-
+    
     <profiles>
+        <profile>
+            <id>jdk8</id>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <!-- assemble licenses -->
+                            <groupId>org.jasig.maven</groupId>
+                            <artifactId>maven-notice-plugin</artifactId>
+                            <configuration>
+                                <licenseMapping>
+                                    <param>http://52north.github.io/cdn/licenses/license-mappings.xml</param>
+                                </licenseMapping>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>since-jdk9</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <!-- assemble licenses -->
+                            <groupId>org.jasig.maven</groupId>
+                            <artifactId>maven-notice-plugin</artifactId>
+                            <configuration>
+                                <licenseMapping>
+                                    <param>http://52north.github.io/cdn/licenses/license-mappings-jdk9.xml</param>
+                                </licenseMapping>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
         <profile>
             <id>create-license-list</id>
             <build>
@@ -567,38 +542,20 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>snapshot-dist</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-enforcer-plugin</artifactId>
-                            <configuration>
-                                <rules>
-                                    <requireNoRepositories>
-                                        <allowedRepositories>
-                                            <id>geotools</id>
-                                            <id>n52-releases</id>
-                                            <id>sonatype-nexus-snapshots</id>
-                                        </allowedRepositories>
-                                    </requireNoRepositories>
-                                </rules>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
+        
     </profiles>
-
+    
     <repositories>
         <repository>
             <id>n52-releases</id>
             <name>52n Releases</name>
             <url>http://52north.org/maven/repo/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>geotools</id>
@@ -606,8 +563,38 @@
             <url>http://download.osgeo.org/webdav/geotools/</url>
             <!--<url>https://boundless.artifactoryonline.com/boundless/main</url> -->
             <!--<url>http://repo.boundlessgeo.com/main/</url> -->
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snaphots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>        
     </repositories>
-
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snaphots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
 

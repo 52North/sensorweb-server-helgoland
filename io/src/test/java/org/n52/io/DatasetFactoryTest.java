@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -53,7 +54,6 @@ public class DatasetFactoryTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-collection-factory.properties");
@@ -73,7 +73,7 @@ public class DatasetFactoryTest {
     @Test
     public void when_createdWithNullConfig_then_configureWithFallback() {
         ConfigTypedFactory<Collection> f = createCollectionFactory(null);
-        Assert.assertTrue(f.isKnown("hashmap"));
+        Assert.assertTrue(f.isKnown("test_target"));
     }
 
     @Test
@@ -110,10 +110,20 @@ public class DatasetFactoryTest {
             }
 
             @Override
-            protected Class<Collection> getTargetType() {
-                return Collection.class;
+            protected Class<TestTarget> getTargetType() {
+                // make sure the classloader finds the fallback config
+                return TestTarget.class;
             }
         };
+    }
+
+    /**
+     * Provide a target type from where the classloader can find a fallback configuration.
+     */
+    public static class TestTarget extends ArrayList<String> {
+
+        private static final long serialVersionUID = -607687051283050368L;
+
     }
 
 }

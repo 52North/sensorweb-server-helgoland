@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import java.util.Map;
@@ -41,10 +42,13 @@ public class RequestStyledParameterSet extends RequestParameterSet {
     /**
      * Style options for each timeseriesId of interest.
      */
-    private Map<String, StyleProperties> styleOptions;
+    private final Map<String, StyleProperties> styleOptions;
 
     /**
      * Creates an instance with non-null default values.
+     *
+     * @param styleOptions
+     *        the style options
      */
     RequestStyledParameterSet(@JsonProperty(value = "styleOptions",
         required = true) Map<String, StyleProperties> styleOptions) {
@@ -61,8 +65,8 @@ public class RequestStyledParameterSet extends RequestParameterSet {
      */
     public void setWidth(int width) {
         int w = width < 0
-                ? Parameters.DEFAULT_WIDTH
-                : width;
+            ? Parameters.DEFAULT_WIDTH
+            : width;
         setParameter(Parameters.WIDTH, w);
     }
 
@@ -75,8 +79,8 @@ public class RequestStyledParameterSet extends RequestParameterSet {
 
     public void setHeight(int height) {
         int h = height < 0
-                ? Parameters.DEFAULT_HEIGHT
-                : height;
+            ? Parameters.DEFAULT_HEIGHT
+            : height;
         setParameter(Parameters.HEIGHT, h);
     }
 
@@ -124,8 +128,8 @@ public class RequestStyledParameterSet extends RequestParameterSet {
         StyleProperties styleProperties = getStyleProperties(timeseriesId);
         Map<String, StyleProperties> properties = styleProperties.getReferenceValueStyleProperties();
         return properties.containsKey(referenceSeriesId)
-                ? properties.get(referenceSeriesId)
-                : null;
+            ? properties.get(referenceSeriesId)
+            : null;
     }
 
     @Override

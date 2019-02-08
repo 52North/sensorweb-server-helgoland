@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -50,6 +50,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * borrowed from
@@ -120,22 +122,18 @@ public class JSONUtils {
         return getReader().readTree(url.openStream());
     }
 
+    @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION", justification = "Ignore false positive")
     public static JsonNode loadPath(final String path) throws IOException {
-        final JsonNode ret;
         try (FileInputStream in = new FileInputStream(path)) {
-            ret = getReader().readTree(in);
+            return getReader().readTree(in);
         }
-        return ret;
     }
 
+    @SuppressFBWarnings(value = "OBL_UNSATISFIED_OBLIGATION", justification = "Ignore false positive")
     public static JsonNode loadFile(final File file) throws IOException {
-        final JsonNode ret;
-
         try (FileInputStream in = new FileInputStream(file)) {
-            ret = getReader().readTree(in);
+            return getReader().readTree(in);
         }
-
-        return ret;
     }
 
     public static JsonNode loadStream(final InputStream in) throws IOException {

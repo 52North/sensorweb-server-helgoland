@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.request;
 
 import static java.util.stream.Collectors.toSet;
@@ -55,12 +54,11 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 import org.joda.time.format.DateTimeFormatter;
+import org.locationtech.jts.geom.Point;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.IoParseException;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
-import org.n52.io.response.PlatformType;
-import org.n52.io.response.dataset.ValueType;
 import org.n52.io.style.LineStyle;
 import org.n52.io.style.Style;
 import org.n52.shetland.ogc.filter.Filter;
@@ -73,14 +71,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import com.bedatadriven.jackson.datatype.jts.JtsModule;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.vividsolutions.jts.geom.Point;
 
 public final class IoParameters implements Parameters {
 
@@ -91,6 +87,8 @@ public final class IoParameters implements Parameters {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
+
+    private static final String QUANTITY = "quantity";
 
     private final MultiValueMap<String, JsonNode> query;
 
@@ -578,16 +576,28 @@ public final class IoParameters implements Parameters {
         return getValuesOf(FILTER_FIELDS);
     }
 
-    public Set<String> getPlatformTypes() {
-        return getValuesOf(FILTER_PLATFORM_TYPES);
-    }
-
     public Set<String> getPlatformGeometryTypes() {
         return getValuesOf(FILTER_PLATFORM_GEOMETRIES);
     }
 
     public Set<String> getObservedGeometryTypes() {
         return getValuesOf(FILTER_OBSERVED_GEOMETRIES);
+    }
+
+    public String getMobile() {
+        return getAsString(FILTER_MOBILE);
+    }
+
+    public String getInsitu() {
+        return getAsString(FILTER_INSITU);
+    }
+
+    public Set<String> getDatasetTypes() {
+        return getValuesOf(FILTER_DATASET_TYPES);
+    }
+
+    public Set<String> getObservationTypes() {
+        return getValuesOf(FILTER_OBSERVATION_TYPES);
     }
 
     public Set<String> getValueTypes() {
@@ -739,8 +749,7 @@ public final class IoParameters implements Parameters {
     private <T> T parseJson(String parameter, Class<T> clazz) {
         try {
             String value = getAsString(parameter);
-            return OBJECT_MAPPER.registerModule(new JtsModule())
-                                .readValue(value, clazz);
+            return OBJECT_MAPPER.readValue(value, clazz);
         } catch (JsonParseException | JsonMappingException e) {
             throw createInvalidJsonValueException(parameter, e);
         } catch (IOException e) {
@@ -947,7 +956,7 @@ public final class IoParameters implements Parameters {
      */
     public boolean getAsBoolean(String parameter) {
         String value = getAsString(parameter);
-        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+        if (Boolean.toString(true).equalsIgnoreCase(value) || Boolean.toString(false).equalsIgnoreCase(value)) {
             return Boolean.parseBoolean(value);
         } else {
             IoParseException ex = createIoParseException(parameter).addHint("Value must be either 'false' or 'true'!");
@@ -1168,36 +1177,47 @@ public final class IoParameters implements Parameters {
     }
 
     public IoParameters respectBackwardsCompatibility() {
-        String[] platformTypes = {
-                                  PlatformType.PLATFORM_TYPE_STATIONARY,
-                                  PlatformType.PLATFORM_TYPE_INSITU
-        };
-
         return filterResolver.shallBehaveBackwardsCompatible()
-            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_PLATFORM_TYPES, platformTypes)
-                                               .extendWith(Parameters.FILTER_VALUE_TYPES,
-                                                           ValueType.DEFAULT_VALUE_TYPE)
+            ? removeAllOf(Parameters.HREF_BASE).extendWith(Parameters.FILTER_MOBILE, Boolean.toString(false))
+                                               .extendWith(Parameters.FILTER_INSITU, Boolean.toString(true))
+                                               .extendWith(Parameters.FILTER_VALUE_TYPES, QUANTITY)
+                                               .extendWith(Parameters.FILTER_OBSERVATION_TYPES, "simple")
+                                               .extendWith(Parameters.FILTER_DATASET_TYPES, "timeseries")
                                                // set backwards compatibility at the end
                                                .setBehaveBackwardsCompatible(true)
             : this;
     }
 
     public boolean isPureStationaryInsituQuery() {
-        Set<String> platformTypes = getPlatformTypes();
         Set<String> datasetTypes = getValueTypes();
-        return isStationaryInsituOnly(platformTypes)
+        return isStationaryInsituOnly()
                 && isQuantityOnly(datasetTypes);
     }
 
-    private boolean isStationaryInsituOnly(Set<String> platformTypes) {
-        return (platformTypes.size() == 2)
-                && platformTypes.contains(PlatformType.PLATFORM_TYPE_STATIONARY)
-                && platformTypes.contains(PlatformType.PLATFORM_TYPE_INSITU);
+    private boolean isStationaryInsituOnly() {
+        return getMobile() != null && getMobile().equals(Boolean.toString(false))
+                && getInsitu() != null && getInsitu().equals(Boolean.toString(true));
     }
 
     private boolean isQuantityOnly(Set<String> valueTypes) {
         return (valueTypes.size() == 1)
-                && valueTypes.contains(ValueType.DEFAULT_VALUE_TYPE);
+                && valueTypes.contains(QUANTITY);
+    }
+
+
+    public boolean isExpandWithNextValuesBeyondInterval() {
+        if (!containsParameter(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL)) {
+            return true;
+        }
+        return getAsBoolean(EXPAND_WITH_NEXT_VALUES_BEYOND_INTERVAL);
+    }
+
+    public boolean hasCache() {
+        return containsParameter(CACHE);
+    }
+
+    public Optional<JsonNode> getCache() {
+        return getAsNode(CACHE);
     }
 
 }

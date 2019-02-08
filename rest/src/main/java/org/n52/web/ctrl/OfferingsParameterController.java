@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -26,13 +26,13 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.web.ctrl;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OfferingOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = UrlSettings.COLLECTION_OFFERINGS)
 public class OfferingsParameterController extends ParameterRequestMappingAdapter<OfferingOutput> {
 
+    @Autowired
     public OfferingsParameterController(CountingMetadataService counter, ParameterService<OfferingOutput> service) {
         super(counter, service);
     }
@@ -51,6 +52,6 @@ public class OfferingsParameterController extends ParameterRequestMappingAdapter
 
     @Override
     protected int getElementCount(IoParameters parameters) {
-        return super.getEntityCounter().getOfferingCount(parameters.respectBackwardsCompatibility());
+        return super.getEntityCounter().getOfferingCount(parameters);
     }
 }

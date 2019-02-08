@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -74,6 +74,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
+import org.quartz.utils.FindbugsSuppressWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,6 +117,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private boolean interrupted;
 
+    @FindbugsSuppressWarnings("OBL_UNSATISFIED_OBLIGATION")
     private PrerenderingJobConfig readJobConfig(String file) {
         try (InputStream taskConfig = getClass().getResourceAsStream(file)) {
             ObjectMapper om = new ObjectMapper();
@@ -213,8 +215,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
                              AbstractValue< ? >> createDefaultIoFactory() {
-        return new DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
-                                    AbstractValue< ? >>();
+        return new DefaultIoFactory<>();
     }
 
     @Override

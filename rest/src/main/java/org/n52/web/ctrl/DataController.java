@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,11 +53,11 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.request.RequestSimpleParameterSet;
 import org.n52.io.request.RequestStyledParameterSet;
+import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.ValueType;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
@@ -68,6 +67,7 @@ import org.n52.web.exception.InternalServerException;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -91,6 +91,10 @@ public class DataController extends BaseController {
 
     private static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
+    private static final String PROFILE = "profile";
+
+    private static final String DATA = "data";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataController.class);
 
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
@@ -107,6 +111,7 @@ public class DataController extends BaseController {
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
 
+    @Autowired
     public DataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue< ? >> ioFactory,
                           ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
                           DataService<Data<AbstractValue< ? >>> dataService) {
@@ -126,7 +131,7 @@ public class DataController extends BaseController {
                                           required = false) String locale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(datasetId, query, locale);
+        IoParameters map = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan());
         checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
@@ -134,8 +139,9 @@ public class DataController extends BaseController {
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);
-        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+//        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        String valueType = getDataType(map);
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
@@ -144,6 +150,14 @@ public class DataController extends BaseController {
         return map.isExpanded()
                 ? new ModelAndView().addObject(processed)
                 : new ModelAndView().addObject(processed.get(datasetId));
+    }
+
+    private String getDataType(IoParameters map) {
+        OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters =
+                datasetService.getCondensedParameters(map);
+        DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
+        return item.getObservationType().equals(PROFILE) || item.getDatasetType().equals(PROFILE) ? PROFILE
+                : item.getValueType();
     }
 
     @RequestMapping(value = "/data",
@@ -156,12 +170,13 @@ public class DataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale);
+        IoParameters parameters = createParameters(simpleParameters, locale, response);
         LOGGER.debug("get data collection with parameter set: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         IoProcessChain< ? > ioChain = createIoFactory(datasetType).setParameters(parameters)
                                                                   .createProcessChain();
 
@@ -169,14 +184,14 @@ public class DataController extends BaseController {
         return new ModelAndView().addObject(processed.getAllSeries());
     }
 
-    private String getValueType(IoParameters parameters) {
-        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
-        Set<String> datasetIds = parameters.getDatasets();
-        Iterator<String> iterator = datasetIds.iterator();
-        return iterator.hasNext()
-                ? ValueType.extractType(iterator.next(), handleAs)
-                : ValueType.DEFAULT_VALUE_TYPE;
-    }
+//    private String getValueType(IoParameters parameters) {
+//        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
+//        Set<String> datasetIds = parameters.getDatasets();
+//        Iterator<String> iterator = datasetIds.iterator();
+//        return iterator.hasNext()
+//                ? ValueType.extractType(iterator.next(), handleAs)
+//                : ValueType.DEFAULT_VALUE_TYPE;
+//    }
 
     @RequestMapping(value = "/data",
         params = {
@@ -188,7 +203,7 @@ public class DataController extends BaseController {
                                                required = false) String locale,
                                            @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale);
+        IoParameters parameters = createParameters(simpleParameters, locale, response);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         writeRawData(parameters, response);
     }
@@ -203,7 +218,7 @@ public class DataController extends BaseController {
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                      required = false) String locale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         checkForUnknownDatasetId(parameters, datasetId);
         writeRawData(parameters, response);
     }
@@ -217,9 +232,6 @@ public class DataController extends BaseController {
         }
         final RawDataService rawDataService = dataService.getRawDataService();
         try (InputStream inputStream = rawDataService.getRawData(parameters)) {
-            if (inputStream == null) {
-                throw new ResourceNotFoundException("No raw data found.");
-            }
             response.setContentType(parameters.getRawFormat());
             IOUtils.copyLarge(inputStream, response.getOutputStream());
         } catch (IOException e) {
@@ -237,12 +249,13 @@ public class DataController extends BaseController {
                                               required = false) String locale,
                                           @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         LOGGER.debug("get data collection report with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).setParameters(parameters)
@@ -261,12 +274,13 @@ public class DataController extends BaseController {
                                     required = false) String locale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection report for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".pdf\"");
@@ -290,7 +304,7 @@ public class DataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection zip for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -299,7 +313,8 @@ public class DataController extends BaseController {
         response.setContentType(Constants.APPLICATION_ZIP);
         response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".zip\"");
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.APPLICATION_ZIP)
                                     .writeBinary(response.getOutputStream());
@@ -319,7 +334,7 @@ public class DataController extends BaseController {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection csv for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -338,7 +353,8 @@ public class DataController extends BaseController {
                             + extension
                             + "\"");
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         createIoFactory(datasetType).setParameters(parameters)
                                     .createHandler(Constants.TEXT_CSV)
                                     .writeBinary(response.getOutputStream());
@@ -354,11 +370,12 @@ public class DataController extends BaseController {
                                              required = false) String locale,
                                          @RequestBody RequestStyledParameterSet request)
             throws Exception {
-        IoParameters parameters = createParameters(request, locale);
+        IoParameters parameters = createParameters(request, locale, response);
         LOGGER.debug("get data collection chart with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
-        final String datasetType = getValueType(parameters);
+//        final String datasetType = getValueType(parameters);
+        final String datasetType = getDataType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(datasetType).setParameters(parameters)
@@ -377,13 +394,14 @@ public class DataController extends BaseController {
                                    required = false) String locale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale);
+        IoParameters parameters = createParameters(datasetId, query, locale, response);
         LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
-        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+//        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        String valueType = getDataType(parameters);
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).setParameters(parameters)
@@ -505,6 +523,15 @@ public class DataController extends BaseController {
                     + " (qualifier: "
                     + chartQualifier
                     + ")'.");
+        }
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        if (parameter.hasCache()
+                && parameter.getCache().get().has(getResourcePathFrom(DATA))) {
+            addCacheHeader(response, parameter.getCache().get()
+                    .get(getResourcePathFrom(DATA)).asLong(0));
         }
     }
 

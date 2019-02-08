@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -40,9 +40,9 @@ import java.util.Optional;
  */
 public final class OptionalOutput<T> {
 
-    private Optional<T> value;
+    private final Optional<T> value;
 
-    private boolean serialize;
+    private final boolean serialize;
 
     private OptionalOutput(T value, boolean serialize) {
         this.value = Optional.ofNullable(value);
@@ -70,7 +70,7 @@ public final class OptionalOutput<T> {
      * @return a optional value indicating if it shall be serialied or not.
      */
     public static <T> OptionalOutput<T> of(T value, boolean serialize) {
-        return new OptionalOutput<T>(value, serialize);
+        return new OptionalOutput<>(value, serialize);
     }
 
     public boolean isSerialize() {

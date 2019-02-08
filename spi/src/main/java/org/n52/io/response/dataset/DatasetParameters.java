@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -45,8 +45,6 @@ public class DatasetParameters {
 
     private ParameterOutput offering;
 
-    private ParameterOutput feature;
-
     private ParameterOutput service;
 
     private ParameterOutput platform;
@@ -81,14 +79,6 @@ public class DatasetParameters {
 
     public void setOffering(ParameterOutput offering) {
         this.offering = offering;
-    }
-
-    public ParameterOutput getFeature() {
-        return feature;
-    }
-
-    public void setFeature(ParameterOutput feature) {
-        this.feature = feature;
     }
 
     public ParameterOutput getService() {

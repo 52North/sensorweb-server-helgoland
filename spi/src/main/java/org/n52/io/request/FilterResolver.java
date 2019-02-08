@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2018 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2019 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -30,9 +30,9 @@ package org.n52.io.request;
 
 import java.util.Set;
 
-import org.n52.io.response.PlatformType;
-
 public class FilterResolver {
+
+    private static final String ALL = "all";
 
     private final IoParameters parameters;
 
@@ -41,138 +41,120 @@ public class FilterResolver {
     }
 
     boolean shallBehaveBackwardsCompatible() {
-        return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter());
+        return false;
+        // return !(isSetPlatformTypeFilter() || isSetDatasetTypeFilter() ||
+        // isSetValueTypeFilter() || isSetObservationTypeFilter());
     }
 
-    public boolean shallIncludeMobilePlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || isSetMobileFilter()
-                || !isSetStationaryFilter();
+    // public boolean shallIncludeMobileDatasets() {
+//        return hasMobileFilter() ? isSetMobileFilter() : shallIncludeAllDatasets();
+//    }
+//
+//    public boolean shallIncludeInsituDatasets() {
+//        return hasInsituFilter() ? isSetInsituFilter() : shallIncludeAllDatasets();
+//    }
+
+    public boolean hasMobileFilter() {
+        return parameters.getMobile() != null;
     }
 
-    public boolean shallIncludeStationaryPlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || isSetStationaryFilter()
-                || !isSetMobileFilter();
+    public boolean hasInsituFilter() {
+        return parameters.getInsitu() != null;
     }
 
-    public boolean shallIncludeInsituPlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || isSetInsituFilter()
-                || !isSetRemoteFilter();
+    public boolean isMobileFilter() {
+        return hasMobileFilter() && Boolean.parseBoolean(parameters.getMobile());
     }
 
-    public boolean shallIncludeRemotePlatformTypes() {
-        return shallIncludeAllPlatformTypes()
-                || isSetRemoteFilter()
-                || !isSetInsituFilter();
+    public boolean isInsituFilter() {
+        return hasInsituFilter() && Boolean.parseBoolean(parameters.getInsitu());
     }
 
-    public boolean isSetStationaryFilter() {
-        return getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_STATIONARY)
-                || getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    public boolean isSetMobileFilter() {
-        return getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_MOBILE)
-                || getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    public boolean isSetInsituFilter() {
-        return getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_INSITU)
-                || getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    public boolean isSetRemoteFilter() {
-        return getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_REMOTE)
-                || getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    public boolean shallIncludeAllPlatformTypes() {
-        return !isSetPlatformTypeFilter()
-                || getPlatformTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
+    public boolean shallIncludeAllDatasets() {
+        return !hasMobileFilter() && !hasInsituFilter();
     }
 
     public boolean isSetPlatformTypeFilter() {
-        return !getPlatformTypes().isEmpty();
+        return !getDatasets().isEmpty();
     }
 
-    private boolean shallIncludeAllPlatformGeometries() {
-        return !isSetPlatformGeometriesFilter()
-                || getPlatformGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
+//    private boolean shallIncludeAllPlatformGeometries() {
+//        return !isSetPlatformGeometriesFilter()
+//                || getPlatformGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
+//    }
+//
+//    private boolean isSetPlatformGeometriesFilter() {
+//        return !getPlatformGeometryTypes().isEmpty();
+//    }
+//
+//    private boolean shallIncludeAllObservedGeometries() {
+//        return !isSetObservedGeometriesFilter()
+//                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
+//    }
+//
+//    private boolean isSetObservedGeometriesFilter() {
+//        return !getObservedGeometryTypes().isEmpty();
+//    }
+//
+//    public boolean shallIncludePlatformGeometriesSite() {
+//        return shallIncludeAllPlatformGeometries()
+//                && shallIncludeAllDatasets()
+//                && !isSetObservedGeometriesFilter()
+//                && !isSetMobileFilter()
+//                && !isSetRemoteFilter()
+//                || isSetStationaryFilter()
+//                || isSetInsituFilter()
+//                || isSetSiteFilter();
+//    }
+//
+//    private boolean isSetSiteFilter() {
+//        return getPlatformGeometryTypes().contains("site");
+//    }
+//
+//    public boolean shallIncludePlatformGeometriesTrack() {
+//        return shallIncludeAllPlatformGeometries()
+//                && shallIncludeAllDatasets()
+//                && !isSetObservedGeometriesFilter()
+//                && !isSetStationaryFilter()
+//                && !isSetRemoteFilter()
+//                || isSetMobileFilter()
+//                || isSetInsituFilter()
+//                || isSetTrackFilter();
+//    }
+//
+//    private boolean isSetTrackFilter() {
+//        return getPlatformGeometryTypes().contains("track");
+//    }
+//
+//    public boolean shallIncludeObservedGeometriesStatic() {
+//        return shallIncludeAllObservedGeometries()
+//                && shallIncludeAllDatasets()
+//                || isSetStaticFilter()
+//                || !isSetDynamicFilter()
+//                        && !isSetInsituFilter();
+//    }
+//
+//    private boolean isSetStaticFilter() {
+//        return getObservedGeometryTypes().contains("static")
+//                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
+//    }
+//
+//    public boolean shallIncludeObservedGeometriesDynamic() {
+//        return shallIncludeAllObservedGeometries()
+//                && shallIncludeAllDatasets()
+//                || isSetDynamicFilter()
+//                || !isSetStaticFilter()
+//                        && !isSetInsituFilter();
+//    }
+//
+//    private boolean isSetDynamicFilter() {
+//        return getObservedGeometryTypes().contains("dynamic")
+//                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
+//    }
 
-    private boolean isSetPlatformGeometriesFilter() {
-        return !getPlatformGeometryTypes().isEmpty();
-    }
-
-    private boolean shallIncludeAllObservedGeometries() {
-        return !isSetObservedGeometriesFilter()
-                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    private boolean isSetObservedGeometriesFilter() {
-        return !getObservedGeometryTypes().isEmpty();
-    }
-
-    public boolean shallIncludePlatformGeometriesSite() {
-        return shallIncludeAllPlatformGeometries()
-                && shallIncludeAllPlatformTypes()
-                && !isSetObservedGeometriesFilter()
-                && !isSetMobileFilter()
-                && !isSetRemoteFilter()
-                || isSetStationaryFilter()
-                || isSetInsituFilter()
-                || isSetSiteFilter();
-    }
-
-    private boolean isSetSiteFilter() {
-        return getPlatformGeometryTypes().contains("site");
-    }
-
-    public boolean shallIncludePlatformGeometriesTrack() {
-        return shallIncludeAllPlatformGeometries()
-                && shallIncludeAllPlatformTypes()
-                && !isSetObservedGeometriesFilter()
-                && !isSetStationaryFilter()
-                && !isSetRemoteFilter()
-                || isSetMobileFilter()
-                || isSetInsituFilter()
-                || isSetTrackFilter();
-    }
-
-    private boolean isSetTrackFilter() {
-        return getPlatformGeometryTypes().contains("track");
-    }
-
-    public boolean shallIncludeObservedGeometriesStatic() {
-        return shallIncludeAllObservedGeometries()
-                && shallIncludeAllPlatformTypes()
-                || isSetStaticFilter()
-                || !isSetDynamicFilter()
-                        && !isSetInsituFilter();
-    }
-
-    private boolean isSetStaticFilter() {
-        return getObservedGeometryTypes().contains("static")
-                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    public boolean shallIncludeObservedGeometriesDynamic() {
-        return shallIncludeAllObservedGeometries()
-                && shallIncludeAllPlatformTypes()
-                || isSetDynamicFilter()
-                || !isSetStaticFilter()
-                        && !isSetInsituFilter();
-    }
-
-    private boolean isSetDynamicFilter() {
-        return getObservedGeometryTypes().contains("dynamic")
-                || getObservedGeometryTypes().contains(PlatformType.PLATFORM_TYPE_ALL);
-    }
-
-    private Set<String> getPlatformTypes() {
-        return parameters.getPlatformTypes();
+    @Deprecated
+    private Set<String> getDatasets() {
+        return parameters.getDatasets();
     }
 
     private Set<String> getObservedGeometryTypes() {
@@ -184,18 +166,52 @@ public class FilterResolver {
     }
 
     public boolean shallIncludeAllDatasetTypes() {
-        Set<String> datasetTypes = parameters.getValueTypes();
-        return !isSetDatasetTypeFilter()
-                || datasetTypes.contains(PlatformType.PLATFORM_TYPE_ALL);
+        Set<String> types = parameters.getDatasetTypes();
+        return (!isSetDatasetTypeFilter() && !isSetObservationTypeFilter() && !isSetValueTypeFilter())
+                || types.contains(ALL);
     }
 
     public boolean shallIncludeDatasetType(String datasetType) {
-        Set<String> datasetTypes = parameters.getValueTypes();
+        Set<String> datasetTypes = parameters.getDatasetTypes();
         return datasetTypes.contains(datasetType)
-                || datasetTypes.contains(PlatformType.PLATFORM_TYPE_ALL);
+                || datasetTypes.contains(ALL);
+    }
+
+    public boolean shallIncludeAllObservationTypes() {
+        Set<String> types = parameters.getObservationTypes();
+        return !isSetObservationTypeFilter()
+                || types.contains(ALL);
+    }
+
+    public boolean shallIncludeObservationType(String observationType) {
+        Set<String> observationTypes = parameters.getObservationTypes();
+        return observationTypes.contains(observationType)
+                || observationTypes.contains(ALL);
+    }
+
+    public boolean shallIncludeAllValueTypes() {
+        Set<String> types = parameters.getValueTypes();
+        return !isSetValueTypeFilter()
+                || types.contains(ALL);
+    }
+
+    public boolean shallIncludeValueType(String valueType) {
+        Set<String> valueTypes = parameters.getValueTypes();
+        return valueTypes.contains(valueType)
+                || valueTypes.contains(ALL);
     }
 
     private boolean isSetDatasetTypeFilter() {
+        return !parameters.getDatasetTypes()
+                          .isEmpty();
+    }
+
+    private boolean isSetObservationTypeFilter() {
+        return !parameters.getObservationTypes()
+                          .isEmpty();
+    }
+
+    private boolean isSetValueTypeFilter() {
         return !parameters.getValueTypes()
                           .isEmpty();
     }
