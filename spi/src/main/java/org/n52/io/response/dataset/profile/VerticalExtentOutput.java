@@ -32,9 +32,13 @@ import java.io.Serializable;
 
 public class VerticalExtentOutput implements Serializable {
 
+    private static final long serialVersionUID = 8835039959381946807L;
+
     private String uom;
 
-    private String orientation;
+    private Integer orientation;
+
+    private String verticalOrigin;
 
     private boolean interval;
 
@@ -50,12 +54,20 @@ public class VerticalExtentOutput implements Serializable {
         this.uom = uom;
     }
 
-    public String getOrientation() {
+    public Integer getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(String orientation) {
+    public void setOrientation(Integer orientation) {
         this.orientation = orientation;
+    }
+
+    public String getVerticalOrigin() {
+        return verticalOrigin;
+    }
+
+    public void setVerticalOrigin(String verticalOrigin) {
+       this.verticalOrigin = verticalOrigin;
     }
 
     public boolean isInterval() {
