@@ -40,12 +40,4 @@ public class CategoryValue extends AbstractValue<String> {
         // for serialization
     }
 
-    public CategoryValue(Long timestart, Long timeend, String value) {
-        super(timestart, timeend, value);
-    }
-
-    public CategoryValue(Long timestamp, String value) {
-        super(timestamp, value);
-    }
-
 }

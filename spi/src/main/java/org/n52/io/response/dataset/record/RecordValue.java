@@ -40,12 +40,4 @@ public class RecordValue extends AbstractValue<Map<String, Object>> {
         // for serialization
     }
 
-    public RecordValue(Long timestart, Long timeend, Map<String, Object> value) {
-        super(timestart, timeend, value);
-    }
-
-    public RecordValue(Long timestamp, Map<String, Object> value) {
-        super(timestamp, value);
-    }
-
 }

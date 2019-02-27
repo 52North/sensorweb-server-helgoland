@@ -180,7 +180,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         }
     }
 
-    private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream) throws IOException {
+    private void writeData(DatasetOutput metadata, Data<QuantityValue> series, OutputStream stream)
+            throws IOException {
         Map<String, String> metadataMap = parseMetadata(metadata);
         String[] values = new String[getHeader().length];
         values[0] = metadataMap.get(getHeader()[0]);
@@ -189,8 +190,10 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         values[3] = metadataMap.get(getHeader()[3]);
 
         for (QuantityValue timeseriesValue : series.getValues()) {
-            Long timestart = timeseriesValue.getTimestart();
-            Long timeend = (timestart != null) ? timeseriesValue.getTimeend() : timeseriesValue.getTimestamp();
+            DateTime timestart = timeseriesValue.getTimestamp().getDateTime();
+            DateTime timeend = (timestart != null)
+                    ? timeseriesValue.getTimeend().getDateTime()
+                    : timeseriesValue.getTimestamp().getDateTime();
             values[4] = getISO8601Time(timestart, timeend);
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);
@@ -212,7 +215,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
     }
 
     private Map<String, String> parseMetadata(DatasetOutput metadata) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         map.put(STATION, getStation(metadata));
         map.put(PHENOMENON, metadata.getDatasetParameters(true).getPhenomenon().getLabel());
         map.put(PROCEDURE, metadata.getDatasetParameters(true).getProcedure().getLabel());
@@ -220,8 +223,8 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         return map;
     }
 
-    private String getISO8601Time(Long start, Long end) {
-        return ((start == null) ? "" : (new DateTime(start).toString() + "/")) + new DateTime(end).toString();
+    private String getISO8601Time(DateTime start, DateTime end) {
+        return ((start == null) ? "" : (start.toString() + "/")) + end.toString();
     }
 
     private String getStation(DatasetOutput metadata) {

@@ -204,7 +204,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                 if (isBarStyle(style)) {
                     QuantityValue timeseriesValue = referenceData.getValues()
                                                                  .get(0);
-                    Date timeOfFirstValue = new Date(timeseriesValue.getTimestamp());
+                    Date timeOfFirstValue = timeseriesValue.getTimeend().getDateTime().toDate();
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
                     BigDecimal intervalSum = BigDecimal.ZERO;
@@ -213,13 +213,13 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                             intervalSum = intervalSum.add(value.getValue());
                         } else {
                             timeseries.add(timeinterval, intervalSum);
-                            timeinterval = determineTimeInterval(new Date(value.getTimestamp()), style);
+                            timeinterval = determineTimeInterval(value.getTimeend().getDateTime().toDate(), style);
                             intervalSum = value.getValue();
                         }
                     }
                 } else if (isLineStyle(style)) {
                     for (QuantityValue value : referenceData.getValues()) {
-                        Second second = new Second(new Date(value.getTimestamp()));
+                        Second second = new Second(value.getTimeend().getDateTime().toDate());
                         timeseries.addOrUpdate(second, value.getValue());
                     }
                 }
@@ -262,8 +262,8 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             }
             return (interval == null)
                     || ((interval.getStart()
-                               .getTime() <= value.getTimestamp())
-                            && (value.getTimestamp() < interval.getEnd()
+                               .getTime() <= value.getTimestamp().getMillis())
+                            && (value.getTimestamp().getMillis() < interval.getEnd()
                                                               .getTime()));
         }
 

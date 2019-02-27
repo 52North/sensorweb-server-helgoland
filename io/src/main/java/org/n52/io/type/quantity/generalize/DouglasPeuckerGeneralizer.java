@@ -211,7 +211,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
     }
 
     private Point2D.Double createPoint(QuantityValue timeseriesValue) {
-        Long timestamp = timeseriesValue.getTimestamp();
+        Long timestamp = timeseriesValue.getTimestamp().getMillis();
         BigDecimal value = timeseriesValue.getValue();
 
         Point2D.Double p = new Point2D.Double();
@@ -220,9 +220,9 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
     }
 
     private Line2D.Double createTendencyLine(QuantityValue start, QuantityValue end) {
-        Long startTime = start.getTimestamp();
+        Long startTime = start.getTimestamp().getMillis();
         BigDecimal startValue = start.getValue();
-        Long endTime = end.getTimestamp();
+        Long endTime = end.getTimestamp().getMillis();
         BigDecimal endValue = end.getValue();
         return new Line2D.Double(startTime, startValue.doubleValue(), endTime, endValue.doubleValue());
     }

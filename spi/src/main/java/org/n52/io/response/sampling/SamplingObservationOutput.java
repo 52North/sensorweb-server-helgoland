@@ -35,6 +35,8 @@ import org.n52.io.response.OfferingOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
 
@@ -58,15 +60,17 @@ public class SamplingObservationOutput {
         return value;
     }
 
-    public Long getTimestamp() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimestamp() {
         return getAbstractValue().getTimestamp();
     }
 
-    public Long getTimeend() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimeend() {
         return getAbstractValue().getTimeend();
     }
 
-    public Long getTimestart() {
+    public Object getTimestart() {
         return getAbstractValue().getTimestart();
     }
 

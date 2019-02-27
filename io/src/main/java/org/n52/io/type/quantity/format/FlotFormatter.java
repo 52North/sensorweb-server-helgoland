@@ -85,7 +85,7 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
             return null;
         }
         BigDecimal value = currentValue.getValue();
-        Long timestamp = currentValue.getTimestamp();
+        Long timestamp = currentValue.getTimestamp().getMillis();
         return new Number[] { timestamp, value };
     }
 

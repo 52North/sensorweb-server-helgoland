@@ -38,12 +38,4 @@ public class BooleanValue extends AbstractValue<Boolean> {
         // for serialization
     }
 
-    public BooleanValue(Long timestart, Long timeend, Boolean value) {
-        super(timestart, timeend, value);
-    }
-
-    public BooleanValue(Long timestamp, Boolean value) {
-        super(timestamp, value);
-    }
-
 }

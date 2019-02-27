@@ -34,8 +34,11 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
 
@@ -62,8 +65,8 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     private OptionalOutput<Boolean> insitu;
     private OptionalOutput<String> uom;
     private OptionalOutput<String> originTimezone;
-    private OptionalOutput<String> samplingTimeStart;
-    private OptionalOutput<String> samplingTimeEnd;
+    private OptionalOutput<TimeOutput> samplingTimeStart;
+    private OptionalOutput<TimeOutput> samplingTimeEnd;
     private OptionalOutput<FeatureOutput> feature;
     private OptionalOutput<DatasetParameters> datasetParameters;
     private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
@@ -103,7 +106,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return getIfSerialized(mobile);
     }
 
-    public DatasetOutput setMobile(OptionalOutput<Boolean> mobile) {
+    public DatasetOutput<V> setMobile(OptionalOutput<Boolean> mobile) {
         this.mobile = mobile;
         return this;
     }
@@ -112,7 +115,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return getIfSerialized(insitu);
     }
 
-    public DatasetOutput<?> setInsitu(OptionalOutput<Boolean> insitu) {
+    public DatasetOutput<V> setInsitu(OptionalOutput<Boolean> insitu) {
         this.insitu = insitu;
         return this;
     }
@@ -134,19 +137,21 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         this.originTimezone = originTimezone;
     }
 
-    public String getSamplingTmeStart() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getSamplingTmeStart() {
         return getIfSerialized(samplingTimeStart);
     }
 
-    public void setSamplingTimeStart(OptionalOutput<String> samplingTimeStart) {
+    public void setSamplingTimeStart(OptionalOutput<TimeOutput> samplingTimeStart) {
         this.samplingTimeStart = samplingTimeStart;
     }
 
-    public String getSamplingTimeEnd() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getSamplingTimeEnd() {
         return getIfSerialized(samplingTimeEnd);
     }
 
-    public void setSamplingTimeEnd(OptionalOutput<String> samplingTimeEnd) {
+    public void setSamplingTimeEnd(OptionalOutput<TimeOutput> samplingTimeEnd) {
         this.samplingTimeEnd = samplingTimeEnd;
     }
 
@@ -178,6 +183,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     }
 
     public static <V extends AbstractValue< ? >> DatasetOutput<V> create(IoParameters params) {
+
         DatasetOutput<V> output = new DatasetOutput<>();
         return output;
     }

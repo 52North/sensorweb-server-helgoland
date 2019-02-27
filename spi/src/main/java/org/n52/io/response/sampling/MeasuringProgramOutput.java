@@ -37,6 +37,8 @@ import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -55,8 +57,8 @@ public class MeasuringProgramOutput extends ParameterOutput {
     public static final String PHENOMENA = "phenomeny";
     public static final String CATEGROIES = "categories";
     private OptionalOutput<String> orderId;
-    private OptionalOutput<Long> measuringProgramTimeStart;
-    private OptionalOutput<Long> measuringProgramTimeEnd;
+    private OptionalOutput<TimeOutput> measuringProgramTimeStart;
+    private OptionalOutput<TimeOutput> measuringProgramTimeEnd;
     private OptionalOutput<Geometry> observedArea;
     private OptionalOutput<ProducerOutput> producer;
 
@@ -88,28 +90,30 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @return the measuringProgramTimeStart
      */
-    public Long getMeasuringProgramTimeStart() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getMeasuringProgramTimeStart() {
         return getIfSerialized(measuringProgramTimeStart);
     }
 
     /**
      * @param measuringProgramTimeStart the measuringProgramTimeStart to set
      */
-    public void setMeasuringProgramTimeStart(OptionalOutput<Long> measuringProgramTimeStart) {
+    public void setMeasuringProgramTimeStart(OptionalOutput<TimeOutput> measuringProgramTimeStart) {
         this.measuringProgramTimeStart = measuringProgramTimeStart;
     }
 
     /**
      * @return the measuringProgramTimeEnd
      */
-    public Long getMeasuringProgramTimeEnd() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getMeasuringProgramTimeEnd() {
         return getIfSerialized(measuringProgramTimeEnd);
     }
 
     /**
      * @param measuringProgramTimeEnd the measuringProgramTimeEnd to set
      */
-    public void setMeasuringProgramTimeEnd(OptionalOutput<Long> measuringProgramTimeEnd) {
+    public void setMeasuringProgramTimeEnd(OptionalOutput<TimeOutput> measuringProgramTimeEnd) {
         this.measuringProgramTimeEnd = measuringProgramTimeEnd;
     }
 

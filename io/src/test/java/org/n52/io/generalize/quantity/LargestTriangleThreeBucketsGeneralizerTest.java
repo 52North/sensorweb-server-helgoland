@@ -34,9 +34,11 @@ import java.math.BigDecimal;
 import java.util.Random;
 
 import org.hamcrest.core.Is;
+import org.joda.time.DateTime;
 import org.junit.Test;
 import org.n52.io.TvpDataCollection;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.TimeOutput;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityValue;
@@ -64,9 +66,8 @@ public class LargestTriangleThreeBucketsGeneralizerTest {
     }
 
     private Data<QuantityValue> getData(int maxValues) {
-        long timestamp = System.currentTimeMillis();
         BigDecimal startValue = BigDecimal.valueOf(0);
-        QuantityValue current = new QuantityValue(timestamp, startValue);
+        QuantityValue current = createQuantityValue(DateTime.now(), startValue);
 
         Data<QuantityValue> data = new Data<>();
         for (int i = 0; i < maxValues; i++) {
@@ -77,6 +78,15 @@ public class LargestTriangleThreeBucketsGeneralizerTest {
     }
 
     private QuantityValue getNextDataValue(QuantityValue value) {
-        return new QuantityValue(value.getTimestamp() + 1, BigDecimal.valueOf(random.nextDouble()));
+        return createQuantityValue(value.getTimestamp().getDateTime().plusMillis(1),
+                BigDecimal.valueOf(random.nextDouble()));
+    }
+
+    private QuantityValue createQuantityValue(DateTime time, BigDecimal value) {
+        QuantityValue quantityValue = new QuantityValue();
+        quantityValue.setTimestamp(new TimeOutput(time));
+        quantityValue.setValue(value);
+        return quantityValue;
     }
 }
+

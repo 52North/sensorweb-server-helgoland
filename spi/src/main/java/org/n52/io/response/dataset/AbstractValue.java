@@ -34,22 +34,25 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.locationtech.jts.geom.Geometry;
 
 public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
 
-    private Long timestart;
+    private TimeOutput timestart;
 
     // serves also as timeend
-    private Long timestamp;
+    private TimeOutput timestamp;
 
     private T value;
 
@@ -59,16 +62,21 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private ValidTime validTime;
 
-    private Long resultTime;
+    private DateTime resultTime;
 
     public AbstractValue() {
     }
 
-    public AbstractValue(Long timestamp, T value) {
+    public AbstractValue(TimeOutput timestamp, T value) {
         this(null, timestamp, value);
     }
 
-    public AbstractValue(Long timestart, Long timeend, T value) {
+    public AbstractValue(DateTime timestart, DateTime timeend, T value) {
+        this(timestart != null ? new TimeOutput(timestart) : null, timeend != null ? new TimeOutput(timeend) : null,
+                value);
+    }
+
+    public AbstractValue(TimeOutput timestart, TimeOutput timeend, T value) {
         this.timestart = timestart;
         this.timestamp = timeend;
         this.value = value;
@@ -77,13 +85,15 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     /**
      * @return the timestamp/timeend when {@link #value} has been observed.
      */
-    public Long getTimestamp() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimestamp() {
         return !isSetTimestart()
                 ? this.timestamp
                 : null;
     }
 
-    public Long getTimeend() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimeend() {
         return isSetTimestart()
                 ? this.timestamp
                 : null;
@@ -93,10 +103,17 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         return this.timestart != null;
     }
 
+//    /**
+//     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
+//     */
+//    public void setTimestamp(DateTime timestamp) {
+//        this.timestamp = timestamp != null ? new TimeOutput(timestamp) : null;
+//    }
+
     /**
      * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
      */
-    public void setTimestamp(Long timestamp) {
+    public void setTimestamp(TimeOutput timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -105,16 +122,26 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      *
      * @return the timestart when {@link #value} has been observed.
      */
-    public Long getTimestart() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimestart() {
         return timestart;
     }
+
+//    /**
+//     * Optional.
+//     *
+//     * @param timestart the timestart when {@link #value} has been observed.
+//     */
+//    public void setTimestart(DateTime timestart) {
+//        this.timestart = timestart != null ? new TimeOutput(timestart) : null;
+//    }
 
     /**
      * Optional.
      *
      * @param timestart the timestart when {@link #value} has been observed.
      */
-    public void setTimestart(Long timestart) {
+    public void setTimestart(TimeOutput timestart) {
         this.timestart = timestart;
     }
 
@@ -171,12 +198,16 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         this.validTime = validTime;
     }
 
+    public void setValidTime(TimeOutput start, TimeOutput end) {
+        this.validTime = new ValidTime(start, end);
+    }
+
     @JsonIgnore
-    public Long getResultTime() {
+    public DateTime getResultTime() {
         return resultTime;
     }
 
-    public void setResultTime(Long resultTime) {
+    public void setResultTime(DateTime resultTime) {
         this.resultTime = resultTime;
     }
 
@@ -195,31 +226,34 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         return sb.append(" ]").toString();
     }
 
-    public static class ValidTime {
-        private Long start;
+    public class ValidTime {
+        private TimeOutput start;
 
-        private Long end;
+        private TimeOutput end;
 
-        public ValidTime(Long start, Long end) {
+        public ValidTime(TimeOutput start, TimeOutput end) {
             this.start = start;
             this.end = end;
         }
 
-        public Long getStart() {
+        @JsonSerialize(converter = TimeOutputConverter.class)
+        public TimeOutput getStart() {
             return start;
         }
 
-        public void setStart(Long start) {
+        public void setStart(TimeOutput start) {
             this.start = start;
         }
 
-        public Long getEnd() {
+        @JsonSerialize(converter = TimeOutputConverter.class)
+        public TimeOutput getEnd() {
             return end;
         }
 
-        public void setEnd(Long end) {
+        public void setEnd(TimeOutput end) {
             this.end = end;
         }
+
     }
 
 }

@@ -40,12 +40,4 @@ public class CountValue extends AbstractValue<Integer> {
         // for serialization
     }
 
-    public CountValue(Long timestart, Long timeend, Integer value) {
-        super(timestart, timeend, value);
-    }
-
-    public CountValue(Long timestamp, Integer value) {
-        super(timestamp, value);
-    }
-
 }

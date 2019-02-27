@@ -86,7 +86,7 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
         if (currentValue == null) {
             return null;
         }
-        Long timestamp = currentValue.getTimestamp();
+        Long timestamp = currentValue.getTimestamp().getMillis();
         BigDecimal value = currentValue.getValue();
         return new Number[] { timestamp, value };
     }

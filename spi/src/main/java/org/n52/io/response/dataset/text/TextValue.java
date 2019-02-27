@@ -40,12 +40,4 @@ public class TextValue extends AbstractValue<String> {
         // for serialization
     }
 
-    public TextValue(Long timestart, Long timeend, String value) {
-        super(timestart, timeend, value);
-    }
-
-    public TextValue(Long timestamp, String value) {
-        super(timestamp, value);
-    }
-
 }

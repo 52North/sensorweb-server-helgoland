@@ -32,6 +32,10 @@ import java.util.List;
 
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class SamplingOutput extends ParameterOutput {
 
@@ -50,8 +54,8 @@ public class SamplingOutput extends ParameterOutput {
     private OptionalOutput<SamplerOutput> sampler;
     private OptionalOutput<String> samplingMehtod;
     private OptionalOutput<String> environmentalConditions;
-    private OptionalOutput<Long> samplingTimeStart;
-    private OptionalOutput<Long> samplingTimeEnd;
+    private OptionalOutput<TimeOutput> samplingTimeStart;
+    private OptionalOutput<TimeOutput> samplingTimeEnd;
 
     private OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations;
 
@@ -133,28 +137,30 @@ public class SamplingOutput extends ParameterOutput {
     /**
      * @return the samplingTimeStart
      */
-    public Long getSamplingTimeStart() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getSamplingTimeStart() {
         return getIfSerialized(samplingTimeStart);
     }
 
     /**
      * @param samplingTimeStart the samplingTimeStart to set
      */
-    public void setSamplingTimeStart(OptionalOutput<Long> samplingTimeStart) {
+    public void setSamplingTimeStart(OptionalOutput<TimeOutput> samplingTimeStart) {
         this.samplingTimeStart = samplingTimeStart;
     }
 
     /**
      * @return the samplingTimeEnd
      */
-    public Long getSamplingTimeEnd() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getSamplingTimeEnd() {
         return getIfSerialized(samplingTimeEnd);
     }
 
     /**
      * @param samplingTimeEnd the samplingTimeEnd to set
      */
-    public void setSamplingTimeEnd(OptionalOutput<Long> samplingTimeEnd) {
+    public void setSamplingTimeEnd(OptionalOutput<TimeOutput> samplingTimeEnd) {
         this.samplingTimeEnd = samplingTimeEnd;
     }
 

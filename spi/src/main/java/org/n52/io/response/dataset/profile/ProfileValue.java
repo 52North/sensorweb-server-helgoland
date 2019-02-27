@@ -47,14 +47,6 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> imp
         // for serialization
     }
 
-    public ProfileValue(Long timestart, Long timeend, List<ProfileDataItem<T>> value) {
-        super(timestart, timeend, value);
-    }
-
-    public ProfileValue(Long timestamp, List<ProfileDataItem<T>> value) {
-        super(timestamp, value);
-    }
-
     @Override
     @JsonProperty("values")
     public List<ProfileDataItem<T>> getValue() {

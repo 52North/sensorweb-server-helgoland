@@ -42,12 +42,4 @@ public class QuantityValue extends AbstractValue<BigDecimal> {
         // for serialization
     }
 
-    public QuantityValue(Long timestart, Long timeend, BigDecimal value) {
-        super(timestart, timeend, value);
-    }
-
-    public QuantityValue(Long timestamp, BigDecimal value) {
-        super(timestamp, value);
-    }
-
 }

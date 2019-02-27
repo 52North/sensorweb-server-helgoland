@@ -31,8 +31,10 @@ package org.n52.io.type.quantity.generalize;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.joda.time.DateTime;
 import org.n52.io.TvpDataCollection;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.TimeOutput;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
@@ -135,8 +137,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
 
             // init fallback value
             BucketAverage avgCurrentBucket = calculateBucketAverage(bucketIndex, bucketSize, data);
-            long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp();
-            QuantityValue maxAreaPoint = new QuantityValue(fallBackTimestamp, null);
+            long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp().getMillis();
+            QuantityValue maxAreaPoint = createQuantityValue(fallBackTimestamp, triangleLeft.getTimestamp());
 
             double area;
             int amountOfNodataValues = 0;
@@ -193,8 +195,8 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
                 : amountOfNodataValues > noDataGapThreshold;
     }
 
-    private void addNodataValue(Data<QuantityValue> sampled, long timestamp) {
-        sampled.addNewValue(new QuantityValue(timestamp, null));
+    private void addNodataValue(Data<QuantityValue> sampled, TimeOutput timeOutput) {
+        sampled.addNewValue(createQuantityValue(timeOutput));
     }
 
     private static double calcTriangleArea(QuantityValue left,
@@ -202,9 +204,9 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         BigDecimal middleValue = middle.getValue();
         final BigDecimal leftValue = left.getValue();
         final BigDecimal rightValue = right.value;
-        return Math.abs(((left.getTimestamp() - right.timestamp)
+        return Math.abs(((left.getTimestamp().getMillis() - right.timestamp)
                 * (middleValue.subtract(leftValue).doubleValue()))
-                - ((left.getTimestamp() - middle.getTimestamp())
+                - ((left.getTimestamp().getMillis() - middle.getTimestamp().getMillis())
                 * (rightValue.subtract(leftValue).doubleValue()))) * 0.5;
     }
 
@@ -221,9 +223,11 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         BigDecimal avgValue = BigDecimal.ZERO;
         int amountOfNodataValues = 0;
         boolean noDataThresholdExceeded = false;
+        boolean unixTime = false;
         for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
             final QuantityValue current = data[avgRangeStart];
-            avgTimestamp += current.getTimestamp();
+            avgTimestamp += current.getTimestamp().getMillis();
+            unixTime = current.getTimestamp().isUnixTime();
             if (noDataThresholdExceeded) {
                 // keep on calc avg timestamp
                 continue;
@@ -240,21 +244,38 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
 
         avgTimestamp /= avgRangeLength;
         avgValue = avgValue.divide(BigDecimal.valueOf(avgRangeLength), MathContext.DECIMAL128);
-        return new BucketAverage(avgTimestamp, avgValue);
+        return new BucketAverage(avgTimestamp, avgValue, unixTime);
+    }
+
+    private QuantityValue createQuantityValue(TimeOutput timeOutput) {
+        QuantityValue value = new QuantityValue();
+        value.setTimestamp(timeOutput);
+        return value;
+    }
+
+    private QuantityValue createQuantityValue(long fallBackTimestamp, TimeOutput timestamp) {
+        QuantityValue value = new QuantityValue();
+        value.setTimestamp(new TimeOutput(new DateTime(fallBackTimestamp), timestamp.isUnixTime()));
+        return value;
     }
 
     private static class BucketAverage {
 
         private final Double timestamp;
         private final BigDecimal value;
+        private final boolean unixTime;
 
-        BucketAverage(Double timestamp, BigDecimal value) {
+        BucketAverage(Double timestamp, BigDecimal value, boolean unixTime) {
             this.timestamp = timestamp;
             this.value = value;
+            this.unixTime = unixTime;
         }
 
         QuantityValue toTimeseriesValue() {
-            return new QuantityValue(timestamp.longValue(), value);
+            QuantityValue quantity = new QuantityValue();
+            quantity.setTimestamp(new TimeOutput(new DateTime(timestamp.longValue()), unixTime));
+            quantity.setValue(value);
+            return quantity;
         }
     }
 }
