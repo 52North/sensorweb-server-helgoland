@@ -80,14 +80,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = UrlSettings.COLLECTION_DATASETS, produces = {
+@RequestMapping(value = {UrlSettings.COLLECTION_DATASETS,
+        UrlSettings.COLLECTION_INDIVIDUAL_OBSERVATIONS,
+        UrlSettings.COLLECTION_TIMESERIES,
+        UrlSettings.COLLECTION_TRAJECTORIES}, produces = {
     "application/json"
 })
 public class DataController extends BaseController {
 
     private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
 
-    private static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Data_for_Dataset_";
+    private static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Observations_for_Dataset_";
 
     private static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
@@ -120,7 +123,7 @@ public class DataController extends BaseController {
         this.dataService = dataService;
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         produces = {
             Constants.APPLICATION_JSON
         },
@@ -160,7 +163,7 @@ public class DataController extends BaseController {
                 : item.getValueType();
     }
 
-    @RequestMapping(value = "/data",
+    @RequestMapping(value = "/observations",
         produces = {
             Constants.APPLICATION_JSON
         },
@@ -193,7 +196,7 @@ public class DataController extends BaseController {
 //                : ValueType.DEFAULT_VALUE_TYPE;
 //    }
 
-    @RequestMapping(value = "/data",
+    @RequestMapping(value = "/observations",
         params = {
             RawFormats.RAW_FORMAT
         },
@@ -208,7 +211,7 @@ public class DataController extends BaseController {
         writeRawData(parameters, response);
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         method = RequestMethod.GET,
         params = {
             RawFormats.RAW_FORMAT
@@ -239,7 +242,7 @@ public class DataController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/data",
+    @RequestMapping(value = "/observations",
         produces = {
             Constants.APPLICATION_PDF
         },
@@ -263,7 +266,7 @@ public class DataController extends BaseController {
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         produces = {
             Constants.APPLICATION_PDF
         },
@@ -290,7 +293,7 @@ public class DataController extends BaseController {
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         produces = {
             Constants.APPLICATION_ZIP
         },
@@ -320,7 +323,7 @@ public class DataController extends BaseController {
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         produces = {
             Constants.TEXT_CSV
         },
@@ -360,7 +363,7 @@ public class DataController extends BaseController {
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/data",
+    @RequestMapping(value = "/observations",
         produces = {
             Constants.IMAGE_PNG
         },
@@ -383,7 +386,7 @@ public class DataController extends BaseController {
                                     .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/data",
+    @RequestMapping(value = "/{datasetId}/observations",
         produces = {
             Constants.IMAGE_PNG
         },
