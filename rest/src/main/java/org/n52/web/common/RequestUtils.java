@@ -53,6 +53,7 @@ public class RequestUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
     public static IoParameters overrideQueryLocaleWhenSet(String locale, IoParameters query) {
+        // TODO: Discuss which definition should be stronger HTTP-Header (locale) or the query parameter?
         return locale != null
                 ? query.replaceWith(Parameters.LOCALE, locale)
                 : query;

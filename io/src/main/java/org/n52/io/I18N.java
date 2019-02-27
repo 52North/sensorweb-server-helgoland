@@ -40,6 +40,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.ResourceBundle.Control;
 
+import org.n52.janmayen.i18n.LocaleHelper;
+
 public final class I18N {
 
     private static final String MESSAGES = "locales/messages";
@@ -93,26 +95,9 @@ public final class I18N {
 
     private static Locale createLocate(String language) {
         if (language == null) {
-            return new Locale(DEFAULT_LOCALE);
+            return LocaleHelper.decode(DEFAULT_LOCALE);
         }
-        String[] localeParts;
-        if (language.contains("_")) {
-            localeParts = language.split("_");
-        } else {
-            localeParts = language.split("-");
-        }
-
-        if (localeParts.length == 0 || localeParts.length > 3) {
-            throw new IllegalArgumentException("Unparsable language parameter: "
-                    + language);
-        }
-        if (localeParts.length == 1) {
-            return new Locale(localeParts[0]);
-        } else if (localeParts.length == 2) {
-            return new Locale(localeParts[0], localeParts[1]);
-        } else {
-            return new Locale(localeParts[0], localeParts[1], localeParts[2]);
-        }
+        return LocaleHelper.decode(language);
     }
 
     /**

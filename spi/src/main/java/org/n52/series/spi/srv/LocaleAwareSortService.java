@@ -29,11 +29,11 @@
 package org.n52.series.spi.srv;
 
 import java.text.Collator;
-import java.util.Locale;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
+import org.n52.janmayen.i18n.LocaleHelper;
 
 public class LocaleAwareSortService<T extends ParameterOutput> extends ParameterService<T> {
 
@@ -44,7 +44,7 @@ public class LocaleAwareSortService<T extends ParameterOutput> extends Parameter
     }
 
     protected Collator createCollator(String locale) {
-        return Collator.getInstance(new Locale(locale));
+        return Collator.getInstance(LocaleHelper.decode(locale));
     }
 
     @Override
