@@ -1220,4 +1220,11 @@ public final class IoParameters implements Parameters {
         return getAsNode(CACHE);
     }
 
+    public boolean formatToUnixTime() {
+        if (!containsParameter(UNIX_TIME)) {
+            return false;
+        }
+        return getAsBoolean(UNIX_TIME);
+    }
+
 }
