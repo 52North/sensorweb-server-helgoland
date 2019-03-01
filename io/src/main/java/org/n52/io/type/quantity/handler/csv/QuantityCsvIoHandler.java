@@ -190,10 +190,9 @@ public class QuantityCsvIoHandler extends CsvIoHandler<Data<QuantityValue>> {
         values[3] = metadataMap.get(getHeader()[3]);
 
         for (QuantityValue timeseriesValue : series.getValues()) {
-            DateTime timestart = timeseriesValue.getTimestamp().getDateTime();
-            DateTime timeend = (timestart != null)
-                    ? timeseriesValue.getTimeend().getDateTime()
-                    : timeseriesValue.getTimestamp().getDateTime();
+            DateTime timestart =
+                    timeseriesValue.isSetTimestart() ? timeseriesValue.getTimestart().getDateTime() : null;
+            DateTime timeend = timeseriesValue.getTimeend().getDateTime();
             values[4] = getISO8601Time(timestart, timeend);
             values[5] = numberformat.format(timeseriesValue.getValue());
             writeCsvLine(csvEncode(values), stream);

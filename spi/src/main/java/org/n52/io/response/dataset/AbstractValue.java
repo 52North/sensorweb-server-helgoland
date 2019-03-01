@@ -87,9 +87,19 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      */
     @JsonSerialize(converter = TimeOutputConverter.class)
     public TimeOutput getTimestamp() {
-        return !isSetTimestart()
-                ? this.timestamp
-                : null;
+        return this.timestamp;
+    }
+
+    /**
+     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
+     */
+    public void setTimestamp(TimeOutput timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @JsonIgnore
+    public boolean isSetTimestamp() {
+        return !isSetTimestart() || (isSetTimestart() && timestart.equals(timestamp));
     }
 
     @JsonSerialize(converter = TimeOutputConverter.class)
@@ -99,22 +109,9 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
                 : null;
     }
 
-    private boolean isSetTimestart() {
-        return this.timestart != null;
-    }
-
-//    /**
-//     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
-//     */
-//    public void setTimestamp(DateTime timestamp) {
-//        this.timestamp = timestamp != null ? new TimeOutput(timestamp) : null;
-//    }
-
-    /**
-     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
-     */
-    public void setTimestamp(TimeOutput timestamp) {
-        this.timestamp = timestamp;
+    @JsonIgnore
+    public boolean isSetTimeend() {
+        return this.timestamp != null && isSetTimestart();
     }
 
     /**
@@ -127,15 +124,6 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         return timestart;
     }
 
-//    /**
-//     * Optional.
-//     *
-//     * @param timestart the timestart when {@link #value} has been observed.
-//     */
-//    public void setTimestart(DateTime timestart) {
-//        this.timestart = timestart != null ? new TimeOutput(timestart) : null;
-//    }
-
     /**
      * Optional.
      *
@@ -143,6 +131,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      */
     public void setTimestart(TimeOutput timestart) {
         this.timestart = timestart;
+    }
+
+    @JsonIgnore
+    public boolean isSetTimestart() {
+        return this.timestart != null;
     }
 
     @JsonIgnore

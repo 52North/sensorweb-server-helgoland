@@ -204,7 +204,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                 if (isBarStyle(style)) {
                     QuantityValue timeseriesValue = referenceData.getValues()
                                                                  .get(0);
-                    Date timeOfFirstValue = timeseriesValue.getTimeend().getDateTime().toDate();
+                    Date timeOfFirstValue = timeseriesValue.getTimestamp().getDateTime().toDate();
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
                     BigDecimal intervalSum = BigDecimal.ZERO;
@@ -213,13 +213,13 @@ public class MultipleChartsRenderer extends ChartIoHandler {
                             intervalSum = intervalSum.add(value.getValue());
                         } else {
                             timeseries.add(timeinterval, intervalSum);
-                            timeinterval = determineTimeInterval(value.getTimeend().getDateTime().toDate(), style);
+                            timeinterval = determineTimeInterval(value.getTimestamp().getDateTime().toDate(), style);
                             intervalSum = value.getValue();
                         }
                     }
                 } else if (isLineStyle(style)) {
                     for (QuantityValue value : referenceData.getValues()) {
-                        Second second = new Second(value.getTimeend().getDateTime().toDate());
+                        Second second = new Second(value.getTimestamp().getDateTime().toDate());
                         timeseries.addOrUpdate(second, value.getValue());
                     }
                 }
