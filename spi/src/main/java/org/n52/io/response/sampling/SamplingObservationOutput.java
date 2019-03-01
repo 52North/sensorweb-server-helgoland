@@ -70,8 +70,13 @@ public class SamplingObservationOutput {
         return getAbstractValue().getTimeend();
     }
 
-    public Object getTimestart() {
+    @JsonSerialize(converter = TimeOutputConverter.class)
+    public TimeOutput getTimestart() {
         return getAbstractValue().getTimestart();
+    }
+
+    public String getUom() {
+        return getDataset() != null ? getDataset().getUom() : null;
     }
 
     @JsonInclude(content = Include.ALWAYS)
