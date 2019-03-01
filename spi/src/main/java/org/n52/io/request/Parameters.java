@@ -278,6 +278,10 @@ public interface Parameters {
 
     String DATASETS = "datasets";
 
+    String SAMPLINGS = "samplings";
+
+    String MEASURING_PROGRAMS = "measuringPrograms";
+
     String HANDLE_AS_VALUE_TYPE = "handleAs";
 
     /**
