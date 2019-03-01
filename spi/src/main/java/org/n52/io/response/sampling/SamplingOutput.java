@@ -30,6 +30,7 @@ package org.n52.io.response.sampling;
 
 import java.util.List;
 
+import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeOutput;
@@ -47,15 +48,17 @@ public class SamplingOutput extends ParameterOutput {
     public static final String ENVIRONMENTAL_CONDITIONS = "environmentalConditions";
     public static final String SAMPLING_TIME_START = "samplingTimeStart";
     public static final String SAMPLING_TIME_END = "samplingTimeEnd";
+    public static final String FEATURE = "feature";
     public static final String LAST_SAMPLING_OBSERVATIONS = "lastSamplingObservations";
 
     private OptionalOutput<String> comment;
     private OptionalOutput<MeasuringProgramOutput> measuringProgram;
     private OptionalOutput<SamplerOutput> sampler;
-    private OptionalOutput<String> samplingMehtod;
+    private OptionalOutput<String> samplingMethod;
     private OptionalOutput<String> environmentalConditions;
     private OptionalOutput<TimeOutput> samplingTimeStart;
     private OptionalOutput<TimeOutput> samplingTimeEnd;
+    private OptionalOutput<FeatureOutput> feature;
 
     private OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations;
 
@@ -107,17 +110,17 @@ public class SamplingOutput extends ParameterOutput {
     }
 
     /**
-     * @return the samplingMehtod
+     * @return the samplingMethod
      */
-    public String getSamplingMehtod() {
-        return getIfSerialized(samplingMehtod);
+    public String getSamplingMethod() {
+        return getIfSerialized(samplingMethod);
     }
 
     /**
-     * @param samplingMehtod the samplingMehtod to set
+     * @param samplingMethod the samplingMethod to set
      */
-    public void setSamplingMehtod(OptionalOutput<String> samplingMehtod) {
-        this.samplingMehtod = samplingMehtod;
+    public void setSamplingMethod(OptionalOutput<String> samplingMethod) {
+        this.samplingMethod = samplingMethod;
     }
 
     /**
@@ -162,6 +165,14 @@ public class SamplingOutput extends ParameterOutput {
      */
     public void setSamplingTimeEnd(OptionalOutput<TimeOutput> samplingTimeEnd) {
         this.samplingTimeEnd = samplingTimeEnd;
+    }
+
+    public OptionalOutput<FeatureOutput> getFeature() {
+        return feature;
+    }
+
+    public void setFeature(OptionalOutput<FeatureOutput> feature) {
+        this.feature = feature;
     }
 
     /**
