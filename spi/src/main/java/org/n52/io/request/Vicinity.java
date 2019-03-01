@@ -63,9 +63,9 @@ public class Vicinity {
      * @param center the center point.
      * @param radius the distance around the center
      */
-    public Vicinity(Point center, double radius) {
+    public Vicinity(Point center, Number radius) {
         try {
-            this.radius = radius;
+            this.radius = radius.doubleValue();
             this.center = center;
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Could not parse radius.");
@@ -122,8 +122,8 @@ public class Vicinity {
         return crs;
     }
 
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setRadius(Number radius) {
+        this.radius = radius.doubleValue();
     }
 
     public double getRadius() {

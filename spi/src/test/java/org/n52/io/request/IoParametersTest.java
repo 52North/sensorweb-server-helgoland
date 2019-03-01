@@ -141,6 +141,62 @@ public class IoParametersTest {
     }
 
     @Test
+    public void when_jsonNear_then_parsingSpatialFilter() throws ParseException {
+        String nearJson = "{"
+                + "  \"center\":{"
+                + "    \"type\":\"Point\","
+                + "    \"coordinates\":[6.7,51.7]"
+                + "  },"
+                + "  \"radius\": 50.0"
+                + "}";
+        Map<String, String> map = Collections.singletonMap("near", nearJson);
+        IoParameters parameters = createFromSingleValueMap(map);
+        BoundingBox actual = parameters.getSpatialFilter();
+        WKTReader wktReader = new WKTReader();
+        Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
+        Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
+    }
+
+    @Test
+    public void when_jsonNearIntegerRadius_then_parsingSpatialFilter() throws ParseException {
+        String nearJson = "{"
+                + "  \"center\":{"
+                + "    \"type\":\"Point\","
+                + "    \"coordinates\":[6.7,51.7]"
+                + "  },"
+                + "  \"radius\": 50"
+                + "}";
+        Map<String, String> map = Collections.singletonMap("near", nearJson);
+        IoParameters parameters = createFromSingleValueMap(map);
+        BoundingBox actual = parameters.getSpatialFilter();
+        WKTReader wktReader = new WKTReader();
+        Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
+        Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
+    }
+
+    @Test
+    public void when_geojsonNearWithTrimmableValues_then_parsingSpatialFilter() throws ParseException {
+        Map<String, String> map = Collections.singletonMap("near", "6.7, 51.7, 50");
+        IoParameters parameters = createFromSingleValueMap(map);
+        BoundingBox actual = parameters.getSpatialFilter();
+        WKTReader wktReader = new WKTReader();
+        Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
+        Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
+        Assert.assertTrue(actual.getLowerLeft()
+                                .equals(ll));
+        Assert.assertTrue(actual.getUpperRight()
+                                .equals(ur));
+    }
+
+    @Test
     public void when_creationViaFromSingleValuedMap_then_keysGetLowerCased() {
         Map<String, String> map = new HashMap<>();
         map.put("camelCased", "value");

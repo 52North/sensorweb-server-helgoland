@@ -90,6 +90,8 @@ public final class IoParameters implements Parameters {
 
     private static final String QUANTITY = "quantity";
 
+    private static final String SPLIT_REGEX = "\\,";
+
     private final MultiValueMap<String, JsonNode> query;
 
     private final FilterResolver filterResolver;
@@ -572,6 +574,14 @@ public final class IoParameters implements Parameters {
         return values;
     }
 
+    public Set<String> getSamplings() {
+        return getValuesOf(SAMPLINGS);
+    }
+
+    public Set<String> getMeasuringPrograms() {
+        return getValuesOf(MEASURING_PROGRAMS);
+    }
+
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
     }
@@ -702,8 +712,8 @@ public final class IoParameters implements Parameters {
         CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
 
         // Check if supplied in minx,miny,maxx,maxy format - else assume json
-        if (bboxValue.matches("^(-?\\d*\\.?\\d*\\,\\s*){3}(-?\\d*\\.?\\d*)\\s*$")) {
-            String[] coordArray = bboxValue.split("\\,");
+        if (bboxMatching(bboxValue, 3)) {
+            String[] coordArray = bboxValue.split(SPLIT_REGEX);
             Point lowerLeft = crsUtils.createPoint(Double.valueOf(coordArray[0].trim()),
                                                    Double.valueOf(coordArray[1].trim()),
                                                    CRSUtils.DEFAULT_CRS);
@@ -728,13 +738,29 @@ public final class IoParameters implements Parameters {
         if (!containsParameter(NEAR)) {
             return null;
         }
-        Vicinity vicinity = handleJsonValueParseException(NEAR, Vicinity.class, this::parseJson);
+        String nearValue = getAsString(NEAR);
+        CRSUtils crsUtils = CRSUtils.createEpsgForcedXYAxisOrder();
+        Vicinity vicinity = null;
+        if (bboxMatching(nearValue, 2)) {
+            String[] coordArray = nearValue.split(SPLIT_REGEX);
+            Point point = crsUtils.createPoint(Double.valueOf(coordArray[0].trim()),
+                                                   Double.valueOf(coordArray[1].trim()),
+                                                   CRSUtils.DEFAULT_CRS);
+            vicinity = new Vicinity(point, Double.valueOf(coordArray[2].trim()));
+        }  else {
+            vicinity = handleJsonValueParseException(NEAR, Vicinity.class, this::parseJson);
+        }
+
         if (containsParameter(CRS)) {
             vicinity.setCenter(convertToCrs84(vicinity.getCenter()));
         }
         BoundingBox bounds = vicinity.calculateBounds();
         LOGGER.debug("Parsed vicinity bounds: {}", bounds.toString());
         return bounds;
+    }
+
+    private boolean bboxMatching(String value, int repeats) {
+        return value.matches("^(-?\\d*\\.?\\d*\\,\\s*){" + repeats + "}(-?\\d*\\.?\\d*)\\s*$");
     }
 
     /**

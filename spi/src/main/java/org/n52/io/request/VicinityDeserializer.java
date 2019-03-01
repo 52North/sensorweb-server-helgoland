@@ -67,7 +67,7 @@ public class VicinityDeserializer extends JsonDeserializer<Vicinity> {
     }
 
     private JsonNode getRadius(JsonNode node) {
-        return !node.path(RADIUS).isDouble()
+        return !node.path(RADIUS).isNumber()
                 ? MissingNode.getInstance()
                 : node.path(RADIUS);
     }
