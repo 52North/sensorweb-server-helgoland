@@ -41,6 +41,8 @@ import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.DatasetOutput;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class MeasuringProgramOutput extends ParameterOutput {
@@ -113,6 +115,7 @@ public class MeasuringProgramOutput extends ParameterOutput {
     /**
      * @param measuringProgramTimeEnd the measuringProgramTimeEnd to set
      */
+    @JsonInclude(Include.ALWAYS)
     public void setMeasuringProgramTimeEnd(OptionalOutput<TimeOutput> measuringProgramTimeEnd) {
         this.measuringProgramTimeEnd = measuringProgramTimeEnd;
     }
