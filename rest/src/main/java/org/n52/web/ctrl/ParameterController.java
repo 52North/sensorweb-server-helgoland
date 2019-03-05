@@ -124,7 +124,7 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     protected ModelAndView createModelAndView(OutputCollection<T> items, IoParameters parameters) {
-        return new ModelAndView().addObject(items.getItems());
+        return new ModelAndView().addObject(items.getItems() != null && !items.getItems().isEmpty() ? items.getItems() : new String[0]);
     }
 
     protected ModelAndView createModelAndView(T item, IoParameters parameters) {
