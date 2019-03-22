@@ -91,12 +91,24 @@ public class ServiceOutput extends ParameterOutput {
     // }
 
 //    @JsonAnyGetter
-    public Map<String, Object> getFeatures() {
-        return getIfSerializedMap(features);
-    }
+//    public Map<String, Object> getFeatures() {
+//        return getIfSerializedMap(features);
+//    }
 
     public void setFeatures(OptionalOutput<Map<String, Object>> features) {
         this.features = features;
+        if (features != null && features.isPresent()) {
+            checkForContent(features.getValue());
+        }
+    }
+
+    private void checkForContent(Map<String, Object> value) {
+       if (value.containsKey(QUANTITIES)) {
+           setQuantities(OptionalOutput.of((ParameterCount) value.get(QUANTITIES)));
+       }
+       if (value.containsKey(SUPPORTS_FIRST_LATEST)) {
+           setSupportsFirstLatest(OptionalOutput.of((Boolean) value.get(SUPPORTS_FIRST_LATEST)));
+       }
     }
 
     @Deprecated
