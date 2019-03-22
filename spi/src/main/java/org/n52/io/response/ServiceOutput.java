@@ -49,7 +49,7 @@ public class ServiceOutput extends ParameterOutput {
 
     private OptionalOutput<String> type;
 
-    private OptionalOutput<Map<String, Object>> features;
+//    private OptionalOutput<Map<String, Object>> features;
 
     private OptionalOutput<ParameterCount> quantities;
 
@@ -96,7 +96,7 @@ public class ServiceOutput extends ParameterOutput {
 //    }
 
     public void setFeatures(OptionalOutput<Map<String, Object>> features) {
-        this.features = features;
+//        this.features = features;
         if (features != null && features.isPresent()) {
             checkForContent(features.getValue());
         }
@@ -119,7 +119,7 @@ public class ServiceOutput extends ParameterOutput {
     /**
      * @param supportsFirstLatest
      *        if first/latest data request are supported
-     * @deprecated since 2.0.0, added to {@link #features} instead
+//     * @deprecated since 2.0.0
      */
     @Deprecated
     public void setSupportsFirstLatest(OptionalOutput<Boolean> supportsFirstLatest) {
@@ -130,7 +130,7 @@ public class ServiceOutput extends ParameterOutput {
     /**
      * @param quantities
      *        parameter count
-     * @deprecated since 2.0.0, added to {@link #features} instead
+//     * @deprecated since 2.0.0
      */
     @Deprecated
     public void setQuantities(OptionalOutput<ParameterCount> quantities) {
@@ -139,7 +139,7 @@ public class ServiceOutput extends ParameterOutput {
 
     /**
      * @return the parameter count
-     * @deprecated since 2.0.0, added to {@link #features} instead
+     * @deprecated since 2.0.0
      */
     @Deprecated
     public ParameterCount getQuantities() {
