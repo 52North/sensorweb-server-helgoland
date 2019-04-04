@@ -28,11 +28,14 @@
  */
 package org.n52.web.ctrl;
 
+import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.sampling.SamplingOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,5 +56,13 @@ public class SamplingsParameterController extends ParameterRequestMappingAdapter
     @Override
     protected int getElementCount(IoParameters parameters) {
         return super.getEntityCounter().getSamplingCounter(parameters);
+    }
+
+    @Override
+    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
+        DateTime now = new DateTime();
+        // TODO make this configurable
+        query.add(Parameters.TIMESPAN, IoParameters.createTimespan(now.minusMonths(3), now).toString());
+        return super.addAdditionalParameter(query);
     }
 }

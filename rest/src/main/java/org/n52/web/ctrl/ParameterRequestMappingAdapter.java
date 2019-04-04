@@ -111,7 +111,6 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return addHrefBase(query);
     }
 
-
     protected CountingMetadataService getEntityCounter() {
         return counter;
     }
