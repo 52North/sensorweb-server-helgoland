@@ -36,7 +36,7 @@ public class VerticalExtentOutput implements Serializable {
 
     private String uom;
 
-    private Integer orientation;
+    private Short orientation;
 
     private String verticalOrigin;
 
@@ -54,11 +54,11 @@ public class VerticalExtentOutput implements Serializable {
         this.uom = uom;
     }
 
-    public Integer getOrientation() {
+    public Short getOrientation() {
         return orientation;
     }
 
-    public void setOrientation(Integer orientation) {
+    public void setOrientation(Short orientation) {
         this.orientation = orientation;
     }
 
