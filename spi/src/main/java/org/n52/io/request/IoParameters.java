@@ -368,10 +368,13 @@ public final class IoParameters implements Parameters {
     public static IntervalWithTimeZone createDefaultTimespan() {
         DateTime now = new DateTime();
         // TODO make this configurable
-        DateTime lastWeek = now.minusWeeks(1);
-        String interval = lastWeek.toString()
+        return createTimespan(now.minusWeeks(1), now);
+    }
+
+    public static IntervalWithTimeZone createTimespan(DateTime from, DateTime to) {
+        String interval = from.toString()
                                   .concat("/")
-                                  .concat(now.toString());
+                                  .concat(to.toString());
         return new IntervalWithTimeZone(interval);
     }
 
