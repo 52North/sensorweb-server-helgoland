@@ -28,8 +28,13 @@
  */
 package org.n52.web.ctrl.data;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.n52.io.Constants;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
@@ -39,8 +44,14 @@ import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;
 import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
@@ -53,6 +64,23 @@ public class TimeseriesDataController extends DataController {
             ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
             DataService<Data<AbstractValue<?>>> dataService) {
         super(ioFactory, datasetService, dataService);
+    }
+
+    @Deprecated
+    @RequestMapping(value = "/{datasetId}/getData",
+            produces = {
+                Constants.APPLICATION_JSON
+            },
+            method = RequestMethod.GET)
+        public ModelAndView getTimeseriesData(HttpServletRequest request,
+                                          HttpServletResponse response,
+                                          @PathVariable String datasetId,
+                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                                              required = false) String locale,
+                                          @RequestParam(required = false) MultiValueMap<String, String> query)
+                throws Exception {
+        query.add(Parameters.UNIX_TIME, "true");
+        return getSeriesData(request, response, datasetId, locale, query);
     }
 
     @Override
