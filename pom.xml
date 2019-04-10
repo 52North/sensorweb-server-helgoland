@@ -19,6 +19,7 @@
         <module>io</module>
         <module>rest</module>
         <module>spi</module>
+        <module>xml-pdf-format</module>
         <module>web-resources</module>
     </modules>
     
@@ -99,10 +100,10 @@
                 <artifactId>rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.n52.sensorweb</groupId>
+             <dependency>
+                <groupId>${project.groupId}</groupId>
                 <artifactId>xml-pdf-format</artifactId>
-                <version>3.2.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.n52.arctic-sea</groupId>
