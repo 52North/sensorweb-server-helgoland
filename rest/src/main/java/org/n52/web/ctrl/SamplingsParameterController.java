@@ -39,6 +39,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.collect.Lists;
+
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_SAMPLINGS)
 public class SamplingsParameterController extends ParameterRequestMappingAdapter<SamplingOutput> {
@@ -60,9 +62,12 @@ public class SamplingsParameterController extends ParameterRequestMappingAdapter
 
     @Override
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
-        DateTime now = new DateTime();
-        // TODO make this configurable
-        query.add(Parameters.TIMESPAN, IoParameters.createTimespan(now.minusMonths(3), now).toString());
+        if (!query.containsKey(Parameters.TIMESPAN)) {
+            DateTime now = new DateTime();
+            // TODO make this configurable
+            query.put(Parameters.TIMESPAN,
+                    Lists.newArrayList(IoParameters.createTimespan(now.minusMonths(3), now).toString()));
+        }
         return super.addAdditionalParameter(query);
     }
 }
