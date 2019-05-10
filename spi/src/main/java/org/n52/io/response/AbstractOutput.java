@@ -55,7 +55,7 @@ public class AbstractOutput extends ParameterOutput {
 
     @Override
     public int hashCode() {
-        return Objects.hash(service, super.hashCode());
+        return Objects.hash(getService(), super.hashCode());
     }
 
     @Override
@@ -64,7 +64,7 @@ public class AbstractOutput extends ParameterOutput {
             return false;
         }
         AbstractOutput other = (AbstractOutput) obj;
-        return Objects.equals(service, other.service)
+        return Objects.equals(getService(), other.getService())
                 && super.equals(obj);
     }
 

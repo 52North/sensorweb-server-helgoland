@@ -230,7 +230,7 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, domainId, label);
+        return Objects.hash(getId(), getDomainId(), getLabel());
     }
 
     @Override
@@ -239,9 +239,9 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
             return false;
         }
         ParameterOutput other = (ParameterOutput) obj;
-        return Objects.equals(id, other.id)
-                && Objects.equals(domainId, other.domainId)
-                && Objects.equals(label, other.label);
+        return Objects.equals(getId(), other.getId())
+                && Objects.equals(getDomainId(), other.getDomainId())
+                && Objects.equals(getLabel(), other.getLabel());
     }
 
     /**
