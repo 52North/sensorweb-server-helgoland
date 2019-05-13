@@ -94,7 +94,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
         return this;
     }
 
-    @JsonProperty("parameters")
+    @JsonProperty("seriesParameters")
     public DatasetParameters getDatasetParameters() {
         return getDatasetParameters(false);
     }
