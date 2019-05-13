@@ -76,9 +76,10 @@ public final class QuantityIoFactory extends IoFactory<QuantityDatasetOutput, Qu
 
             @Override
             public DataCollection<?> getProcessedData() {
-                return getParameters().shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
-                        : createFormatter().create().format(getData());
+//                return getParameters().shallClassifyByResultTimes()
+//                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
+//                        : createFormatter().create().format(getData());
+                return createFormatter().create().format(getData());
             }
 
             private FormatterFactory createFormatter() {
