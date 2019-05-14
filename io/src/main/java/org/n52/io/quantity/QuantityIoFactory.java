@@ -38,7 +38,6 @@ import org.n52.io.IoFactory;
 import org.n52.io.IoHandler;
 import org.n52.io.IoProcessChain;
 import org.n52.io.csv.quantity.QuantityCsvIoHandler;
-import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.format.quantity.FormatterFactory;
 import org.n52.io.generalize.quantity.GeneralizingQuantityService;
 import org.n52.io.img.quantity.ChartIoHandler;
