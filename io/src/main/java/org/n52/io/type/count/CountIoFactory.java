@@ -32,7 +32,6 @@ package org.n52.io.type.count;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.n52.io.Constants;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.response.dataset.Data;
@@ -40,11 +39,6 @@ import org.n52.io.response.dataset.count.CountDatasetOutput;
 import org.n52.io.response.dataset.count.CountValue;
 
 public class CountIoFactory extends IoHandlerFactory<CountDatasetOutput, CountValue> {
-
-    @Override
-    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return Constants.MimeType.isKnownMimeType(outputMimeType);
-    }
 
     @Override
     public Set<String> getSupportedMimeTypes() {

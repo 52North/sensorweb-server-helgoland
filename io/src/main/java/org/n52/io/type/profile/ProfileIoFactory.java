@@ -41,10 +41,6 @@ import org.n52.io.response.dataset.profile.ProfileValue;
 
 public class ProfileIoFactory extends IoHandlerFactory<ProfileDatasetOutput, ProfileValue< ? >> {
 
-    @Override
-    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return Constants.MimeType.isKnownMimeType(outputMimeType);
-    }
 
     @Override
     public Set<String> getSupportedMimeTypes() {

@@ -32,7 +32,6 @@ package org.n52.io.type.bool;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.n52.io.Constants;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.response.dataset.Data;
@@ -40,11 +39,6 @@ import org.n52.io.response.dataset.bool.BooleanDatasetOutput;
 import org.n52.io.response.dataset.bool.BooleanValue;
 
 public class BooleanIoFactory extends IoHandlerFactory<BooleanDatasetOutput, BooleanValue> {
-
-    @Override
-    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return Constants.MimeType.isKnownMimeType(outputMimeType);
-    }
 
     @Override
     public Set<String> getSupportedMimeTypes() {

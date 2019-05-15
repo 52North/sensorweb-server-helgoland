@@ -26,15 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.n52.io.Constants;
 import org.n52.io.format.ResultTimeFormatter;
+import org.n52.io.handler.CsvIoHandler;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.handler.IoProcessChain;
@@ -54,13 +57,20 @@ import org.n52.series.spi.srv.DataService;
 
 public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOutput, QuantityValue> {
 
-    private static final Constants.MimeType[] MIME_TYPES = new Constants.MimeType[] {Constants.MimeType.TEXT_CSV,
-                                                                                     Constants.MimeType.IMAGE_PNG,
-                                                                                     Constants.MimeType.APPLICATION_ZIP,
-                                                                                     Constants.MimeType.APPLICATION_PDF,
+    private static final Constants.MimeType[] MIME_TYPES = new Constants.MimeType[] {
+        Constants.MimeType.TEXT_CSV,
+        Constants.MimeType.IMAGE_PNG,
+        Constants.MimeType.APPLICATION_ZIP,
+        Constants.MimeType.APPLICATION_PDF,
     };
 
-    private static final List<Constants.MimeType> SUPPORTED_MIMETYPES = Arrays.asList(MIME_TYPES);
+    @Override
+    public Set<String> getSupportedMimeTypes() {
+        return Stream.of(MIME_TYPES)
+                     .map(Constants.MimeType::getMimeType)
+                     .collect(Collectors.toSet());
+    }
+
 
     @Override
     public IoProcessChain<Data<QuantityValue>> createProcessChain() {
@@ -69,41 +79,23 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
             public DataCollection<Data<QuantityValue>> getData() {
                 boolean generalize = getParameters().isGeneralize();
                 DataService<Data<QuantityValue>> dataService = generalize
-                    ? new GeneralizingQuantityService(getDataService())
-                    : getDataService();
+                        ? new GeneralizingQuantityService(getDataService())
+                        : getDataService();
                 return dataService.getData(getParameters());
             }
 
             @Override
             public DataCollection< ? > getProcessedData() {
                 return getParameters().shallClassifyByResultTimes()
-                    ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
-                    : createFormatter().create().format(getData());
+                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
+                        : createFormatter().create()
+                                           .format(getData());
             }
 
             private FormatterFactory createFormatter() {
                 return FormatterFactory.createFormatterFactory(getParameters());
             }
         };
-    }
-
-    @Override
-    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return Constants.MimeType.isKnownMimeType(outputMimeType)
-                && supportsMimeType(Constants.MimeType.toInstance(outputMimeType));
-    }
-
-    @Override
-    public Set<String> getSupportedMimeTypes() {
-        HashSet<String> mimeTypes = new HashSet<>();
-        for (Constants.MimeType supportedMimeType : SUPPORTED_MIMETYPES) {
-            mimeTypes.add(supportedMimeType.getMimeType());
-        }
-        return mimeTypes;
-    }
-
-    private static boolean supportsMimeType(Constants.MimeType mimeType) {
-        return SUPPORTED_MIMETYPES.contains(mimeType);
     }
 
     @Override
@@ -116,15 +108,12 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
         } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
-            QuantityCsvIoHandler handler = new QuantityCsvIoHandler(parameters,
+            CsvIoHandler<QuantityValue> handler = new QuantityCsvIoHandler(parameters,
                                                                     createProcessChain(),
                                                                     getMetadatas());
-            handler.setTokenSeparator(parameters.getOther(Parameters.TOKEN_SEPARATOR));
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
-            boolean byteOderMark = Boolean.parseBoolean(parameters.getOther(Parameters.BOM));
-            handler.setIncludeByteOrderMark(byteOderMark);
             return handler;
         }
 
