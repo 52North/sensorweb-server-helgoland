@@ -68,7 +68,7 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
     protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoHandlerException;
 
     public void writeBinary(OutputStream outputStream) throws IoHandlerException {
-        try {
+        try (OutputStream stream = outputStream) {
             if (parameters.isBase64()) {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 encodeAndWriteTo(processChain.getData(), baos);
