@@ -79,4 +79,8 @@ public class DataCollection<T> {
         this.allSeries = series;
     }
 
+    public int size() {
+        return allSeries.size();
+    }
+
 }

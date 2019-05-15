@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
 
 import java.math.BigDecimal;
@@ -35,7 +36,12 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({ "verticalFrom", "verticalTo", "vertical", "value" })
+@JsonPropertyOrder({
+    "verticalFrom",
+    "verticalTo",
+    "vertical",
+    "value"
+})
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private BigDecimal verticalFrom;
@@ -99,13 +105,21 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public int compareTo(ProfileDataItem<T> o) {
-        if (getVertical() != null && o.getVertical() != null) {
-            return Comparator.comparing(ProfileDataItem<T>::getVertical)
+        if (isSetVerticalFrom() && o.isSetVerticalFrom()) {
+            return Comparator.comparing(ProfileDataItem<T>::getVerticalFrom)
+                             .thenComparing(ProfileDataItem<T>::getVerticalTo)
                              .compare(this, o);
         } else {
-            return Comparator.comparing(ProfileDataItem<T>::getVerticalFrom)
-                             .thenComparing(ProfileDataItem<T>::getVertical)
-                             .compare(this, o);
+            if (getVertical() != null) {
+                if (o.getVertical() != null) {
+                    return Comparator.comparing(ProfileDataItem<T>::getVertical)
+                            .compare(this, o);
+                } else {
+                    return 0;
+                }
+            } else {
+                return 1;
+            }
         }
     }
 
@@ -116,7 +130,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof ProfileDataItem)) {
+        if (obj == null || ! (obj instanceof ProfileDataItem)) {
             return false;
         }
 

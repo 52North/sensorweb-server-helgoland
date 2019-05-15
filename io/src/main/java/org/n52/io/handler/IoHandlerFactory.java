@@ -28,9 +28,11 @@
  */
 package org.n52.io.handler;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.request.IoParameters;
@@ -91,8 +93,15 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
             }
         };
     }
+    boolean isAbleToCreateHandlerFor(String outputMimeType) {
+        return Constants.MimeType.isKnownMimeType(outputMimeType)
+                && supportsMimeType(Constants.MimeType.toInstance(outputMimeType));
+    }
 
-    public abstract boolean isAbleToCreateHandlerFor(String outputMimeType);
+    private boolean supportsMimeType(Constants.MimeType mimeType) {
+        Set<String> supportedMimeTypes = getSupportedMimeTypes();
+        return supportedMimeTypes.contains(mimeType.getMimeType());
+    }
 
     public abstract Set<String> getSupportedMimeTypes();
 
