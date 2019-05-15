@@ -3,7 +3,7 @@
     "generalizer": {
         "defaultGeneralizer": "lttb",
         "noDataGapThreshold": 5
-    }
+    },
     "expandWithNextValuesBeyondInterval": true,
     "cache" : {
        "stations": 1440,
