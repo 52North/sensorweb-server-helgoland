@@ -39,6 +39,7 @@ import org.n52.io.handler.CsvIoHandler;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.handler.IoProcessChain;
+import org.n52.io.handler.SimpleCsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
@@ -47,7 +48,6 @@ import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.type.quantity.format.FormatterFactory;
 import org.n52.io.type.quantity.generalize.GeneralizingQuantityService;
-import org.n52.io.type.quantity.handler.csv.QuantityCsvIoHandler;
 import org.n52.io.type.quantity.handler.img.ChartIoHandler;
 import org.n52.io.type.quantity.handler.img.MultipleChartsRenderer;
 import org.n52.io.type.quantity.handler.report.PDFReportGenerator;
@@ -105,10 +105,10 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
         } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
             ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
             return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
-        } else if (mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP) {
-            CsvIoHandler<QuantityValue> handler = new QuantityCsvIoHandler(parameters,
-                                                                    createProcessChain(),
-                                                                    getMetadatas());
+        } else if (isCsvOutput(mimeType)) {
+            CsvIoHandler<QuantityValue> handler = new SimpleCsvIoHandler<>(parameters,
+                                                                           createProcessChain(),
+                                                                           getMetadatas());
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);

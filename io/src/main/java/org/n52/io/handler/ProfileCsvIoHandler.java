@@ -1,5 +1,5 @@
 
-package org.n52.io.type.profile.handler.csv;
+package org.n52.io.handler;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.IoParseException;
-import org.n52.io.handler.CsvIoHandler;
-import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.dataset.Data;

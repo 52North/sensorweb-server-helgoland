@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.io.type.quantity.handler.csv;
+package org.n52.io.handler;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,17 +35,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.n52.io.handler.CsvIoHandler;
-import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
-import org.n52.io.response.dataset.quantity.QuantityValue;
 
-// TODO extract non quantity specifics to csvhandler
-
-public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
+public class SimpleCsvIoHandler<T extends AbstractValue< ? >> extends CsvIoHandler<T> {
 
     private static final String PLATFORM = "platform";
     private static final String PHENOMENON = "phenomenon";
@@ -54,14 +50,14 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     private static final String TIME = "time";
     private static final String VALUE = "value";
 
-    public QuantityCsvIoHandler(IoParameters parameters,
-                                IoProcessChain<Data<QuantityValue>> processChain,
-                                List<? extends DatasetOutput<QuantityValue>> seriesMetadatas) {
+    public SimpleCsvIoHandler(IoParameters parameters,
+                              IoProcessChain<Data<T>> processChain,
+                              List< ? extends DatasetOutput<T>> seriesMetadatas) {
         super(parameters, processChain, seriesMetadatas);
     }
 
     @Override
-    public String[] getHeader(DatasetOutput<QuantityValue> metadata) {
+    public String[] getHeader(DatasetOutput<T> metadata) {
         return new String[] {
             PLATFORM,
             PHENOMENON,
@@ -73,17 +69,17 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     }
 
     @Override
-    protected void writeData(DatasetOutput<QuantityValue> metadata, Data<QuantityValue> series, OutputStream stream)
+    protected void writeData(DatasetOutput<T> metadata, Data<T> series, OutputStream stream)
             throws IOException {
         DatasetParameters parameters = metadata.getDatasetParameters();
         String[] row = new String[getHeader(metadata).length];
-        
+
         row[0] = getPlatformLabel(metadata);
         row[1] = getLabel(parameters.getPhenomenon());
         row[2] = getLabel(parameters.getProcedure());
         row[3] = metadata.getUom();
 
-        for (QuantityValue value : series.getValues()) {
+        for (T value : series.getValues()) {
             row[4] = parseTime(value);
             row[5] = value.getFormattedValue();
             writeText(csvEncode(row), stream);
@@ -91,7 +87,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     }
 
     @Override
-    protected String getFilenameFor(DatasetOutput<QuantityValue> metadata) {
+    protected String getFilenameFor(DatasetOutput<T> metadata) {
         DatasetParameters datasetParameters = metadata.getDatasetParameters(true);
         String filename = Stream.of(getPlatformLabel(metadata),
                                     getLabel(datasetParameters.getPhenomenon()),

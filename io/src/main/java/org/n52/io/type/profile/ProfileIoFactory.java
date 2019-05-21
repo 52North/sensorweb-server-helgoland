@@ -36,12 +36,12 @@ import java.util.stream.Stream;
 import org.n52.io.Constants;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.handler.ProfileCsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.profile.ProfileDatasetOutput;
 import org.n52.io.response.dataset.profile.ProfileValue;
-import org.n52.io.type.profile.handler.csv.ProfileCsvIoHandler;
 
 public class ProfileIoFactory extends IoHandlerFactory<ProfileDatasetOutput, ProfileValue< ? >> {
 

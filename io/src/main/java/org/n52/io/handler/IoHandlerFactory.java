@@ -26,15 +26,19 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.handler;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -70,6 +74,19 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
     }
 
     public IoHandler<Data<V>> createHandler(String outputMimeType) {
+
+        IoParameters parameters = getParameters();
+        Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
+        if (isCsvOutput(mimeType)) {
+            SimpleCsvIoHandler<V> handler = new SimpleCsvIoHandler<>(parameters,
+                                                                     createProcessChain(),
+                                                                     getMetadatas());
+
+            boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
+            handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
+            return handler;
+        }
+
         String msg = "The requested media type '" + outputMimeType + "' is not supported.";
         IllegalArgumentException exception = new IllegalArgumentException(msg);
         throw exception;
@@ -92,6 +109,7 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
             }
         };
     }
+
     boolean isAbleToCreateHandlerFor(String outputMimeType) {
         return Constants.MimeType.isKnownMimeType(outputMimeType)
                 && supportsMimeType(Constants.MimeType.toInstance(outputMimeType));
@@ -102,7 +120,12 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
         return supportedMimeTypes.contains(mimeType.getMimeType());
     }
 
-    public abstract Set<String> getSupportedMimeTypes();
+    public Set<String> getSupportedMimeTypes() {
+        return Stream.of(Constants.MimeType.TEXT_CSV,
+                         Constants.MimeType.APPLICATION_ZIP)
+                     .map(Constants.MimeType::getMimeType)
+                     .collect(Collectors.toSet());
+    };
 
     protected IoStyleContext createContext() {
         if (datasetService == null || !parameters.hasStyles()) {
@@ -112,7 +135,8 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
     }
 
     protected List<P> getMetadatas() {
-        String[] datasetIds = parameters.getDatasets().toArray(new String[0]);
+        String[] datasetIds = parameters.getDatasets()
+                                        .toArray(new String[0]);
         return datasetService.getParameters(datasetIds, parameters)
                              .getItems();
     }
@@ -123,6 +147,10 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
 
     protected DataService<Data<V>> getDataService() {
         return dataService;
+    }
+
+    protected boolean isCsvOutput(Constants.MimeType mimeType) {
+        return mimeType == Constants.MimeType.TEXT_CSV || mimeType == Constants.MimeType.APPLICATION_ZIP;
     }
 
 }
