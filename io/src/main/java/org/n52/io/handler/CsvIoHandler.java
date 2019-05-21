@@ -159,9 +159,10 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
     protected String parseTime(T value) {
         TimeOutput timestart = value.getTimestart();
         TimeOutput timeend = value.getTimeend();
+        TimeOutput timestamp = value.getTimestamp();
         return timestart != null
                 ? timestart.getDateTime() + "/" + timeend.getDateTime()
-                : "";
+                : timestamp.getDateTime().toString();
     }
 
     public void setZipOutput(boolean zipOutput) {
