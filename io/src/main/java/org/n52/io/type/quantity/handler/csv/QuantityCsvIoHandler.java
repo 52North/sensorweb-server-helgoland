@@ -47,7 +47,7 @@ import org.n52.io.response.dataset.quantity.QuantityValue;
 
 public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
 
-    private static final String STATION = "station";
+    private static final String PLATFORM = "platform";
     private static final String PHENOMENON = "phenomenon";
     private static final String PROCEDURE = "procedure";
     private static final String UOM = "uom";
@@ -63,7 +63,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     @Override
     public String[] getHeader(DatasetOutput<QuantityValue> metadata) {
         return new String[] {
-            STATION,
+            PLATFORM,
             PHENOMENON,
             PROCEDURE,
             UOM,
@@ -75,9 +75,10 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     @Override
     protected void writeData(DatasetOutput<QuantityValue> metadata, Data<QuantityValue> series, OutputStream stream)
             throws IOException {
-        String[] row = new String[getHeader(metadata).length];
         DatasetParameters parameters = metadata.getDatasetParameters();
-        row[0] = getLabel(parameters.getPlatform());
+        String[] row = new String[getHeader(metadata).length];
+        
+        row[0] = getPlatformLabel(metadata);
         row[1] = getLabel(parameters.getPhenomenon());
         row[2] = getLabel(parameters.getProcedure());
         row[3] = metadata.getUom();
