@@ -3,6 +3,7 @@ package org.n52.io.type.profile.handler.csv;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
@@ -15,6 +16,7 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
+import org.n52.io.response.dataset.profile.ProfileDataItem;
 import org.n52.io.response.dataset.profile.ProfileValue;
 
 public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
@@ -32,8 +34,8 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
             if (isZipOutput() || data.size() > 1) {
                 writeAsZipStream(data, stream);
             } else if (data.size() == 1) {
-                List<DatasetOutput<ProfileValue<?>>> metadatas = getMetadatas();
-                DatasetOutput<ProfileValue<?>> dataset = metadatas.get(0);
+                List<DatasetOutput<ProfileValue< ? >>> metadatas = getMetadatas();
+                DatasetOutput<ProfileValue< ? >> dataset = metadatas.get(0);
 
                 writeHeader(dataset, stream);
                 writeData(dataset, data.getSeries(dataset.getId()), stream);
@@ -71,12 +73,14 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
                   .append(geometry.toText())
                   .append("\n");
 
+        /*
+         * Note: last line break will cause an empty first column
+         */
         return new String[] {
             metaHeader.toString(),
-
-            // TODO verticalExtent to be encoded in each value?!
-
-            "42"
+            "z-value",
+            "time",
+            "value"
         };
     }
 
@@ -85,14 +89,24 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
                              Data<ProfileValue< ? >> series,
                              OutputStream stream)
             throws IOException {
-        // TODO Auto-generated method stub
-
+        for (ProfileValue< ? > profile : series.getValues()) {
+            for (ProfileDataItem< ? > value : profile.getValue()) {
+                String[] row = new String[getHeader(metadata).length];
+                BigDecimal vertical = value.getVertical();
+                
+                // metaHeader leaves first column empty
+                row[0] = ""; 
+                row[1] = parseTime(profile);
+                row[2] = vertical.toString();
+                row[3] = value.getFormattedValue();
+                writeText(csvEncode(row), stream);
+            }
+        }
     }
 
     @Override
     protected String getFilenameFor(DatasetOutput<ProfileValue< ? >> seriesMetadata) {
-        // TODO Auto-generated method stub
-        return "";
+        return seriesMetadata.getId();
     }
 
 }
