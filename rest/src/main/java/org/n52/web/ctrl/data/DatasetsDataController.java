@@ -30,7 +30,6 @@ package org.n52.web.ctrl.data;
 
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -55,11 +54,10 @@ public class DatasetsDataController extends DataController {
     }
 
     @Override
-    protected String checkAndGetDataType(IoParameters map, String requestUrl) {
-        OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters =
-                getDatasetService().getCondensedParameters(map);
-        DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
-        return item.getObservationType().equals(PROFILE) || item.getDatasetType().equals(PROFILE) ? PROFILE
+    protected String getValueType(IoParameters map, String requestUrl) {
+        DatasetOutput<AbstractValue<?>> item = getFirstDatasetOutput(map);
+        return isProfileType(item)
+                ? PROFILE
                 : item.getValueType();
     }
 

@@ -117,7 +117,7 @@ public abstract class DataController extends BaseController {
         this.dataService = dataService;
     }
 
-    protected abstract String checkAndGetDataType(IoParameters map, String requestUrl);
+    protected abstract String getValueType(IoParameters map, String requestUrl);
 
     protected ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
         return datasetService;
@@ -143,9 +143,8 @@ public abstract class DataController extends BaseController {
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);
-//        String handleAsValueTypeFallback = map.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
 //        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
-        String valueType = checkAndGetDataType(map, request.getRequestURI());
+        String valueType = getValueType(map, request.getRequestURI());
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
@@ -173,9 +172,9 @@ public abstract class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
-        IoProcessChain< ? > ioChain = createIoFactory(datasetType).setParameters(parameters)
-                                                                  .createProcessChain();
+        final String valueType = getValueType(parameters, request.getRequestURI());
+        IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(parameters)
+                                                                .createProcessChain();
 
         DataCollection< ? > processed = ioChain.getData();
         return new ModelAndView().addObject(processed.getAllSeries());
@@ -253,12 +252,12 @@ public abstract class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
+        final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).setParameters(parameters)
-                                    .createHandler(outputFormat)
-                                    .writeBinary(response.getOutputStream());
+        createIoFactory(valueType).setParameters(parameters)
+                                  .createHandler(outputFormat)
+                                  .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{datasetId}/observations",
@@ -279,14 +278,14 @@ public abstract class DataController extends BaseController {
         checkForUnknownDatasetId(parameters, datasetId);
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
+        final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
         response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".pdf\"");
 
-        createIoFactory(datasetType).setParameters(parameters)
-                                    .createHandler(outputFormat)
-                                    .writeBinary(response.getOutputStream());
+        createIoFactory(valueType).setParameters(parameters)
+                                  .createHandler(outputFormat)
+                                  .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{datasetId}/observations",
@@ -314,10 +313,10 @@ public abstract class DataController extends BaseController {
         response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".zip\"");
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
-        createIoFactory(datasetType).setParameters(parameters)
-                                    .createHandler(Constants.APPLICATION_ZIP)
-                                    .writeBinary(response.getOutputStream());
+        final String valueType = getValueType(parameters, request.getRequestURI());
+        createIoFactory(valueType).setParameters(parameters)
+                                  .createHandler(Constants.APPLICATION_ZIP)
+                                  .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{datasetId}/observations",
@@ -352,10 +351,10 @@ public abstract class DataController extends BaseController {
                             + "\"");
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
-        createIoFactory(datasetType).setParameters(parameters)
-                                    .createHandler(Constants.TEXT_CSV)
-                                    .writeBinary(response.getOutputStream());
+        final String valueType = getValueType(parameters, request.getRequestURI());
+        createIoFactory(valueType).setParameters(parameters)
+                                  .createHandler(Constants.TEXT_CSV)
+                                  .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/observations",
@@ -374,12 +373,12 @@ public abstract class DataController extends BaseController {
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
 //        final String datasetType = getValueType(parameters);
-        final String datasetType = checkAndGetDataType(parameters, request.getRequestURI());
+        final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(datasetType).setParameters(parameters)
-                                    .createHandler(outputFormat)
-                                    .writeBinary(response.getOutputStream());
+        createIoFactory(valueType).setParameters(parameters)
+                                  .createHandler(outputFormat)
+                                  .writeBinary(response.getOutputStream());
     }
 
     @RequestMapping(value = "/{datasetId}/observations",
@@ -401,7 +400,7 @@ public abstract class DataController extends BaseController {
 
 //        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
 //        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
-        String valueType = checkAndGetDataType(parameters, request.getRequestURI());
+        String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
         createIoFactory(valueType).setParameters(parameters)
@@ -533,6 +532,18 @@ public abstract class DataController extends BaseController {
             addCacheHeader(response, parameter.getCache().get()
                     .get(getResourcePathFrom(OBSERVATIONS)).asLong(0));
         }
+    }
+
+    protected boolean isProfileType(DatasetOutput<AbstractValue< ? >> item) {
+        String observationType = item.getObservationType();
+        String datasetType = item.getDatasetType();
+        return observationType.equals(PROFILE)
+                || datasetType.equals(PROFILE);
+    }
+
+    protected DatasetOutput<AbstractValue< ? >> getFirstDatasetOutput(IoParameters map) {
+        return datasetService.getCondensedParameters(map)
+                                  .getItem(0);
     }
 
 }

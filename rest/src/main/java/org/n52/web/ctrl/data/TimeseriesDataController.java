@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl.data;
 
+import java.text.MessageFormat;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +37,6 @@ import org.n52.io.Constants;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
@@ -84,18 +85,17 @@ public class TimeseriesDataController extends DataController {
     }
 
     @Override
-    protected String checkAndGetDataType(IoParameters map, String requestUrl) {
-        OutputCollection<DatasetOutput<AbstractValue<?>>> condensedParameters =
-                getDatasetService().getCondensedParameters(map);
-        DatasetOutput<AbstractValue<?>> item = condensedParameters.getItem(0);
-        if (!item.getDatasetType().equalsIgnoreCase("timeseries")) {
-            throw new ResourceNotFoundException("The dataset with id '"
-                    + item.getId()
-                    + "' was not found for '"
-                    + UrlSettings.COLLECTION_TIMESERIES
-                    + "'.");
+    protected String getValueType(IoParameters map, String requestUrl) {
+        DatasetOutput<AbstractValue<?>> item = getFirstDatasetOutput(map);
+        String datasetType = item.getDatasetType();
+        if ( !"timeseries".equalsIgnoreCase(datasetType)) {
+            String expectedType = UrlSettings.COLLECTION_TIMESERIES;
+            String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
+            String message = MessageFormat.format(template, item.getId(), expectedType);
+            throw new ResourceNotFoundException(message);
         }
-        return item.getObservationType().equals(PROFILE) || item.getDatasetType().equals(PROFILE) ? PROFILE
+        return isProfileType(item)
+                ? PROFILE
                 : item.getValueType();
     }
 
