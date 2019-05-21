@@ -31,10 +31,7 @@ package org.n52.io.type.quantity.handler.csv;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,7 +42,6 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.janmayen.i18n.LocaleHelper;
 
 // TODO extract non quantity specifics to csvhandler
 
@@ -58,14 +54,10 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
     private static final String TIME = "time";
     private static final String VALUE = "value";
 
-    private NumberFormat numberformat = DecimalFormat.getInstance();
-
     public QuantityCsvIoHandler(IoParameters parameters,
                                 IoProcessChain<Data<QuantityValue>> processChain,
                                 List<? extends DatasetOutput<QuantityValue>> seriesMetadatas) {
         super(parameters, processChain, seriesMetadatas);
-        Locale locale = LocaleHelper.decode(parameters.getLocale());
-        this.numberformat = DecimalFormat.getInstance(locale);
     }
 
     @Override
@@ -92,7 +84,7 @@ public class QuantityCsvIoHandler extends CsvIoHandler<QuantityValue> {
 
         for (QuantityValue value : series.getValues()) {
             row[4] = parseTime(value);
-            row[5] = numberformat.format(value.getValue());
+            row[5] = value.getFormattedValue();
             writeText(csvEncode(row), stream);
         }
     }

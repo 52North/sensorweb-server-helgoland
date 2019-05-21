@@ -56,6 +56,8 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private T value;
 
+    private ValueFormatter<T> valueFormatter;
+
     private Geometry geometry;
 
     private Set<Map<String, Object>> parameters;
@@ -150,6 +152,27 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @JsonIgnore
+    public void setValueFormatter(ValueFormatter<T> valueFormatter) {
+        this.valueFormatter = valueFormatter;
+    }
+
+    /**
+     * Formats value as string by using {@link #valueFormatter}. If no formatter has been set
+     * {@link Object#toString()} is being used. Otherwise {@code null} is returned.
+     * 
+     * @return the {@link #value} formatted as string or {@code null} if value is {@code null}
+     */
+    @JsonIgnore
+    public String getFormattedValue() {
+        if (value == null) {
+            return null;
+        }
+        return valueFormatter != null
+                ? valueFormatter.format(value)
+                : value.toString();
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)

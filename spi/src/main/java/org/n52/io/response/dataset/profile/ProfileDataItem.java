@@ -33,7 +33,10 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.n52.io.response.dataset.ValueFormatter;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({
@@ -50,6 +53,8 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     private BigDecimal vertical;
 
     private T value;
+    
+    private ValueFormatter<T> valueFormatter;
 
     public ProfileDataItem() {
     }
@@ -101,6 +106,27 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @JsonIgnore
+    public void setValueFormatter(ValueFormatter<T> valueFormatter) {
+        this.valueFormatter = valueFormatter;
+    }
+
+    /**
+     * Formats value as string by using {@link #valueFormatter}. If no formatter has been set
+     * {@link Object#toString()} is being used. Otherwise {@code null} is returned.
+     * 
+     * @return the {@link #value} formatted as string or {@code null} if value is {@code null}
+     */
+    @JsonIgnore
+    public String getFormattedValue() {
+        if (value == null) {
+            return null;
+        }
+        return valueFormatter != null
+                ? valueFormatter.format(value)
+                : value.toString();
     }
 
     @Override
