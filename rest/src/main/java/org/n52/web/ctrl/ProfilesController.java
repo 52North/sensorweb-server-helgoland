@@ -28,11 +28,16 @@
  */
 package org.n52.web.ctrl;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,6 +59,13 @@ public class ProfilesController extends ParameterRequestMappingAdapter<ProfileOu
     @Override
     protected int getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().getDatasetCount(queryMap);
+    }
+    
+    @Override
+    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
+        List<String> value = Collections.singletonList("profile");
+        query.put(Parameters.FILTER_OBSERVATION_TYPES, value);
+        return super.addAdditionalParameter(query);
     }
 
 }
