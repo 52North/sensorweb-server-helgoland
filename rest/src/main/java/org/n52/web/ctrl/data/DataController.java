@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.data;
 
 import java.io.IOException;
@@ -46,7 +47,6 @@ import org.joda.time.Period;
 import org.n52.io.Constants;
 import org.n52.io.DatasetFactoryException;
 import org.n52.io.IntervalWithTimeZone;
-import org.n52.io.PreRenderingJob;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.handler.IoProcessChain;
@@ -102,8 +102,6 @@ public abstract class DataController extends BaseController {
     private final DataService<Data<AbstractValue< ? >>> dataService;
 
     private final ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
-
-    private PreRenderingJob preRenderingTask;
 
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
@@ -357,100 +355,7 @@ public abstract class DataController extends BaseController {
                                   .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/observations",
-        produces = {
-            Constants.IMAGE_PNG
-        },
-        method = RequestMethod.POST)
-    public void getSeriesCollectionChart(HttpServletRequest request,
-                                         HttpServletResponse response,
-                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                             required = false) String locale,
-                                         @RequestBody RequestStyledParameterSet simpleParameters)
-            throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale, response);
-        LOGGER.debug("get data collection chart with query: {}", parameters);
-        checkForUnknownDatasetIds(parameters, parameters.getDatasets());
-
-//        final String datasetType = getValueType(parameters);
-        final String valueType = getValueType(parameters, request.getRequestURI());
-        String outputFormat = Constants.IMAGE_PNG;
-        response.setContentType(outputFormat);
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
-                                  .writeBinary(response.getOutputStream());
-    }
-
-    @RequestMapping(value = "/{datasetId}/observations",
-        produces = {
-            Constants.IMAGE_PNG
-        },
-        method = RequestMethod.GET)
-    public void getSeriesChart(HttpServletRequest request,
-                               HttpServletResponse response,
-                               @PathVariable String datasetId,
-                               @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                   required = false) String locale,
-                               @RequestParam(required = false) MultiValueMap<String, String> query)
-            throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
-        LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, parameters);
-        checkAgainstTimespanRestriction(parameters.getTimespan());
-        checkForUnknownDatasetId(parameters, datasetId);
-
-//        String handleAsValueTypeFallback = parameters.getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
-        String valueType = getValueType(parameters, request.getRequestURI());
-        String outputFormat = Constants.IMAGE_PNG;
-        response.setContentType(outputFormat);
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
-                                  .writeBinary(response.getOutputStream());
-    }
-
-    @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
-    public ModelAndView getSeriesChartByInterval(@PathVariable String datasetId) {
-        assertPrerenderingIsEnabled();
-        ModelAndView response = new ModelAndView();
-        return response.addObject(preRenderingTask.getPrerenderedImages(datasetId));
-    }
-
-    @RequestMapping(value = "/{datasetId}/{chartQualifier}",
-        produces = {
-            Constants.IMAGE_PNG
-        },
-        method = RequestMethod.GET)
-    public void getSeriesChartByInterval(HttpServletResponse response,
-                                         @PathVariable String datasetId,
-                                         @PathVariable String chartQualifier)
-            throws Exception {
-        assertPrerenderingIsEnabled();
-        assertPrerenderedImageIsAvailable(datasetId, chartQualifier);
-
-        response.setContentType(Constants.IMAGE_PNG);
-        LOGGER.debug("get prerendered chart for '{}' ({})", datasetId, chartQualifier);
-        preRenderingTask.writePrerenderedGraphToOutputStream(datasetId, chartQualifier, response.getOutputStream());
-    }
-
-    @RequestMapping(value = "/{datasetId}/images/{fileName}",
-        produces = {
-            Constants.IMAGE_PNG
-        },
-        method = RequestMethod.GET)
-    public void getSeriesChartByFilename(HttpServletResponse response,
-                                         @PathVariable String datasetId,
-                                         @PathVariable String fileName)
-            throws Exception {
-        assertPrerenderingIsEnabled();
-        assertPrerenderedImageIsAvailable(fileName, null);
-
-        response.setContentType(Constants.IMAGE_PNG);
-        LOGGER.debug("get prerendered chart for '{}'", fileName);
-        preRenderingTask.writePrerenderedGraphToOutputStream(fileName, response.getOutputStream());
-
-    }
-
-    private void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
+    protected void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
         if (requestIntervalRestriction != null) {
             Duration duration = Period.parse(requestIntervalRestriction)
                                       .toDurationFrom(new DateTime());
@@ -463,11 +368,11 @@ public abstract class DataController extends BaseController {
         }
     }
 
-    private void checkForUnknownDatasetId(IoParameters parameters, String seriesId) {
+    protected void checkForUnknownDatasetId(IoParameters parameters, String seriesId) {
         checkForUnknownDatasetIds(parameters, Collections.singleton(seriesId));
     }
 
-    private void checkForUnknownDatasetIds(IoParameters parameters, Set<String> seriesIds) {
+    protected void checkForUnknownDatasetIds(IoParameters parameters, Set<String> seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
                 if (!datasetService.exists(id, parameters)) {
@@ -477,52 +382,14 @@ public abstract class DataController extends BaseController {
         }
     }
 
-    private IoHandlerFactory<DatasetOutput<AbstractValue< ? >>,
-                      AbstractValue< ? >> createIoFactory(final String valueType)
-                              throws DatasetFactoryException {
-        if (!ioFactoryCreator.isKnown(valueType)) {
+    protected IoHandlerFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> createIoFactory(final String valueType)
+            throws DatasetFactoryException {
+        if ( !ioFactoryCreator.isKnown(valueType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
         return ioFactoryCreator.create(valueType)
                                .setDataService(dataService)
                                .setDatasetService(datasetService);
-    }
-
-    // TODO set preredering config instead of task
-
-    public PreRenderingJob getPreRenderingTask() {
-        return preRenderingTask;
-    }
-
-    public void setPreRenderingTask(PreRenderingJob prerenderingTask) {
-        this.preRenderingTask = prerenderingTask;
-    }
-
-    public String getRequestIntervalRestriction() {
-        return requestIntervalRestriction;
-    }
-
-    public void setRequestIntervalRestriction(String requestIntervalRestriction) {
-        // validate requestIntervalRestriction, if it's no period an exception occured
-        Period.parse(requestIntervalRestriction);
-        LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
-        this.requestIntervalRestriction = requestIntervalRestriction;
-    }
-
-    private void assertPrerenderingIsEnabled() {
-        if (preRenderingTask == null) {
-            throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
-        }
-    }
-
-    private void assertPrerenderedImageIsAvailable(String seriesId, String chartQualifier) {
-        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
-            throw new ResourceNotFoundException("No pre-rendered chart found for datasetId '"
-                    + seriesId
-                    + " (qualifier: "
-                    + chartQualifier
-                    + ")'.");
-        }
     }
 
     @Override
@@ -543,7 +410,18 @@ public abstract class DataController extends BaseController {
 
     protected DatasetOutput<AbstractValue< ? >> getFirstDatasetOutput(IoParameters map) {
         return datasetService.getCondensedParameters(map)
-                                  .getItem(0);
+                             .getItem(0);
+    }
+
+    public String getRequestIntervalRestriction() {
+        return requestIntervalRestriction;
+    }
+
+    public void setRequestIntervalRestriction(String requestIntervalRestriction) {
+        // validate requestIntervalRestriction, if it's no period an exception occured
+        Period.parse(requestIntervalRestriction);
+        LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
+        this.requestIntervalRestriction = requestIntervalRestriction;
     }
 
 }
