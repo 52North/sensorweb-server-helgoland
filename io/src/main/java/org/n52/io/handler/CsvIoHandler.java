@@ -120,9 +120,14 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
 
     private void writeAsSingleCsv(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
         try (BufferedOutputStream bos = new BufferedOutputStream(stream)) {
-            writeHeader(null, bos);
-            writeData(data, bos);
-            bos.flush();
+            if (data.size() == 1) {
+                DatasetOutput<T> metadata = seriesMetadatas.get(0);
+                writeHeader(metadata, bos);
+                writeData(data, bos);
+                bos.flush();
+            } else {
+                writeAsZipStream(data, stream);
+            }
         }
     }
 
