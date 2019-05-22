@@ -152,6 +152,7 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
 
     protected String csvEncode(String[] values) {
         return Stream.of(values)
+                     .map(v -> v == null ? "" : v)
                      .map(value -> {
                          return value.contains(tokenSeparator)
                                  ? "\"" + value + "\""
