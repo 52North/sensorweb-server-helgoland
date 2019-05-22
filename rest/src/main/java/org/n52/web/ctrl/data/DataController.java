@@ -79,12 +79,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public abstract class DataController extends BaseController {
 
     protected static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
 
-    protected static final String CONTENT_DISPOSITION_VALUE_TEMPLATE =
-            "attachment; filename=\"Observations_for_Dataset_";
+    protected static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Observations_for_Dataset_";
 
     protected static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
@@ -96,8 +97,7 @@ public abstract class DataController extends BaseController {
 
     private static final String DEFAULT_RESPONSE_ENCODING = "UTF-8";
 
-    private final DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
-                             AbstractValue< ? >> ioFactoryCreator;
+    private final DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactoryCreator;
 
     private final DataService<Data<AbstractValue< ? >>> dataService;
 
@@ -107,7 +107,7 @@ public abstract class DataController extends BaseController {
     private String requestIntervalRestriction;
 
     @Autowired
-    public DataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue< ? >> ioFactory,
+    public DataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
                           ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
                           DataService<Data<AbstractValue< ? >>> dataService) {
         this.ioFactoryCreator = ioFactory;
@@ -137,11 +137,12 @@ public abstract class DataController extends BaseController {
         LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan());
         checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
-                                    .removeAllOf(Parameters.NEAR), datasetId);
+                                    .removeAllOf(Parameters.NEAR),
+                                 datasetId);
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);
-//        String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
+        // String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
         String valueType = getValueType(map, request.getRequestURI());
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
@@ -153,7 +154,7 @@ public abstract class DataController extends BaseController {
                 : new ModelAndView().addObject(processed.get(datasetId));
     }
 
-   @RequestMapping(value = "/observations",
+    @RequestMapping(value = "/observations",
         produces = {
             Constants.APPLICATION_JSON
         },
@@ -169,7 +170,7 @@ public abstract class DataController extends BaseController {
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-//        final String datasetType = getValueType(parameters);
+        // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(parameters)
                                                                 .createProcessChain();
@@ -178,14 +179,14 @@ public abstract class DataController extends BaseController {
         return new ModelAndView().addObject(processed.getAllSeries());
     }
 
-//    private String getValueType(IoParameters parameters) {
-//        String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
-//        Set<String> datasetIds = parameters.getDatasets();
-//        Iterator<String> iterator = datasetIds.iterator();
-//        return iterator.hasNext()
-//                ? ValueType.extractType(iterator.next(), handleAs)
-//                : ValueType.DEFAULT_VALUE_TYPE;
-//    }
+    // private String getValueType(IoParameters parameters) {
+    // String handleAs = parameters.getOther(Parameters.HANDLE_AS_VALUE_TYPE);
+    // Set<String> datasetIds = parameters.getDatasets();
+    // Iterator<String> iterator = datasetIds.iterator();
+    // return iterator.hasNext()
+    // ? ValueType.extractType(iterator.next(), handleAs)
+    // : ValueType.DEFAULT_VALUE_TYPE;
+    // }
 
     @RequestMapping(value = "/observations",
         params = {
@@ -220,7 +221,7 @@ public abstract class DataController extends BaseController {
     private void writeRawData(IoParameters parameters, HttpServletResponse response)
             throws InternalServerException, ResourceNotFoundException, BadRequestException {
         LOGGER.debug("get raw data collection with parameters: {}", parameters);
-        if (!dataService.supportsRawData()) {
+        if ( !dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported "
                     + "by the underlying service!");
         }
@@ -249,7 +250,7 @@ public abstract class DataController extends BaseController {
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
 
-//        final String datasetType = getValueType(parameters);
+        // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
@@ -275,7 +276,7 @@ public abstract class DataController extends BaseController {
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
 
-//        final String datasetType = getValueType(parameters);
+        // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
@@ -310,7 +311,7 @@ public abstract class DataController extends BaseController {
         response.setContentType(Constants.APPLICATION_ZIP);
         response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".zip\"");
 
-//        final String datasetType = getValueType(parameters);
+        // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
         createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(Constants.APPLICATION_ZIP)
@@ -343,12 +344,13 @@ public abstract class DataController extends BaseController {
             response.setContentType(Constants.TEXT_CSV);
             extension += "csv";
         }
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE
-                            + datasetId
-                            + extension
-                            + "\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                           CONTENT_DISPOSITION_VALUE_TEMPLATE
+                                   + datasetId
+                                   + extension
+                                   + "\"");
 
-//        final String datasetType = getValueType(parameters);
+        // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
         createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(Constants.TEXT_CSV)
@@ -375,7 +377,7 @@ public abstract class DataController extends BaseController {
     protected void checkForUnknownDatasetIds(IoParameters parameters, Set<String> seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
-                if (!datasetService.exists(id, parameters)) {
+                if ( !datasetService.exists(id, parameters)) {
                     throw new ResourceNotFoundException("Series with id '" + id + "' wasn't found.");
                 }
             }
@@ -394,11 +396,9 @@ public abstract class DataController extends BaseController {
 
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
-        if (parameter.hasCache()
-                && parameter.getCache().get().has(getResourcePathFrom(OBSERVATIONS))) {
-            addCacheHeader(response, parameter.getCache().get()
-                    .get(getResourcePathFrom(OBSERVATIONS)).asLong(0));
-        }
+        parameter.getCache()
+                 .map(node -> node.asLong(0))
+                 .ifPresent(v -> addCacheHeader(response, v));
     }
 
     protected boolean isProfileType(DatasetOutput<AbstractValue< ? >> item) {
