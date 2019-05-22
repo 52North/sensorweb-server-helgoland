@@ -21,6 +21,17 @@ import org.n52.io.response.dataset.profile.ProfileValue;
 
 public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
 
+    private static final String META_PHENOMENON = "Phenomenon: ";
+    private static final String META_FEATURE = "Feature: ";
+    private static final String META_SENSOR = "Sensor: ";
+    private static final String META_UNIT = "Unit: ";
+    private static final String META_GEOMETRY = "Geometry: ";
+    private static final String COLUMN_GEOMETRY = "geometry";
+    private static final String COLUMN_TIME = "time";
+    private static final String COLUMN_Z_VALUE = "z-value";
+    private static final String COLUMN_VALUE = "value";
+    private static final String LINEBREAK = "\n";
+
     public ProfileCsvIoHandler(IoParameters parameters,
                                IoProcessChain<Data<ProfileValue< ? >>> processChain,
                                List< ? extends DatasetOutput<ProfileValue< ? >>> seriesMetadatas) {
@@ -52,15 +63,15 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
         StringBuilder metaHeader = new StringBuilder();
         DatasetParameters datasetParameters = metadata.getDatasetParameters(true);
 
-        metaHeader.append("Phenomenon: ")
+        metaHeader.append(META_PHENOMENON)
                   .append(getLabel(datasetParameters.getPhenomenon()))
-                  .append("\n");
-        metaHeader.append("Sensor: ")
+                  .append(LINEBREAK);
+        metaHeader.append(META_SENSOR)
                   .append(getPlatformLabel(metadata))
-                  .append("\n");
-        metaHeader.append("Unit: ")
+                  .append(LINEBREAK);
+        metaHeader.append(META_UNIT)
                   .append(metadata.getUom())
-                  .append("\n");
+                  .append(LINEBREAK);
 
         return isTrajectory(metadata)
                 ? createTrajectoryHeader(metaHeader)
@@ -70,34 +81,34 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
 
     private String[] createSimpleHeader(DatasetOutput<ProfileValue< ? >> metadata, StringBuilder metaHeader) {
         FeatureOutput feature = metadata.getFeature();
-        metaHeader.append("Feature: ")
+        metaHeader.append(META_FEATURE)
                   .append(getLabel(feature))
-                  .append("\n");
+                  .append(LINEBREAK);
 
         Geometry geometry = feature.getGeometry();
-        metaHeader.append("Geometry: ")
+        metaHeader.append(META_GEOMETRY)
                   .append(geometry.toText())
-                  .append("\n");
+                  .append(LINEBREAK);
 
         /*
          * Note: last line break will cause an empty first column
          */
         return new String[] {
             metaHeader.toString(),
-            "time",
-            "z-value",
-            "value"
+            COLUMN_TIME,
+            COLUMN_Z_VALUE,
+            COLUMN_VALUE,
         };
     }
 
     private String[] createTrajectoryHeader(StringBuilder metaHeader) {
         return new String[] {
             // Note: first column after last line break
-            metaHeader.append("geometry")
+            metaHeader.append(COLUMN_GEOMETRY)
                       .toString(),
-            "time",
-            "z-value",
-            "value"
+            COLUMN_TIME,
+            COLUMN_Z_VALUE,
+            COLUMN_VALUE,
         };
     }
 

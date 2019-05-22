@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IndividualObservationsDataController extends DataController {
 
     @Autowired
+    @SuppressWarnings("checkstyle:linelength")
     public IndividualObservationsDataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
                                                 ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
                                                 DataService<Data<AbstractValue< ? >>> dataService) {
@@ -61,7 +62,7 @@ public class IndividualObservationsDataController extends DataController {
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
         String datasetType = item.getDatasetType();
-        if ( !"individualObservation".equalsIgnoreCase(datasetType)) {
+        if (!"individualObservation".equalsIgnoreCase(datasetType)) {
             String expectedType = UrlSettings.COLLECTION_INDIVIDUAL_OBSERVATIONS;
             String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
             String message = MessageFormat.format(template, item.getId(), expectedType);

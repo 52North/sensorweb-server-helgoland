@@ -61,7 +61,7 @@ public class TrajectoriesDataController extends DataController {
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
         String datasetType = item.getDatasetType();
-        if ( !"trajectory".equalsIgnoreCase(datasetType)) {
+        if (!"trajectory".equalsIgnoreCase(datasetType)) {
             String expectedType = UrlSettings.COLLECTION_TRAJECTORIES;
             String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
             String message = MessageFormat.format(template, item.getId(), expectedType);

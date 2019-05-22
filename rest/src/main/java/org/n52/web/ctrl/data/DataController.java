@@ -79,13 +79,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 public abstract class DataController extends BaseController {
 
     protected static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
 
-    protected static final String CONTENT_DISPOSITION_VALUE_TEMPLATE = "attachment; filename=\"Observations_for_Dataset_";
+    protected static final String CONTENT_DISPOSITION_VALUE_TEMPLATE =
+            "attachment; filename=\"Observations_for_Dataset_";
 
     protected static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
@@ -221,7 +220,7 @@ public abstract class DataController extends BaseController {
     private void writeRawData(IoParameters parameters, HttpServletResponse response)
             throws InternalServerException, ResourceNotFoundException, BadRequestException {
         LOGGER.debug("get raw data collection with parameters: {}", parameters);
-        if ( !dataService.supportsRawData()) {
+        if (!dataService.supportsRawData()) {
             throw new BadRequestException("Querying of raw timeseries data is not supported "
                     + "by the underlying service!");
         }
@@ -377,16 +376,17 @@ public abstract class DataController extends BaseController {
     protected void checkForUnknownDatasetIds(IoParameters parameters, Set<String> seriesIds) {
         if (seriesIds != null) {
             for (String id : seriesIds) {
-                if ( !datasetService.exists(id, parameters)) {
+                if (!datasetService.exists(id, parameters)) {
                     throw new ResourceNotFoundException("Series with id '" + id + "' wasn't found.");
                 }
             }
         }
     }
 
+    @SuppressWarnings("checkstyle:linelength")
     protected IoHandlerFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> createIoFactory(final String valueType)
             throws DatasetFactoryException {
-        if ( !ioFactoryCreator.isKnown(valueType)) {
+        if (!ioFactoryCreator.isKnown(valueType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
         return ioFactoryCreator.create(valueType)

@@ -53,7 +53,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     private BigDecimal vertical;
 
     private T value;
-    
+
     private ValueFormatter<T> valueFormatter;
 
     public ProfileDataItem() {
@@ -116,7 +116,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     /**
      * Formats value as string by using {@link #valueFormatter}. If no formatter has been set
      * {@link Object#toString()} is being used. Otherwise {@code null} is returned.
-     * 
+     *
      * @return the {@link #value} formatted as string or {@code null} if value is {@code null}
      */
     @JsonIgnore

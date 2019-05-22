@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.data;
 
 import java.text.MessageFormat;
@@ -64,15 +65,15 @@ import org.springframework.web.servlet.ModelAndView;
     "application/json"
 })
 public class TimeseriesDataController extends DataController {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);
 
     private PreRenderingJob preRenderingTask;
 
     @Autowired
-    public TimeseriesDataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> ioFactory,
-            ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
-            DataService<Data<AbstractValue<?>>> dataService) {
+    public TimeseriesDataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
+                                    ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
+                                    DataService<Data<AbstractValue< ? >>> dataService) {
         super(ioFactory, datasetService, dataService);
     }
 
@@ -171,26 +172,26 @@ public class TimeseriesDataController extends DataController {
 
     @Deprecated
     @RequestMapping(value = "/{datasetId}/getData",
-            produces = {
-                Constants.APPLICATION_JSON
-            },
-            method = RequestMethod.GET)
-        public ModelAndView getTimeseriesData(HttpServletRequest request,
+        produces = {
+            Constants.APPLICATION_JSON
+        },
+        method = RequestMethod.GET)
+    public ModelAndView getTimeseriesData(HttpServletRequest request,
                                           HttpServletResponse response,
                                           @PathVariable String datasetId,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
                                           @RequestParam(required = false) MultiValueMap<String, String> query)
-                throws Exception {
+            throws Exception {
         query.add(Parameters.UNIX_TIME, "true");
         return getSeriesData(request, response, datasetId, locale, query);
     }
 
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
-        DatasetOutput<AbstractValue<?>> item = getFirstDatasetOutput(map);
+        DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
         String datasetType = item.getDatasetType();
-        if ( !"timeseries".equalsIgnoreCase(datasetType)) {
+        if (!"timeseries".equalsIgnoreCase(datasetType)) {
             String expectedType = UrlSettings.COLLECTION_TIMESERIES;
             String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
             String message = MessageFormat.format(template, item.getId(), expectedType);
@@ -218,7 +219,7 @@ public class TimeseriesDataController extends DataController {
     }
 
     private void assertPrerenderedImageIsAvailable(String seriesId, String chartQualifier) {
-        if ( !preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
+        if (!preRenderingTask.hasPrerenderedImage(seriesId, chartQualifier)) {
             throw new ResourceNotFoundException("No pre-rendered chart found for datasetId '"
                     + seriesId
                     + " (qualifier: "

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.handler;
 
 import java.io.ByteArrayOutputStream;
@@ -42,7 +43,7 @@ import org.n52.io.response.dataset.DataCollection;
 
 // TODO actually this interface describes an prepares and writes an output only
 // TODO consider a plain JSON Writer to get rid of ModelAndView in controllers
-public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
+public abstract class IoHandler<T extends Data< ? extends AbstractValue< ? >>> {
 
     protected final I18N i18n;
 
@@ -61,9 +62,12 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
     /**
      * Encodes and writes previously generated output to the given stream.
      *
-     * @param data the input data collection to create an output for.
-     * @param stream the stream to write on the generated ouput.
-     * @throws IoHandlerException if writing output to stream fails.
+     * @param data
+     *        the input data collection to create an output for.
+     * @param stream
+     *        the stream to write on the generated ouput.
+     * @throws IoHandlerException
+     *         if writing output to stream fails.
      */
     protected abstract void encodeAndWriteTo(DataCollection<T> data, OutputStream stream) throws IoHandlerException;
 
@@ -80,8 +84,6 @@ public abstract class IoHandler<T extends Data<? extends AbstractValue<?>>> {
             }
         } catch (IOException e) {
             throw new IoHandlerException("Error handling output stream.", e);
-//        } catch (IoParseException e) {
-//            throw new IoHandlerException("Could not write binary to stream.", e);
         }
     }
 

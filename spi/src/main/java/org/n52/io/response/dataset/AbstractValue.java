@@ -160,7 +160,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     /**
      * Formats value as string by using {@link #valueFormatter}. If no formatter has been set
      * {@link Object#toString()} is being used. Otherwise {@code null} is returned.
-     * 
+     *
      * @return the {@link #value} formatted as string or {@code null} if value is {@code null}
      */
     @JsonIgnore

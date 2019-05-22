@@ -75,8 +75,6 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
     }
 
     public IoHandler<Data<V>> createHandler(String outputMimeType) {
-
-        IoParameters parameters = getParameters();
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (isCsvOutput(mimeType)) {
             SimpleCsvIoHandler<V> handler = new SimpleCsvIoHandler<>(parameters,
@@ -126,7 +124,7 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
                          Constants.MimeType.APPLICATION_ZIP)
                      .map(Constants.MimeType::getMimeType)
                      .collect(Collectors.toSet());
-    };
+    }
 
     protected IoStyleContext createContext() {
         if (datasetService == null || !parameters.hasStyles()) {

@@ -33,6 +33,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,6 +78,13 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
     }
 
     protected abstract String[] getHeader(DatasetOutput<T> metadata);
+
+    private void writeData(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
+        for (DatasetOutput<T> metadata : seriesMetadatas) {
+            Data<T> series = data.getSeries(metadata.getId());
+            writeData(metadata, series, stream);
+        }
+    }
 
     protected abstract void writeData(DatasetOutput<T> metadata, Data<T> series, OutputStream stream)
             throws IOException;
@@ -131,13 +139,6 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
         }
     }
 
-    private void writeData(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
-        for (DatasetOutput<T> metadata : seriesMetadatas) {
-            Data<T> series = data.getSeries(metadata.getId());
-            writeData(metadata, series, stream);
-        }
-    }
-
     protected void writeHeader(DatasetOutput<T> dataset, OutputStream stream) throws IOException {
         String text = csvEncode(getHeader(dataset));
         if (useByteOrderMark) {
@@ -152,10 +153,12 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
 
     protected String csvEncode(String[] values) {
         return Stream.of(values)
-                     .map(v -> v == null ? "" : v)
+                     .map(v -> v == null
+                             ? ""
+                             : v)
                      .map(value -> {
                          return value.contains(tokenSeparator)
-                                 ? "\"" + value + "\""
+                                 ? MessageFormat.format("\"{0}\"", value)
                                  : value;
                      })
                      .collect(Collectors.joining(tokenSeparator))
@@ -168,7 +171,8 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
         TimeOutput timestamp = value.getTimestamp();
         return timestart != null
                 ? timestart.getDateTime() + "/" + timeend.getDateTime()
-                : timestamp.getDateTime().toString();
+                : timestamp.getDateTime()
+                           .toString();
     }
 
     public void setZipOutput(boolean zipOutput) {
@@ -187,7 +191,7 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
         DatasetParameters parameters = metadata.getDatasetParameters(true);
         ParameterOutput platform = parameters.getPlatform();
         return platform == null
-                ? getLabel( ((TimeseriesMetadataOutput) metadata).getStation())
+                ? getLabel(((TimeseriesMetadataOutput) metadata).getStation())
                 : platform.getLabel();
     }
 

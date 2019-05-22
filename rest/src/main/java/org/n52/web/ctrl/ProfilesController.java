@@ -60,7 +60,7 @@ public class ProfilesController extends ParameterRequestMappingAdapter<ProfileOu
     protected int getElementCount(IoParameters queryMap) {
         return super.getEntityCounter().getDatasetCount(queryMap);
     }
-    
+
     @Override
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
         List<String> value = Collections.singletonList("profile");

@@ -31,7 +31,7 @@ package org.n52.io.response;
 import org.joda.time.DateTime;
 
 public class TimeOutput implements Comparable<TimeOutput> {
-    
+
     private DateTime dateTime;
 
     private boolean unixTime;

@@ -52,8 +52,8 @@ public class ProfilesDataController extends DataController {
 
     @Autowired
     public ProfilesDataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
-                                      ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
-                                      DataService<Data<AbstractValue< ? >>> dataService) {
+                                  ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
+                                  DataService<Data<AbstractValue< ? >>> dataService) {
         super(ioFactory, datasetService, dataService);
     }
 
@@ -61,7 +61,7 @@ public class ProfilesDataController extends DataController {
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
         String observationType = item.getObservationType();
-        if ( !"profile".equalsIgnoreCase(observationType)) {
+        if (!"profile".equalsIgnoreCase(observationType)) {
             String expectedType = UrlSettings.COLLECTION_PROFILES;
             String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
             String message = MessageFormat.format(template, item.getId(), expectedType);

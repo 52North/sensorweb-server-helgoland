@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.handler.img;
 
 import java.awt.Color;
@@ -250,7 +251,7 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
         return DateTimeZone.forID(parameters.getOutputTimezone());
     }
 
-    public ValueAxis createRangeAxis(DatasetOutput metadata) {
+    public ValueAxis createRangeAxis(DatasetOutput< ? > metadata) {
         NumberAxis axis = new NumberAxis(createRangeLabel(metadata));
         axis.setTickLabelFont(LabelConstants.FONT_LABEL);
         axis.setLabelFont(LabelConstants.FONT_LABEL);
@@ -259,7 +260,7 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
         return axis;
     }
 
-    protected String createRangeLabel(DatasetOutput output) {
+    protected String createRangeLabel(DatasetOutput< ? > output) {
         DatasetParameters parameters = output.getDatasetParameters();
         ParameterOutput phenomenon = parameters.getPhenomenon();
         StringBuilder uom = new StringBuilder();
@@ -280,8 +281,8 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
             if (parameters.containsParameter(Parameters.RENDERING_TRIGGER)) {
                 String trigger = parameters.getAsString(Parameters.RENDERING_TRIGGER);
                 title = RENDERING_TRIGGER_PRERENDERING.equalsIgnoreCase(trigger)
-                    ? getTitleForSingle(parameters, title)
-                    : title;
+                        ? getTitleForSingle(parameters, title)
+                        : title;
             }
             chart.setTitle(title);
         }
@@ -289,35 +290,32 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
 
     private String getTitleForSingle(IoParameters parameters, String template) {
         Set<String> datasets = parameters.getDatasets();
-        if (!datasets.isEmpty()) {
-            Iterator<String> iterator = datasets.iterator();
-            DatasetOutput metadata = getTimeseriesMetadataOutput(iterator.next());
-            if (metadata != null) {
-                return formatTitle(metadata, template);
-            }
-        }
-        return template;
+        Iterator<String> iterator = datasets.iterator();
+        DatasetOutput< ? > metadata = getTimeseriesMetadataOutput(iterator.next());
+        return !datasets.isEmpty() && metadata != null
+                ? formatTitle(metadata, template)
+                : template;
     }
 
-    protected String formatTitle(DatasetOutput metadata, String title) {
+    protected String formatTitle(DatasetOutput< ? > metadata, String title) {
         DatasetParameters parameters = metadata.getDatasetParameters();
         Object[] varargs = {
-                            // index important to reference in config!
-                            parameters.getPlatform()
-                                      .getLabel(),
-                            parameters.getPhenomenon()
-                                      .getLabel(),
-                            parameters.getProcedure()
-                                      .getLabel(),
-                            parameters.getCategory()
-                                      .getLabel(),
-                            parameters.getOffering()
-                                      .getLabel(),
-                            metadata.getFeature()
-                                      .getLabel(),
-                            parameters.getService()
-                                      .getLabel(),
-                            metadata.getUom()
+            // index important to reference in config!
+            parameters.getPlatform()
+                      .getLabel(),
+            parameters.getPhenomenon()
+                      .getLabel(),
+            parameters.getProcedure()
+                      .getLabel(),
+            parameters.getCategory()
+                      .getLabel(),
+            parameters.getOffering()
+                      .getLabel(),
+            metadata.getFeature()
+                    .getLabel(),
+            parameters.getService()
+                      .getLabel(),
+            metadata.getUom()
         };
         try {
             return String.format(title, varargs);
