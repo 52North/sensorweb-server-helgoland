@@ -34,24 +34,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.n52.io.Constants;
-import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.handler.CsvIoHandler;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.handler.IoProcessChain;
-import org.n52.io.handler.SimpleCsvIoHandler;
+import org.n52.io.handler.simple.SimpleCsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.type.quantity.format.FormatterFactory;
-import org.n52.io.type.quantity.generalize.GeneralizingQuantityService;
 import org.n52.io.type.quantity.handler.img.ChartIoHandler;
 import org.n52.io.type.quantity.handler.img.MultipleChartsRenderer;
 import org.n52.io.type.quantity.handler.report.PDFReportGenerator;
-import org.n52.series.spi.srv.DataService;
 
 public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOutput, QuantityValue> {
 
@@ -69,31 +64,9 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
                      .collect(Collectors.toSet());
     }
 
-
     @Override
     public IoProcessChain<Data<QuantityValue>> createProcessChain() {
-        return new IoProcessChain<Data<QuantityValue>>() {
-            @Override
-            public DataCollection<Data<QuantityValue>> getData() {
-                boolean generalize = getParameters().isGeneralize();
-                DataService<Data<QuantityValue>> dataService = generalize
-                        ? new GeneralizingQuantityService(getDataService())
-                        : getDataService();
-                return dataService.getData(getParameters());
-            }
-
-            @Override
-            public DataCollection< ? > getProcessedData() {
-                return getParameters().shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<Data<QuantityValue>>().format(getData())
-                        : createFormatter().create()
-                                           .format(getData());
-            }
-
-            private FormatterFactory createFormatter() {
-                return FormatterFactory.createFormatterFactory(getParameters());
-            }
-        };
+        return new QuantityIoProcessChain(getDataService(), getParameters());
     }
 
     @Override

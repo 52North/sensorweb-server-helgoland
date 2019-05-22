@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 import org.n52.io.Constants;
 import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
-import org.n52.io.handler.ProfileCsvIoHandler;
+import org.n52.io.handler.profile.ProfileCsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.Data;

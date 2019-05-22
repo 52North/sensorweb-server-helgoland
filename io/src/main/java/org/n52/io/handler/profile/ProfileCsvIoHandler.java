@@ -1,5 +1,5 @@
 
-package org.n52.io.handler;
+package org.n52.io.handler.profile;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.IoParseException;
+import org.n52.io.handler.CsvIoHandler;
+import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.dataset.Data;
@@ -76,8 +78,8 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
          */
         return new String[] {
             metaHeader.toString(),
-            "z-value",
             "time",
+            "z-value",
             "value"
         };
     }
@@ -90,16 +92,23 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
         for (ProfileValue< ? > profile : series.getValues()) {
             for (ProfileDataItem< ? > value : profile.getValue()) {
                 String[] row = new String[getHeader(metadata).length];
-                BigDecimal vertical = value.getVertical();
-                
                 // metaHeader leaves first column empty
                 row[0] = ""; 
                 row[1] = parseTime(profile);
-                row[2] = vertical.toString();
+                row[2] = formatVertical(value);
                 row[3] = value.getFormattedValue();
                 writeText(csvEncode(row), stream);
             }
         }
+    }
+
+    private String formatVertical(ProfileDataItem< ? > value) {
+        BigDecimal vertical = value.getVertical();
+        BigDecimal verticalFrom = value.getVerticalFrom();
+        BigDecimal verticalTo = value.getVerticalTo();
+        return vertical != null
+                ? vertical.toString()
+                : verticalFrom.toString() + "-" + verticalTo.toString();
     }
 
     @Override

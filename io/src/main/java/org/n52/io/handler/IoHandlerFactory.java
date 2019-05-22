@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.format.ResultTimeFormatter;
+import org.n52.io.handler.simple.SimpleCsvIoHandler;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.AbstractValue;

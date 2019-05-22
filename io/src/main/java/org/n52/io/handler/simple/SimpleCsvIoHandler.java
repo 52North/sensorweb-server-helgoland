@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.io.handler;
+package org.n52.io.handler.simple;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.n52.io.handler.CsvIoHandler;
+import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
