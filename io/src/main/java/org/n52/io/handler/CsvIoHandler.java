@@ -191,4 +191,9 @@ public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandl
                 : platform.getLabel();
     }
 
+    protected boolean isTrajectory(DatasetOutput<T> metadata) {
+        String datasetType = metadata.getDatasetType();
+        return "trajectory".equalsIgnoreCase(datasetType);
+    }
+
 }

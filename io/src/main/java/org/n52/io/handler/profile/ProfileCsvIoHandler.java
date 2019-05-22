@@ -51,25 +51,31 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
     protected String[] getHeader(DatasetOutput<ProfileValue< ? >> metadata) {
         StringBuilder metaHeader = new StringBuilder();
         DatasetParameters datasetParameters = metadata.getDatasetParameters(true);
+
         metaHeader.append("Phenomenon: ")
                   .append(getLabel(datasetParameters.getPhenomenon()))
                   .append("\n");
+        metaHeader.append("Sensor: ")
+                  .append(getPlatformLabel(metadata))
+                  .append("\n");
+        metaHeader.append("Unit: ")
+                  .append(metadata.getUom())
+                  .append("\n");
 
+        return isTrajectory(metadata)
+                ? createTrajectoryHeader(metaHeader)
+                : createSimpleHeader(metadata, metaHeader);
+
+    }
+
+    private String[] createSimpleHeader(DatasetOutput<ProfileValue< ? >> metadata, StringBuilder metaHeader) {
         FeatureOutput feature = metadata.getFeature();
         metaHeader.append("Feature: ")
                   .append(getLabel(feature))
                   .append("\n");
 
-        metaHeader.append("Sensor: ")
-                  .append(getPlatformLabel(metadata))
-                  .append("\n");
-
-        metaHeader.append("Unit: ")
-                  .append(metadata.getUom())
-                  .append("\n");
-
         Geometry geometry = feature.getGeometry();
-        metaHeader.append("Location: ")
+        metaHeader.append("Geometry: ")
                   .append(geometry.toText())
                   .append("\n");
 
@@ -78,6 +84,17 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
          */
         return new String[] {
             metaHeader.toString(),
+            "time",
+            "z-value",
+            "value"
+        };
+    }
+
+    private String[] createTrajectoryHeader(StringBuilder metaHeader) {
+        return new String[] {
+            // Note: first column after last line break
+            metaHeader.append("geometry")
+                      .toString(),
             "time",
             "z-value",
             "value"
@@ -93,7 +110,10 @@ public class ProfileCsvIoHandler extends CsvIoHandler<ProfileValue< ? >> {
             for (ProfileDataItem< ? > value : profile.getValue()) {
                 String[] row = new String[getHeader(metadata).length];
                 // metaHeader leaves first column empty
-                row[0] = ""; 
+                row[0] = isTrajectory(metadata)
+                        ? profile.getGeometry()
+                                 .toString()
+                        : "";
                 row[1] = parseTime(profile);
                 row[2] = formatVertical(value);
                 row[3] = value.getFormattedValue();

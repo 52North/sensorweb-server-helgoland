@@ -35,22 +35,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.locationtech.jts.geom.Geometry;
 import org.n52.io.handler.CsvIoHandler;
 import org.n52.io.handler.IoProcessChain;
 import org.n52.io.request.IoParameters;
+import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 
 public class SimpleCsvIoHandler<T extends AbstractValue< ? >> extends CsvIoHandler<T> {
-
-    private static final String PLATFORM = "platform";
-    private static final String PHENOMENON = "phenomenon";
-    private static final String PROCEDURE = "procedure";
-    private static final String UOM = "uom";
-    private static final String TIME = "time";
-    private static final String VALUE = "value";
 
     public SimpleCsvIoHandler(IoParameters parameters,
                               IoProcessChain<Data<T>> processChain,
@@ -60,30 +55,67 @@ public class SimpleCsvIoHandler<T extends AbstractValue< ? >> extends CsvIoHandl
 
     @Override
     public String[] getHeader(DatasetOutput<T> metadata) {
+        StringBuilder metaHeader = new StringBuilder();
+        DatasetParameters datasetParameters = metadata.getDatasetParameters(true);
+
+        metaHeader.append("Phenomenon: ")
+                  .append(getLabel(datasetParameters.getPhenomenon()))
+                  .append("\n");
+        metaHeader.append("Sensor: ")
+                  .append(getPlatformLabel(metadata))
+                  .append("\n");
+        metaHeader.append("Unit: ")
+                  .append(metadata.getUom())
+                  .append("\n");
+
+        return isTrajectory(metadata)
+                ? createTrajectoryHeader(metaHeader)
+                : createSimpleHeader(metadata, metaHeader);
+
+    }
+
+    private String[] createSimpleHeader(DatasetOutput<T> metadata, StringBuilder metaHeader) {
+        FeatureOutput feature = metadata.getFeature();
+        metaHeader.append("Feature: ")
+                  .append(getLabel(feature))
+                  .append("\n");
+
+        Geometry geometry = feature.getGeometry();
+        metaHeader.append("Geometry: ")
+                  .append(geometry.toText())
+                  .append("\n");
+
+        /*
+         * Note: last line break will cause an empty first column
+         */
         return new String[] {
-            PLATFORM,
-            PHENOMENON,
-            PROCEDURE,
-            UOM,
-            TIME,
-            VALUE
+            metaHeader.toString(),
+            "time",
+            "value"
+        };
+    }
+
+    private String[] createTrajectoryHeader(StringBuilder metaHeader) {
+        return new String[] {
+            // Note: first column after last line break
+            metaHeader.append("geometry")
+                      .toString(),
+            "time",
+            "value"
         };
     }
 
     @Override
     protected void writeData(DatasetOutput<T> metadata, Data<T> series, OutputStream stream)
             throws IOException {
-        DatasetParameters parameters = metadata.getDatasetParameters();
-        String[] row = new String[getHeader(metadata).length];
-
-        row[0] = getPlatformLabel(metadata);
-        row[1] = getLabel(parameters.getPhenomenon());
-        row[2] = getLabel(parameters.getProcedure());
-        row[3] = metadata.getUom();
-
+        int columnSize = getHeader(metadata).length;
+        String[] row = new String[columnSize];
         for (T value : series.getValues()) {
-            row[4] = parseTime(value);
-            row[5] = value.getFormattedValue();
+            row[0] = isTrajectory(metadata)
+                    ? value.getGeometry().toString()
+                    : "";
+            row[1] = parseTime(value);
+            row[2] = value.getFormattedValue();
             writeText(csvEncode(row), stream);
         }
     }
