@@ -28,9 +28,6 @@
  */
 package org.n52.series.spi.srv;
 
-import java.util.Comparator;
-import java.util.List;
-
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
@@ -46,33 +43,6 @@ import org.n52.io.response.ParameterOutput;
 public abstract class ParameterService<T extends ParameterOutput> implements RawDataInfo {
 
     private RawDataService rawDataService;
-
-    protected OutputCollection<T> createOutputCollection(List<T> results) {
-        return new OutputCollection<T>(results) {
-            @Override
-            protected Comparator<T> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
-
-    protected OutputCollection<T> createOutputCollection(T result) {
-        return new OutputCollection<T>(result) {
-            @Override
-            protected Comparator<T> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
-
-    protected OutputCollection<T> createOutputCollection() {
-        return new OutputCollection<T>() {
-            @Override
-            protected Comparator<T> getComparator() {
-                return ParameterOutput.defaultComparator();
-            }
-        };
-    }
 
     /**
      * @param query

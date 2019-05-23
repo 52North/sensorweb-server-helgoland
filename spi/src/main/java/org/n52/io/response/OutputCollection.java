@@ -29,7 +29,6 @@
 
 package org.n52.io.response;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,25 +39,16 @@ import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public abstract class OutputCollection<T> implements Iterable<T> {
+public class OutputCollection<T extends ParameterOutput> implements Iterable<T> {
 
     private final List<T> items;
 
     protected OutputCollection() {
-        this.items = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
-    protected OutputCollection(T item) {
-        this();
-        if (item != null) {
-            addItem(item);
-        }
-    }
-
-    protected OutputCollection(Collection<T> items) {
-        this.items = items == null
-                ? new ArrayList<>(0)
-                : new ArrayList<>(items);
+    public OutputCollection(List<T> items) {
+        this.items = new ArrayList<>(items);
     }
 
     @JsonIgnore
@@ -83,6 +73,7 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     }
 
     public List<T> getItems() {
+        Collections.sort(items, getComparator());
         return Collections.unmodifiableList(items);
     }
 
@@ -90,43 +81,9 @@ public abstract class OutputCollection<T> implements Iterable<T> {
         return items.size();
     }
 
-    public OutputCollection<T> withSortedItems() {
-        Collections.sort(items, getComparator());
-        return this;
+    protected Comparator<T> getComparator() {
+        return ParameterOutput.defaultComparator();
     }
-
-    public OutputCollection<T> withSortedItems(Collator collator) {
-        return collator != null && isCollatorComparable()
-                ? collatorSort(collator)
-                : withSortedItems();
-    }
-
-    private OutputCollection<T> collatorSort(Collator collator) {
-        for (int i = 0; i < items.size(); i++) {
-            for (int j = i + 1; j < items.size(); j++) {
-                @SuppressWarnings("unchecked")
-                CollatorComparable<T> first = (CollatorComparable<T>) items;
-                T second = items.get(j);
-                if (first.compare(collator, second) > 0) {
-                    swap(i, j);
-                }
-            }
-        }
-        return this;
-    }
-
-    private boolean isCollatorComparable() {
-        // FIXME this is NEVER true
-        return items instanceof CollatorComparable;
-    }
-
-    private void swap(int i, int j) {
-        T tmp = items.get(i);
-        items.add(i, items.get(j));
-        items.add(j, tmp);
-    }
-
-    protected abstract Comparator<T> getComparator();
 
     public boolean containsItem(T item) {
         return items.contains(item);
