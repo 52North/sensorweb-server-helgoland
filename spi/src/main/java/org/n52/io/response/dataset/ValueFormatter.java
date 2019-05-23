@@ -26,19 +26,18 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
 
-public class DatasetFactoryException extends Exception {
+package org.n52.io.response.dataset;
 
-    private static final long serialVersionUID = -6474285099278656900L;
+@FunctionalInterface
+public interface ValueFormatter<T> {
 
-    public DatasetFactoryException(String message) {
-        super(message);
-    }
-
-    public DatasetFactoryException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-
+    /**
+     * Applies this formatter to the given value.
+     *
+     * @param value
+     *        the value to format
+     * @return the formatted value
+     */
+    String format(T value);
 }

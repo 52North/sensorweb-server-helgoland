@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl;
 
 import java.io.IOException;
@@ -45,9 +46,9 @@ import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.n52.io.Constants;
-import org.n52.io.DatasetFactoryException;
 import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.PreRenderingJob;
+import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerException;
 import org.n52.io.handler.IoHandlerFactory;
@@ -119,26 +120,31 @@ public class TimeseriesDataController extends BaseController {
     }
 
     @Override
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
-            HttpServletResponse response) {
+    protected IoParameters createParameters(RequestSimpleParameterSet query,
+                                            String locale,
+                                            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
-            HttpServletResponse response) {
+    protected IoParameters createParameters(RequestStyledParameterSet query,
+                                            String locale,
+                                            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
-            HttpServletResponse response) {
+    protected IoParameters createParameters(MultiValueMap<String, String> query,
+                                            String locale,
+                                            HttpServletResponse response) {
         return super.createParameters(query, locale, response).respectBackwardsCompatibility();
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
-            HttpServletResponse response) {
+    protected IoParameters createParameters(String datasetId,
+                                            MultiValueMap<String, String> query,
+                                            String locale,
+                                            HttpServletResponse response) {
         return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
@@ -148,8 +154,10 @@ public class TimeseriesDataController extends BaseController {
     }
 
     @Override
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
-            HttpServletResponse response) {
+    protected IoParameters createParameters(String datasetId,
+                                            Map<String, String> query,
+                                            String locale,
+                                            HttpServletResponse response) {
         return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
@@ -194,8 +202,8 @@ public class TimeseriesDataController extends BaseController {
         if (parameters.isExpanded()) {
             return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
         }
-        Object formattedTimeseries = formattedDataCollection.getAllSeries()
-                                                            .get(timeseriesId);
+        Map<String, ? > allSeries = formattedDataCollection.getAllSeries();
+        Object formattedTimeseries = allSeries.get(timeseriesId);
         return new ModelAndView().addObject(formattedTimeseries);
     }
 
@@ -334,8 +342,7 @@ public class TimeseriesDataController extends BaseController {
 
         IoParameters parameters = createParameters(timeseriesId, query, locale, response);
         getTimeseriesAsCsv(timeseriesId, parameters, response);
-}
-
+    }
 
     private void getTimeseriesAsCsv(String timeseriesId, IoParameters parameters, HttpServletResponse response)
             throws IoHandlerException, DatasetFactoryException, URISyntaxException, MalformedURLException, IOException {
@@ -351,10 +358,11 @@ public class TimeseriesDataController extends BaseController {
             response.setContentType(Constants.TEXT_CSV);
             extension += "csv";
         }
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE
-                           + timeseriesId
-                           + extension
-                           + "\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                           CONTENT_DISPOSITION_VALUE_TEMPLATE
+                                   + timeseriesId
+                                   + extension
+                                   + "\"");
         createIoFactory(parameters).createHandler(Constants.TEXT_CSV)
                                    .writeBinary(response.getOutputStream());
     }
@@ -411,7 +419,7 @@ public class TimeseriesDataController extends BaseController {
                                        required = false) String locale,
                                    @RequestParam(required = false) MultiValueMap<String, String> request)
             throws Exception {
-        if (preRenderingTask == null /*|| isHandlingPreRenderingTask()*/) {
+        if (preRenderingTask == null /* || isHandlingPreRenderingTask() */) {
             throw new ResourceNotFoundException("Diagram prerendering is not enabled.");
         }
 
@@ -450,9 +458,8 @@ public class TimeseriesDataController extends BaseController {
         }
     }
 
-    private IoHandlerFactory<TimeseriesMetadataOutput,
-                      QuantityValue> createIoFactory(IoParameters parameters)
-                              throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+    private IoHandlerFactory<TimeseriesMetadataOutput, QuantityValue> createIoFactory(IoParameters parameters)
+            throws DatasetFactoryException, URISyntaxException, MalformedURLException {
         return createDefaultIoFactory().create(QuantityValue.TYPE)
                                        .setParameters(parameters)
                                        .setDataService(timeseriesDataService)
@@ -497,9 +504,14 @@ public class TimeseriesDataController extends BaseController {
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
         if (parameter.hasCache()
-                && parameter.getCache().get().has(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES))) {
-            addCacheHeader(response, parameter.getCache().get()
-                    .get(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES)).asLong(0));
+                && parameter.getCache()
+                            .get()
+                            .has(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES))) {
+            addCacheHeader(response,
+                           parameter.getCache()
+                                    .get()
+                                    .get(getResourcePathFrom(UrlSettings.COLLECTION_TIMESERIES))
+                                    .asLong(0));
         }
     }
 

@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.handler;
 
 import static org.junit.Assert.assertTrue;
 
@@ -40,8 +40,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.handler.ConfigTypedFactory;
+import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
 import org.n52.io.type.quantity.QuantityIoFactory;
@@ -52,12 +55,12 @@ public class DefaultIoHandlerFactoryTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private ConfigTypedFactory<IoHandlerFactory> factory;
+    private ConfigTypedFactory<IoHandlerFactory<?,?>> factory;
 
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoFactory();
+        factory = new DefaultIoFactory(config);
     }
 
     @Test

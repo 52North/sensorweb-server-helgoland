@@ -26,13 +26,19 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.record;
+package org.n52.io.handler;
 
+public class DatasetFactoryException extends Exception {
 
-import org.n52.io.handler.IoHandlerFactory;
-import org.n52.io.response.dataset.record.RecordDatasetOutput;
-import org.n52.io.response.dataset.record.RecordValue;
+    private static final long serialVersionUID = -6474285099278656900L;
 
-public class RecordIoFactory extends IoHandlerFactory<RecordDatasetOutput, RecordValue> {
+    public DatasetFactoryException(String message) {
+        super(message);
+    }
+
+    public DatasetFactoryException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 
 }

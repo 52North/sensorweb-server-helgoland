@@ -29,33 +29,11 @@
 package org.n52.io.type.text;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.n52.io.Constants;
-import org.n52.io.handler.IoHandler;
 import org.n52.io.handler.IoHandlerFactory;
-import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.category.CategoryDatasetOutput;
 import org.n52.io.response.dataset.category.CategoryValue;
 
 public class TextIoFactory extends IoHandlerFactory<CategoryDatasetOutput, CategoryValue> {
 
-    @Override
-    public boolean isAbleToCreateHandlerFor(String outputMimeType) {
-        return Constants.MimeType.isKnownMimeType(outputMimeType);
-    }
-
-    @Override
-    public Set<String> getSupportedMimeTypes() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public IoHandler<Data<CategoryValue>> createHandler(String outputMimeType) {
-        String msg = "The requested media type '" + outputMimeType + "' is not supported.";
-        IllegalArgumentException exception = new IllegalArgumentException(msg);
-        throw exception;
-    }
 
 }

@@ -87,7 +87,7 @@ final class LineRenderer implements Renderer {
         int width = lineStyle.getDashGapWidth();
         float[] dashSequence = new float[] {
             4.0f * width,
-            4.0f * width
+            4.0f * width,
         };
         return new BasicStroke(width,
                                BasicStroke.CAP_ROUND,

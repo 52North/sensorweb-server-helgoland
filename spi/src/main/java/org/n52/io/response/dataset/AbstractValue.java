@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
@@ -56,6 +57,8 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private T value;
 
+    private ValueFormatter<T> valueFormatter;
+
     private Geometry geometry;
 
     private Set<Map<String, Object>> parameters;
@@ -69,11 +72,6 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     public AbstractValue(TimeOutput timestamp, T value) {
         this(null, timestamp, value);
-    }
-
-    public AbstractValue(DateTime timestart, DateTime timeend, T value) {
-        this(timestart != null ? new TimeOutput(timestart) : null, timeend != null ? new TimeOutput(timeend) : null,
-                value);
     }
 
     public AbstractValue(TimeOutput timestart, TimeOutput timeend, T value) {
@@ -91,7 +89,8 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     }
 
     /**
-     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
+     * @param timestamp
+     *        sets the timestamp/timeend when {@link #value} has been observed.
      */
     public void setTimestamp(TimeOutput timestamp) {
         this.timestamp = timestamp;
@@ -127,7 +126,8 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     /**
      * Optional.
      *
-     * @param timestart the timestart when {@link #value} has been observed.
+     * @param timestart
+     *        the timestart when {@link #value} has been observed.
      */
     public void setTimestart(TimeOutput timestart) {
         this.timestart = timestart;
@@ -150,6 +150,27 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @JsonIgnore
+    public void setValueFormatter(ValueFormatter<T> valueFormatter) {
+        this.valueFormatter = valueFormatter;
+    }
+
+    /**
+     * Formats value as string by using {@link #valueFormatter}. If no formatter has been set
+     * {@link Object#toString()} is being used. Otherwise {@code null} is returned.
+     *
+     * @return the {@link #value} formatted as string or {@code null} if value is {@code null}
+     */
+    @JsonIgnore
+    public String getFormattedValue() {
+        if (value == null) {
+            return null;
+        }
+        return valueFormatter != null
+                ? valueFormatter.format(value)
+                : value.toString();
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
@@ -206,17 +227,22 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     @Override
     public int compareTo(AbstractValue<T> o) {
-        // TODO check odering when `showtimeintervals=true`
         return getTimestamp().compareTo(o.getTimestamp());
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
-        sb.append("timestart: ").append(getTimestart()).append(", ");
-        sb.append("timestamp: ").append(getTimestamp()).append(", ");
-        sb.append("value: ").append(getValue());
-        return sb.append(" ]").toString();
+        sb.append("timestart: ")
+          .append(getTimestart())
+          .append(", ");
+        sb.append("timestamp: ")
+          .append(getTimestamp())
+          .append(", ");
+        sb.append("value: ")
+          .append(getValue());
+        return sb.append(" ]")
+                 .toString();
     }
 
     public class ValidTime {

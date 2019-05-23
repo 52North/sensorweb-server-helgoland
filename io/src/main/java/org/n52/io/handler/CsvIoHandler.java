@@ -26,20 +26,178 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.handler;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.n52.io.IoParseException;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
+import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.TimeOutput;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetParameters;
+import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 
-public abstract class CsvIoHandler<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
+public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandler<Data<T>> {
 
-    public CsvIoHandler(IoParameters parameters, IoProcessChain<T> processChain) {
+    public static final Charset UTF8 = Charset.forName("UTF-8");
+
+    // needed by some clients to detect UTF-8 encoding (e.g. excel)
+    private static final String UTF8_BYTE_ORDER_MARK = "\uFEFF";
+
+    private final List< ? extends DatasetOutput<T>> seriesMetadatas;
+
+    private final boolean useByteOrderMark;
+
+    private final String tokenSeparator;
+
+    private boolean zipOutput;
+
+    public CsvIoHandler(IoParameters parameters,
+                        IoProcessChain<Data<T>> processChain,
+                        List< ? extends DatasetOutput<T>> seriesMetadatas) {
         super(parameters, processChain);
+        this.seriesMetadatas = seriesMetadatas;
+        this.tokenSeparator = parameters.getAsString(Parameters.TOKEN_SEPARATOR, ";");
+        this.useByteOrderMark = parameters.getAsBoolean(Parameters.BOM, true);
     }
 
-    // TODO
+    protected abstract String[] getHeader(DatasetOutput<T> metadata);
 
-    protected abstract String[] getHeader();
+    private void writeData(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
+        for (DatasetOutput<T> metadata : seriesMetadatas) {
+            Data<T> series = data.getSeries(metadata.getId());
+            writeData(metadata, series, stream);
+        }
+    }
+
+    protected abstract void writeData(DatasetOutput<T> metadata, Data<T> series, OutputStream stream)
+            throws IOException;
+
+    protected abstract String getFilenameFor(DatasetOutput<T> seriesMetadata);
+
+    protected List<DatasetOutput<T>> getMetadatas() {
+        return Collections.unmodifiableList(seriesMetadatas);
+    }
+
+    @Override
+    public void encodeAndWriteTo(DataCollection<Data<T>> data, OutputStream stream) throws IoParseException {
+        try {
+            if (zipOutput) {
+                writeAsZipStream(data, stream);
+            } else {
+                writeAsSingleCsv(data, stream);
+            }
+        } catch (IOException e) {
+            throw new IoParseException("Could not write CSV to output stream.", e);
+        }
+    }
+
+    protected void writeAsZipStream(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
+        try (ZipOutputStream zipStream = new ZipOutputStream(stream)) {
+            for (DatasetOutput<T> dataset : seriesMetadatas) {
+                String filename = getFilenameFor(dataset) + ".csv";
+
+                ZipEntry zipEntry = new ZipEntry(filename);
+                zipStream.putNextEntry(zipEntry);
+
+                writeHeader(dataset, zipStream);
+                Data<T> series = data.getSeries(dataset.getId());
+                writeData(dataset, series, zipStream);
+
+                zipStream.closeEntry();
+                zipStream.flush();
+            }
+        }
+    }
+
+    private void writeAsSingleCsv(DataCollection<Data<T>> data, OutputStream stream) throws IOException {
+        try (BufferedOutputStream bos = new BufferedOutputStream(stream)) {
+            if (data.size() == 1) {
+                DatasetOutput<T> metadata = seriesMetadatas.get(0);
+                writeHeader(metadata, bos);
+                writeData(data, bos);
+                bos.flush();
+            } else {
+                writeAsZipStream(data, stream);
+            }
+        }
+    }
+
+    protected void writeHeader(DatasetOutput<T> dataset, OutputStream stream) throws IOException {
+        String text = csvEncode(getHeader(dataset));
+        if (useByteOrderMark) {
+            text = UTF8_BYTE_ORDER_MARK + text;
+        }
+        writeText(text, stream);
+    }
+
+    protected void writeText(String text, OutputStream stream) throws IOException {
+        stream.write(text.getBytes(UTF8));
+    }
+
+    protected String csvEncode(String[] values) {
+        return Stream.of(values)
+                     .map(v -> v == null
+                             ? ""
+                             : v)
+                     .map(value -> {
+                         return value.contains(tokenSeparator)
+                                 ? MessageFormat.format("\"{0}\"", value)
+                                 : value;
+                     })
+                     .collect(Collectors.joining(tokenSeparator))
+                     .concat("\n");
+    }
+
+    protected String parseTime(T value) {
+        TimeOutput timestart = value.getTimestart();
+        TimeOutput timeend = value.getTimeend();
+        TimeOutput timestamp = value.getTimestamp();
+        return timestart != null
+                ? timestart.getDateTime() + "/" + timeend.getDateTime()
+                : timestamp.getDateTime()
+                           .toString();
+    }
+
+    public void setZipOutput(boolean zipOutput) {
+        this.zipOutput = zipOutput;
+    }
+
+    public boolean isZipOutput() {
+        return zipOutput;
+    }
+
+    protected String getLabel(ParameterOutput output) {
+        return output.getLabel();
+    }
+
+    protected String getPlatformLabel(DatasetOutput<T> metadata) {
+        DatasetParameters parameters = metadata.getDatasetParameters(true);
+        ParameterOutput platform = parameters.getPlatform();
+        return platform == null
+                ? getLabel(((TimeseriesMetadataOutput) metadata).getStation())
+                : platform.getLabel();
+    }
+
+    protected boolean isTrajectory(DatasetOutput<T> metadata) {
+        String datasetType = metadata.getDatasetType();
+        return "trajectory".equalsIgnoreCase(datasetType);
+    }
 
 }

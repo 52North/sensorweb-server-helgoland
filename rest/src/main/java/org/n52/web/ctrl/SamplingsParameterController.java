@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import java.util.Collections;
+
 import org.joda.time.DateTime;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -38,8 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.common.collect.Lists;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_SAMPLINGS)
@@ -66,7 +66,7 @@ public class SamplingsParameterController extends ParameterRequestMappingAdapter
             DateTime now = new DateTime();
             // TODO make this configurable
             query.put(Parameters.TIMESPAN,
-                    Lists.newArrayList(IoParameters.createTimespan(now.minusMonths(3), now).toString()));
+                    Collections.singletonList(IoParameters.createTimespan(now.minusMonths(3), now).toString()));
         }
         return super.addAdditionalParameter(query);
     }

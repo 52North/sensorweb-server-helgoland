@@ -30,11 +30,6 @@ package org.n52.io.response.dataset;
 
 import org.n52.io.response.ParameterOutput;
 
-/**
- * TODO: JavaDoc
- *
- * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
- */
 public class DatasetParameters {
 
     private ParameterOutput phenomenon;

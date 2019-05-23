@@ -26,7 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.data;
+
+import java.text.MessageFormat;
 
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.request.IoParameters;
@@ -36,26 +39,34 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;
+import org.n52.web.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = UrlSettings.COLLECTION_DATASETS, produces = {
+@RequestMapping(value = UrlSettings.COLLECTION_PROFILES, produces = {
     "application/json"
 })
-public class DatasetsDataController extends DataController {
+public class ProfilesDataController extends DataController {
 
     @Autowired
-    public DatasetsDataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> ioFactory,
-            ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
-            DataService<Data<AbstractValue<?>>> dataService) {
+    public ProfilesDataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
+                                  ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService,
+                                  DataService<Data<AbstractValue< ? >>> dataService) {
         super(ioFactory, datasetService, dataService);
     }
 
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
-        DatasetOutput<AbstractValue<?>> item = getFirstDatasetOutput(map);
+        DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
+        String observationType = item.getObservationType();
+        if (!"profile".equalsIgnoreCase(observationType)) {
+            String expectedType = UrlSettings.COLLECTION_PROFILES;
+            String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
+            String message = MessageFormat.format(template, item.getId(), expectedType);
+            throw new ResourceNotFoundException(message);
+        }
         return isProfileType(item)
                 ? PROFILE
                 : item.getValueType();
