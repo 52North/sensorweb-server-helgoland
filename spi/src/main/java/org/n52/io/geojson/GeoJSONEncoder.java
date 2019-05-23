@@ -28,9 +28,6 @@
  */
 package org.n52.io.geojson;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateSequence;
 import org.locationtech.jts.geom.Geometry;
@@ -42,6 +39,10 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.n52.io.crs.CRSUtils;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * borrwoed from
@@ -166,8 +167,8 @@ public class GeoJSONEncoder {
                 .add(coordinate.x)
                 .add(coordinate.y);
 
-        if (!Double.isNaN(coordinate.z)) {
-            array.add(coordinate.z);
+        if (!Double.isNaN(coordinate.getZ())) {
+            array.add(coordinate.getZ());
         }
 
         return array;
