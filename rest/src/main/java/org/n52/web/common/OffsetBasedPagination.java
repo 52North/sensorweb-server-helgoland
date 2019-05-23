@@ -26,17 +26,16 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.common;
 
 import java.util.Objects;
 import java.util.Optional;
 
 /**
- *
  * @author Christian Autermann
  * @author Jan Speckamp
  */
-
 
 public class OffsetBasedPagination implements Pagination {
 
@@ -50,87 +49,90 @@ public class OffsetBasedPagination implements Pagination {
     }
 
     public OffsetBasedPagination(long offset, long limit) {
-        this.limit = limit <= 0 ? DEFAULT_LIMIT : Math.min(limit, MAX_LIMIT);
-        this.offset = offset <= 0 ? 0 : offset * limit;
+        this.limit = limit <= 0
+                ? DEFAULT_LIMIT
+                : Math.min(limit, MAX_LIMIT);
+        this.offset = offset <= 0
+                ? 0
+                : offset * limit;
         this.start = this.offset;
         this.end = this.offset + this.limit;
     }
 
     @Override
     public long getStart() {
-        return this.start;
+        return start;
     }
 
     @Override
     public long getEnd() {
-        return this.end;
+        return end;
     }
 
     @Override
     public long getOffset() {
-        return this.offset;
+        return offset;
     }
 
     @Override
     public long getLimit() {
-        return this.limit;
+        return limit;
     }
 
     @Override
     public Optional<Pagination> first(long elements) {
-        if (offset >= elements) {
-            return Optional.empty();
-        } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(0, limit));
-        }
+        return offset >= elements
+                ? Optional.empty()
+                : Optional.of(new OffsetBasedPagination(0, limit));
     }
 
     @Override
     public Optional<Pagination> previous(long elements) {
-        if (offset >= elements || offset == 0 || offset >= elements) {
-            return Optional.empty();
-        } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset / limit - 1, limit));
-        }
+        return offset >= elements || offset == 0 || offset >= elements
+                ? Optional.empty()
+                : Optional.of(new OffsetBasedPagination(offset / limit - 1, limit));
     }
 
     @Override
     public Optional<Pagination> next(long elements) {
-        if (offset >= elements || offset + limit  >= elements) {
-            return Optional.empty();
-        } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(offset / limit + 1, limit));
-        }
+        return offset >= elements || offset + limit >= elements
+                ? Optional.empty()
+                : Optional.of(new OffsetBasedPagination(offset / limit + 1, limit));
     }
 
     @Override
     public Optional<Pagination> last(long elements) {
-        long maxOffset = elements - ((elements % limit == 0) ? limit : (elements % limit));
-        if (offset >= elements) {
-            return Optional.empty();
-        } else {
-            return Optional.<Pagination>of(new OffsetBasedPagination(maxOffset / limit, limit));
-        }
+        long maxOffset = calcMaxOffset(elements);
+        return offset >= elements
+                ? Optional.empty()
+                : Optional.of(new OffsetBasedPagination(maxOffset / limit, limit));
     }
 
-        @Override
+    private long calcMaxOffset(long elements) {
+        long size = (elements % limit != 0)
+                ? (elements % limit)
+                : limit;
+        return elements - size;
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(this.offset / this.limit, this.limit);
+        return Objects.hash(offset / limit, limit);
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof OffsetBasedPagination) {
             OffsetBasedPagination that = (OffsetBasedPagination) obj;
-            return this.getOffset() == that.getOffset() &&
-                   this.getLimit() == that.getLimit();
+            return getOffset() == that.getOffset()
+                    && getLimit() == that.getLimit();
         }
         return false;
     }
 
     @Override
     public String toString() {
-        return "offset=" + this.offset / this.limit + "&limit=" + this.limit;
+        return "offset=" + offset / limit + "&limit=" + limit;
     }
 
 }

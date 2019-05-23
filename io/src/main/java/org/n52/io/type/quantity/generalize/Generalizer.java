@@ -26,13 +26,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.generalize;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
-public abstract class Generalizer<T extends Data> {
+public abstract class Generalizer<T extends Data< ? >> {
 
     private IoParameters parameters;
 

@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import java.util.HashMap;
@@ -128,11 +129,9 @@ public class GeometryOutput extends AbstractOutput implements GeoJSONFeature {
     }
 
     public String getGeometryType() {
-        if (getIfSerialized(geometryType) != null) {
-            return getType().getGeometryType();
-        } else {
-            return null;
-        }
+        return getIfSerialized(geometryType) != null
+                ? getType().getGeometryType()
+                : null;
     }
 
     @Override
@@ -144,7 +143,7 @@ public class GeometryOutput extends AbstractOutput implements GeoJSONFeature {
         return properties;
     }
 
-        private void nullSafePut(String key, Object value, Map<String, Object> container) {
+    private void nullSafePut(String key, Object value, Map<String, Object> container) {
         if (value != null) {
             container.put(key, value);
         }

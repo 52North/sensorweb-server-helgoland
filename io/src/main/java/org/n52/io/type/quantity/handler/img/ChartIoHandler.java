@@ -315,7 +315,7 @@ public abstract class ChartIoHandler extends IoHandler<Data<QuantityValue>> {
                     .getLabel(),
             parameters.getService()
                       .getLabel(),
-            metadata.getUom()
+            metadata.getUom(),
         };
         try {
             return String.format(title, varargs);

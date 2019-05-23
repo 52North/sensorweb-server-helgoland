@@ -135,11 +135,7 @@ public class TimeseriesDataController extends DataController {
         return response.addObject(preRenderingTask.getPrerenderedImages(datasetId));
     }
 
-    @RequestMapping(value = "/{datasetId}/{chartQualifier}",
-        produces = {
-            Constants.IMAGE_PNG
-        },
-        method = RequestMethod.GET)
+    @RequestMapping(value = "/{datasetId}/{chartQualifier}", produces = Constants.IMAGE_PNG, method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
                                          @PathVariable String datasetId,
                                          @PathVariable String chartQualifier)
@@ -152,10 +148,7 @@ public class TimeseriesDataController extends DataController {
         preRenderingTask.writePrerenderedGraphToOutputStream(datasetId, chartQualifier, response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/images/{fileName}",
-        produces = {
-            Constants.IMAGE_PNG
-        },
+    @RequestMapping(value = "/{datasetId}/images/{fileName}", produces = Constants.IMAGE_PNG,
         method = RequestMethod.GET)
     public void getSeriesChartByFilename(HttpServletResponse response,
                                          @PathVariable String datasetId,
@@ -171,11 +164,9 @@ public class TimeseriesDataController extends DataController {
     }
 
     @Deprecated
-    @RequestMapping(value = "/{datasetId}/getData",
-        produces = {
-            Constants.APPLICATION_JSON
-        },
-        method = RequestMethod.GET)
+    @RequestMapping(value = "/{datasetId}/getData", produces = {
+        Constants.APPLICATION_JSON
+    }, method = RequestMethod.GET)
     public ModelAndView getTimeseriesData(HttpServletRequest request,
                                           HttpServletResponse response,
                                           @PathVariable String datasetId,

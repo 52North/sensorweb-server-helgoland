@@ -46,10 +46,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.handler.ConfigTypedFactory;
 import org.n52.io.handler.DefaultIoFactory;
+import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.DatasetOutput;
 
 public class DatasetFactoryTest {
 
-    private ConfigTypedFactory<Collection> factory;
+    private ConfigTypedFactory<Collection<Object>> factory;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -62,17 +64,20 @@ public class DatasetFactoryTest {
 
     @Test
     public void when_created_then_hasMappings() throws DatasetFactoryException {
-        Assert.assertTrue(factory.create("arraylist").getClass() == ArrayList.class);
+        Assert.assertTrue(factory.create("arraylist")
+                                 .getClass() == ArrayList.class);
     }
 
     @Test
     public void when_created_then_initHaveBeenCalled() throws DatasetFactoryException {
-        Assert.assertThat(factory.create("arraylist").isEmpty(), Matchers.is(false));
+        Assert.assertThat(factory.create("arraylist")
+                                 .isEmpty(),
+                          Matchers.is(false));
     }
 
     @Test
     public void when_createdWithNullConfig_then_configureWithFallback() {
-        ConfigTypedFactory<Collection> f = createCollectionFactory(null);
+        ConfigTypedFactory<Collection<Object>> f = createCollectionFactory(null);
         Assert.assertTrue(f.isKnown("test_target"));
     }
 
@@ -81,7 +86,7 @@ public class DatasetFactoryTest {
         thrown.expect(DatasetFactoryException.class);
         thrown.expectMessage(is("No datasets available for 'invalid'."));
         File configFile = getConfigFile("dataset-collection-factory-invalid-entry.properties");
-        new DefaultIoFactory(configFile).create("invalid");
+        new DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >>(configFile).create("invalid");
     }
 
     @Test
@@ -92,19 +97,21 @@ public class DatasetFactoryTest {
     }
 
     private File getConfigFile(String name) throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/").toURI());
-        return root.resolve(name).toFile();
+        Path root = Paths.get(getClass().getResource("/")
+                                        .toURI());
+        return root.resolve(name)
+                   .toFile();
     }
 
-    private ConfigTypedFactory<Collection> createCollectionFactory(File config) {
-        return new ConfigTypedFactory<Collection>(config) {
+    private ConfigTypedFactory<Collection<Object>> createCollectionFactory(File config) {
+        return new ConfigTypedFactory<Collection<Object>>(config) {
             @Override
             protected String getFallbackConfigResource() {
                 return "/dataset-collection-factory-fallback.properties";
             }
 
             @Override
-            protected Collection initInstance(Collection instance) {
+            protected Collection<Object> initInstance(Collection<Object> instance) {
                 instance.add(new Object());
                 return instance;
             }

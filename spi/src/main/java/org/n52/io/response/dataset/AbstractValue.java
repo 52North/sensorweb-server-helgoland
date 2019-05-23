@@ -232,16 +232,17 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getSimpleName()).append(" [ ");
-        sb.append("timestart: ")
-          .append(getTimestart())
-          .append(", ");
-        sb.append("timestamp: ")
-          .append(getTimestamp())
-          .append(", ");
-        sb.append("value: ")
-          .append(getValue());
-        return sb.append(" ]")
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        return sb.append(" [ ")
+                 .append("timestart: ")
+                 .append(getTimestart())
+                 .append(", ")
+                 .append("timestamp: ")
+                 .append(getTimestamp())
+                 .append(", ")
+                 .append("value: ")
+                 .append(getValue())
+                 .append(" ]")
                  .toString();
     }
 

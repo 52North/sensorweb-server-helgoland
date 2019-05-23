@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import java.util.Optional;
@@ -52,6 +53,8 @@ public final class OptionalOutput<T> {
     /**
      * Creates an instance which is serialized by default.
      *
+     * @param <T>
+     *        the type of the output value to wrap
      * @param value
      *        the output value (can be <code>null</code>)
      * @return a optional value which is serialized by default.
@@ -63,6 +66,8 @@ public final class OptionalOutput<T> {
     /**
      * Creates an instance with a flag indicating if given value shall be serialized or not.
      *
+     * @param <T>
+     *        the type of the output value to wrap
      * @param value
      *        the output value (can be <code>null</code>)
      * @param serialize

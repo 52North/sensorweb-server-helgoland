@@ -55,12 +55,12 @@ public class DefaultIoHandlerFactoryTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private ConfigTypedFactory<IoHandlerFactory<?,?>> factory;
+    private ConfigTypedFactory<IoHandlerFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >>> factory;
 
     @Before
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoFactory(config);
+        factory = new DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>>(config);
     }
 
     @Test

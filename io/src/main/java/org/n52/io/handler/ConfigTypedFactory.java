@@ -35,9 +35,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -84,22 +88,26 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
 
     protected static InputStream getDefaultConfigFile(String configLocation) {
         try {
-            Path path = Paths.get(ConfigTypedFactory.class.getResource("/")
-                                                          .toURI());
-            File file = path.resolve(configLocation)
-                            .toFile();
+            File file = getConfigFile(configLocation);
             if (file.exists()) {
                 return new FileInputStream(file);
             } else {
                 InputStream stream = ConfigTypedFactory.class.getResourceAsStream(configLocation);
                 return stream == null
-                    ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
-                    : stream;
+                        ? ConfigTypedFactory.class.getResourceAsStream("/" + configLocation)
+                        : stream;
             }
         } catch (URISyntaxException | FileNotFoundException e) {
             LOGGER.info("Could not find config file '{}'. Load from compiled default.", configLocation, e);
             return null;
         }
+    }
+
+    private static File getConfigFile(String configLocation) throws URISyntaxException {
+        URL resource = ConfigTypedFactory.class.getResource("/");
+        Path path = Paths.get(resource.toURI());
+        Path configFile = path.resolve(configLocation);
+        return configFile.toFile();
     }
 
     private void loadMappings(InputStream loadFrom, Properties loadTo) {
@@ -123,8 +131,9 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
         final String configPath = getFallbackConfigResource();
         InputStream defaultConfig = getTargetType().getResourceAsStream(configPath);
         if (defaultConfig == null) {
-            throw new IllegalStateException("Unable not find default configuration from '" + configPath + "'!\n"
-                    + "Make sure the configuration file can be found by the target's classloader.");
+            String message = "Unable not find default configuration from ''{0}''! Make sure"
+                    + " the configuration file can be found by the target's classloader.";
+            throw new IllegalStateException(MessageFormat.format(message, configPath));
         }
         return new BufferedInputStream(defaultConfig);
     }
@@ -161,15 +170,19 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
             cache.put(type, instance);
             initInstance(instance);
             return instance;
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | ClassCastException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | ClassCastException | InstantiationException
+                | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             LOGGER.error("Invalid mapping entry '{}'='{}'", type, clazz, e);
             throwNewNoDatasetsAvailableForTypeException(type);
             return null;
         }
     }
 
-    private T createInstance(Class< ? > clazz) throws InstantiationException, IllegalAccessException {
-        final Object instance = clazz.newInstance();
+    @SuppressWarnings("unchecked")
+    private T createInstance(Class< ? > clazz) throws InstantiationException, IllegalAccessException,
+            IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+        Constructor< ? > constructor = clazz.getDeclaredConstructor();
+        final Object instance = constructor.newInstance();
         try {
             return (T) instance;
         } catch (ClassCastException e) {

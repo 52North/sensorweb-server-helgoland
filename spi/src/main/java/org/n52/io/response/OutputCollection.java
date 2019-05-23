@@ -26,11 +26,11 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response;
 
 import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,13 +59,6 @@ public abstract class OutputCollection<T> implements Iterable<T> {
         this.items = items == null
                 ? new ArrayList<>(0)
                 : new ArrayList<>(items);
-    }
-
-    @SafeVarargs
-    protected OutputCollection(T... items) {
-        this.items = items == null
-                ? new ArrayList<>(0)
-                : Arrays.asList(items);
     }
 
     @JsonIgnore
@@ -123,7 +116,7 @@ public abstract class OutputCollection<T> implements Iterable<T> {
     }
 
     private boolean isCollatorComparable() {
-        //FIXME this is NEVER true
+        // FIXME this is NEVER true
         return items instanceof CollatorComparable;
     }
 

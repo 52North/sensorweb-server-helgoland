@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset;
 
 import java.util.Collection;
@@ -42,7 +43,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- *
  * @author <a href="mailto:h.bredel@52north.org">Henning Bredel</a>
  */
 public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
@@ -144,10 +144,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             parameters.setOffering(offering);
         }
 
-//        @Override
-//        public void setFeature(ParameterOutput feature) {
-//            parameters.setFeature(feature);
-//        }
+        // @Override
+        // public void setFeature(ParameterOutput feature) {
+        // parameters.setFeature(feature);
+        // }
 
         @Override
         public void setService(ParameterOutput service) {
@@ -179,10 +179,10 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
             return parameters.getOffering();
         }
 
-//        @Override
-//        public ParameterOutput getFeature() {
-//            return parameters.getFeature();
-//        }
+        // @Override
+        // public ParameterOutput getFeature() {
+        // return parameters.getFeature();
+        // }
 
         @Override
         public ParameterOutput getService() {

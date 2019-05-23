@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
 
 import java.io.Serializable;
@@ -67,7 +68,7 @@ public class VerticalExtentOutput implements Serializable {
     }
 
     public void setVerticalOrigin(String verticalOrigin) {
-       this.verticalOrigin = verticalOrigin;
+        this.verticalOrigin = verticalOrigin;
     }
 
     public boolean isInterval() {

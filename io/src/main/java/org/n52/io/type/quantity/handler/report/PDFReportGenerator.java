@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.type.quantity.handler.report;
 
 import java.io.File;
@@ -117,7 +118,8 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         try (FileOutputStream stream = new FileOutputStream(tmpFile)) {
             renderer.encodeAndWriteTo(data, stream);
             document.getDocumentStructure()
-                    .setDiagramURL(tmpFile.toURI().toString());
+                    .setDiagramURL(tmpFile.toURI()
+                                          .toString());
             // String absoluteFilePath = getFoAbsoluteFilepath(tmpFile);
             // document.getDocumentStructure().setDiagramURL(absoluteFilePath);
             stream.flush();
@@ -125,7 +127,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
     }
 
     private void generateTimeseriesMetadata() {
-        for (DatasetOutput metadata : getAllDatasetMetadatas()) {
+        for (DatasetOutput< ? > metadata : getAllDatasetMetadatas()) {
             TimeSeries timeseries = addTimeseries(metadata);
             // addDataTable(timeseries, metadata, data);
             addMetadata(timeseries, metadata);
@@ -189,13 +191,13 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         return new StreamSource(getClass().getResourceAsStream("/" + rules));
     }
 
-    private TimeSeries addTimeseries(DatasetOutput output) {
+    private TimeSeries addTimeseries(DatasetOutput< ? > output) {
         DocumentStructureType report = document.getDocumentStructure();
         TimeSeries timeseries = report.addNewTimeSeries();
 
         DatasetParameters parameters = output.getDatasetParameters();
         timeseries.setFeatureOfInterestID(output.getFeature()
-                                                    .getLabel());
+                                                .getLabel());
         timeseries.setPhenomenID(parameters.getPhenomenon()
                                            .getLabel());
         timeseries.setProcedureID(parameters.getProcedure()
@@ -203,7 +205,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
         return timeseries;
     }
 
-    private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput output) {
+    private MetadataType addMetadata(TimeSeries timeseries, DatasetOutput< ? > output) {
         MetadataType metadata = timeseries.addNewMetadata();
 
         // GenericMetadataPair infoPair = metadata.addNewGenericMetadataPair();
@@ -241,7 +243,9 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             // TODO update TableType schema to allow start/end time
             entry.setTime(new DateTime(valueEntry.getTimestamp()).toString());
             BigDecimal value = valueEntry.getValue();
-            entry.setValue(value != null ? value.toString() : null);
+            entry.setValue(value != null
+                    ? value.toString()
+                    : null);
         }
     }
 

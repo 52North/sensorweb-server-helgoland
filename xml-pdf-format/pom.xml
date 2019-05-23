@@ -39,6 +39,7 @@
                     <memoryInitialSize>256</memoryInitialSize>
                     <memoryMaximumSize>256</memoryMaximumSize>
                     <download>false</download>
+                    <sourceGenerationDirectory>${basedir}/target/generated-sources</sourceGenerationDirectory>
                 </configuration>
             </plugin>
 

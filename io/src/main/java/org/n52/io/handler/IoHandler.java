@@ -78,9 +78,9 @@ public abstract class IoHandler<T extends Data< ? extends AbstractValue< ? >>> {
                 encodeAndWriteTo(processChain.getData(), baos);
                 byte[] data = baos.toByteArray();
                 byte[] encode = Base64.encodeBase64(data);
-                outputStream.write(encode);
+                stream.write(encode);
             } else {
-                encodeAndWriteTo(processChain.getData(), outputStream);
+                encodeAndWriteTo(processChain.getData(), stream);
             }
         } catch (IOException e) {
             throw new IoHandlerException("Error handling output stream.", e);

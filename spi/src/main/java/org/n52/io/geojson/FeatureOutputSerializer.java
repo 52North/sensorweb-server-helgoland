@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.geojson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -45,7 +46,7 @@ public class FeatureOutputSerializer extends JsonSerializer<GeoJSONFeature> {
     @Override
     public void serialize(GeoJSONFeature value, JsonGenerator gen, SerializerProvider serializers)
             throws IOException, JsonProcessingException {
-            writeFeature(value, gen);
+        writeFeature(value, gen);
     }
 
     private void writeFeature(GeoJSONFeature value, JsonGenerator gen) throws IOException {

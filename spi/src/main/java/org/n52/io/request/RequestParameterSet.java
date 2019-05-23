@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.request;
 
 import java.io.IOException;
@@ -286,7 +287,7 @@ abstract class RequestParameterSet {
         return parameterValue.isArray()
                 ? getAs(String[].class, parameterName, defaultValue)
                 : new String[] {
-                    getAsString(parameterName)
+                    getAsString(parameterName),
                 };
     }
 
@@ -327,13 +328,13 @@ abstract class RequestParameterSet {
         return getDatasets();
     }
 
-//    public String getValueType() {
-//        String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-//        String[] datasetIds = getDatasets();
-//        return datasetIds.length > 0
-//                ? ValueType.extractType(datasetIds[0], handleAs)
-//                : ValueType.DEFAULT_VALUE_TYPE;
-//    }
+    // public String getValueType() {
+    // String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
+    // String[] datasetIds = getDatasets();
+    // return datasetIds.length > 0
+    // ? ValueType.extractType(datasetIds[0], handleAs)
+    // : ValueType.DEFAULT_VALUE_TYPE;
+    // }
 
     public IoParameters toParameters() {
         return IoParameters.createFromSingleJsonValueMap(parameters)
