@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.handler;
 
 import static org.junit.Assert.assertTrue;
 
@@ -40,6 +40,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.n52.io.handler.ConfigTypedFactory;
+import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.response.dataset.AbstractValue;

@@ -53,6 +53,7 @@ import javax.servlet.ServletConfig;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerException;
 import org.n52.io.handler.IoHandlerFactory;

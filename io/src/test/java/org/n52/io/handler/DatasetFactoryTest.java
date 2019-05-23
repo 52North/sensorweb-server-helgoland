@@ -27,7 +27,7 @@
  * for more details.
  */
 
-package org.n52.io;
+package org.n52.io.handler;
 
 import static org.hamcrest.CoreMatchers.is;
 
