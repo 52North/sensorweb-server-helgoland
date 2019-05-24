@@ -161,9 +161,7 @@ public class TimeseriesDataController extends BaseController {
         return super.createParameters(datasetId, query, locale, response).respectBackwardsCompatibility();
     }
 
-    @RequestMapping(value = "/getData", produces = {
-        Constants.APPLICATION_JSON
-    }, method = RequestMethod.POST)
+    @RequestMapping(value = "/getData", produces = Constants.APPLICATION_JSON, method = RequestMethod.POST)
     public ModelAndView getCollectionData(HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String locale,
@@ -181,9 +179,8 @@ public class TimeseriesDataController extends BaseController {
         return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
     }
 
-    @RequestMapping(value = "/{timeseriesId}/getData", produces = {
-        Constants.APPLICATION_JSON
-    }, method = RequestMethod.GET)
+    @RequestMapping(value = "/{timeseriesId}/getData", produces = Constants.APPLICATION_JSON,
+        method = RequestMethod.GET)
     public ModelAndView getData(HttpServletResponse response,
                                 @PathVariable String timeseriesId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,

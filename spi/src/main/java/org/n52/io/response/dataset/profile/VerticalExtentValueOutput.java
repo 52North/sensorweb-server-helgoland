@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.response.dataset.profile;
 
 import java.io.Serializable;
@@ -41,8 +42,8 @@ public class VerticalExtentValueOutput implements Serializable {
     }
 
     public VerticalExtentValueOutput(String label, BigDecimal value) {
-       this.label = label;
-       this.value = value;
+        this.label = label;
+        this.value = value;
     }
 
     public String getLabel() {

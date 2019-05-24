@@ -39,7 +39,6 @@ import org.n52.io.response.OutputCollection;
 import org.n52.io.response.dataset.StationOutput;
 import org.n52.series.spi.geo.TransformingStationOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
-import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.OffsetBasedPagination;
 import org.n52.web.common.PageLinkUtil;
@@ -76,7 +75,7 @@ public class StationsParameterController extends BaseController implements Resou
     public StationsParameterController(CountingMetadataService counter,
                                        ParameterService<StationOutput> service) {
         ParameterService<StationOutput> transformingService = new TransformingStationOutputService(service);
-        this.parameterService = new LocaleAwareSortService<>(new SpiAssertionExceptionAdapter<>(transformingService));
+        this.parameterService = new SpiAssertionExceptionAdapter<>(transformingService);
         this.counter = counter;
     }
 

@@ -28,7 +28,6 @@
  */
 package org.n52.io.response;
 
-import java.text.Collator;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -44,7 +43,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ParameterOutput implements CollatorComparable<ParameterOutput>, RawFormats {
+public abstract class ParameterOutput implements RawFormats {
 
     public static final String ID = "id";
     public static final String HREF = "href";
@@ -225,13 +224,6 @@ public abstract class ParameterOutput implements CollatorComparable<ParameterOut
     public ParameterOutput setRawFormats(OptionalOutput<Set<String>> formats) {
         this.rawFormats = formats;
         return this;
-    }
-
-    @Override
-    public int compare(Collator collator, ParameterOutput o) {
-        String thisLabel = getLabel();
-        String otherLabel = o.getLabel();
-        return collator.compare(thisLabel.toLowerCase(), otherLabel.toLowerCase());
     }
 
     @Override

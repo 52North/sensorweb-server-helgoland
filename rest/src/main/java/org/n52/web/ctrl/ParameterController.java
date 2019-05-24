@@ -47,7 +47,6 @@ import org.n52.io.request.Parameters;
 import org.n52.io.response.OutputCollection;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.extension.MetadataExtension;
-import org.n52.series.spi.srv.LocaleAwareSortService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.OffsetBasedPagination;
 import org.n52.web.common.PageLinkUtil;
@@ -72,8 +71,7 @@ public abstract class ParameterController<T extends ParameterOutput>
     private final ParameterService<T> parameterService;
 
     public ParameterController(ParameterService<T> parameterService) {
-        ParameterService<T> service = new SpiAssertionExceptionAdapter<>(parameterService);
-        this.parameterService = new LocaleAwareSortService<>(service);
+        this.parameterService = new SpiAssertionExceptionAdapter<>(parameterService);
     }
 
     @Override

@@ -120,6 +120,11 @@
                 <artifactId>shetland</artifactId>
                 <version>${arctic-sea.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.n52.arctic-sea</groupId>
+                <artifactId>janmayen</artifactId>
+                <version>${arctic-sea.version}</version>
+            </dependency>
             
             <!-- geotools dependencies -->
             <dependency>

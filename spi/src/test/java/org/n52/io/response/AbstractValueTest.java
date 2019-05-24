@@ -40,7 +40,7 @@ public class AbstractValueTest {
 
     @Test
     public void getTimestart_when_timestartIsNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), null);;
         MatcherAssert.assertThat("timestart is not null", value.getTimestart(), IsNull.nullValue());
     }
 
@@ -50,36 +50,49 @@ public class AbstractValueTest {
 
     @Test
     public void getTimestart_when_timestartIsNotNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), createTimeOutput(2L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), createTimeOutput(2L), null);
         MatcherAssert.assertThat("timestart is null", value.getTimestart(), IsNull.notNullValue());
         MatcherAssert.assertThat("timestart is not of value 1L", value.getTimestart().getDateTime(), is(new DateTime(1L)));
     }
 
     @Test
     public void getTimeend_when_timestartIsNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), null);
         MatcherAssert.assertThat("timeend is null", value.getTimeend(), IsNull.nullValue());
     }
 
     @Test
     public void getTimeend_when_timestartIsNotNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), createTimeOutput(2L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), createTimeOutput(2L), null);
         MatcherAssert.assertThat("timeend is null", value.getTimeend(), IsNull.notNullValue());
         MatcherAssert.assertThat("timeend is not of value 2L", value.getTimeend().getDateTime(), is(new DateTime(2L)));
     }
 
     @Test
     public void getTimestamp_when_timestartIsNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), null);
         MatcherAssert.assertThat("timestamp is null", value.getTimestamp(), IsNull.notNullValue());
         MatcherAssert.assertThat("timestamp is not of value 1L", value.getTimestamp().getDateTime(), is(new DateTime(1L)));
     }
 
     @Test
     public void getTimestamp_when_timestartIsNotNull() {
-        AbstractValue<Object> value = new AbstractValue<Object>(createTimeOutput(1L), createTimeOutput(2L), null) {};
+        AbstractValue<Object> value = new DummyValue(createTimeOutput(1L), createTimeOutput(2L), null);
         MatcherAssert.assertThat("timestart is null", value.getTimestart(), IsNull.notNullValue());
         MatcherAssert.assertThat("timestart is not of value 1L", value.getTimestart().getDateTime(), is(new DateTime(1L)));
+    }
+
+    private static class DummyValue extends AbstractValue<Object> {
+
+        private static final long serialVersionUID = 6068769025905968223L;
+
+        public DummyValue(TimeOutput time, Object object) {
+            super(time, object);
+        }
+
+        public DummyValue(TimeOutput start, TimeOutput end, Object object) {
+            super(start, end, object);
+        }
     }
 
 }

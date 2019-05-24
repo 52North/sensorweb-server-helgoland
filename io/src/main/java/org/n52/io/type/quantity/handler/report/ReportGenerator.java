@@ -26,8 +26,8 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.handler.report;
 
+package org.n52.io.type.quantity.handler.report;
 
 import java.util.List;
 
@@ -39,18 +39,21 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 
-public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>> extends IoHandler<T> {
+public abstract class ReportGenerator<T extends Data< ? extends AbstractValue< ? >>> extends IoHandler<T> {
 
     private final IoStyleContext context;
 
     /**
-     * @param parameters simple parameter set.
-     * @param processChain the process chain.
-     * @param context the rendering context.
+     * @param parameters
+     *        simple parameter set.
+     * @param processChain
+     *        the process chain.
+     * @param context
+     *        the rendering context.
      */
     public ReportGenerator(IoParameters parameters,
-            IoProcessChain<T> processChain,
-            IoStyleContext context) {
+                           IoProcessChain<T> processChain,
+                           IoStyleContext context) {
         super(parameters, processChain);
         this.context = context;
     }
@@ -59,7 +62,7 @@ public abstract class ReportGenerator<T extends Data<? extends AbstractValue<?>>
         return context;
     }
 
-    protected List<? extends DatasetOutput> getAllDatasetMetadatas() {
+    protected List< ? extends DatasetOutput< ? >> getAllDatasetMetadatas() {
         return getContext().getAllDatasetMetadatas();
     }
 

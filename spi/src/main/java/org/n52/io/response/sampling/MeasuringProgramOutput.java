@@ -42,7 +42,7 @@ import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.*;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class MeasuringProgramOutput extends ParameterOutput {

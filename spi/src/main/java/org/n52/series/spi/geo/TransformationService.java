@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.series.spi.geo;
 
 import org.locationtech.jts.geom.Geometry;
@@ -42,13 +43,15 @@ public class TransformationService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TransformationService.class);
 
     /**
-     * @param station the station to transform
-     * @param parameters the query containing CRS and how to handle axes order
+     * @param station
+     *        the station to transform
+     * @param parameters
+     *        the query containing CRS and how to handle axes order
      */
     protected void transformInline(StationOutput station, IoParameters parameters) {
         String crs = parameters.getCrs();
         if (CRSUtils.DEFAULT_CRS.equals(crs)) {
-             // no need to transform
+            // no need to transform
             return;
         }
         Geometry geometry = transform(station.getGeometry(), parameters);
@@ -58,14 +61,16 @@ public class TransformationService {
     public Geometry transform(Geometry geometry, IoParameters query) {
         String crs = query.getCrs();
         if (CRSUtils.DEFAULT_CRS.equals(crs)) {
-             // no need to transform
+            // no need to transform
             return geometry;
         }
         return transformGeometry(query, geometry, crs);
     }
 
-    private Geometry transformGeometry(IoParameters query, Geometry geometry,
-            String crs) throws RuntimeException {
+    private Geometry transformGeometry(IoParameters query,
+                                       Geometry geometry,
+                                       String crs)
+            throws RuntimeException {
         try {
             CRSUtils crsUtils = query.isForceXY()
                     ? CRSUtils.createEpsgForcedXYAxisOrder()

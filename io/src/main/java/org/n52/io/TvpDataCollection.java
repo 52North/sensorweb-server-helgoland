@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io;
 
 import org.n52.io.response.dataset.Data;
@@ -33,8 +34,10 @@ import org.n52.io.response.dataset.DataCollection;
 
 /**
  * Represents a time value pair data format.
- * @param <T> the data type.
+ *
+ * @param <T>
+ *        the data type.
  */
-public final class TvpDataCollection<T extends Data> extends DataCollection<T> {
+public final class TvpDataCollection<T extends Data< ? >> extends DataCollection<T> {
 
 }

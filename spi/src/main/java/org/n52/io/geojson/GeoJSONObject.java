@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 public class GeoJSONObject {
 
     public enum GeoJSONType {
-
         Feature,
         FeatureCollection;
     }
@@ -50,8 +49,6 @@ public class GeoJSONObject {
 
     private GeoJSONType type;
 
-//    private String crs; // TODO
-//    private double[] bbox; // TODO
     @JsonSerialize(keyAs = String.class, contentAs = Object.class)
     private Map<String, Object> members = new HashMap<>();
 

@@ -43,6 +43,7 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 /**
  *
@@ -110,7 +111,7 @@ public class GeoJSONDecoder {
         }
     }
 
-    protected Coordinate[] decodeCoordinates(JsonNode node) throws
+    protected CoordinateArraySequence decodeCoordinates(JsonNode node) throws
             GeoJSONException {
         if (!node.isArray()) {
             throwExpectedArrayException();
@@ -119,7 +120,7 @@ public class GeoJSONDecoder {
         for (int i = 0; i < node.size(); ++i) {
             coordinates[i] = decodeCoordinate(node.get(i));
         }
-        return coordinates;
+        return new CoordinateArraySequence(coordinates);
     }
 
     protected Polygon decodePolygonCoordinates(JsonNode coordinates,
@@ -151,14 +152,12 @@ public class GeoJSONDecoder {
 
     protected LineString decodeLineString(JsonNode node, GeometryFactory fac)
             throws GeoJSONException {
-        Coordinate[] coordinates = decodeCoordinates(requireCoordinates(node));
-        return fac.createLineString(coordinates);
+        return fac.createLineString(decodeCoordinates(requireCoordinates(node)));
     }
 
     protected MultiPoint decodeMultiPoint(JsonNode node, GeometryFactory fac)
             throws GeoJSONException {
-        Coordinate[] coordinates = decodeCoordinates(requireCoordinates(node));
-        return fac.createMultiPoint(coordinates);
+        return fac.createMultiPoint(decodeCoordinates(requireCoordinates(node)));
     }
 
     protected Point decodePoint(JsonNode node, GeometryFactory fac) throws GeoJSONException {

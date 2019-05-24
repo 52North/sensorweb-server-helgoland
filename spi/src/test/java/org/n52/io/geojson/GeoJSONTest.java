@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.io.geojson;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -60,6 +61,7 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.geom.PrecisionModel;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 
 /**
  * borrowed from
@@ -85,16 +87,21 @@ public class GeoJSONTest {
     }
 
     private LineString randomLineString(int srid) {
-        LineString geometry
-                = geometryFactory.createLineString(new Coordinate[]{randomCoordinate(), randomCoordinate(),
-                    randomCoordinate()});
+        LineString geometry = geometryFactory.createLineString(new Coordinate[] {
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+        });
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiLineString randomMultiLineString(int srid) {
-        return geometryFactory.createMultiLineString(new LineString[]{randomLineString(srid),
-            randomLineString(srid), randomLineString(srid)});
+        return geometryFactory.createMultiLineString(new LineString[] {
+            randomLineString(srid),
+            randomLineString(srid),
+            randomLineString(srid),
+        });
     }
 
     private Point randomPoint(int srid) {
@@ -105,57 +112,80 @@ public class GeoJSONTest {
 
     private LinearRing randomLinearRing(int srid) {
         Coordinate p = randomCoordinate();
-        LinearRing geometry
-                = geometryFactory.createLinearRing(new Coordinate[]{p, randomCoordinate(), randomCoordinate(),
-                    randomCoordinate(), p});
+        LinearRing geometry = geometryFactory.createLinearRing(new Coordinate[] {
+            p,
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+            p
+        });
         geometry.setSRID(srid);
         return geometry;
     }
 
     private Polygon randomPolygon(int srid) {
-        Polygon geometry
-                = geometryFactory.createPolygon(randomLinearRing(srid), new LinearRing[]{randomLinearRing(srid),
-                    randomLinearRing(srid), randomLinearRing(srid)});
+        Polygon geometry = geometryFactory.createPolygon(randomLinearRing(srid),
+                                                         new LinearRing[] {
+                                                             randomLinearRing(srid),
+                                                             randomLinearRing(srid),
+                                                             randomLinearRing(srid),
+                                                         });
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiPoint randomMultiPoint(int srid) {
-        MultiPoint geometry
-                = geometryFactory.createMultiPoint(new Coordinate[]{randomCoordinate(), randomCoordinate(),
-                    randomCoordinate(), randomCoordinate(), randomCoordinate(), randomCoordinate()});
+        Coordinate[] coordinates = new Coordinate[] {
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+            randomCoordinate(),
+        };
+        CoordinateArraySequence coordinateSequence = new CoordinateArraySequence(coordinates);
+        MultiPoint geometry = geometryFactory.createMultiPoint(coordinateSequence);
         geometry.setSRID(srid);
         return geometry;
     }
 
     private MultiPolygon randomMultiPolygon(int srid) {
-        MultiPolygon geometry
-                = geometryFactory.createMultiPolygon(new Polygon[]{randomPolygon(srid), randomPolygon(srid),
-                    randomPolygon(srid)});
+        MultiPolygon geometry = geometryFactory.createMultiPolygon(new Polygon[] {
+            randomPolygon(srid),
+            randomPolygon(srid),
+            randomPolygon(srid),
+        });
         geometry.setSRID(srid);
         return geometry;
     }
 
     private GeometryCollection randomGeometryCollection(int srid) {
-        GeometryCollection geometry
-                = geometryFactory.createGeometryCollection(new Geometry[]{randomPoint(srid), randomMultiPoint(srid),
-                    randomLineString(srid), randomMultiLineString(srid), randomPolygon(srid),
-                    randomMultiPolygon(srid)});
+        GeometryCollection geometry = geometryFactory.createGeometryCollection(new Geometry[] {
+            randomPoint(srid),
+            randomMultiPoint(srid),
+            randomLineString(srid),
+            randomMultiLineString(srid),
+            randomPolygon(srid),
+            randomMultiPolygon(srid),
+        });
         geometry.setSRID(srid);
         return geometry;
     }
 
     @Test
     public void testGeometryCollection() throws GeoJSONException, IOException {
-        readWriteTest(geometryFactory.createGeometryCollection(new Geometry[]{randomGeometryCollection(CRSUtils.EPSG_WGS84),
-            randomGeometryCollection(2000)}));
+        readWriteTest(geometryFactory.createGeometryCollection(new Geometry[] {
+            randomGeometryCollection(CRSUtils.EPSG_WGS84),
+            randomGeometryCollection(2000),
+        }));
     }
 
     @Test
     public void testGeometryCollectionWithZCoordinate() throws GeoJSONException, IOException {
-        GeometryCollection geometry
-                = geometryFactory.createGeometryCollection(new Geometry[]{randomGeometryCollection(CRSUtils.EPSG_WGS84),
-                    randomGeometryCollection(2000)});
+        GeometryCollection geometry = geometryFactory.createGeometryCollection(new Geometry[] {
+            randomGeometryCollection(CRSUtils.EPSG_WGS84),
+            randomGeometryCollection(2000),
+        });
         geometry.apply(new RandomZCoordinateFilter());
         geometry.geometryChanged();
         readWriteTest(geometry);
@@ -206,7 +236,9 @@ public class GeoJSONTest {
     }
 
     private void testCrs(int parent, int child) {
-        final GeometryCollection col = geometryFactory.createGeometryCollection(new Geometry[]{randomPoint(child)});
+        final GeometryCollection col = geometryFactory.createGeometryCollection(new Geometry[] {
+            randomPoint(child)
+        });
         col.setSRID(parent);
         readWriteTest(col);
     }
@@ -264,8 +296,8 @@ public class GeoJSONTest {
             Geometry parsed = dec.decodeGeometry(json);
             JsonNode json2 = enc.encodeGeometry(parsed);
             errors.checkThat(geom, is(equalTo(parsed)));
-//            errors.checkThat(json, is(instanceOf(JSONConstants.GEOMETRY)));
-//            errors.checkThat(json2, is(instanceOf(JSONConstants.GEOMETRY)));
+            // errors.checkThat(json, is(instanceOf(JSONConstants.GEOMETRY)));
+            // errors.checkThat(json2, is(instanceOf(JSONConstants.GEOMETRY)));
             errors.checkThat(json, is(equalTo(json2)));
         } catch (GeoJSONException ex) {
             errors.addError(ex);
@@ -289,10 +321,9 @@ public class GeoJSONTest {
     }
 
     private class RandomZCoordinateFilter implements CoordinateFilter {
-
         @Override
         public void filter(Coordinate coord) {
-            coord.z = random.nextInt(1000);
+            coord.setZ(random.nextInt(1000));
         }
     }
 
