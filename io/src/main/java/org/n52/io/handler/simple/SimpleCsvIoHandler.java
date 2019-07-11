@@ -145,7 +145,7 @@ public class SimpleCsvIoHandler<T extends AbstractValue< ? >> extends CsvIoHandl
     }
 
     private boolean hasAppropriateLength(String filename) {
-        return filename.length() > 251;
+        return filename.length() < 251;
     }
 
     private String shortenFileName(String filename) {
