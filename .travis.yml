@@ -1,7 +1,8 @@
 language: java
+dist: trusty
 matrix:
   include:
-    - jdk: oraclejdk8
+    - jdk: openjdk8
     # https://www.deps.co/guides/travis-ci-latest-java/#certificate-issues
     - jdk: openjdk9
       before_install:
