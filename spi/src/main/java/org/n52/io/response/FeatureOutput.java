@@ -35,6 +35,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.FeatureOutputSerializer;
 import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
+import org.n52.io.response.dataset.DatasetParameters;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -44,8 +45,10 @@ public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
     public static final String COLLECTION_PATH = "features";
     public static final String PROPERTIES = "properties";
     public static final String GEOMETRY = "geometry";
+    public static final String DATASETS = "datasets";
 
     private OptionalOutput<Geometry> geometry;
+    private OptionalOutput<Map<String, DatasetParameters>> datasets;
 
     @Override
     protected String getCollectionName() {
@@ -73,7 +76,16 @@ public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
         nullSafePut("label", getLabel(), properties);
         nullSafePut("domainId", getDomainId(), properties);
         nullSafePut("href", getHref(), properties);
+        nullSafePut(DATASETS, getDatasets(), properties);
         return properties;
+    }
+
+    public Map<String, DatasetParameters> getDatasets() {
+        return getIfSerialized(datasets);
+    }
+
+    public void setDatasets(OptionalOutput<Map<String, DatasetParameters>> datasets) {
+        this.datasets = datasets;
     }
 
     private void nullSafePut(String key, Object value, Map<String, Object> container) {
