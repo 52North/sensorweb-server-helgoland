@@ -26,7 +26,6 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-
 package org.n52.io.type.quantity;
 
 import org.n52.io.format.ResultTimeClassifiedData;
