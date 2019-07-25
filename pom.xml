@@ -54,12 +54,11 @@
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <swc.version>3.2.0</swc.version>
-        <jackson.version>2.9.8</jackson.version>
-        <geotools.version>20.1</geotools.version>
-        <arctic-sea.version>6.0.0</arctic-sea.version>
-        <spring-boot.version>2.1.4.RELEASE</spring-boot.version>
-        <spring.version>5.1.6.RELEASE</spring.version>
+        <jackson.version>2.9.9</jackson.version>
+        <geotools.version>21.2</geotools.version>
+        <arctic-sea.version>7.0.0</arctic-sea.version>
+        <spring-boot.version>2.1.6.RELEASE</spring-boot.version>
+        <spring.version>5.1.8.RELEASE</spring.version>
 
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyy</maven.build.timestamp.format>
@@ -127,21 +126,6 @@
             </dependency>
             
             <!-- geotools dependencies -->
-            <dependency>
-                <groupId>org.geotools</groupId>
-                <artifactId>gt-api</artifactId>
-                <version>${geotools.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.media</groupId>
-                        <artifactId>jai_core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.media</groupId>
-                        <artifactId>jai_codec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>
@@ -335,6 +319,11 @@
                 <artifactId>commons-io</artifactId>
                 <version>2.6</version>
             </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>1.12</version>
+             </dependency>
             
             <dependency>
                 <groupId>com.github.spotbugs</groupId>

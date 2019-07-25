@@ -14,12 +14,13 @@ This project includes:
   Animal Sniffer Annotations under MIT license
   Apache Commons Codec under Apache License, Version 2.0
   Apache Commons IO under Apache License, Version 2.0
+  Apache Commons Lang under Apache License, Version 2.0
+  Apache Commons Text under Apache License, Version 2.0
   Apache FontBox under Apache License, Version 2.0
   Apache FOP under The Apache Software License, Version 2.0
   Apache HttpClient under Apache License, Version 2.0
   Apache HttpCore under Apache License, Version 2.0
   Apache XML Graphics Commons under The Apache Software License, Version 2.0
-  API interfaces under Lesser General Public License (LGPL)
   Avalon Framework API under The Apache Software License, Version 2.0
   Avalon Framework Implementation under The Apache Software License, Version 2.0
   Batik animation engine under The Apache Software License, Version 2.0
@@ -49,7 +50,7 @@ This project includes:
   geolatte-geom under LGPL 3.0
   Guava InternalFutureFailureAccess and InternalFutures under The Apache Software License, Version 2.0
   Guava ListenableFuture only under The Apache Software License, Version 2.0
-  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under Apache License, Version 2.0
   HikariCP under The Apache Software License, Version 2.0
   HyperSQL Database under HSQLDB License, a BSD open source license
   J2ObjC Annotations under The Apache Software License, Version 2.0
@@ -59,9 +60,11 @@ This project includes:
   Java implementation of GeographicLib under The MIT License(MIT)
   javax.inject under The Apache Software License, Version 2.0
   JCL 1.2 implemented over SLF4J under MIT License
+  JDOM under Similar to Apache License but with the acknowledgment clause removed
   JFreeChart under GNU Lesser General Public Licence
   jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
   Joda-Time under Apache 2
+  Main module under Lesser General Public License (LGPL)
   mchange-commons-java under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   Metadata under Lesser General Public License (LGPL)
   Netty/All-in-One under Apache License, Version 2.0
