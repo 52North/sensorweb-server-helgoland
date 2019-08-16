@@ -63,7 +63,7 @@ This project includes:
   JDOM under Similar to Apache License but with the acknowledgment clause removed
   JFreeChart under GNU Lesser General Public Licence
   jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
-  Joda-Time under Apache 2
+  Joda-Time under Apache License, Version 2.0
   Main module under Lesser General Public License (LGPL)
   mchange-commons-java under GNU Lesser General Public License, Version 2.1 or Eclipse Public License, Version 1.0
   Metadata under Lesser General Public License (LGPL)
