@@ -144,9 +144,7 @@ public class ChartRendererTest {
         datasetParameters.setPhenomenon(createParameter(new PhenomenonOutput(), "phen_1", "phenomenon"));
         datasetParameters.setProcedure(createParameter(new ProcedureOutput(), "proc_1", "procedure"));
         datasetParameters.setService(createParameter(new ServiceOutput(), "ser_1", "service"));
-        String valueType = QuantityValue.TYPE;
-        IoParameters parameters = IoParameters.createDefaults();
-        DatasetOutput< ? > metadata = DatasetOutput.create(parameters);
+        DatasetOutput< ? > metadata = new DatasetOutput();
         metadata.setFeature(OptionalOutput.of(feature));
         metadata.setDatasetParameters(OptionalOutput.of(datasetParameters))
                 .setUom(OptionalOutput.of(""))
