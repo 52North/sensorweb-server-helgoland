@@ -153,13 +153,13 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private void preparePagingHeaders(IoParameters parameters, HttpServletResponse response) {
         if (parameters.containsParameter(Parameters.LIMIT) || parameters.containsParameter(Parameters.OFFSET)) {
-            Integer elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
+            Long elementcount = this.getElementCount(parameters.removeAllOf(Parameters.LIMIT)
                                                                   .removeAllOf(Parameters.OFFSET));
             if (elementcount > 0) {
                 int limit = parameters.getLimit();
                 int offset = parameters.getOffset();
                 OffsetBasedPagination obp = new OffsetBasedPagination(offset, limit);
-                Paginated paginated = new Paginated(obp, elementcount.longValue());
+                Paginated paginated = new Paginated(obp, elementcount);
                 PageLinkUtil.addPagingHeaders(createCollectionUrl(getCollectionName()), response, paginated);
             }
         }
@@ -216,7 +216,7 @@ public abstract class ParameterController<T extends ParameterOutput>
      *        the query map
      * @return the number of elements available, or negative number if paging is not supported.
      */
-    protected abstract int getElementCount(IoParameters queryMap);
+    protected abstract Long getElementCount(IoParameters queryMap);
 
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {

@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.sampling.MeasuringProgramOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -51,8 +50,4 @@ public class MeasuringProgramsParameterController extends ParameterRequestMappin
         return UrlSettings.COLLECTION_MEASURING_PROGRAMS;
     }
 
-    @Override
-    protected int getElementCount(IoParameters parameters) {
-        return super.getEntityCounter().getMeasuringProgramCounter(parameters);
-    }
 }

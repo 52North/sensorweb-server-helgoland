@@ -165,17 +165,17 @@ public class ServiceOutput extends ParameterOutput {
 
         private String[] selectedPlatformTypes;
 
-        private Integer amountOfferings;
+        private Long amountOfferings;
 
-        private Integer amountFeatures;
+        private Long amountFeatures;
 
-        private Integer amountProcedures;
+        private Long amountProcedures;
 
-        private Integer amountPhenomena;
+        private Long amountPhenomena;
 
-        private Integer amountCategories;
+        private Long amountCategories;
 
-        private Integer amountPlatforms;
+        private Long amountPlatforms;
 
         private DatasetCount amountDatasets;
 
@@ -183,13 +183,13 @@ public class ServiceOutput extends ParameterOutput {
          * @deprecated since 2.0.0
          */
         @Deprecated
-        private Integer amountStations;
+        private Long amountStations;
 
-        private Integer amountTimeseries;
+        private Long amountTimeseries;
 
-        private Integer amountSamplings;
+        private Long amountSamplings;
 
-        private Integer amountMeasuringProgram;
+        private Long amountMeasuringProgram;
 
         public String[] getSelectedPlatformTypes() {
             return Utils.copy(selectedPlatformTypes);
@@ -199,51 +199,51 @@ public class ServiceOutput extends ParameterOutput {
             this.selectedPlatformTypes = selectedPlatformTypes;
         }
 
-        public Integer getOfferings() {
+        public Long getOfferings() {
             return amountOfferings;
         }
 
-        public void setOfferingsSize(Integer size) {
+        public void setOfferingsSize(Long size) {
             this.amountOfferings = size;
         }
 
-        public Integer getFeatures() {
+        public Long getFeatures() {
             return amountFeatures;
         }
 
-        public void setFeaturesSize(Integer size) {
+        public void setFeaturesSize(Long size) {
             this.amountFeatures = size;
         }
 
-        public Integer getProcedures() {
+        public Long getProcedures() {
             return amountProcedures;
         }
 
-        public void setProceduresSize(Integer size) {
+        public void setProceduresSize(Long size) {
             this.amountProcedures = size;
         }
 
-        public Integer getPhenomena() {
+        public Long getPhenomena() {
             return amountPhenomena;
         }
 
-        public void setPhenomenaSize(Integer size) {
+        public void setPhenomenaSize(Long size) {
             this.amountPhenomena = size;
         }
 
-        public Integer getCategories() {
+        public Long getCategories() {
             return amountCategories;
         }
 
-        public void setCategoriesSize(Integer size) {
+        public void setCategoriesSize(Long size) {
             this.amountCategories = size;
         }
 
-        public Integer getPlatforms() {
+        public Long getPlatforms() {
             return amountPlatforms;
         }
 
-        public void setPlatformsSize(Integer size) {
+        public void setPlatformsSize(Long size) {
             this.amountPlatforms = size;
         }
 
@@ -256,89 +256,89 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         @Deprecated
-        public Integer getStations() {
+        public Long getStations() {
             return amountStations;
         }
 
         @Deprecated
         public void setStationsSize(int size) {
-            this.amountStations = size;
+            this.amountStations = Integer.toUnsignedLong(size);
         }
 
-        public void setTimeseriesSize(Integer countTimeseries) {
+        public void setTimeseriesSize(Long countTimeseries) {
             this.amountTimeseries = countTimeseries;
         }
 
-        public Integer getTimeseries() {
+        public Long getTimeseries() {
             return this.amountTimeseries;
         }
 
-        public void setSamplingsSize(Integer countSamplings) {
+        public void setSamplingsSize(Long countSamplings) {
             this.amountSamplings = countSamplings;
         }
 
-        public Integer getSamplings() {
+        public Long getSamplings() {
             return this.amountSamplings;
         }
 
-        public void setMeasuringProgramsSize(int countMeasuringPrograms) {
+        public void setMeasuringProgramsSize(Long countMeasuringPrograms) {
             this.amountMeasuringProgram = countMeasuringPrograms;
         }
 
-        public Integer getMeasuringPrograms() {
+        public Long getMeasuringPrograms() {
             return this.amountMeasuringProgram;
         }
     }
 
     public static class DatasetCount {
 
-        private Integer totalAmount;
+        private Long totalAmount;
 
-        private Integer amountIndividualObservations;
+        private Long amountIndividualObservations;
 
-        private Integer amountTimeseries;
+        private Long amountTimeseries;
 
-        private Integer amountProfiles;
+        private Long amountProfiles;
 
-        private Integer amountTrajectories;
+        private Long amountTrajectories;
 
-        public Integer getTotal() {
+        public Long getTotal() {
             return totalAmount;
         }
 
-        public void setTotalAmount(Integer totalAmount) {
+        public void setTotalAmount(Long totalAmount) {
             this.totalAmount = totalAmount;
         }
 
-        public Integer getIndividualObservations() {
+        public Long getIndividualObservations() {
             return amountIndividualObservations;
         }
 
-        public void setAmountIndividualObservations(Integer amountIndividualObservations) {
+        public void setAmountIndividualObservations(Long amountIndividualObservations) {
             this.amountIndividualObservations = amountIndividualObservations;
         }
 
-        public Integer getTimeseries() {
+        public Long getTimeseries() {
             return amountTimeseries;
         }
 
-        public void setAmountTimeseries(Integer amountTimeseries) {
+        public void setAmountTimeseries(Long amountTimeseries) {
             this.amountTimeseries = amountTimeseries;
         }
 
-        public Integer getProfiles() {
+        public Long getProfiles() {
             return amountProfiles;
         }
 
-        public void setAmountProfiles(Integer amountProfiles) {
+        public void setAmountProfiles(Long amountProfiles) {
             this.amountProfiles = amountProfiles;
         }
 
-        public Integer getTrajectories() {
+        public Long getTrajectories() {
             return amountTrajectories;
         }
 
-        public void setAmountTrajectories(Integer amountTrajectories) {
+        public void setAmountTrajectories(Long amountTrajectories) {
             this.amountTrajectories = amountTrajectories;
         }
 

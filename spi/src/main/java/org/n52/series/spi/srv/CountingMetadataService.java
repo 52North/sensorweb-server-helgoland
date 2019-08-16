@@ -35,28 +35,28 @@ import org.n52.io.request.IoParameters;
  */
 public interface CountingMetadataService {
 
-    int getServiceCount(IoParameters parameters);
+    Long getServiceCount(IoParameters parameters);
 
-    int getOfferingCount(IoParameters parameters);
+    Long getOfferingCount(IoParameters parameters);
 
-    int getCategoryCount(IoParameters parameters);
+    Long getCategoryCount(IoParameters parameters);
 
-    int getFeatureCount(IoParameters parameters);
+    Long getFeatureCount(IoParameters parameters);
 
-    int getProcedureCount(IoParameters parameters);
+    Long getProcedureCount(IoParameters parameters);
 
-    int getPhenomenaCount(IoParameters parameters);
+    Long getPhenomenaCount(IoParameters parameters);
 
-    int getPlatformCount(IoParameters paramters);
+    Long getPlatformCount(IoParameters paramters);
 
-    int getDatasetCount(IoParameters parameters);
+    Long getDatasetCount(IoParameters parameters);
 
-    int getStationCount();
+    Long getStationCount();
 
-    int getTimeseriesCount();
+    Long getTimeseriesCount();
 
-    int getSamplingCounter(IoParameters parameters);
+    Long getSamplingCounter(IoParameters parameters);
 
-    int getMeasuringProgramCounter(IoParameters parameters);
+    Long getMeasuringProgramCounter(IoParameters parameters);
 
 }

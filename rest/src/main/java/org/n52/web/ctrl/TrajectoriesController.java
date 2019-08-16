@@ -31,7 +31,6 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 import java.util.List;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.TrajectoryOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -54,11 +53,6 @@ public class TrajectoriesController extends ParameterRequestMappingAdapter<Traje
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_TRAJECTORIES;
-    }
-
-    @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getDatasetCount(queryMap);
     }
 
     @Override

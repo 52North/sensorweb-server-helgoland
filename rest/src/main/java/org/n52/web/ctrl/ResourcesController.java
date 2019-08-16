@@ -150,7 +150,7 @@ public class ResourcesController {
         return resources;
     }
 
-    private int countDatasets(IoParameters parameters, String datasetType) {
+    private Long countDatasets(IoParameters parameters, String datasetType) {
         String filterName = IoParameters.FILTER_DATASET_TYPES;
         IoParameters filter = parameters.extendWith(filterName, datasetType);
         return metadataService.getDatasetCount(filter);
@@ -170,7 +170,8 @@ public class ResourcesController {
         private String id;
         private String label;
         private String description;
-        private Integer size;
+
+        private Long size;
 
         private ResourceCollection(String id) {
             this.id = id;
@@ -200,11 +201,15 @@ public class ResourcesController {
             this.description = description;
         }
 
-        public Integer getSize() {
+        public Long getSize() {
             return size;
         }
 
         public void setSize(Integer size) {
+            setSize(size.longValue());
+        }
+
+        public void setSize(Long size) {
             this.size = size;
         }
 
@@ -219,6 +224,10 @@ public class ResourcesController {
         }
 
         public ResourceCollection withCount(Integer count) {
+            return withCount(count.longValue());
+        }
+
+        public ResourceCollection withCount(Long count) {
             this.size = count;
             return this;
         }

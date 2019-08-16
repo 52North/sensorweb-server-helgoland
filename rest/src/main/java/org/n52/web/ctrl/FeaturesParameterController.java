@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -50,8 +49,4 @@ public class FeaturesParameterController extends ParameterRequestMappingAdapter<
         return UrlSettings.COLLECTION_FEATURES;
     }
 
-    @Override
-    protected int getElementCount(IoParameters parameters) {
-        return super.getEntityCounter().getFeatureCount(parameters);
-    }
 }

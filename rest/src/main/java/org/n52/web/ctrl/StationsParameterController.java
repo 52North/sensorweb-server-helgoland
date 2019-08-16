@@ -105,10 +105,10 @@ public class StationsParameterController extends BaseController implements Resou
 
         // XXX refactor (is redundant here)
         if (map.containsParameter("limit") || map.containsParameter("offset")) {
-            Integer elementcount = this.counter.getStationCount();
+            Long elementcount = this.counter.getStationCount();
             if (elementcount != -1) {
                 OffsetBasedPagination obp = new OffsetBasedPagination(map.getOffset(), map.getLimit());
-                Paginated paginated = new Paginated(obp, elementcount.longValue());
+                Paginated paginated = new Paginated(obp, elementcount);
                 String collectionHref = createCollectionUrl(getCollectionName());
                 PageLinkUtil.addPagingHeaders(collectionHref, response, paginated);
             }

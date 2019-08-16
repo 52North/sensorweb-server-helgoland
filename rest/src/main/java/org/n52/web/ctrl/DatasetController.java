@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -49,11 +48,6 @@ public class DatasetController extends ParameterRequestMappingAdapter<DatasetOut
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_DATASETS;
-    }
-
-    @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getDatasetCount(queryMap);
     }
 
 }

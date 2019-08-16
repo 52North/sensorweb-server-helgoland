@@ -151,11 +151,6 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
         return UrlSettings.COLLECTION_TIMESERIES;
     }
 
-    @Override
-    protected int getElementCount(IoParameters queryMap) {
-        return super.getEntityCounter().getTimeseriesCount();
-    }
-
     @SuppressWarnings("unchecked")
     private Optional<Map<String, Object>> getExtras(
                                                     TimeseriesMetadataOutput output,

@@ -56,11 +56,6 @@ public class SamplingsParameterController extends ParameterRequestMappingAdapter
     }
 
     @Override
-    protected int getElementCount(IoParameters parameters) {
-        return super.getEntityCounter().getSamplingCounter(parameters);
-    }
-
-    @Override
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
         if (!query.containsKey(Parameters.TIMESPAN)) {
             DateTime now = new DateTime();

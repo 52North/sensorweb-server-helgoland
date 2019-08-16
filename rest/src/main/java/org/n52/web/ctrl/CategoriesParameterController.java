@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -48,8 +47,4 @@ public class CategoriesParameterController extends ParameterRequestMappingAdapte
         return UrlSettings.COLLECTION_CATEGORIES;
     }
 
-    @Override
-    protected int getElementCount(IoParameters parameters) {
-        return super.getEntityCounter().getCategoryCount(parameters);
-    }
 }

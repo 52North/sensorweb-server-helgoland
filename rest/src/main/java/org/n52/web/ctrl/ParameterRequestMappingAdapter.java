@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -113,6 +114,11 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     protected CountingMetadataService getEntityCounter() {
         return counter;
+    }
+
+    @Override
+    protected Long getElementCount(IoParameters parameters) {
+        return getEntityCounter().getServiceCount(parameters);
     }
 
 }

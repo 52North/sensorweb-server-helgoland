@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.GeometryOutput;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -49,12 +48,6 @@ public class GeometriesController extends ParameterRequestMappingAdapter<Geometr
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_GEOMETRIES;
-    }
-
-    @Override
-    protected int getElementCount(IoParameters queryMap) {
-        //TODO(specki): Implementation of getCount  for Geometries in EntityCounter
-        return -1;
     }
 
 }
