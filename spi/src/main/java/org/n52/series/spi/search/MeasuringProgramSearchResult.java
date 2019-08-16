@@ -28,19 +28,19 @@
  */
 package org.n52.series.spi.search;
 
-public class CategorySearchResult extends SearchResult {
+public class MeasuringProgramSearchResult extends SearchResult {
 
     @Override
     public String getHref() {
         return hasBaseUrl()
                 ? createFullHref()
                 // stay backwards compatible
-                : "./categories/" + getId();
+                : "./measuringPrograms/" + getId();
     }
 
     @Override
     public String getType() {
-        return "category";
+        return "measuringProgram";
     }
 
 }

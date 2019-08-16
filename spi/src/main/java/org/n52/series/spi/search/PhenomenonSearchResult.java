@@ -30,14 +30,6 @@ package org.n52.series.spi.search;
 
 public class PhenomenonSearchResult extends SearchResult {
 
-    public PhenomenonSearchResult(String id, String label) {
-        super(id, label);
-    }
-
-    public PhenomenonSearchResult(String id, String label, String baseUrl) {
-        super(id, label, baseUrl);
-    }
-
     @Override
     public String getHref() {
         return hasBaseUrl()

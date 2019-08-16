@@ -32,30 +32,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class SearchResult {
 
-    private final String id;
+    private String id;
 
-    private final String label;
+    private String label;
 
-    private final String baseUrl;
-
-    public SearchResult(String id, String label) {
-        this(id, label, null);
-    }
-
-    public SearchResult(String id, String label, String baseUrl) {
-        this.id = id;
-        this.label = label;
-        this.baseUrl = baseUrl != null && !baseUrl.endsWith("/")
-                ? baseUrl.concat("/")
-                : baseUrl;
-    }
+    private String baseUrl;
 
     public String getId() {
         return id;
     }
 
+    public SearchResult setId(String id) {
+        this.id = id;
+        return this;
+    }
+
     public String getLabel() {
         return label;
+    }
+
+    public SearchResult setLabel(String label) {
+        this.label = label;
+        return this;
     }
 
     public boolean hasBaseUrl() {
@@ -65,6 +63,11 @@ public abstract class SearchResult {
     @JsonIgnore
     public String getBaseUrl() {
         return baseUrl;
+    }
+
+    public SearchResult setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl != null && !baseUrl.endsWith("/") ? baseUrl.concat("/") : baseUrl;
+        return this;
     }
 
     protected String createFullHref() {

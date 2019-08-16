@@ -31,10 +31,6 @@ package org.n52.series.spi.search;
 @Deprecated
 public class StationSearchResult extends SearchResult {
 
-    public StationSearchResult(String id, String label) {
-        super(id, label);
-    }
-
     @Override
     public String getHref() {
         return "./stations/" + getId();
