@@ -30,17 +30,16 @@ package org.n52.io.response.dataset;
 
 import java.util.List;
 
-import org.n52.io.request.IoParameters;
+import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
+public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput {
 
     public static final String COLLECTION_PATH = "datasets";
 
@@ -73,8 +72,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     private OptionalOutput<V> firstValue;
     private OptionalOutput<V> lastValue;
 
-    protected DatasetOutput() {
-        // use static constructor method
+    public DatasetOutput() {
     }
 
     public String getDatasetType() {
@@ -180,12 +178,6 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
-    }
-
-    public static <V extends AbstractValue< ? >> DatasetOutput<V> create(IoParameters params) {
-
-        DatasetOutput<V> output = new DatasetOutput<>();
-        return output;
     }
 
     public V getFirstValue() {

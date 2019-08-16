@@ -30,15 +30,15 @@ package org.n52.io.response.sampling;
 
 import java.util.List;
 
+import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class SamplingOutput extends ParameterOutput {
+public class SamplingOutput extends AbstractOutput {
 
     public static final String COLLECTION_PATH = "samplings";
     public static final String COMMENT = "comment";

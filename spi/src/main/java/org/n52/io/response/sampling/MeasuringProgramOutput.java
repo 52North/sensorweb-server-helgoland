@@ -32,10 +32,10 @@ import java.util.List;
 
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
+import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.CategoryOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
-import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
@@ -45,7 +45,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class MeasuringProgramOutput extends ParameterOutput {
+public class MeasuringProgramOutput extends AbstractOutput {
 
     public static final String COLLECTION_PATH = "measuringPrograms";
     public static final String ORDER_ID = "orderId";
@@ -57,7 +57,7 @@ public class MeasuringProgramOutput extends ParameterOutput {
     public static final String SAMPLINGS = "samplings";
     public static final String FEATURES = "features";
     public static final String PHENOMENA = "phenomeny";
-    public static final String CATEGROIES = "categories";
+    public static final String CATEGORIES = "categories";
     private OptionalOutput<String> orderId;
     private OptionalOutput<TimeOutput> measuringProgramTimeStart;
     private OptionalOutput<TimeOutput> measuringProgramTimeEnd;
