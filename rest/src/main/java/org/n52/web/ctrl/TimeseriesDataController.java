@@ -81,13 +81,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@RestController
-@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
-    "application/json"
-})
+//@RestController
+//@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
+//    "application/json"
+//})
+@Deprecated
 public class TimeseriesDataController extends BaseController {
 
     private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
