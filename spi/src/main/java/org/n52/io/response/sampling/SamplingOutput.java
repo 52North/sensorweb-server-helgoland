@@ -167,8 +167,8 @@ public class SamplingOutput extends AbstractOutput {
         this.samplingTimeEnd = samplingTimeEnd;
     }
 
-    public OptionalOutput<FeatureOutput> getFeature() {
-        return feature;
+    public FeatureOutput getFeature() {
+        return getIfSerialized(feature);
     }
 
     public void setFeature(OptionalOutput<FeatureOutput> feature) {
