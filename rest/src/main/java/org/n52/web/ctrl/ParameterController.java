@@ -101,8 +101,8 @@ public abstract class ParameterController<T extends ParameterOutput>
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
 
         Map<String, Object> extras = new HashMap<>();
+        T from = parameterService.getParameter(resourceId, map);
         for (MetadataExtension<T> extension : metadataExtensions) {
-            T from = parameterService.getParameter(resourceId, map);
             final Map<String, Object> furtherExtras = extension.getExtras(from, map);
             Collection<String> overridableKeys = checkForOverridingData(extras, furtherExtras);
             if (!overridableKeys.isEmpty()) {
