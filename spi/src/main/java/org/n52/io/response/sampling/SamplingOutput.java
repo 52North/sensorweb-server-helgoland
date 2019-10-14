@@ -49,7 +49,7 @@ public class SamplingOutput extends AbstractOutput {
     public static final String SAMPLING_TIME_START = "samplingTimeStart";
     public static final String SAMPLING_TIME_END = "samplingTimeEnd";
     public static final String FEATURE = "feature";
-    public static final String LAST_SAMPLING_OBSERVATIONS = "lastSamplingObservations";
+    public static final String SAMPLING_OBSERVATIONS = "samplingObservations";
 
     private OptionalOutput<String> comment;
     private OptionalOutput<MeasuringProgramOutput> measuringProgram;
@@ -60,7 +60,7 @@ public class SamplingOutput extends AbstractOutput {
     private OptionalOutput<TimeOutput> samplingTimeEnd;
     private OptionalOutput<FeatureOutput> feature;
 
-    private OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations;
+    private OptionalOutput<List<SamplingObservationOutput>> samplingObservations;
 
     @Override
     protected String getCollectionName() {
@@ -176,16 +176,16 @@ public class SamplingOutput extends AbstractOutput {
     }
 
     /**
-     * @return the lastSamplingObservations
+     * @return the samplingObservations
      */
-    public List<SamplingObservationOutput> getLastSamplingObservations() {
-        return getIfSerialized(lastSamplingObservations);
+    public List<SamplingObservationOutput> getSamplingObservations() {
+        return getIfSerialized(samplingObservations);
     }
 
     /**
-     * @param lastSamplingObservations the lastSamplingObservations to set
+     * @param samplingObservations the samplingObservations to set
      */
-    public void setLastSamplingObservations(OptionalOutput<List<SamplingObservationOutput>> lastSamplingObservations) {
-        this.lastSamplingObservations = lastSamplingObservations;
+    public void setSamplingObservations(OptionalOutput<List<SamplingObservationOutput>> samplingObservations) {
+        this.samplingObservations = samplingObservations;
     }
 }
