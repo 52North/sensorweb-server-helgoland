@@ -30,7 +30,6 @@ package org.n52.io.response;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -43,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ParameterOutput implements RawFormats {
+public abstract class ParameterOutput extends SelfSerializedOutput implements RawFormats {
 
     public static final String ID = "id";
     public static final String HREF = "href";
@@ -77,46 +76,6 @@ public abstract class ParameterOutput implements RawFormats {
         Set<String> fields = parameters.getFields();
         boolean serialize = fields.isEmpty() || fields.contains(parameter);
         consumer.accept(OptionalOutput.of(value, serialize));
-    }
-
-    protected <T> T getIfSerialized(OptionalOutput<T> optional) {
-        return getIfSet(optional, false);
-    }
-
-    protected <T extends Collection<E>, E> T getIfSerializedCollection(OptionalOutput<T> optional) {
-        return getIfSetCollection(optional, false);
-    }
-
-    protected <K, T> Map<K, T> getIfSerializedMap(OptionalOutput<Map<K, T>> optional) {
-        return getIfSetMap(optional, false);
-    }
-
-    protected <T> T getIfSet(OptionalOutput<T> optional, boolean forced) {
-        return isSet(optional)
-                ? optional.getValue(forced)
-                : null;
-    }
-
-    protected <T extends Collection<E>, E> T getIfSetCollection(OptionalOutput<T> optional, boolean forced) {
-        return resolvesToNonNullValue(optional) && !optional.getValue()
-                                                            .isEmpty()
-                                                                    ? optional.getValue(forced)
-                                                                    : null;
-    }
-
-    protected <K, T> Map<K, T> getIfSetMap(OptionalOutput<Map<K, T>> optional, boolean forced) {
-        return resolvesToNonNullValue(optional) && !optional.getValue()
-                                                            .isEmpty()
-                                                                    ? optional.getValue(forced)
-                                                                    : null;
-    }
-
-    protected <T> boolean isSet(OptionalOutput<T> optional) {
-        return (optional != null) && optional.isPresent();
-    }
-
-    protected <T> boolean resolvesToNonNullValue(OptionalOutput<T> optional) {
-        return isSet(optional) && optional.isSerialize();
     }
 
     public String getId() {
