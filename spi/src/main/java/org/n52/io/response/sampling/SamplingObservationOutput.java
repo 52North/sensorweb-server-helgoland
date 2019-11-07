@@ -31,10 +31,13 @@ package org.n52.io.response.sampling;
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.CategoryOutput;
+import org.n52.io.response.DetectionLimitOutput;
 import org.n52.io.response.OfferingOutput;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
+import org.n52.io.response.SelfSerializedOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.AbstractValue;
@@ -42,17 +45,19 @@ import org.n52.io.response.dataset.DatasetOutput;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-public class SamplingObservationOutput {
+@JsonPropertyOrder({ "value", "detectionLimit", "timestamp", "uom"})
+public class SamplingObservationOutput extends SelfSerializedOutput {
 
     private AbstractValue<?> value;
-    private DetectionLimitOutput detectionLimit;
+    private OptionalOutput<String> uom;
     private DatasetOutput<AbstractValue<?>> dataset;
     private PhenomenonOutput phenomenon;
     private CategoryOutput category;
     private ProcedureOutput procedure;
-    private PlatformOutput platfrom;
+    private PlatformOutput platform;
     private OfferingOutput offering;
 
 
@@ -76,12 +81,21 @@ public class SamplingObservationOutput {
     }
 
     public String getUom() {
-        return getDataset() != null ? getDataset().getUom() : null;
+        return getIfSerialized(uom);
+    }
+
+    public SamplingObservationOutput setUom(OptionalOutput<String> uom) {
+        this.uom = uom;
+        return this;
     }
 
     @JsonInclude(content = Include.ALWAYS)
     public Object getValue() {
         return getAbstractValue().getValue();
+    }
+
+    public DetectionLimitOutput getDetectionLimit() {
+        return getAbstractValue().getDetectionLimit();
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)
@@ -92,14 +106,6 @@ public class SamplingObservationOutput {
 
     public void setValue(AbstractValue<?> value) {
         this.value = value;
-    }
-
-    public DetectionLimitOutput getDetectionLimit() {
-        return detectionLimit;
-    }
-
-    public void setDetectionLimit(DetectionLimitOutput detectionLimit) {
-        this.detectionLimit = detectionLimit;
     }
 
     public DatasetOutput<AbstractValue<?>> getDataset() {
@@ -142,13 +148,13 @@ public class SamplingObservationOutput {
     }
 
 
-    public PlatformOutput getPlatfrom() {
-        return platfrom;
+    public PlatformOutput getPlatform() {
+        return platform;
     }
 
 
-    public void setPlatfrom(PlatformOutput platfrom) {
-        this.platfrom = platfrom;
+    public void setPlatform(PlatformOutput platform) {
+        this.platform = platform;
     }
 
 

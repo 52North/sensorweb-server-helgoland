@@ -26,11 +26,9 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.sampling;
+package org.n52.io.response;
 
 import java.math.BigDecimal;
-
-import org.n52.io.response.ParameterOutput;
 
 public class DetectionLimitOutput extends ParameterOutput {
 

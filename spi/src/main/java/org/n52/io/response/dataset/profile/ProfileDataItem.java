@@ -32,17 +32,21 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.n52.io.response.DetectionLimitOutput;
 import org.n52.io.response.dataset.ValueFormatter;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonPropertyOrder({
     "verticalFrom",
     "verticalTo",
     "vertical",
-    "value"
+    "value",
+    "detectionLimit"
 })
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
@@ -54,6 +58,8 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
     private T value;
 
     private ValueFormatter<T> valueFormatter;
+
+    private DetectionLimitOutput detectionLimit;
 
     public ProfileDataItem() {
     }
@@ -99,6 +105,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.vertical = vertical;
     }
 
+    @JsonInclude(content = Include.ALWAYS)
     public T getValue() {
         return value;
     }
@@ -126,6 +133,14 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         return valueFormatter != null
                 ? valueFormatter.format(value)
                 : value.toString();
+    }
+
+    public DetectionLimitOutput getDetectionLimit() {
+        return detectionLimit;
+    }
+
+    public void setDetectionLimit(DetectionLimitOutput detectionLimit) {
+        this.detectionLimit = detectionLimit;
     }
 
     @Override
