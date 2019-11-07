@@ -136,7 +136,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     }
 
     @JsonSerialize(converter = TimeOutputConverter.class)
-    public TimeOutput getSamplingTmeStart() {
+    public TimeOutput getSamplingTimeStart() {
         return getIfSerialized(samplingTimeStart);
     }
 
