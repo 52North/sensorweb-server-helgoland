@@ -9,7 +9,7 @@
     
     <groupId>org.n52.series-api</groupId>
     <artifactId>series-rest-api</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.1-alpha.8</version>
     <packaging>pom</packaging>
     <name>Series REST API</name>
     <url>http://52north.org/communities/sensorweb/</url>
@@ -47,7 +47,7 @@
         <connection>scm:git:https://github.com/52North/series-rest-api.git</connection>
         <developerConnection>scm:git:https://github.com/52North/series-rest-api.git</developerConnection>
         <url>https://github.com/52North/series-rest-api</url>
-        <tag>HEAD</tag>
+        <tag>v2.0.1-alpha.8</tag>
     </scm>
     
     <properties>
