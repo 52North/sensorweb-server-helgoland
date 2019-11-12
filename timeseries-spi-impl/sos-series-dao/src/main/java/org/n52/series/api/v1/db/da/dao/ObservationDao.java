@@ -28,8 +28,10 @@
 package org.n52.series.api.v1.db.da.dao;
 
 import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.in;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -38,10 +40,16 @@ import org.hibernate.criterion.Projections;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.TimeseriesRepository;
+import org.n52.series.api.v1.db.da.beans.DataModelUtil;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ObservationDao extends AbstractDao<ObservationEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObservationDao.class);
 
     private static final String COLUMN_SERIES_PKID = "seriesPkid";
 
@@ -53,7 +61,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
 
     @Override
     public List<ObservationEntity> find(String search, DbQuery query) {
-        return new ArrayList<ObservationEntity>();
+        return new ArrayList<>();
     }
 
     @Override
@@ -100,7 +108,7 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
         parameters.addPagingTo(criteria);
-        return (List<ObservationEntity>) criteria.list();
+        return criteria.list();
     }
 
     /**
@@ -120,7 +128,17 @@ public class ObservationDao extends AbstractDao<ObservationEntity> {
                 .add(eq(COLUMN_SERIES_PKID, series.getPkid()))
                 .add(eq(COLUMN_DELETED, Boolean.FALSE));
         parameters.addTimespanTo(criteria);
-        return (List<ObservationEntity>) criteria.list();
+        return criteria.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<ObservationEntity> getAllInstancesFor(Collection<Long> series, DbQuery parameters) throws DataAccessException {
+        Criteria criteria = session.createCriteria(ObservationEntity.class)
+                .add(in(COLUMN_SERIES_PKID, series))
+                .add(eq(COLUMN_DELETED, Boolean.FALSE));
+        parameters.addTimespanTo(criteria);
+        LOGGER.trace("Query getAllInstances with SQL: \n {}", DataModelUtil.getSqlString(criteria));
+        return criteria.list();
     }
 
     @SuppressWarnings("unchecked")
