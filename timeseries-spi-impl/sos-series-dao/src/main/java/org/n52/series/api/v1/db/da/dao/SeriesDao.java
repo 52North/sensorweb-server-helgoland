@@ -42,14 +42,19 @@ import org.joda.time.DateTime;
 import org.n52.io.IoParameters;
 import org.n52.series.api.v1.db.da.DataAccessException;
 import org.n52.series.api.v1.db.da.DbQuery;
+import org.n52.series.api.v1.db.da.beans.DataModelUtil;
 import org.n52.series.api.v1.db.da.beans.FeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nFeatureEntity;
 import org.n52.series.api.v1.db.da.beans.I18nOfferingEntity;
 import org.n52.series.api.v1.db.da.beans.I18nProcedureEntity;
 import org.n52.series.api.v1.db.da.beans.ObservationEntity;
 import org.n52.series.api.v1.db.da.beans.SeriesEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SeriesDao extends AbstractDao<SeriesEntity> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SeriesDao.class);
 
     private static final String COLUMN_PKID = "pkid";
 
@@ -133,22 +138,24 @@ public class SeriesDao extends AbstractDao<SeriesEntity> {
     }
 
 
-    public ObservationEntity getClosestOuterPreviousValue(final SeriesEntity dataset, final DateTime lowerBound, final DbQuery query) {
+    public ObservationEntity getClosestOuterPreviousValue(final SeriesEntity dataset, final DateTime lowerBound,
+            final DbQuery query) {
         String column = "timestamp";
         final Order order = Order.desc(column);
         final Criteria criteria = createDataCriteria(dataset, query, order);
-        return (ObservationEntity) criteria.add(Restrictions.lt(column, lowerBound.toDate()))
-                           .setMaxResults(1)
-                           .uniqueResult();
+        Criteria c = criteria.add(Restrictions.lt(column, lowerBound.toDate())).setMaxResults(1);
+        LOGGER.trace("Query getClosestOuterPreviousValue with SQL: \n {}", DataModelUtil.getSqlString(c));
+        return (ObservationEntity) c.uniqueResult();
     }
 
-    public ObservationEntity getClosestOuterNextValue(final SeriesEntity dataset, final DateTime upperBound, final DbQuery query) {
+    public ObservationEntity getClosestOuterNextValue(final SeriesEntity dataset, final DateTime upperBound,
+            final DbQuery query) {
         String column = "timestamp";
         final Order order = Order.asc(column);
         final Criteria criteria = createDataCriteria(dataset, query, order);
-        return (ObservationEntity) criteria.add(Restrictions.gt(column, upperBound.toDate()))
-                           .setMaxResults(1)
-                           .uniqueResult();
+        Criteria c = criteria.add(Restrictions.gt(column, upperBound.toDate())).setMaxResults(1);
+        LOGGER.trace("Query getClosestOuterNextValue with SQL: \n {}", DataModelUtil.getSqlString(c));
+        return (ObservationEntity) c.uniqueResult();
     }
 
     private Criteria createDataCriteria(SeriesEntity dataset, DbQuery query, Order order) {
