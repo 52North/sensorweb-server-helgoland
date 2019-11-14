@@ -87,7 +87,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public Optional<Pagination> previous(long elements) {
-        return offset >= elements || offset == 0 || offset >= elements
+        return offset >= elements || offset == 0
                 ? Optional.empty()
                 : Optional.of(new OffsetBasedPagination(offset / limit - 1, limit));
     }
