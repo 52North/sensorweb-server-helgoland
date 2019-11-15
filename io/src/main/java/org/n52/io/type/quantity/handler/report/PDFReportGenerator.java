@@ -45,13 +45,13 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
+import org.apache.fop.configuration.Configuration;
+import org.apache.fop.configuration.ConfigurationException;
+import org.apache.fop.configuration.DefaultConfigurationBuilder;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
 import org.joda.time.DateTime;
@@ -76,7 +76,6 @@ import org.n52.oxf.TableType;
 import org.n52.oxf.TableType.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
 public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
 
@@ -176,7 +175,7 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             transformer.transform(source, result);
         } catch (FOPException e) {
             throw new IoParseException("Failed to create Formatting Object Processor (FOP)", e);
-        } catch (SAXException | ConfigurationException | IOException e) {
+        } catch (ConfigurationException e) {
             throw new IoParseException("Failed to read config for Formatting Object Processor (FOP)", e);
         } catch (TransformerConfigurationException e) {
             throw new IoParseException("Invalid transform configuration. Inspect xslt!", e);

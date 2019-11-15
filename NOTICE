@@ -11,35 +11,22 @@ This project includes:
   52°North Svalbard Core under The Apache Software License, Version 2.0
   52°North Svalbard OData under The Apache Software License, Version 2.0
   Animal Sniffer Annotations under MIT license
+  Apache Ant Core under The Apache Software License, Version 2.0
+  Apache Ant Launcher under The Apache Software License, Version 2.0
   Apache Commons Codec under Apache License, Version 2.0
   Apache Commons IO under Apache License, Version 2.0
   Apache Commons Lang under Apache License, Version 2.0
   Apache Commons Text under Apache License, Version 2.0
   Apache FontBox under Apache License, Version 2.0
-  Apache FOP under The Apache Software License, Version 2.0
+  Apache FOP Core under The Apache Software License, Version 2.0
+  Apache FOP Events under The Apache Software License, Version 2.0
+  Apache FOP Utilities under The Apache Software License, Version 2.0
   Apache HttpClient under Apache License, Version 2.0
   Apache HttpCore under Apache License, Version 2.0
   Apache XML Graphics Commons under The Apache Software License, Version 2.0
   Avalon Framework API under The Apache Software License, Version 2.0
   Avalon Framework Implementation under The Apache Software License, Version 2.0
   axis under The Apache Software License, Version 2.0
-  Batik animation engine under The Apache Software License, Version 2.0
-  Batik AWT utilities under The Apache Software License, Version 2.0
-  Batik bridge classes under The Apache Software License, Version 2.0
-  Batik constants library under The Apache Software License, Version 2.0
-  Batik CSS engine under The Apache Software License, Version 2.0
-  Batik DOM implementation under The Apache Software License, Version 2.0
-  Batik extension classes under The Apache Software License, Version 2.0
-  Batik external code under The Apache Software License, Version 2.0
-  Batik GVT (Graphics Vector Tree) under The Apache Software License, Version 2.0
-  Batik i18n library under The Apache Software License, Version 2.0
-  Batik Java2D SVG generator under The Apache Software License, Version 2.0
-  Batik scripting language classes under The Apache Software License, Version 2.0
-  Batik SVG DOM implementation under The Apache Software License, Version 2.0
-  Batik SVG microsyntax parser library under The Apache Software License, Version 2.0
-  Batik SVG transcoder classes under The Apache Software License, Version 2.0
-  Batik utility library under The Apache Software License, Version 2.0
-  Batik XML utility library under The Apache Software License, Version 2.0
   Checker Qual under The MIT License
   Commons Lang under The Apache Software License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
@@ -83,7 +70,25 @@ This project includes:
   odata-server-api under The Apache Software License, Version 2.0
   odata-server-core under The Apache Software License, Version 2.0
   Open GIS Interfaces under OGC copyright or Lesser General Public License (LGPL)
+  org.apache.xmlgraphics:batik-anim under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-awt-util under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-bridge under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-constants under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-css under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-dom under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-ext under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-extension under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-gvt under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-i18n under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-parser under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-script under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-svg-dom under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-svggen under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-transcoder under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-util under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-xml under The Apache Software License, Version 2.0
   org.locationtech.jts:jts-core under Eclipse Publish License, Version 1.0 or Eclipse Distribution License - v 1.0
+  QDox under The Apache Software License, Version 2.0
   quartz under The Apache Software License, Version 2.0
   Referencing services under Lesser General Public License (LGPL)
   Series REST API under GNU General Public License, Version 2.0
