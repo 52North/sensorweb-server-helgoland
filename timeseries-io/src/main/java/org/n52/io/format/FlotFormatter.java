@@ -51,7 +51,7 @@ public class FlotFormatter implements TimeseriesDataFormatter<FlotDataCollection
 
     private FlotSeries createFlotSeries(TimeseriesData seriesToFormat) {
         FlotSeries flotSeries = new FlotSeries();
-        flotSeries.setValues(formatSeries(seriesToFormat));
+        flotSeries.setValues(formatValues(seriesToFormat));
         if (seriesToFormat.hasMetadata()) {
             formatMetadata(seriesToFormat, flotSeries);
         }
@@ -71,7 +71,17 @@ public class FlotFormatter implements TimeseriesDataFormatter<FlotDataCollection
         flotSeries.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
     }
 
-    private List<Number[]> formatSeries(TimeseriesData timeseries) {
+    private FlotSeries formatSeries(TimeseriesData timeseries) {
+        FlotSeries series = new FlotSeries();
+        series.setValues(formatValues(timeseries));
+        if (timeseries.hasMetadata()) {
+            series.setValueBeforeTimespan(formatValue(timeseries.getMetadata().getValueBeforeTimespan()));
+            series.setValueAfterTimespan(formatValue(timeseries.getMetadata().getValueAfterTimespan()));
+        }
+        return series;
+    }
+
+    private List<Number[]> formatValues(TimeseriesData timeseries) {
         List<Number[]> series = new ArrayList<>();
         for (TimeseriesValue currentValue : timeseries.getValues()) {
             series.add(formatValue(currentValue));
