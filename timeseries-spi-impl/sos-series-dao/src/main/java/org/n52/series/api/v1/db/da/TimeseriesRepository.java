@@ -363,12 +363,50 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
             Map<Long, List<ObservationEntity>> observations, DbQuery query, Session session)
             throws DataAccessException {
         Map<String, TimeseriesData> referenceSeries = new HashMap<>();
+        SeriesDao dao = new SeriesDao(session);
+        Interval timespan = query.getTimespan();
+        DateTime lowerBound = timespan.getStart();
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
             TimeseriesData referenceSeriesData = getReferenceDataValues(referenceSeriesEntity,
                     observations.get(referenceSeriesEntity.getPkid()), query, session);
+            if (query.expandWithNextValuesBeyondInterval()) {
+                TimeseriesDataMetadata metadata = new TimeseriesDataMetadata();
+                referenceSeriesData.setMetadata(metadata);
+
+                long startPrevious = System.currentTimeMillis();
+                ObservationEntity previousValue =
+                        dao.getClosestOuterPreviousValue(referenceSeriesEntity, lowerBound, query);
+                LOGGER.debug("Querying closes outer previous value for referenced timeseries '{}' took {} ms",
+                        referenceSeriesEntity.getPkid(), (System.currentTimeMillis() - startPrevious));
+                TimeseriesValue before = createTimeseriesValueFor(previousValue, referenceSeriesEntity);
+                metadata.setValueBeforeTimespan(before != null ? before
+                        : new TimeseriesValue(lowerBound.minusHours(1).getMillis(),
+                                getFirstItem(referenceSeriesData)));
+
+                long startNext = System.currentTimeMillis();
+                DateTime upperBound = timespan.getEnd();
+                ObservationEntity nextValue = dao.getClosestOuterNextValue(referenceSeriesEntity, upperBound, query);
+                LOGGER.debug("Querying closes outer next value for referenced timeseries '{}' took {} ms",
+                        referenceSeriesEntity.getPkid(), (System.currentTimeMillis() - startNext));
+                TimeseriesValue after = createTimeseriesValueFor(nextValue, referenceSeriesEntity);
+                metadata.setValueAfterTimespan(after != null ? after
+                        : new TimeseriesValue(upperBound.plusHours(1).getMillis(), getLastItem(referenceSeriesData)));
+            }
             referenceSeries.put(referenceSeriesEntity.getPkid().toString(), referenceSeriesData);
         }
         return referenceSeries;
+    }
+
+    private Double getFirstItem(TimeseriesData referenceSeriesData) {
+        return referenceSeriesData.getValues() != null && referenceSeriesData.getValues().length > 0
+                ? referenceSeriesData.getValues()[0].getValue()
+                : null;
+    }
+
+    private Double getLastItem(TimeseriesData referenceSeriesData) {
+        return referenceSeriesData.getValues() != null && referenceSeriesData.getValues().length > 0
+                ? referenceSeriesData.getValues()[referenceSeriesData.getValues().length - 1].getValue()
+                : null;
     }
 
     private TimeseriesData getReferenceDataValues(SeriesEntity referenceSeries, DbQuery query, Session session)
