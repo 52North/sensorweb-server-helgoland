@@ -33,11 +33,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class FlotData {
 
     private List<Number[]> values;
 
-    private Map<String, List<Number[]>> referenceValues;
+    private Map<String, FlotData> referenceValues;
 
     private Number[] valueBeforeTimespan;
 
@@ -55,15 +58,16 @@ public class FlotData {
         this.values = values;
     }
 
-    public Map<String, List<Number[]>> getReferenceValues() {
+    @JsonInclude(Include.NON_EMPTY)
+    public Map<String, FlotData> getReferenceValues() {
         return referenceValues;
     }
 
-    public void setReferenceValues(Map<String, List<Number[]>> referenceValues) {
+    public void setReferenceValues(Map<String, FlotData> referenceValues) {
         this.referenceValues = referenceValues;
     }
 
-    public void addReferenceValues(String id, List<Number[]> toAdd) {
+    public void addReferenceValues(String id, FlotData toAdd) {
         this.referenceValues.put(id, toAdd);
     }
 
