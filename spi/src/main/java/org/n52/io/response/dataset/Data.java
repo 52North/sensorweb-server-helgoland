@@ -99,8 +99,8 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     @JsonIgnore
     public boolean hasMetadata() {
-        return metadata != null && hasReferenceValues() && metadata.hasValueBeforeTimespan()
-                && metadata.hasValueAfterTimespan();
+        return metadata != null
+                && (hasReferenceValues() || metadata.hasValueBeforeTimespan() || metadata.hasValueAfterTimespan());
     }
 
     @JsonIgnore
