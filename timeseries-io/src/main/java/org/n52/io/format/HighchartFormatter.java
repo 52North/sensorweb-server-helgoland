@@ -53,6 +53,12 @@ public class HighchartFormatter implements TimeseriesDataFormatter<HighchartData
                     for (String referenceValueId : referenceValues.keySet()) {
                         TimeseriesData timeseriesData = metadata.getReferenceValues().get(referenceValueId);
                         HighchartSeries referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
+                        if (timeseriesData.hasMetadata()) {
+                            referenceSeries.setValueBeforeTimespan(
+                                    formatValue(timeseriesData.getMetadata().getValueBeforeTimespan()));
+                            referenceSeries.setValueAfterTimespan(
+                                    formatValue(timeseriesData.getMetadata().getValueAfterTimespan()));
+                        }
                         dataCollection.addNewTimeseries(referenceValueId, referenceSeries);
                     }
                 }
