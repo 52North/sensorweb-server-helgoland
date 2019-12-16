@@ -30,6 +30,7 @@ package org.n52.series.api.v1.db.da;
 import static java.math.RoundingMode.HALF_UP;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.Period;
 import org.n52.io.v1.data.ReferenceValueOutput;
 import org.n52.io.v1.data.StationOutput;
 import org.n52.io.v1.data.TimeseriesData;
@@ -366,6 +368,8 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
         SeriesDao dao = new SeriesDao(session);
         Interval timespan = query.getTimespan();
         DateTime lowerBound = timespan.getStart();
+        DateTime upperBound = timespan.getEnd();
+        Long overlappingTime = getOverlappingTime(timespan);
         for (SeriesEntity referenceSeriesEntity : referenceValues) {
             TimeseriesData referenceSeriesData = getReferenceDataValues(referenceSeriesEntity,
                     observations.get(referenceSeriesEntity.getPkid()), query, session);
@@ -380,21 +384,24 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                         referenceSeriesEntity.getPkid(), (System.currentTimeMillis() - startPrevious));
                 TimeseriesValue before = createTimeseriesValueFor(previousValue, referenceSeriesEntity);
                 metadata.setValueBeforeTimespan(before != null ? before
-                        : new TimeseriesValue(lowerBound.minusHours(1).getMillis(),
+                        : new TimeseriesValue(lowerBound.minus(overlappingTime).getMillis(),
                                 getFirstItem(referenceSeriesData)));
 
                 long startNext = System.currentTimeMillis();
-                DateTime upperBound = timespan.getEnd();
                 ObservationEntity nextValue = dao.getClosestOuterNextValue(referenceSeriesEntity, upperBound, query);
                 LOGGER.debug("Querying closes outer next value for referenced timeseries '{}' took {} ms",
                         referenceSeriesEntity.getPkid(), (System.currentTimeMillis() - startNext));
                 TimeseriesValue after = createTimeseriesValueFor(nextValue, referenceSeriesEntity);
                 metadata.setValueAfterTimespan(after != null ? after
-                        : new TimeseriesValue(upperBound.plusHours(1).getMillis(), getLastItem(referenceSeriesData)));
+                        : new TimeseriesValue(upperBound.plus(overlappingTime).getMillis(), getLastItem(referenceSeriesData)));
             }
             referenceSeries.put(referenceSeriesEntity.getPkid().toString(), referenceSeriesData);
         }
         return referenceSeries;
+    }
+
+    private Long getOverlappingTime(Interval timespan) {
+        return ((Double) (timespan.toDurationMillis() * 0.1)).longValue();
     }
 
     private Double getFirstItem(TimeseriesData referenceSeriesData) {
