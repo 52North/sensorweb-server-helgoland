@@ -1,3 +1,12 @@
+# 3.x
+
+## 3.0.0
+
+### Changes
+- Rename repository to `sensorweb-server-helgoland`
+- Rename groupId to `org.n52.sensorweb-server.helgoland`
+- Rename artifactId to `helgoland-...`
+
 # 2.x
 
 ## 2.0.0

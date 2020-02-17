@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.n52.series-api</groupId>
-        <artifactId>series-rest-api</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
+        <groupId>org.n52.sensorweb-server.helgoland</groupId>
+        <artifactId>helgoland-parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>xml-pdf-format</artifactId>
+    <artifactId>helgoland-xml-pdf-format</artifactId>
     <packaging>jar</packaging>
-    <name>52North REST-API PDF report structure</name>
+    <name>Sensor Web Server Helgoland - PDF report structure</name>
 
     <dependencies>
         <dependency>

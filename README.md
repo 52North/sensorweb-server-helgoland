@@ -1,14 +1,14 @@
-# 52n Series REST API
+# 52n Sensor Web Server Helgoland
 
-<img style="width: 60%; height: 60%" alt="series-rest-api architecture overview" src="https://52north.github.io/series-rest-api/develop/assets/images/big-picture.png">
+<img style="width: 60%; height: 60%" alt="series-rest-api architecture overview" src="https://52north.github.io/sensorweb-server-helgoland/develop/assets/images/big-picture.png">
 
 ## Description
 
 **Thin Web binding API to access timeseries data.**
 
-_The Series REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to make series data available via the API_
+_The Sensor Web Server Helgoland is a REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to make data available via the API_
 
-The Series REST API provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
+The Sensor Web Server Helgoland provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
   * prerendering of series data, 
   * generalization, 
   * overlaying of data from multiple series
@@ -27,7 +27,7 @@ The following main frameworks are used to provide this API:
 ### Existing SPI implementations:
 
 - [SOS Proxy](https://github.com/52North/series-sos-proxy): Allows to aggregate multiple OGC SOS instances under one API
-- [Direct database access](https://github.com/52North/dao-series-api): Allows to define Hibernate mappings to serve data directly from a database
+- [Direct database access](https://github.com/52North/sensorweb-server-dao-impl): Allows to define Hibernate mappings to serve data directly from a database
 - [Fotoquest database access](https://github.com/52North/fotoquest-series-api): tbd
 - [DWD Weather Alerts](https://github.com/52North/dwd-series-api): tbd
 
@@ -41,8 +41,8 @@ The following main frameworks are used to provide this API:
 The client is published under the [GNU General Public License v2 (GPLv2)](http://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Changelog
-- https://github.com/52North/series-rest-api/blob/develop/CHANGELOG.md
-- for detailed infos check https://github.com/52North/series-rest-api/pulls?q=is%3Apr+is%3Aclosed
+- https://github.com/52North/sensorweb-server-helgoland/blob/develop/CHANGELOG.md
+- for detailed infos check https://github.com/52North/sensorweb-server-helgoland/pulls?q=is%3Apr+is%3Aclosed
 
 ## Contributing
 We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 
@@ -59,7 +59,7 @@ Henning Bredel (h.bredel@52north.org)
 ## Quick Start
 
 ### Client development
-The [Web API documentation](http://52north.github.io/series-rest-api) gives a detailed overview on how to access the data provided by the API. Available I/O functions are described there, too, like generelization, chart rendering/overlay, etc.
+The [Web API documentation](http://52north.github.io/sensorweb-server-helgoland) gives a detailed overview on how to access the data provided by the API. Available I/O functions are described there, too, like generelization, chart rendering/overlay, etc.
 
 ~~The API documentation is in the 52°North wiki:
 https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
@@ -80,20 +80,20 @@ In file `WEB-INF/classes/config-general.json` add
 }
 ```
 
-The parameters are described on the official [Web API documentation](http://52north.github.io/series-rest-api).
+The parameters are described on the official [Web API documentation](http://52north.github.io/sensorweb-server-helgoland).
 
 #### Prerendering
 Prerendering is supported for measurement data.
 
 Prerendering configuration is a task which can be run regularly by a scheduler. Configuration is done as a 
 `PreRenderingJob` bean. Checkout `WEB-INF/spring/spi-impl-dao_tasks.xml` how to set up a prerendering
-job. The actual rendering configuration for each series/phenomenon can be referenced within the job bean.
+job. The actual rendering configuration for each dataset/phenomenon can be referenced within the job bean.
 
-Rendering configuration tells how to render the actual series information. It comprises a `phenomenonStyles`
-section (valid for a set of series for a given phenomenon) and a `seriesStyles` section (which actually 
-overrides a phenomenon style of a specific series) Each section can override parameters made in the `generalConfig`.
+Rendering configuration tells how to render the actual dataset information. It comprises a `phenomenonStyles`
+section (valid for a set of dataset for a given phenomenon) and a `datasetStyles` section (which actually 
+overrides a phenomenon style of a specific dataset) Each section can override parameters made in the `generalConfig`.
 
-Only those series are prerendered having a match either in `phenomenonStyles` or `seriesStyles`. 
+Only those datasets are prerendered having a match either in `phenomenonStyles` or `datasetStyles`. 
 
 #### Date formatting
 In file `WEB-INF/spring/config-general.json` you can set `timeformat` Parameter. Please checkout the 
@@ -111,7 +111,7 @@ TBD
 
 ## Credits
 
-The development of the 52°North REST-API implementation was supported by several organizations and projects. Among other we would like to thank the following organisations and project
+The development of the 52°North Sensor Web Server Helgoland REST-API implementation was supported by several organizations and projects. Among other we would like to thank the following organisations and project
 
 | Project/Logo | Description |
 | :-------------: | :------------- |

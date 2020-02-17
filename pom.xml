@@ -7,12 +7,12 @@
         <version>16</version>
     </parent>
     
-    <groupId>org.n52.series-api</groupId>
-    <artifactId>series-rest-api</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <groupId>org.n52.sensorweb-server.helgoland</groupId>
+    <artifactId>helgoland-parent</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Series REST API</name>
-    <url>http://52north.org/communities/sensorweb/</url>
+    <name>Sensor Web Server Helgoland</name>
+    <url>https://52north.org/research/research-labs/sensor-web/</url>
     <inceptionYear>2013</inceptionYear>
     
     <modules>
@@ -88,22 +88,22 @@
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>spi</artifactId>
+                <artifactId>helgoland-spi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>io</artifactId>
+                <artifactId>helgoland-io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>rest</artifactId>
+                <artifactId>helgoland-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
              <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>xml-pdf-format</artifactId>
+                <artifactId>helgoland-xml-pdf-format</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
