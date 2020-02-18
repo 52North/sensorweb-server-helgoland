@@ -26,35 +26,33 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.format;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
-import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.response.dataset.NumericValue;
 
-public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, HighchartData> {
+public class HighchartFormatter<T extends NumericValue<?>> implements DataFormatter<Data<T>, HighchartData> {
 
     @Override
-    public HighchartDataCollection format(DataCollection<Data<QuantityValue>> toFormat) {
+    public HighchartDataCollection format(DataCollection<Data<T>> toFormat) {
         HighchartDataCollection dataCollection = new HighchartDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            Data<QuantityValue> seriesToFormat = toFormat.getSeries(timeseriesId);
+            Data<T> seriesToFormat = toFormat.getSeries(timeseriesId);
             HighchartData series = createHighchartSeries(timeseriesId, seriesToFormat);
             dataCollection.addNewSeries(timeseriesId, series);
 
             if (seriesToFormat.hasMetadata()) {
-                DatasetMetadata<QuantityValue> metadata = seriesToFormat.getMetadata();
+                DatasetMetadata<T> metadata = seriesToFormat.getMetadata();
                 if (metadata.hasReferenceValues()) {
-                    Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
+                    Map<String, Data<T>> referenceValues = metadata.getReferenceValues();
                     for (String referenceValueId : referenceValues.keySet()) {
-                        Data<QuantityValue> timeseriesData = metadata.getReferenceValues().get(referenceValueId);
+                        Data<T> timeseriesData = metadata.getReferenceValues().get(referenceValueId);
                         HighchartData referenceSeries = createHighchartSeries(referenceValueId, timeseriesData);
                         if (timeseriesData.hasMetadata()) {
                             referenceSeries.setValueBeforeTimespan(
@@ -72,7 +70,7 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
         return dataCollection;
     }
 
-    private HighchartData createHighchartSeries(String seriesId, Data<QuantityValue> timeseriesData) {
+    private HighchartData createHighchartSeries(String seriesId, Data<T> timeseriesData) {
         List<Number[]> formattedSeries = formatSeries(timeseriesData);
         HighchartData series = new HighchartData();
         series.setName(seriesId);
@@ -80,20 +78,20 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
         return series;
     }
 
-    private List<Number[]> formatSeries(Data<QuantityValue> timeseriesData) {
+    private List<Number[]> formatSeries(Data<T> timeseriesData) {
         List<Number[]> series = new ArrayList<>();
-        for (QuantityValue currentValue : timeseriesData.getValues()) {
+        for (T currentValue : timeseriesData.getValues()) {
             series.add(formatValue(currentValue));
         }
         return series;
     }
 
-    private Number[] formatValue(QuantityValue currentValue) {
+    private Number[] formatValue(T currentValue) {
         if (currentValue == null) {
             return null;
         }
         Long timestamp = currentValue.getTimestamp().getMillis();
-        BigDecimal value = currentValue.getValue();
+        Number value = currentValue.getValue();
         return new Number[] { timestamp, value };
     }
 

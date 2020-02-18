@@ -26,18 +26,20 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.count;
+package org.n52.io.format;
 
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.NumericValue;
 
-public class CountValue extends NumericValue<Integer> {
+/**
+ * Represents the identity transformation. Input is equal to output.
+ */
+public class TvpFormatter<T extends NumericValue<?>> implements DataFormatter<Data<T>, Data<T>> {
 
-    public static final String TYPE = "count";
-
-    private static final long serialVersionUID = 635165564503748527L;
-
-    public CountValue() {
-        // for serialization
+    @Override
+    public DataCollection<Data<T>> format(DataCollection<Data<T>> toFormat) {
+        return toFormat;
     }
 
 }

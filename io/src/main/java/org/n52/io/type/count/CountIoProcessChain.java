@@ -28,17 +28,49 @@
  */
 package org.n52.io.type.count;
 
-
-import org.n52.io.handler.IoHandlerFactory;
+import org.n52.io.format.ResultTimeClassifiedData;
+import org.n52.io.format.ResultTimeFormatter;
 import org.n52.io.handler.IoProcessChain;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.count.CountDatasetOutput;
+import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.count.CountValue;
+import org.n52.io.type.count.format.FormatterFactory;
+import org.n52.series.spi.srv.DataService;
 
-public class CountIoFactory extends IoHandlerFactory<CountDatasetOutput, CountValue> {
+final class CountIoProcessChain implements IoProcessChain<Data<CountValue>> {
+
+    private final DataService<Data<CountValue>> dataService;
+
+    private final IoParameters parameters;
+
+    CountIoProcessChain(DataService<Data<CountValue>> dataService, IoParameters parameters) {
+        this.dataService = dataService;
+        this.parameters = parameters;
+    }
 
     @Override
-    public IoProcessChain<Data<CountValue>> createProcessChain() {
-        return new CountIoProcessChain(getDataService(), getParameters());
+    public DataCollection<Data<CountValue>> getData() {
+        return dataService.getData(parameters);
     }
+
+    @Override
+    public DataCollection< ? > getProcessedData() {
+        return parameters.shallClassifyByResultTimes()
+                ? formatAccordingToResultTimes()
+                : formatValueOutputs();
+    }
+
+    private DataCollection<ResultTimeClassifiedData<AbstractValue< ? >>> formatAccordingToResultTimes() {
+        return new ResultTimeFormatter<Data<CountValue>>().format(getData());
+    }
+
+    private DataCollection< ? > formatValueOutputs() {
+        FormatterFactory factory = FormatterFactory.createFormatterFactory(parameters);
+        DataCollection<Data<CountValue>> data = getData();
+        return factory.create()
+                      .format(data);
+    }
+
 }

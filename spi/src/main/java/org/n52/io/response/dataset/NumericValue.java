@@ -26,21 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.response.dataset;
 
-import org.n52.io.format.DataFormatter;
-import org.n52.io.response.dataset.Data;
-import org.n52.io.response.dataset.DataCollection;
-import org.n52.io.response.dataset.quantity.QuantityValue;
+public abstract class NumericValue<T extends Number> extends AbstractValue<T> {
 
-/**
- * Represents the identity transformation. Input is equal to output.
- */
-public class TvpFormatter implements DataFormatter<Data<QuantityValue>, Data<QuantityValue>> {
-
-    @Override
-    public DataCollection<Data<QuantityValue>> format(DataCollection<Data<QuantityValue>> toFormat) {
-        return toFormat;
-    }
+    private static final long serialVersionUID = 9064167578581810290L;
 
 }

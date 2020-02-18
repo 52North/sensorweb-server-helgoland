@@ -26,10 +26,36 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.format;
 
 import org.n52.io.response.dataset.DataCollection;
 
-public class FlotDataCollection extends DataCollection<FlotData> {
+public final class HighchartDataCollection extends DataCollection<HighchartData> {
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.n52.io.v1.data.TimeseriesDataCollection#getTimeseriesOutput()
+     */
+    @Override
+    public Object getSeriesOutput() {
+        /*
+         * Output will look like:
+         *
+         * [{
+         *   "name":'station 1',
+         *   "data": [
+         *       [360191600,398.625], [360191600,398.625], [360191600,398.625] ...  [360191600,398.625]
+         *   ]
+         * },
+         * {
+         *   "name":'station 2',
+         *   "data": [
+         *     [360191600,398.625], [360191600,398.625], [360191600,398.625] ... [360191600,398.625]
+         *   ]
+         * }]
+         */
+        return getAllSeries().values();
+    }
 
 }

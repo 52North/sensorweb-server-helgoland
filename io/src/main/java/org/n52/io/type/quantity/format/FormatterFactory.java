@@ -29,6 +29,9 @@
 package org.n52.io.type.quantity.format;
 
 import org.n52.io.format.DataFormatter;
+import org.n52.io.format.TvpFormatter;
+import org.n52.io.format.FlotFormatter;
+import org.n52.io.format.HighchartFormatter;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.quantity.QuantityValue;
@@ -46,12 +49,12 @@ public final class FormatterFactory {
     public DataFormatter<Data<QuantityValue>, ?> create() {
         String format = parameters.getFormat();
         if ("highcharts".equalsIgnoreCase(format)) {
-            return new HighchartFormatter();
+            return new HighchartFormatter<>();
         } else if ("flotcharts".equalsIgnoreCase(format)
                 || "flot".equalsIgnoreCase(format)) {
-            return new FlotFormatter();
+            return new FlotFormatter<>();
         } else {
-            return new TvpFormatter();
+            return new TvpFormatter<>();
         }
     }
 

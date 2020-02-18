@@ -26,33 +26,31 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.format;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetMetadata;
-import org.n52.io.response.dataset.quantity.QuantityValue;
+import org.n52.io.response.dataset.NumericValue;
 
-public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotData> {
+public class FlotFormatter<T extends NumericValue<?>> implements DataFormatter<Data<T>, FlotData> {
 
     @Override
-    public FlotDataCollection format(DataCollection<Data<QuantityValue>> toFormat) {
+    public FlotDataCollection format(DataCollection<Data<T>> toFormat) {
         FlotDataCollection flotDataCollection = new FlotDataCollection();
         for (String timeseriesId : toFormat.getAllSeries().keySet()) {
-            Data<QuantityValue> seriesToFormat = toFormat.getSeries(timeseriesId);
+            Data<T> seriesToFormat = toFormat.getSeries(timeseriesId);
             FlotData series = createFlotSeries(seriesToFormat);
             flotDataCollection.addNewSeries(timeseriesId, series);
         }
         return flotDataCollection;
     }
 
-    private FlotData createFlotSeries(Data<QuantityValue> seriesToFormat) {
+    private FlotData createFlotSeries(Data<T> seriesToFormat) {
         FlotData flotSeries = new FlotData();
         flotSeries.setValues(formatValues(seriesToFormat));
         if (seriesToFormat.hasMetadata()) {
@@ -61,18 +59,18 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
         return flotSeries;
     }
 
-    private void formatMetadata(Data<QuantityValue> seriesToFormat, FlotData flotSeries) {
-        DatasetMetadata<QuantityValue> metadata = seriesToFormat.getMetadata();
-        Map<String, Data<QuantityValue>> referenceValues = metadata.getReferenceValues();
+    private void formatMetadata(Data<T> seriesToFormat, FlotData flotSeries) {
+        DatasetMetadata<T> metadata = seriesToFormat.getMetadata();
+        Map<String, Data<T>> referenceValues = metadata.getReferenceValues();
         for (String referenceValueId : referenceValues.keySet()) {
-            Data<QuantityValue> referenceValueData = metadata.getReferenceValues().get(referenceValueId);
+            Data<T> referenceValueData = metadata.getReferenceValues().get(referenceValueId);
             flotSeries.addReferenceValues(referenceValueId, formatSeries(referenceValueData));
         }
         flotSeries.setValueBeforeTimespan(formatValue(metadata.getValueBeforeTimespan()));
         flotSeries.setValueAfterTimespan(formatValue(metadata.getValueAfterTimespan()));
     }
 
-    private FlotData formatSeries(Data<QuantityValue> data) {
+    private FlotData formatSeries(Data<T> data) {
         FlotData series = new FlotData();
         series.setValues(formatValues(data));
         if (data.hasMetadata()) {
@@ -82,19 +80,19 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
         return series;
     }
 
-    private List<Number[]> formatValues(Data<QuantityValue> timeseries) {
+    private List<Number[]> formatValues(Data<T> timeseries) {
         List<Number[]> series = new ArrayList<>();
-        for (QuantityValue currentValue : timeseries.getValues()) {
+        for (T currentValue : timeseries.getValues()) {
             series.add(formatValue(currentValue));
         }
         return series;
     }
 
-    private Number[] formatValue(QuantityValue currentValue) {
+    private Number[] formatValue(T currentValue) {
         if (currentValue == null) {
             return null;
         }
-        BigDecimal value = currentValue.getValue();
+        Number value = currentValue.getValue();
         Long timestamp = currentValue.getTimestamp().getMillis();
         return new Number[] { timestamp, value };
     }

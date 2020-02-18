@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.format;
 
 import java.util.Arrays;
 import java.util.HashMap;

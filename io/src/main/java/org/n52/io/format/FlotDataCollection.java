@@ -26,18 +26,10 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.response.dataset.count;
+package org.n52.io.format;
 
-import org.n52.io.response.dataset.NumericValue;
+import org.n52.io.response.dataset.DataCollection;
 
-public class CountValue extends NumericValue<Integer> {
-
-    public static final String TYPE = "count";
-
-    private static final long serialVersionUID = 635165564503748527L;
-
-    public CountValue() {
-        // for serialization
-    }
+public class FlotDataCollection extends DataCollection<FlotData> {
 
 }

@@ -26,36 +26,39 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io.type.quantity.format;
+package org.n52.io.type.count.format;
 
-import org.n52.io.response.dataset.DataCollection;
+import org.n52.io.format.DataFormatter;
+import org.n52.io.format.FlotFormatter;
+import org.n52.io.format.HighchartFormatter;
+import org.n52.io.format.TvpFormatter;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.Data;
+import org.n52.io.response.dataset.count.CountValue;
 
-public final class HighchartDataCollection extends DataCollection<HighchartData> {
+public final class FormatterFactory {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.n52.io.v1.data.TimeseriesDataCollection#getTimeseriesOutput()
-     */
-    @Override
-    public Object getSeriesOutput() {
-        /*
-         * Output will look like:
-         *
-         * [{
-         *   "name":'station 1',
-         *   "data": [
-         *       [360191600,398.625], [360191600,398.625], [360191600,398.625] ...  [360191600,398.625]
-         *   ]
-         * },
-         * {
-         *   "name":'station 2',
-         *   "data": [
-         *     [360191600,398.625], [360191600,398.625], [360191600,398.625] ... [360191600,398.625]
-         *   ]
-         * }]
-         */
-        return getAllSeries().values();
+    private final IoParameters parameters;
+
+    private FormatterFactory(IoParameters parameters) {
+        this.parameters = parameters;
     }
 
+    // TODO align with config typed factory
+
+    public DataFormatter<Data<CountValue>, ?> create() {
+        String format = parameters.getFormat();
+        if ("highcharts".equalsIgnoreCase(format)) {
+            return new HighchartFormatter<>();
+        } else if ("flotcharts".equalsIgnoreCase(format)
+                || "flot".equalsIgnoreCase(format)) {
+            return new FlotFormatter<>();
+        } else {
+            return new TvpFormatter<>();
+        }
+    }
+
+    public static FormatterFactory createFormatterFactory(IoParameters ioParameters) {
+        return new FormatterFactory(ioParameters);
+    }
 }

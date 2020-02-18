@@ -30,9 +30,9 @@ package org.n52.io.response.dataset.quantity;
 
 import java.math.BigDecimal;
 
-import org.n52.io.response.dataset.AbstractValue;
+import org.n52.io.response.dataset.NumericValue;
 
-public class QuantityValue extends AbstractValue<BigDecimal> {
+public class QuantityValue extends NumericValue<BigDecimal> {
 
     public static final String TYPE = "quantity";
 
