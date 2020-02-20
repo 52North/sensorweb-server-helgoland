@@ -57,11 +57,14 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     public static final String REFERENCE_VALUES = "referenceValues";
     public static final String FIRST_VALUE = "firstValue";
     public static final String LAST_VALUE = "lastValue";
+    public static final String HAS_SAMPLINGS = "hasSamplings";
+
     private OptionalOutput<String> datasetType;
     private OptionalOutput<String> observationType;
     private OptionalOutput<String> valueType;
     private OptionalOutput<Boolean> mobile;
     private OptionalOutput<Boolean> insitu;
+    private OptionalOutput<Boolean> hasSamplings;
     private OptionalOutput<String> uom;
     private OptionalOutput<String> originTimezone;
     private OptionalOutput<TimeOutput> samplingTimeStart;
@@ -115,6 +118,15 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
 
     public DatasetOutput<V> setInsitu(OptionalOutput<Boolean> insitu) {
         this.insitu = insitu;
+        return this;
+    }
+
+    public Boolean getHasSamplings() {
+        return getIfSerialized(hasSamplings);
+    }
+
+    public DatasetOutput<V> setHasSamplings(OptionalOutput<Boolean> hasSamplings) {
+        this.hasSamplings = hasSamplings;
         return this;
     }
 
