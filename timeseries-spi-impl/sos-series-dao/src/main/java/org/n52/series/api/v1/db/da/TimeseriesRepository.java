@@ -489,9 +489,11 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 seriesEntity.getPkid(), (System.currentTimeMillis() - startObsProcessing));
 
         if (isReferenceSeries(seriesEntity) && (result.size() <= 1)) {
-            TimeseriesValue value = result.size() == 0
-                    ? createTimeseriesValueFor(seriesEntity.getFirstValue(), seriesEntity)
-                    : result.getValues()[0];
+            TimeseriesValue value =
+                    result.size() == 0
+                            ? createTimeseriesValueFor(seriesEntity.getFirstValue(), seriesEntity,
+                                    query.getTimespan().getStartMillis())
+                            : result.getValues()[0];
             result.addValues(value); // set or override
             result.addValues(new TimeseriesValue(query.getTimespan().getEndMillis(), value.getValue()));
         }
@@ -522,6 +524,12 @@ public class TimeseriesRepository extends SessionAwareRepository implements Outp
                 ? formatDecimal(observation.getValue(), series)
                 : null;
         value.setValue(observationValue);
+        return value;
+    }
+
+    private TimeseriesValue createTimeseriesValueFor(ObservationEntity observation, SeriesEntity series, Long timestamp) {
+        TimeseriesValue value = createTimeseriesValueFor(observation, series);
+        value.setTimestamp(timestamp);
         return value;
     }
 
