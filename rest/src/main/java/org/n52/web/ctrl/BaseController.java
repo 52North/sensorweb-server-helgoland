@@ -210,7 +210,7 @@ public abstract class BaseController {
 
     private void writeExceptionResponse(WebException e, HttpServletResponse response, HttpStatus status) {
 
-        final String logMessage = "An exception occured.";
+        final String logMessage = "An exception occured: \n {}";
         if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
             LOGGER.error(logMessage, e);
         } else {

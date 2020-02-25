@@ -60,7 +60,7 @@ public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends Meta
             ObjectMapper om = new ObjectMapper();
             return om.readValue(config, StatusIntervalsExtensionConfig.class);
         } catch (Exception e) {
-            LOGGER.error("Could not load {). Using empty config.", CONFIG_FILE, e);
+            LOGGER.error("Using empty config because could not load {}. \n {}", CONFIG_FILE, e);
             return new StatusIntervalsExtensionConfig();
         }
     }
