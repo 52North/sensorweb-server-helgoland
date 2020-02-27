@@ -9,7 +9,7 @@
     <artifactId>timeseries-io</artifactId>
     <packaging>jar</packaging>
     <name>Sensor Web Timeseries API - IO</name>
-    <url>http://52north.org/communities/sensorweb/</url>
+    <url>https://52north.org/communities/sensorweb/</url>
     <dependencies>
         <dependency>
             <!-- ensure loading before earlier versions -->

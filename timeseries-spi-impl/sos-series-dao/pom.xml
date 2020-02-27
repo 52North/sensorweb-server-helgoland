@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
     <name>Sensor Web Timeseries API - SPI Impl DAO</name>
     <description>REST SPI Implementation for SOS Series Database.</description>
-    <url>http://52north.org/communities/sensorweb/</url>
+    <url>https://52north.org/communities/sensorweb/</url>
 
     <properties>
         <sos.version>4.4.5</sos.version>
