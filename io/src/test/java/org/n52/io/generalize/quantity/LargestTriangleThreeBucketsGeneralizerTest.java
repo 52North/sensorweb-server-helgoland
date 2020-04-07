@@ -35,7 +35,7 @@ import java.util.Random;
 
 import org.hamcrest.core.Is;
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.n52.io.TvpDataCollection;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.TimeOutput;

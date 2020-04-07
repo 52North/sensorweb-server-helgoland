@@ -36,7 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.quantity.QuantityValue;

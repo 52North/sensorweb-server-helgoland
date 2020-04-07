@@ -30,9 +30,12 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -89,6 +92,8 @@ public abstract class BaseController {
             + "server. Probably it is not valid.";
 
     private static final String HEADER_ACCEPT = "Accept";
+
+    private static final Pattern RESPONSE_SPLITTING_PATTERN = Pattern.compile("\\r|\\n");
 
     @Value("${external.url:http://localhost:8080/api}")
     private String externalUrl;
@@ -245,6 +250,14 @@ public abstract class BaseController {
 
     protected String getResourcePathFrom(String path) {
         return path.substring(path.lastIndexOf("/") + 1);
+    }
+
+    protected String validateResponseSplitting(String value) {
+        try {
+            return RESPONSE_SPLITTING_PATTERN.matcher(URLEncoder.encode(value, "UTF8")).replaceAll("");
+        } catch (UnsupportedEncodingException e) {
+            throw new InternalServerException("Error while validating for HTTP response splitting!", e);
+        }
     }
 
 }

@@ -456,104 +456,38 @@ public final class IoParameters implements Parameters {
         }
     }
 
-    /**
-     * @return the category filter
-     * @deprecated use {@link #getCategories()}
-     */
-    @Deprecated
-    public String getCategory() {
-        return getAsString(CATEGORY);
-    }
-
-    /**
-     * @return the service filter
-     * @deprecated use {@link #getServices()}
-     */
-    @Deprecated
-    public String getService() {
-        return getAsString(SERVICE);
-    }
-
-    /**
-     * @return the offering filter
-     * @deprecated use {@link #getOfferings()}
-     */
-    @Deprecated
-    public String getOffering() {
-        return getAsString(OFFERING);
-    }
-
-    /**
-     * @return the feature filter
-     * @deprecated use {@link #getFeatures()}
-     */
-    @Deprecated
-    public String getFeature() {
-        return getAsString(FEATURE);
-    }
-
-    /**
-     * @return the procedure filter
-     * @deprecated use {@link #getProcedures()}
-     */
-    @Deprecated
-    public String getProcedure() {
-        return getAsString(PROCEDURE);
-    }
-
-    /**
-     * @return the phenomenon filter
-     * @deprecated use {@link #getPhenomena()}
-     */
-    @Deprecated
-    public String getPhenomenon() {
-        return getAsString(PHENOMENON);
-    }
-
-    @Deprecated
-    public String getStation() {
-        return getAsString(STATION);
-    }
-
     public Set<String> getCategories() {
         Set<String> values = getValuesOf(CATEGORIES);
-        values.addAll(getValuesOf(CATEGORY));
         return values;
     }
 
     public Set<String> getServices() {
         Set<String> values = getValuesOf(SERVICES);
-        values.addAll(getValuesOf(SERVICE));
         return values;
     }
 
     public Set<String> getOfferings() {
         Set<String> values = getValuesOf(OFFERINGS);
-        values.addAll(getValuesOf(OFFERING));
         return values;
     }
 
     public Set<String> getFeatures() {
         Set<String> values = getValuesOf(FEATURES);
-        values.addAll(getValuesOf(FEATURE));
         return values;
     }
 
     public Set<String> getProcedures() {
         Set<String> values = getValuesOf(PROCEDURES);
-        values.addAll(getValuesOf(PROCEDURE));
         return values;
     }
 
     public Set<String> getPhenomena() {
         Set<String> values = getValuesOf(PHENOMENA);
-        values.addAll(getValuesOf(PHENOMENON));
         return values;
     }
 
     public Set<String> getStations() {
         Set<String> values = getValuesOf(STATIONS);
-        values.addAll(getValuesOf(STATION));
         return values;
     }
 
@@ -561,19 +495,8 @@ public final class IoParameters implements Parameters {
         return getValuesOf(PLATFORMS);
     }
 
-    public Set<String> getTimeseries() {
-        return getSeries();
-    }
-
-    public Set<String> getSeries() {
-        Set<String> values = getValuesOf(SERIES);
-        values.addAll(getValuesOf(TIMESERIES));
-        return values;
-    }
-
     public Set<String> getDatasets() {
-        Set<String> values = getSeries();
-        values.addAll(getValuesOf(DATASETS));
+        Set<String> values = getValuesOf(DATASETS);
         return values;
     }
 
@@ -868,28 +791,6 @@ public final class IoParameters implements Parameters {
 
     public boolean isForceLatestValueRequests() {
         return getAsBoolean(FORCE_LATEST_VALUE, DEFAULT_FORCE_LATEST_VALUE);
-    }
-
-    /**
-     * @return if status intervals shall be serialized with (timeseries) output
-     * @throws IoParseException
-     *         if parameter could not be parsed.
-     * @deprecated since v2.0 covered by extras endpoint
-     */
-    @Deprecated
-    public boolean isStatusIntervalsRequests() {
-        return getAsBoolean(STATUS_INTERVALS, DEFAULT_STATUS_INTERVALS);
-    }
-
-    /**
-     * @return if rendering hints shall be serialized with (timeseries) output
-     * @throws IoParseException
-     *         if parameter could not be parsed.
-     * @deprecated since v2.0 covered by extras endpoint
-     */
-    @Deprecated
-    public boolean isRenderingHintsRequests() {
-        return getAsBoolean(RENDERING_HINTS, DEFAULT_RENDERING_HINTS);
     }
 
     public String getHrefBase() {

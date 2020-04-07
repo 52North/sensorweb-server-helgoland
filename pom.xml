@@ -364,6 +364,12 @@
                 <version>${version.hamcrest}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>8.0.1</version>
+                <scope>test</scope>
+            </dependency>
             
             <dependency>
                 <groupId>xml-apis</groupId>
@@ -506,6 +512,7 @@
                     </configuration>
                 </plugin>
                 
+                <!-- 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -513,6 +520,7 @@
                         <failOnWarning>false</failOnWarning>
                     </configuration>
                 </plugin>
+                 -->
             </plugins>
         </pluginManagement>
     </build>

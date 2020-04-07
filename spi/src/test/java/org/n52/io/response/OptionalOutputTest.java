@@ -31,7 +31,7 @@ package org.n52.io.response;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class OptionalOutputTest {
 

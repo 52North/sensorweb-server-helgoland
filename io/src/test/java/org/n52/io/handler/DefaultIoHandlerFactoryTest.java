@@ -28,21 +28,15 @@
  */
 package org.n52.io.handler;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.n52.io.handler.ConfigTypedFactory;
-import org.n52.io.handler.DatasetFactoryException;
-import org.n52.io.handler.DefaultIoFactory;
-import org.n52.io.handler.IoHandlerFactory;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityDatasetOutput;
@@ -52,15 +46,12 @@ import org.n52.io.type.text.TextIoFactory;
 
 public class DefaultIoHandlerFactoryTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     private ConfigTypedFactory<IoHandlerFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >>> factory;
 
-    @Before
+    @BeforeEach
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-io-factory.properties");
-        factory = new DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>>(config);
+        factory = new DefaultIoFactory<>(config);
     }
 
     @Test

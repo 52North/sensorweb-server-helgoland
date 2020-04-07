@@ -28,61 +28,58 @@
  */
 package org.n52.io.response;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.n52.io.response.GeometryType;
+import org.junit.jupiter.api.Test;
 
 public class GeometryTypeTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
     @Test
     public void when_extractingId_then_typePrefixGone() {
-        Assert.assertThat(GeometryType.extractId("observed_static_foobar"), Matchers.is("foobar"));
+        assertThat(GeometryType.extractId("observed_static_foobar"), Matchers.is("foobar"));
     }
 
     @Test
     public void when_extractingWithInvalidPrefix_then_expectIdentity() {
-        Assert.assertThat(GeometryType.extractId("invalid_prefix"), Matchers.is("invalid_prefix"));
+        assertThat(GeometryType.extractId("invalid_prefix"), Matchers.is("invalid_prefix"));
     }
 
     @Test
     public void when_observedGeometryOnlyPrefix_then_expectIdentity() {
-        Assert.assertThat(GeometryType.extractId("observed_static"), Matchers.is("observed_static"));
+        assertThat(GeometryType.extractId("observed_static"), Matchers.is("observed_static"));
     }
 
     @Test
     public void when_observedOnlyPrefix_then_expectIdentity() {
-        Assert.assertThat(GeometryType.extractId("observed"), Matchers.is("observed"));
+        assertThat(GeometryType.extractId("observed"), Matchers.is("observed"));
     }
 
     @Test
     public void when_idWithObservedPrefix_then_detectType() {
-        Assert.assertTrue(GeometryType.isObservedGeometryId("observed_static"));
+        assertTrue(GeometryType.isObservedGeometryId("observed_static"));
     }
 
     @Test
     public void when_idWithPlatformPrefix_then_detectType() {
-        Assert.assertTrue(GeometryType.isPlatformGeometryId("platform_site"));
+        assertTrue(GeometryType.isPlatformGeometryId("platform_site"));
     }
 
     @Test
     public void when_idWithSiteSuffix_then_detectType() {
-        Assert.assertTrue(GeometryType.isSiteId("platform_site_10"));
+        assertTrue(GeometryType.isSiteId("platform_site_10"));
     }
 
     @Test
     public void when_nullId_then_handledWhenDetectPlatform() {
-        Assert.assertFalse(GeometryType.isPlatformGeometryId(null));
+        assertFalse(GeometryType.isPlatformGeometryId(null));
     }
 
     @Test
     public void when_nullId_then_handledWhenDetectSite() {
-        Assert.assertFalse(GeometryType.isSiteId(null));
+        assertFalse(GeometryType.isSiteId(null));
     }
 
 }

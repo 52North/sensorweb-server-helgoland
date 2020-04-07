@@ -28,11 +28,10 @@
  */
 package org.n52.io.crs;
 
-import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -41,7 +40,7 @@ public class GeotoolsJTSReferenceTester {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeotoolsJTSReferenceTester.class);
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
     }

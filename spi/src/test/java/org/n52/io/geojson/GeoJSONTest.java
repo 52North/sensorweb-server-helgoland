@@ -31,17 +31,17 @@ package org.n52.io.geojson;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.util.Random;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ErrorCollector;
 import org.n52.io.crs.CRSUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.CoordinateFilter;
 import org.locationtech.jts.geom.CoordinateSequenceComparator;
@@ -70,8 +70,8 @@ import org.locationtech.jts.geom.impl.CoordinateArraySequence;
  */
 public class GeoJSONTest {
 
-    @Rule
-    public final ErrorCollector errors = new ErrorCollector();
+//    @Rule
+//    public final ErrorCollector errors = new ErrorCollector();
 
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING));
 
@@ -234,7 +234,7 @@ public class GeoJSONTest {
         testCrs(2000, 2001);
     }
 
-    private void testCrs(int parent, int child) {
+    private void testCrs(int parent, int child) throws GeoJSONException {
         final GeometryCollection col = geometryFactory.createGeometryCollection(new Geometry[] {
             randomPoint(child)
         });
@@ -251,12 +251,12 @@ public class GeoJSONTest {
     }
 
     @Test
-    public void testMultiPoint() {
+    public void testMultiPoint() throws GeoJSONException {
         readWriteTest(randomMultiPoint(CRSUtils.EPSG_WGS84));
     }
 
     @Test
-    public void testMultiPointWithZCoordinate() {
+    public void testMultiPointWithZCoordinate() throws GeoJSONException {
         MultiPoint geometry = randomMultiPoint(CRSUtils.EPSG_WGS84);
         geometry.apply(new RandomZCoordinateFilter());
         geometry.geometryChanged();
@@ -264,12 +264,12 @@ public class GeoJSONTest {
     }
 
     @Test
-    public void testLineString() {
+    public void testLineString() throws GeoJSONException {
         readWriteTest(randomLineString(CRSUtils.EPSG_WGS84));
     }
 
     @Test
-    public void testLineStringWithZCoordinate() {
+    public void testLineStringWithZCoordinate() throws GeoJSONException {
         LineString geometry = randomLineString(CRSUtils.EPSG_WGS84);
         geometry.apply(new RandomZCoordinateFilter());
         geometry.geometryChanged();
@@ -277,31 +277,26 @@ public class GeoJSONTest {
     }
 
     @Test
-    public void testMultiLineString() {
+    public void testMultiLineString() throws GeoJSONException {
         readWriteTest(randomMultiLineString(CRSUtils.EPSG_WGS84));
     }
 
     @Test
-    public void testMultiLineStringWithZCoordinate() {
+    public void testMultiLineStringWithZCoordinate() throws GeoJSONException {
         MultiLineString geometry = randomMultiLineString(CRSUtils.EPSG_WGS84);
         geometry.apply(new RandomZCoordinateFilter());
         geometry.geometryChanged();
         readWriteTest(geometry);
     }
 
-    protected void readWriteTest(final Geometry geom) {
-        try {
+    protected void readWriteTest(final Geometry geom) throws GeoJSONException {
             JsonNode json = enc.encodeGeometry(geom);
             Geometry parsed = dec.decodeGeometry(json);
             JsonNode json2 = enc.encodeGeometry(parsed);
-            errors.checkThat(geom, is(equalTo(parsed)));
+            assertThat(geom, is(equalTo(parsed)));
             // errors.checkThat(json, is(instanceOf(JSONConstants.GEOMETRY)));
             // errors.checkThat(json2, is(instanceOf(JSONConstants.GEOMETRY)));
-            errors.checkThat(json, is(equalTo(json2)));
-        } catch (GeoJSONException ex) {
-            errors.addError(ex);
-        }
-
+            assertThat(json, is(equalTo(json2)));
     }
 
     @Test
@@ -309,9 +304,11 @@ public class GeoJSONTest {
         assertThat(enc.encodeGeometry(null), is(nullValue()));
     }
 
-    @Test(expected = GeoJSONException.class)
+    @Test
     public void testUnknownGeometry() throws GeoJSONException {
-        enc.encodeGeometry(new UnknownGeometry(geometryFactory));
+        assertThrows(GeoJSONException.class, () -> {
+            enc.encodeGeometry(new UnknownGeometry(geometryFactory));
+        });
     }
 
     @Test

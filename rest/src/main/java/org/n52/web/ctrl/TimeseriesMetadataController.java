@@ -84,30 +84,26 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
     // stay backwards compatible
     @SuppressWarnings("deprecation")
     private TimeseriesMetadataOutput addRenderingHints(TimeseriesMetadataOutput output, IoParameters parameters) {
-        if (parameters.isRenderingHintsRequests()) {
-            final String valueName = TimeseriesMetadataOutput.RENDERING_HINTS;
-            Predicate<MetadataExtension< ? >> filter = RenderingHintsExtension.class::isInstance;
-            Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
-            extras.ifPresent(it -> {
-                StyleProperties value = (StyleProperties) it.get(valueName);
-                output.setValue(valueName, value, parameters, output::setRenderingHints);
-            });
-        }
+        final String valueName = TimeseriesMetadataOutput.RENDERING_HINTS;
+        Predicate<MetadataExtension<?>> filter = RenderingHintsExtension.class::isInstance;
+        Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
+        extras.ifPresent(it -> {
+            StyleProperties value = (StyleProperties) it.get(valueName);
+            output.setValue(valueName, value, parameters, output::setRenderingHints);
+        });
         return output;
     }
 
     // stay backwards compatible
     @SuppressWarnings(value = {"unchecked", "deprecation"})
     private TimeseriesMetadataOutput addStatusIntervals(TimeseriesMetadataOutput output, IoParameters parameters) {
-        if (parameters.isStatusIntervalsRequests()) {
-            final String valueName = TimeseriesMetadataOutput.STATUS_INTERVALS;
-            Predicate<MetadataExtension< ? >> filter = StatusIntervalsExtension.class::isInstance;
-            Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
-            extras.ifPresent(it -> {
-                Collection<StatusInterval> value = (Collection<StatusInterval>) it.get(valueName);
-                output.setValue(valueName, value, parameters, output::setStatusIntervals);
-            });
-        }
+        final String valueName = TimeseriesMetadataOutput.STATUS_INTERVALS;
+        Predicate<MetadataExtension<?>> filter = StatusIntervalsExtension.class::isInstance;
+        Optional<Map<String, Object>> extras = getExtras(output, parameters, filter);
+        extras.ifPresent(it -> {
+            Collection<StatusInterval> value = (Collection<StatusInterval>) it.get(valueName);
+            output.setValue(valueName, value, parameters, output::setStatusIntervals);
+        });
         return output;
     }
 
