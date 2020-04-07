@@ -278,7 +278,8 @@ public abstract class DataController extends BaseController {
         final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".pdf\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                CONTENT_DISPOSITION_VALUE_TEMPLATE + validateResponseSplitting(datasetId) + ".pdf\"");
 
         createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(outputFormat)
@@ -307,7 +308,8 @@ public abstract class DataController extends BaseController {
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_ZIP);
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + datasetId + ".zip\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                CONTENT_DISPOSITION_VALUE_TEMPLATE + validateResponseSplitting(datasetId) + ".zip\"");
 
         // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
@@ -344,8 +346,8 @@ public abstract class DataController extends BaseController {
         }
         response.setHeader(CONTENT_DISPOSITION_HEADER,
                            CONTENT_DISPOSITION_VALUE_TEMPLATE
-                                   + datasetId
-                                   + extension
+                                   + validateResponseSplitting(datasetId)
+                                   + validateResponseSplitting(extension)
                                    + "\"");
 
         // final String datasetType = getValueType(parameters);

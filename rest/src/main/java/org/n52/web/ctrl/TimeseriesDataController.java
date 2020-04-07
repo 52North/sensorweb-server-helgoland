@@ -297,7 +297,8 @@ public class TimeseriesDataController extends BaseController {
 
         response.setCharacterEncoding(DEFAULT_RESPONSE_ENCODING);
         response.setContentType(Constants.APPLICATION_PDF);
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + timeseriesId + ".pdf\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                CONTENT_DISPOSITION_VALUE_TEMPLATE + validateResponseSplitting(timeseriesId) + ".pdf\"");
 
         createIoFactory(parameters).createHandler(Constants.APPLICATION_PDF)
                                    .writeBinary(response.getOutputStream());
@@ -356,8 +357,8 @@ public class TimeseriesDataController extends BaseController {
         }
         response.setHeader(CONTENT_DISPOSITION_HEADER,
                            CONTENT_DISPOSITION_VALUE_TEMPLATE
-                                   + timeseriesId
-                                   + extension
+                                   + validateResponseSplitting(timeseriesId)
+                                   + validateResponseSplitting(extension)
                                    + "\"");
         createIoFactory(parameters).createHandler(Constants.TEXT_CSV)
                                    .writeBinary(response.getOutputStream());
@@ -397,7 +398,8 @@ public class TimeseriesDataController extends BaseController {
         checkIfUnknownTimeseriesId(parameters, timeseriesId);
 
         response.setContentType(Constants.IMAGE_PNG);
-        response.setHeader(CONTENT_DISPOSITION_HEADER, CONTENT_DISPOSITION_VALUE_TEMPLATE + timeseriesId + ".png\"");
+        response.setHeader(CONTENT_DISPOSITION_HEADER,
+                CONTENT_DISPOSITION_VALUE_TEMPLATE + validateResponseSplitting(timeseriesId) + ".png\"");
 
         createIoFactory(parameters).createHandler(Constants.IMAGE_PNG)
                                    .writeBinary(response.getOutputStream());
