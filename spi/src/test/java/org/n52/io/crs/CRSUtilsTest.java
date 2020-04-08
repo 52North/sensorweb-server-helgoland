@@ -29,14 +29,14 @@
 package org.n52.io.crs;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.operation.TransformException;
@@ -51,7 +51,7 @@ public class CRSUtilsTest {
 
     private BoundingBox bbox;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         referenceHelper = CRSUtils.createEpsgStrictAxisOrder();
         Point ll = referenceHelper.createPoint(6.4, 51.9, DEFAULT_CRS);
@@ -105,7 +105,7 @@ public class CRSUtilsTest {
     }
 
     private void assertValidCodeFromEpsg(int expected, String code) {
-        assertEquals("Unexpected EPSG code!", expected, CRSUtils.getSrsIdFromEPSG(code));
+        assertEquals(expected, CRSUtils.getSrsIdFromEPSG(code), "Unexpected EPSG code!");
     }
 
     @Test

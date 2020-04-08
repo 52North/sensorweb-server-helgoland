@@ -28,11 +28,10 @@
  */
 package org.n52.io.crs;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -48,7 +47,7 @@ public class BoundingBoxTest {
         BoundingBox bbox = new BoundingBox(ll, ur, "EPSG:4326");
 
         Geometry overlappingPolygon = createGeometry("POLYGON ((0 1, 9 0, 3 3, 0 1))");
-        assertTrue("geometry is not contained by bbox", bbox.contains(overlappingPolygon));
+        assertTrue(bbox.contains(overlappingPolygon), "geometry is not contained by bbox");
     }
 
     @Test
@@ -58,7 +57,7 @@ public class BoundingBoxTest {
         BoundingBox bbox = new BoundingBox(ll, ur, "EPSG:4326");
 
         Geometry overlappingPolygon = createGeometry("POLYGON ((0 1, 11 0, 3 3, 0 1))");
-        assertFalse("geometry is contained by bbox", bbox.contains(overlappingPolygon));
+        assertFalse(bbox.contains(overlappingPolygon), "geometry is contained by bbox");
     }
 
     private Geometry createGeometry(String wkt) throws ParseException {

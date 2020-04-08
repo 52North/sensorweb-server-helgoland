@@ -30,7 +30,10 @@ package org.n52.io.request;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.n52.io.request.IoParameters.createDefaults;
 import static org.n52.io.request.IoParameters.createFromMultiValueMap;
 import static org.n52.io.request.IoParameters.createFromSingleValueMap;
@@ -44,17 +47,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
@@ -67,18 +66,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class IoParametersTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void when_ioParseExceptionActionIsRuntimeException_then_exeptionIsThrown() {
         IoParameters defaults = IoParameters.createDefaults();
-        defaults.setParseExceptionHandle((parameter, e) -> {
-            throw new IllegalArgumentException(parameter, e);
+        assertThrows(IllegalArgumentException.class, () -> {
+            defaults.setParseExceptionHandle((parameter, e) -> {
+                throw new IllegalArgumentException(parameter, e);
+            });
         });
-        thrown.expect(IllegalArgumentException.class);
-        defaults.extendWith(Parameters.OFFSET, "invalid value")
-                .getOffset();
+        defaults.extendWith(Parameters.OFFSET, "invalid value").getOffset();
     }
 
     @Test
@@ -106,9 +103,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (6.7 51.7)");
         Geometry ur = wktReader.read("POINT(7.9 51.9)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -120,9 +117,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (6.7 51.7)");
         Geometry ur = wktReader.read("POINT(7.9 51.9)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -134,9 +131,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (-180 -90)");
         Geometry ur = wktReader.read("POINT(180 90)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -155,9 +152,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
         Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -176,9 +173,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
         Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -190,9 +187,9 @@ public class IoParametersTest {
         WKTReader wktReader = new WKTReader();
         Geometry ll = wktReader.read("POINT (5.97448206555656 51.25033919704064)");
         Geometry ur = wktReader.read("POINT(7.42551793444344 52.14966080295937)");
-        Assert.assertTrue(actual.getLowerLeft()
+        assertTrue(actual.getLowerLeft()
                                 .equals(ll));
-        Assert.assertTrue(actual.getUpperRight()
+        assertTrue(actual.getUpperRight()
                                 .equals(ur));
     }
 
@@ -202,10 +199,10 @@ public class IoParametersTest {
         map.put("camelCased", "value");
         map.put("UPPERCASED", "value");
         IoParameters parameters = createFromSingleValueMap(map);
-        Assert.assertTrue(parameters.containsParameter("camelCased"));
-        Assert.assertTrue(parameters.containsParameter("camelcased"));
-        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
-        Assert.assertTrue(parameters.containsParameter("uppercased"));
+        assertTrue(parameters.containsParameter("camelCased"));
+        assertTrue(parameters.containsParameter("camelcased"));
+        assertTrue(parameters.containsParameter("UPPERCASED"));
+        assertTrue(parameters.containsParameter("uppercased"));
     }
 
     @Test
@@ -214,10 +211,10 @@ public class IoParametersTest {
         map.add("camelCased", "value");
         map.add("UPPERCASED", "value");
         IoParameters parameters = createFromMultiValueMap(map);
-        Assert.assertTrue(parameters.containsParameter("camelCased"));
-        Assert.assertTrue(parameters.containsParameter("camelcased"));
-        Assert.assertTrue(parameters.containsParameter("UPPERCASED"));
-        Assert.assertTrue(parameters.containsParameter("uppercased"));
+        assertTrue(parameters.containsParameter("camelCased"));
+        assertTrue(parameters.containsParameter("camelcased"));
+        assertTrue(parameters.containsParameter("UPPERCASED"));
+        assertTrue(parameters.containsParameter("uppercased"));
     }
 
     @Test
@@ -235,16 +232,16 @@ public class IoParametersTest {
     @Test
     public void testBooleanValue() {
         IoParameters parameters = createDefaults();
-        Assert.assertTrue(parameters.isGeneralize());
+        assertTrue(parameters.isGeneralize());
     }
 
     @Test
     public void when_extending_then_parameterIsPresent() {
         IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value");
-        Assert.assertFalse(defaults.containsParameter("test"));
-        Assert.assertTrue(extended.containsParameter("test"));
-        Assert.assertThat(extended.getAsString("test"), Matchers.is("value"));
+        assertFalse(defaults.containsParameter("test"));
+        assertTrue(extended.containsParameter("test"));
+        assertThat(extended.getAsString("test"), Matchers.is("value"));
     }
 
     @Test
@@ -260,20 +257,20 @@ public class IoParametersTest {
     public void when_extendingCamelCased_then_parameterIsPresent() {
         IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("testParameter", "value");
-        Assert.assertFalse(defaults.containsParameter("testParameter"));
-        Assert.assertTrue(extended.containsParameter("testParameter"));
-        Assert.assertThat(extended.getAsString("testParameter"), Matchers.is("value"));
+        assertFalse(defaults.containsParameter("testParameter"));
+        assertTrue(extended.containsParameter("testParameter"));
+        assertThat(extended.getAsString("testParameter"), Matchers.is("value"));
     }
 
     @Test
     public void when_extending_then_valueObjectIsDifferent() {
         IoParameters defaults = createDefaults();
         IoParameters extended = defaults.extendWith("test", "value");
-        Assert.assertFalse(defaults == extended);
+        assertFalse(defaults == extended);
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void when_defaults_then_backwardCompatible() {
         FilterResolver filterResolver = createDefaults().getFilterResolver();
         assertThat(filterResolver.shallBehaveBackwardsCompatible(), is(true));
@@ -291,52 +288,49 @@ public class IoParametersTest {
 
     @Test
     public void when_singleFilter_then_filterPresentViaMultipleGetter() {
-        @SuppressWarnings("deprecation")
-        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo");
+        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURES, "foo");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo"));
     }
 
     @Test
     public void when_singleAndMultipleFilter_then_filterGetsMerged() {
-        @SuppressWarnings("deprecation")
-        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURE, "foo")
-                                                  .extendWith(Parameters.PROCEDURES, "foo", "bar");
+        IoParameters parameters = createDefaults().extendWith(Parameters.PROCEDURES, "foo", "bar");
         assertThat(parameters.getProcedures(), containsInAnyOrder("foo", "bar"));
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void when_backwardsCompatibleParameters_then_indicateBackwardsCompatibility() {
         IoParameters backwardsCompatibleParameters = IoParameters.createDefaults()
                                                                  .respectBackwardsCompatibility();
-        MatcherAssert.assertThat(backwardsCompatibleParameters.shallBehaveBackwardsCompatible(), is(true));
+        assertThat(backwardsCompatibleParameters.shallBehaveBackwardsCompatible(), is(true));
     }
 
     @Test
     public void when_backwardsCompatibleParameters_then_extendingParametersWillStayBackwardsCompatible() {
         IoParameters defaults = IoParameters.createDefaults();
-        MatcherAssert.assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
+        assertThat(defaults.shallBehaveBackwardsCompatible(), is(false));
     }
 
     @Test
     public void testExpandWithNextValuesBeyondInterval() {
         IoParameters parameters = createDefaults();
-        Assert.assertTrue(parameters.isExpandWithNextValuesBeyondInterval());
+        assertTrue(parameters.isExpandWithNextValuesBeyondInterval());
     }
 
     @Test
     public void testCache() {
         IoParameters parameters = createDefaults();
-        Assert.assertTrue(parameters.hasCache());
+        assertTrue(parameters.hasCache());
     }
 
     @Test
     public void testGetCache() {
         IoParameters parameters = createDefaults();
         Optional<JsonNode> cache = parameters.getCache();
-        Assert.assertTrue(cache.isPresent());
-        Assert.assertTrue(cache.get().has("stations"));
-        Assert.assertTrue(cache.get().get("stations").asLong(0) == 1440);
+        assertTrue(cache.isPresent());
+        assertTrue(cache.get().has("stations"));
+        assertTrue(cache.get().get("stations").asLong(0) == 1440);
     }
 
 

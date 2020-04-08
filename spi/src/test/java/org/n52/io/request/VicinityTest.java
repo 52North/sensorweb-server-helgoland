@@ -29,9 +29,8 @@
 package org.n52.io.request;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Test;
 import org.n52.io.crs.BoundingBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +38,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Point;
 import org.n52.io.geojson.GeoJSONDecoder;
 import org.n52.io.geojson.GeoJSONException;

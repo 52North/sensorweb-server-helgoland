@@ -28,7 +28,9 @@
  */
 package org.n52.io.handler;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -38,24 +40,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.n52.io.handler.ConfigTypedFactory;
-import org.n52.io.handler.DefaultIoFactory;
-import org.n52.io.response.dataset.AbstractValue;
-import org.n52.io.response.dataset.DatasetOutput;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DatasetFactoryTest {
 
     private ConfigTypedFactory<Collection<Object>> factory;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setUp() throws URISyntaxException {
         File config = getConfigFile("dataset-collection-factory.properties");
         factory = createCollectionFactory(config);
@@ -63,13 +55,13 @@ public class DatasetFactoryTest {
 
     @Test
     public void when_created_then_hasMappings() throws DatasetFactoryException {
-        Assert.assertTrue(factory.create("arraylist")
+       assertTrue(factory.create("arraylist")
                                  .getClass() == ArrayList.class);
     }
 
     @Test
     public void when_created_then_initHaveBeenCalled() throws DatasetFactoryException {
-        Assert.assertThat(factory.create("arraylist")
+       assertThat(factory.create("arraylist")
                                  .isEmpty(),
                           Matchers.is(false));
     }
@@ -77,22 +69,24 @@ public class DatasetFactoryTest {
     @Test
     public void when_createdWithNullConfig_then_configureWithFallback() {
         ConfigTypedFactory<Collection<Object>> f = createCollectionFactory(null);
-        Assert.assertTrue(f.isKnown("test_target"));
+       assertTrue(f.isKnown("test_target"));
     }
 
     @Test
     public void when_havingInvalidEntry_then_throwException() throws URISyntaxException, DatasetFactoryException {
-        thrown.expect(DatasetFactoryException.class);
-        thrown.expectMessage(is("No datasets available for 'invalid'."));
-        File configFile = getConfigFile("dataset-collection-factory-invalid-entry.properties");
-        new DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >>(configFile).create("invalid");
+        DatasetFactoryException thrown = assertThrows(DatasetFactoryException.class, () -> {
+            File configFile = getConfigFile("dataset-collection-factory-invalid-entry.properties");
+            new DefaultIoFactory<>(configFile).create("invalid");
+        });
+        assertTrue(thrown.getMessage().equals("No datasets available for 'invalid'."));
     }
 
     @Test
     public void when_creatingOfInvalidType_then_throwException() throws DatasetFactoryException {
-        thrown.expect(DatasetFactoryException.class);
-        thrown.expectMessage(is("No datasets available for 'invalid'."));
-        factory.create("invalid");
+        DatasetFactoryException thrown = assertThrows(DatasetFactoryException.class, () -> {
+            factory.create("invalid");
+        });
+        assertTrue(thrown.getMessage().equals("No datasets available for 'invalid'."));
     }
 
     private File getConfigFile(String name) throws URISyntaxException {

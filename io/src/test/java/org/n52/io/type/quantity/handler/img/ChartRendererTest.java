@@ -29,7 +29,7 @@
 package org.n52.io.type.quantity.handler.img;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.n52.io.request.IoParameters.createDefaults;
 
 import java.util.Collections;
@@ -37,8 +37,8 @@ import java.util.Date;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.n52.io.Constants;
 import org.n52.io.IoStyleContext;
 import org.n52.io.request.IoParameters;
@@ -68,7 +68,7 @@ public class ChartRendererTest {
 
     private MyChartRenderer chartRenderer;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.chartRenderer = new MyChartRenderer(IoStyleContext.createEmpty());
     }

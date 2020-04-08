@@ -31,7 +31,7 @@ package org.n52.io.crs;
 import static java.lang.Math.PI;
 import static java.lang.Math.toRadians;
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.n52.io.crs.WGS84Util.EARTH_MEAN_RADIUS;
 import static org.n52.io.crs.WGS84Util.EPSG_4326;
 import static org.n52.io.crs.WGS84Util.getLatitudeDelta;
@@ -39,8 +39,8 @@ import static org.n52.io.crs.WGS84Util.getLatitutesCircleRadius;
 import static org.n52.io.crs.WGS84Util.getLongitudeDelta;
 import static org.n52.io.crs.WGS84Util.shortestDistanceBetween;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opengis.referencing.FactoryException;
 
 import org.locationtech.jts.geom.GeometryFactory;
@@ -54,7 +54,7 @@ public class WGS84UtilTest {
 
     private CRSUtils helper;
 
-    @Before
+    @BeforeEach
     public void
             setUp() {
         helper = CRSUtils.createEpsgForcedXYAxisOrder();

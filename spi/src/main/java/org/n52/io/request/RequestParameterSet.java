@@ -54,8 +54,6 @@ abstract class RequestParameterSet {
 
     private static final String DEFAULT_TIMEZONE = "UTC";
 
-    private static final String DEFAULT_LOCALE = "en";
-
     private final Map<String, JsonNode> parameters;
 
     protected RequestParameterSet() {
@@ -136,28 +134,6 @@ abstract class RequestParameterSet {
      */
     public boolean isExpanded() {
         return getAsBoolean(Parameters.EXPANDED, false);
-    }
-
-    /**
-     * @return A language code to determine the requested locale. "en" is the default.
-     * @deprecated use {@link #getLocale()}
-     */
-    @Deprecated
-    public String getLanguage() {
-        return getAsString(Parameters.LANGUAGE, DEFAULT_LOCALE);
-    }
-
-    /**
-     * @param language
-     *        A language code to determine the requested locale.
-     * @deprecated use {@link #setLocale(String)}
-     */
-    @Deprecated
-    public void setLanguage(String language) {
-        String nonNullLanguage = !(language == null || language.isEmpty())
-                ? language
-                : DEFAULT_LOCALE;
-        setParameter(Parameters.LANGUAGE, IoParameters.getJsonNodeFrom(nonNullLanguage));
     }
 
     /**
@@ -321,19 +297,6 @@ abstract class RequestParameterSet {
     }
 
     public abstract String[] getDatasets();
-
-    @Deprecated
-    public String[] getTimeseriesIds() {
-        return getDatasets();
-    }
-
-    // public String getValueType() {
-    // String handleAs = getAsString(Parameters.HANDLE_AS_VALUE_TYPE);
-    // String[] datasetIds = getDatasets();
-    // return datasetIds.length > 0
-    // ? ValueType.extractType(datasetIds[0], handleAs)
-    // : ValueType.DEFAULT_VALUE_TYPE;
-    // }
 
     public IoParameters toParameters() {
         return IoParameters.createFromSingleJsonValueMap(parameters)

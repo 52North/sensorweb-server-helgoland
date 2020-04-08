@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.is;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsNull;
 import org.joda.time.DateTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.n52.io.response.dataset.AbstractValue;
 
 public class AbstractValueTest {
