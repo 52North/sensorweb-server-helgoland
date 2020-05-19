@@ -326,7 +326,11 @@
                 <artifactId>commons-codec</artifactId>
                 <version>1.14</version>
              </dependency>
-            
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.10.6</version>
+            </dependency>
             <!-- Testing -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
