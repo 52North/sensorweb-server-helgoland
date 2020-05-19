@@ -31,7 +31,7 @@ package org.n52.web.ctrl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.net.URLDecoder;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -254,7 +254,7 @@ public abstract class BaseController {
 
     protected String validateResponseSplitting(String value) {
         try {
-            return RESPONSE_SPLITTING_PATTERN.matcher(URLEncoder.encode(value, "UTF8")).replaceAll("");
+            return RESPONSE_SPLITTING_PATTERN.matcher(URLDecoder.decode(value, "UTF8")).replaceAll("");
         } catch (UnsupportedEncodingException e) {
             throw new InternalServerException("Error while validating for HTTP response splitting!", e);
         }
