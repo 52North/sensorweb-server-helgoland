@@ -70,12 +70,13 @@ public class IoParametersTest {
     @Test
     public void when_ioParseExceptionActionIsRuntimeException_then_exeptionIsThrown() {
         IoParameters defaults = IoParameters.createDefaults();
-        assertThrows(IllegalArgumentException.class, () -> {
-            defaults.setParseExceptionHandle((parameter, e) -> {
-                throw new IllegalArgumentException(parameter, e);
-            });
+        defaults.setParseExceptionHandle((parameter, e) -> {
+            throw new IllegalArgumentException(parameter, e);
+
         });
-        defaults.extendWith(Parameters.OFFSET, "invalid value").getOffset();
+        assertThrows(IllegalArgumentException.class, () -> {
+            defaults.extendWith(Parameters.OFFSET, "invalid value").getOffset();
+        });
     }
 
     @Test
