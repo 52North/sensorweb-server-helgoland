@@ -41,7 +41,6 @@ This project includes:
   Java implementation of GeographicLib under The MIT License(MIT)
   javax.inject under The Apache Software License, Version 2.0
   JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
-  JDOM under Similar to Apache License but with the acknowledgment clause removed
   JFreeChart under GNU Lesser General Public Licence
   jgridshift-core under GNU Lesser General Public License, version 2.0 (LGPLv2)
   Joda-Time under Apache License, Version 2.0
@@ -61,6 +60,7 @@ This project includes:
   odata-server-api under The Apache Software License, Version 2.0
   odata-server-core under The Apache Software License, Version 2.0
   Open GIS Interfaces under OGC copyright or Lesser General Public License (LGPL)
+  Open Web Services Model under Lesser General Public License (LGPL)
   org.apache.xmlgraphics:batik-anim under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-awt-util under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-bridge under The Apache Software License, Version 2.0
@@ -73,6 +73,7 @@ This project includes:
   org.apache.xmlgraphics:batik-i18n under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-parser under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-script under The Apache Software License, Version 2.0
+  org.apache.xmlgraphics:batik-shared-resources under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-svg-dom under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-svggen under The Apache Software License, Version 2.0
   org.apache.xmlgraphics:batik-transcoder under The Apache Software License, Version 2.0
@@ -106,6 +107,7 @@ This project includes:
   Units of Measurement Implementation for Java SE under BSD
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
+  Xlink Model under Lesser General Public License (LGPL)
   XML Commons External Components XML APIs under The Apache Software License, Version 2.0 or The SAX License or The W3C License
   XML Commons External Components XML APIs Extensions under The Apache Software License, Version 2.0
   XmlBeans under The Apache Software License, Version 2.0
