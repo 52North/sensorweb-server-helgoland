@@ -123,7 +123,7 @@ public class CRSUtilsTest {
     }
 
     private void assertValidEpsgShortCut(String expected, String epsgCode) {
-        assertEquals("Unexpected EPSG string!", expected, CRSUtils.extractSRSCode(epsgCode));
+        assertEquals(expected, CRSUtils.extractSRSCode(epsgCode), "Unexpected EPSG string!");
     }
 
     // TODO add tests for creating coordinates
