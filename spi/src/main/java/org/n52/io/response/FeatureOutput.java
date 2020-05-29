@@ -40,7 +40,7 @@ import org.n52.io.response.dataset.DatasetParameters;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @JsonSerialize(using = FeatureOutputSerializer.class, as = GeoJSONObject.class)
-public class FeatureOutput extends AbstractOutput implements GeoJSONFeature {
+public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> implements GeoJSONFeature {
 
     public static final String COLLECTION_PATH = "features";
     public static final String PROPERTIES = "properties";
