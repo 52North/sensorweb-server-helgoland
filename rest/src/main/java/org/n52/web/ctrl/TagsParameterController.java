@@ -26,39 +26,25 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.web.ctrl;
 
-import org.n52.io.request.IoParameters;
+import org.n52.io.response.TagOutput;
+import org.n52.series.spi.srv.CountingMetadataService;
+import org.n52.series.spi.srv.ParameterService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Provides access to resource quantities available.
- */
-public interface CountingMetadataService {
+@RestController
+@RequestMapping(UrlSettings.COLLECTION_TAGS)
+public class TagsParameterController extends ParameterRequestMappingAdapter<TagOutput> {
 
-    Long getServiceCount(IoParameters parameters);
+    public TagsParameterController(CountingMetadataService counter, ParameterService<TagOutput> service) {
+        super(counter, service);
+    }
 
-    Long getOfferingCount(IoParameters parameters);
-
-    Long getCategoryCount(IoParameters parameters);
-
-    Long getFeatureCount(IoParameters parameters);
-
-    Long getProcedureCount(IoParameters parameters);
-
-    Long getPhenomenaCount(IoParameters parameters);
-
-    Long getPlatformCount(IoParameters paramters);
-
-    Long getDatasetCount(IoParameters parameters);
-
-    Long getStationCount();
-
-    Long getTimeseriesCount();
-
-    Long getSamplingCounter(IoParameters parameters);
-
-    Long getMeasuringProgramCounter(IoParameters parameters);
-
-    Long getTagCounter(IoParameters parameters);
+    @Override
+    public String getCollectionName() {
+        return UrlSettings.COLLECTION_TAGS;
+    }
 
 }

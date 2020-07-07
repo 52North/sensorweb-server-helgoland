@@ -117,11 +117,7 @@ public class ResourcesController {
         ResourceCollection individualObservations = add(INDIVIDUAL_OBSERVATIONS,
                                                         "IndividualObservations",
                                                         i18n.get("msg.web.resources.individualObservations"));
-        // ResourceCollection profiles = add("profiles", "Profiles",
-        // i18n.get("msg.web.resources.profiles"));
         ResourceCollection trajectories = add(TAJECTORIES, "Trajectories", i18n.get("msg.web.resources.trajectories"));
-        // ResourceCollection geometries = add("geometries", "Geometries",
-        // i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
         resources.add(datasets);
         resources.add(individualObservations);
@@ -139,14 +135,9 @@ public class ResourcesController {
             individualObservations.setSize(countDatasets(parameters, INDIVIDUAL_OBSERVATIONS));
             parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
         }
-
-        ResourceCollection samplings = add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"));
-        ResourceCollection measuringPrograms = add("measuringPrograms",
-                                                   "MeasuringPrograms",
-                                                   i18n.get("msg.web.resources.measuringPrograms"));
-        resources.add(samplings);
-        resources.add(measuringPrograms);
-
+        resources.add(add("samplings", "Samplings", i18n.get("msg.web.resources.samplings")));
+        resources.add(add("measuringPrograms", "MeasuringPrograms", i18n.get("msg.web.resources.measuringPrograms")));
+        resources.add(add("tags", "Tags", i18n.get("msg.web.resources.tags")));
         return resources;
     }
 

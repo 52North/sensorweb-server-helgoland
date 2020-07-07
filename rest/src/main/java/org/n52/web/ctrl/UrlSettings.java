@@ -36,6 +36,7 @@ import org.n52.io.response.PhenomenonOutput;
 import org.n52.io.response.PlatformOutput;
 import org.n52.io.response.ProcedureOutput;
 import org.n52.io.response.ServiceOutput;
+import org.n52.io.response.TagOutput;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.IndividualObservationOutput;
 import org.n52.io.response.dataset.ProfileOutput;
@@ -61,14 +62,19 @@ public interface UrlSettings {
     String SEARCH = "/search";
 
     /**
-     * Subpath identifying a collection of services availabe.
+     * Subpath identifying a collection of services available.
      */
     String COLLECTION_SERVICES = "/" + ServiceOutput.COLLECTION_PATH;
 
     /**
-     * Subpath identifying a collection of categories availabe.
+     * Subpath identifying a collection of categories available.
      */
     String COLLECTION_CATEGORIES = "/" + CategoryOutput.COLLECTION_PATH;
+
+    /**
+     * Subpath identifying a collection of tags available.
+     */
+    String COLLECTION_TAGS = "/" + TagOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of offerings available.

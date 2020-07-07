@@ -26,39 +26,21 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.series.spi.search;
 
-import org.n52.io.request.IoParameters;
+public class TagSearchResult extends SearchResult {
 
-/**
- * Provides access to resource quantities available.
- */
-public interface CountingMetadataService {
+    @Override
+    public String getHref() {
+        return hasBaseUrl()
+                ? createFullHref()
+                // stay backwards compatible
+                : "./tags/" + getId();
+    }
 
-    Long getServiceCount(IoParameters parameters);
-
-    Long getOfferingCount(IoParameters parameters);
-
-    Long getCategoryCount(IoParameters parameters);
-
-    Long getFeatureCount(IoParameters parameters);
-
-    Long getProcedureCount(IoParameters parameters);
-
-    Long getPhenomenaCount(IoParameters parameters);
-
-    Long getPlatformCount(IoParameters paramters);
-
-    Long getDatasetCount(IoParameters parameters);
-
-    Long getStationCount();
-
-    Long getTimeseriesCount();
-
-    Long getSamplingCounter(IoParameters parameters);
-
-    Long getMeasuringProgramCounter(IoParameters parameters);
-
-    Long getTagCounter(IoParameters parameters);
+    @Override
+    public String getType() {
+        return "tag";
+    }
 
 }

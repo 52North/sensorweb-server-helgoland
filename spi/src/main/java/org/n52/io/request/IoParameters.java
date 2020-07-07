@@ -508,6 +508,10 @@ public final class IoParameters implements Parameters {
         return getValuesOf(MEASURING_PROGRAMS);
     }
 
+    public Set<String> getTags() {
+        return getValuesOf(TAGS);
+    }
+
     public Set<String> getFields() {
         return getValuesOf(FILTER_FIELDS);
     }

@@ -26,39 +26,15 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.io.response;
 
-import org.n52.io.request.IoParameters;
+public class TagOutput extends AbstractOutput {
 
-/**
- * Provides access to resource quantities available.
- */
-public interface CountingMetadataService {
+    public static final String COLLECTION_PATH = "tags";
 
-    Long getServiceCount(IoParameters parameters);
-
-    Long getOfferingCount(IoParameters parameters);
-
-    Long getCategoryCount(IoParameters parameters);
-
-    Long getFeatureCount(IoParameters parameters);
-
-    Long getProcedureCount(IoParameters parameters);
-
-    Long getPhenomenaCount(IoParameters parameters);
-
-    Long getPlatformCount(IoParameters paramters);
-
-    Long getDatasetCount(IoParameters parameters);
-
-    Long getStationCount();
-
-    Long getTimeseriesCount();
-
-    Long getSamplingCounter(IoParameters parameters);
-
-    Long getMeasuringProgramCounter(IoParameters parameters);
-
-    Long getTagCounter(IoParameters parameters);
+    @Override
+    protected String getCollectionName() {
+        return COLLECTION_PATH;
+    }
 
 }

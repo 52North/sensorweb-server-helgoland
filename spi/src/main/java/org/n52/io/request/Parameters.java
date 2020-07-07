@@ -282,6 +282,8 @@ public interface Parameters {
 
     String MEASURING_PROGRAMS = "measuringPrograms";
 
+    String TAGS = "tags";
+
     String HANDLE_AS_VALUE_TYPE = "handleAs";
 
     /**

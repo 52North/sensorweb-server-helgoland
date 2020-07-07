@@ -28,6 +28,8 @@
  */
 package org.n52.io.response.dataset;
 
+import java.util.Collection;
+
 import org.n52.io.response.ParameterOutput;
 
 public class DatasetParameters {
@@ -43,6 +45,8 @@ public class DatasetParameters {
     private ParameterOutput service;
 
     private ParameterOutput platform;
+
+    private Collection<ParameterOutput> tags;
 
     public ParameterOutput getPhenomenon() {
         return phenomenon;
@@ -90,6 +94,14 @@ public class DatasetParameters {
 
     public void setPlatform(ParameterOutput platform) {
         this.platform = platform;
+    }
+
+    public Collection<ParameterOutput> getTags() {
+        return tags;
+    }
+
+    public void setTags(Collection<ParameterOutput> tags) {
+        this.tags = tags;
     }
 
 }
