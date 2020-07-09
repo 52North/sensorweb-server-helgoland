@@ -38,7 +38,9 @@ import org.locationtech.jts.geom.MultiPoint;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
+import org.locationtech.jts.geom.impl.CoordinateArraySequence;
 import org.n52.io.crs.CRSUtils;
+import org.n52.shetland.util.JTSHelper;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -192,7 +194,9 @@ public class GeoJSONEncoder {
 
     protected ArrayNode encodeCoordinates(Polygon geometry) {
         ArrayNode list = jsonFactory.arrayNode();
-        list.add(encodeCoordinates(geometry.getExteriorRing()));
+        Coordinate[] coordinates = JTSHelper.getExteriorRingCoordinatesFromPolygon(geometry);
+        list.add(encodeCoordinates(new CoordinateArraySequence(coordinates)));
+//        list.add(encodeCoordinates(geometry.getExteriorRing()));
         for (int i = 0; i < geometry.getNumInteriorRing(); ++i) {
             list.add(encodeCoordinates(geometry.getInteriorRingN(i)));
         }
