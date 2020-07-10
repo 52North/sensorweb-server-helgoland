@@ -42,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public abstract class ParameterOutput extends SelfSerializedOutput implements RawFormats {
+public abstract class ParameterOutput extends SelfSerializedOutput implements RawFormats, Comparable<ParameterOutput> {
 
     public static final String ID = "id";
     public static final String HREF = "href";
@@ -201,6 +201,22 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
                 && Objects.equals(label, other.label);
     }
 
+    @Override
+    public int compareTo(ParameterOutput o) {
+        return Objects.compare(this, o, idComparator());
+    }
+
+    /**
+     * Takes the default comparator to compare.
+     *
+     * @param <T>
+     *        the actual type.
+     * @return a label or id comparing {@link Comparator}
+     */
+    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+        return labelComparator();
+    }
+
     /**
      * Takes the labels to compare.
      *
@@ -208,13 +224,28 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
      *        the actual type.
      * @return a label comparing {@link Comparator}
      */
-    public static <T extends ParameterOutput> Comparator<T> defaultComparator() {
+    public static <T extends ParameterOutput> Comparator<T> labelComparator() {
         return (T o1, T o2) -> {
             // some outputs don't have labels, e.g. GeometryInfo
             Comparator<String> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
             return Comparator.comparing(ParameterOutput::getLabel, nullsFirst)
                              .thenComparing(ParameterOutput::getId)
                              .compare(o1, o2);
+        };
+    }
+
+
+    /**
+     * Takes the ids to compare.
+     *
+     * @param <T>
+     *        the actual type.
+     * @return a id comparing {@link Comparator}
+     */
+    public static <T extends ParameterOutput> Comparator<T> idComparator() {
+        return (T o1, T o2) -> {
+            Comparator<String> nullsFirst = Comparator.nullsFirst(Comparator.naturalOrder());
+            return Comparator.comparing(ParameterOutput::getId, nullsFirst).compare(o1, o2);
         };
     }
 
