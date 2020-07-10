@@ -28,13 +28,37 @@
  */
 package org.n52.io.response;
 
+import java.util.List;
+
+import org.n52.io.response.dataset.DatasetOutput;
+
 public class TagOutput extends AbstractOutput {
 
     public static final String COLLECTION_PATH = "tags";
+    public static final String DATASETS = "datasets";
+
+    private OptionalOutput<List<DatasetOutput<?>>> datasets;
 
     @Override
     protected String getCollectionName() {
         return COLLECTION_PATH;
+    }
+
+    /**
+     * @return the datasets
+     */
+    public List<DatasetOutput<?>> getDatasets() {
+        return getIfSerialized(datasets);
+    }
+
+    /**
+     * @param datasets the datasets to set
+     * @return this
+     */
+    public TagOutput setDatasets(OptionalOutput<List<DatasetOutput<?>>> datasets) {
+        this.datasets = datasets;
+        return this;
+
     }
 
 }
