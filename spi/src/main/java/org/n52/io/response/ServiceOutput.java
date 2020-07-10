@@ -34,6 +34,7 @@ import java.util.Objects;
 import org.n52.io.Utils;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class ServiceOutput extends ParameterOutput {
 
@@ -54,14 +55,6 @@ public class ServiceOutput extends ParameterOutput {
     private OptionalOutput<String> type;
 
     private OptionalOutput<Map<String, Object>> features;
-
-    private OptionalOutput<ParameterCount> quantities;
-
-    /**
-     * @deprecated since 2.0.0
-     */
-    @Deprecated
-    private OptionalOutput<Boolean> supportsFirstLatest;
 
     @Override
     protected String getCollectionName() {
@@ -108,41 +101,6 @@ public class ServiceOutput extends ParameterOutput {
         this.features = features;
     }
 
-    @Deprecated
-    public Boolean isSupportsFirstLatest() {
-        return getIfSerialized(supportsFirstLatest);
-    }
-
-    /**
-     * @param supportsFirstLatest
-     *        if first/latest data request are supported
-     * @deprecated since 2.0.0, added to {@link #features} instead
-     */
-    @Deprecated
-    public void setSupportsFirstLatest(OptionalOutput<Boolean> supportsFirstLatest) {
-        // addFeature(SUPPORTS_FIRST_LATEST, supportsFirstLatest.getValue());
-        this.supportsFirstLatest = supportsFirstLatest;
-    }
-
-    /**
-     * @param quantities
-     *        parameter count
-     * @deprecated since 2.0.0, added to {@link #features} instead
-     */
-    @Deprecated
-    public void setQuantities(OptionalOutput<ParameterCount> quantities) {
-        this.quantities = quantities;
-    }
-
-    /**
-     * @return the parameter count
-     * @deprecated since 2.0.0, added to {@link #features} instead
-     */
-    @Deprecated
-    public ParameterCount getQuantities() {
-        return getIfSerialized(quantities);
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(serviceUrl, version, type);
@@ -161,6 +119,8 @@ public class ServiceOutput extends ParameterOutput {
         }
     }
 
+    @JsonPropertyOrder({ "features", "phenomena", "procedures", "categories", "platforms", "offerings", "tags",
+            "measuringPrograms", "samplings" })
     public static class ParameterCount {
 
         private String[] selectedPlatformTypes;
@@ -189,7 +149,9 @@ public class ServiceOutput extends ParameterOutput {
 
         private Long amountSamplings;
 
-        private Long amountMeasuringProgram;
+        private Long amountMeasuringPrograms;
+
+        private Long amountTags;
 
         public String[] getSelectedPlatformTypes() {
             return Utils.copy(selectedPlatformTypes);
@@ -282,25 +244,34 @@ public class ServiceOutput extends ParameterOutput {
         }
 
         public void setMeasuringProgramsSize(Long countMeasuringPrograms) {
-            this.amountMeasuringProgram = countMeasuringPrograms;
+            this.amountMeasuringPrograms = countMeasuringPrograms;
         }
 
         public Long getMeasuringPrograms() {
-            return this.amountMeasuringProgram;
+            return this.amountMeasuringPrograms;
+        }
+
+        public void setTagsSize(Long countTags) {
+            this.amountTags = countTags;
+        }
+
+        public Long getTags() {
+            return this.amountTags;
         }
     }
 
+    @JsonPropertyOrder({ "total", "timeseries", "individualObservations", "trajectories", "profiles" })
     public static class DatasetCount {
 
-        private Long totalAmount;
+        private Long totalAmount = 0L;
 
-        private Long amountIndividualObservations;
+        private Long amountIndividualObservations = 0L;
 
-        private Long amountTimeseries;
+        private Long amountTimeseries = 0L;
 
-        private Long amountProfiles;
+        private Long amountProfiles = 0L;
 
-        private Long amountTrajectories;
+        private Long amountTrajectories = 0L;
 
         public Long getTotal() {
             return totalAmount;
