@@ -30,9 +30,11 @@ package org.n52.io.response.dataset;
 
 import java.util.Collection;
 
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.SelfSerializedOutput;
 
-public class DatasetParameters {
+public class DatasetParameters extends SelfSerializedOutput {
 
     private ParameterOutput phenomenon;
 
@@ -46,62 +48,73 @@ public class DatasetParameters {
 
     private ParameterOutput platform;
 
-    private Collection<ParameterOutput> tags;
+    private OptionalOutput<Collection<ParameterOutput>> tags;
 
     public ParameterOutput getPhenomenon() {
         return phenomenon;
     }
 
-    public void setPhenomenon(ParameterOutput phenomenon) {
+    public DatasetParameters setPhenomenon(ParameterOutput phenomenon) {
         this.phenomenon = phenomenon;
+        return this;
     }
 
     public ParameterOutput getProcedure() {
         return procedure;
     }
 
-    public void setProcedure(ParameterOutput procedure) {
+    public DatasetParameters setProcedure(ParameterOutput procedure) {
         this.procedure = procedure;
+        return this;
     }
 
     public ParameterOutput getCategory() {
         return category;
     }
 
-    public void setCategory(ParameterOutput category) {
+    public DatasetParameters setCategory(ParameterOutput category) {
         this.category = category;
+        return this;
     }
 
     public ParameterOutput getOffering() {
         return offering;
     }
 
-    public void setOffering(ParameterOutput offering) {
+    public DatasetParameters setOffering(ParameterOutput offering) {
         this.offering = offering;
+        return this;
     }
 
     public ParameterOutput getService() {
         return service;
     }
 
-    public void setService(ParameterOutput service) {
+    public DatasetParameters setService(ParameterOutput service) {
         this.service = service;
+        return this;
     }
 
     public ParameterOutput getPlatform() {
         return platform;
     }
 
-    public void setPlatform(ParameterOutput platform) {
+    public DatasetParameters setPlatform(ParameterOutput platform) {
         this.platform = platform;
+        return this;
     }
 
     public Collection<ParameterOutput> getTags() {
-        return tags;
+        return getIfSerialized(tags);
     }
 
-    public void setTags(Collection<ParameterOutput> tags) {
+    public DatasetParameters setTags(Collection<ParameterOutput> tags) {
+        return setTags(OptionalOutput.of(tags));
+    }
+
+    public DatasetParameters setTags(OptionalOutput<Collection<ParameterOutput>> tags) {
         this.tags = tags;
+        return this;
     }
 
 }

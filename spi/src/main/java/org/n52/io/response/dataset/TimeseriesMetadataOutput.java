@@ -124,38 +124,39 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
         }
 
         @Override
-        public void setPhenomenon(ParameterOutput phenomenon) {
+        public AdaptedSeriesParameters setPhenomenon(ParameterOutput phenomenon) {
             parameters.setPhenomenon(phenomenon);
+            return this;
         }
 
         @Override
-        public void setProcedure(ParameterOutput procedure) {
+        public AdaptedSeriesParameters setProcedure(ParameterOutput procedure) {
             parameters.setProcedure(procedure);
+            return this;
         }
 
         @Override
-        public void setCategory(ParameterOutput category) {
+        public AdaptedSeriesParameters setCategory(ParameterOutput category) {
             parameters.setCategory(category);
+            return this;
         }
 
         @Override
-        public void setOffering(ParameterOutput offering) {
+        public AdaptedSeriesParameters setOffering(ParameterOutput offering) {
             parameters.setOffering(offering);
+            return this;
         }
 
-        // @Override
-        // public void setFeature(ParameterOutput feature) {
-        // parameters.setFeature(feature);
-        // }
-
         @Override
-        public void setService(ParameterOutput service) {
+        public AdaptedSeriesParameters setService(ParameterOutput service) {
             parameters.setService(service);
+            return this;
         }
 
         @Override
-        public void setPlatform(ParameterOutput platform) {
+        public AdaptedSeriesParameters setPlatform(ParameterOutput platform) {
             parameters.setPlatform(platform);
+            return this;
         }
 
         @Override
@@ -177,11 +178,6 @@ public class TimeseriesMetadataOutput extends QuantityDatasetOutput {
         public ParameterOutput getOffering() {
             return parameters.getOffering();
         }
-
-        // @Override
-        // public ParameterOutput getFeature() {
-        // return parameters.getFeature();
-        // }
 
         @Override
         public ParameterOutput getService() {
