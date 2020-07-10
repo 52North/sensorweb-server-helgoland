@@ -119,10 +119,8 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
     }
 
     public Set<String> getSupportedMimeTypes() {
-        return Stream.of(Constants.MimeType.TEXT_CSV,
-                         Constants.MimeType.APPLICATION_ZIP)
-                     .map(Constants.MimeType::getMimeType)
-                     .collect(Collectors.toSet());
+        return Stream.of(Constants.MimeType.TEXT_CSV, Constants.MimeType.APPLICATION_ZIP)
+                .map(Constants.MimeType::getMimeType).sorted().collect(Collectors.toSet());
     }
 
     protected IoStyleContext createContext() {
