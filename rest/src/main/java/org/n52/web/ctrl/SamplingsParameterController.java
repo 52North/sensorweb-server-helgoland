@@ -31,6 +31,7 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 
 import org.joda.time.DateTime;
+import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.sampling.SamplingOutput;
@@ -64,5 +65,26 @@ public class SamplingsParameterController extends ParameterRequestMappingAdapter
                     Collections.singletonList(IoParameters.createTimespan(now.minusMonths(3), now).toString()));
         }
         return super.addAdditionalParameter(query);
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_SAMPLINGS;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_SAMPLINGS;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_SAMPLINGS) ? i18n.get(DESCRIPTION_KEY_SAMPLINGS)
+                : DEFAULT_DESCRIPTION_SAMPLINGS;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getSamplingCounter(parameters);
     }
 }

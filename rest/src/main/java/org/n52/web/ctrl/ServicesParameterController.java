@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.ServiceOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -47,5 +49,25 @@ public class ServicesParameterController extends ParameterRequestMappingAdapter<
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_SERVICES;
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_SERVICES;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_SERVICES;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_SERVICES) ? i18n.get(DESCRIPTION_KEY_SERVICES) : DEFAULT_DESCRIPTION_SERVICES;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getServiceCount(parameters);
     }
 }

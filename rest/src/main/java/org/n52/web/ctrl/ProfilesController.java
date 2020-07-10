@@ -31,6 +31,8 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 import java.util.List;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -60,6 +62,30 @@ public class ProfilesController extends ParameterRequestMappingAdapter<ProfileOu
         List<String> value = Collections.singletonList("profile");
         query.put(Parameters.FILTER_OBSERVATION_TYPES, value);
         return super.addAdditionalParameter(query);
+    }
+
+    @Override
+    protected String getResource() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

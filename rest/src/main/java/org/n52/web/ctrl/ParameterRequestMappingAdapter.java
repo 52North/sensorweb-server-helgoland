@@ -28,19 +28,20 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
+import org.n52.io.HrefHelper;
+import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawFormats;
+import org.n52.web.ctrl.ResourcesController.ResourceCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +52,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping(method = RequestMethod.GET)
-public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T> {
+public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> extends ParameterController<T>
+        implements ResoureControllerConstants {
 
     private final CountingMetadataService counter;
 
@@ -102,16 +104,6 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return super.getExtras(response, resourceId, locale, addAdditionalParameter(query));
     }
 
-    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        List<String> value = Collections.singletonList(getExternalUrl());
-        query.put(Parameters.HREF_BASE, value);
-        return query;
-    }
-
-    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
-        return addHrefBase(query);
-    }
-
     protected CountingMetadataService getEntityCounter() {
         return counter;
     }
@@ -121,4 +113,30 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return getEntityCounter().getServiceCount(parameters);
     }
 
+    public ResourceCollection getResourceCollection(I18N i18n, IoParameters parameters) {
+        ResourceCollection resourceCollection = ResourceCollection.createResource(getResource())
+                .withDescription(getDescription(i18n)).withLabel(getLabel()).withHref(getHref(parameters));
+        if (parameters.isExpanded()) {
+            resourceCollection.setSize(getSize(parameters));
+        }
+        return resourceCollection;
+    }
+
+    protected abstract String getResource();
+
+    protected abstract String getLabel();
+
+    protected abstract String getDescription(I18N i18n);
+
+    protected  String getHref(IoParameters parameters) {
+        return HrefHelper.constructHref(parameters.getHrefBase(), getResource());
+    }
+
+    protected abstract Long getSize(IoParameters parameters);
+
+    protected Long countDatasets(IoParameters parameters, String datasetType) {
+        String filterName = IoParameters.FILTER_DATASET_TYPES;
+        IoParameters filter = parameters.extendWith(filterName, datasetType);
+        return getEntityCounter().getDatasetCount(filter);
+    }
 }

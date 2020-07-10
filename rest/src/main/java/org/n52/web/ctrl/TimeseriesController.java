@@ -31,6 +31,8 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 import java.util.List;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.TimeseriesOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -60,5 +62,26 @@ public class TimeseriesController extends ParameterRequestMappingAdapter<Timeser
         List<String> value = Collections.singletonList("timeseries");
         query.put(Parameters.FILTER_DATASET_TYPES, value);
         return super.addAdditionalParameter(query);
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_TIMESERIES;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_TIMESERIES;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_TIMESERIES) ? i18n.get(DESCRIPTION_KEY_TIMESERIES)
+                : DEFAULT_DESCRIPTION_TIMESERIES;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return countDatasets(parameters, getResource());
     }
 }

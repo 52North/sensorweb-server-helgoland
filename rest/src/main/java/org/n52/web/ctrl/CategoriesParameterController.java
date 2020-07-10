@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.CategoryOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -47,4 +49,24 @@ public class CategoriesParameterController extends ParameterRequestMappingAdapte
         return UrlSettings.COLLECTION_CATEGORIES;
     }
 
+    @Override
+    protected String getResource() {
+        return RESOURCE_CATEGORIES;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_CATEGORIES;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_CATEGORIES) ? i18n.get(DESCRIPTION_KEY_CATEGORIES)
+                : DEFAULT_DESCRIPTION_CATEGORIES;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getCategoryCount(parameters);
+    }
 }

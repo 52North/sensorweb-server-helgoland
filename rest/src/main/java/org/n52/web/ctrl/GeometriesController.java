@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.GeometryOutput;
 import org.n52.series.spi.geo.TransformingGeometryOutputService;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -49,5 +51,31 @@ public class GeometriesController extends ParameterRequestMappingAdapter<Geometr
     public String getCollectionName() {
         return UrlSettings.COLLECTION_GEOMETRIES;
     }
+
+    @Override
+    protected String getResource() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        // TODO Auto-generateadsfDASFd method stub
+        return null;
+    }
+
+
 
 }

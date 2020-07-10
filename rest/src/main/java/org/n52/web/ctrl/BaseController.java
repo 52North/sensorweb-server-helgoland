@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -258,6 +260,16 @@ public abstract class BaseController {
         } catch (UnsupportedEncodingException e) {
             throw new InternalServerException("Error while validating for HTTP response splitting!", e);
         }
+    }
+
+    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
+        List<String> value = Collections.singletonList(getExternalUrl());
+        query.put(Parameters.HREF_BASE, value);
+        return query;
+    }
+
+    protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
+        return addHrefBase(query);
     }
 
 }

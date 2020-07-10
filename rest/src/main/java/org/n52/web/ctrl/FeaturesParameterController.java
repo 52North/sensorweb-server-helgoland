@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.FeatureOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -49,4 +51,23 @@ public class FeaturesParameterController extends ParameterRequestMappingAdapter<
         return UrlSettings.COLLECTION_FEATURES;
     }
 
+    @Override
+    protected String getResource() {
+        return RESOURCE_FEATURES;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_FEATURES;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_FEATURES) ? i18n.get(DESCRIPTION_KEY_FEATURES) : DEFAULT_DESCRIPTION_FEATURES;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getFeatureCount(parameters);
+    }
 }

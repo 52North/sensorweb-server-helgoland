@@ -29,11 +29,14 @@
 package org.n52.web.ctrl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.HrefHelper;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -48,96 +51,108 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping(value = "/", produces = {
     "application/json"
 })
-public class ResourcesController {
-
-    private static final String TIMESERIES = "timeseries";
-    private static final String TAJECTORIES = "trajectories";
-    private static final String INDIVIDUAL_OBSERVATIONS = "individualObservations";
+public class ResourcesController extends BaseController implements ResoureControllerConstants {
 
     private final CountingMetadataService metadataService;
+    private Collection<ParameterRequestMappingAdapter<?>> parameterController;
 
     @Autowired
-    public ResourcesController(CountingMetadataService metadataService) {
+    public ResourcesController(CountingMetadataService metadataService,
+            Collection<ParameterRequestMappingAdapter<?>> parameterController) {
         this.metadataService = metadataService;
+        this.parameterController = parameterController;
     }
 
     @RequestMapping("/")
     public ModelAndView getResources(HttpServletResponse response,
                                      @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
-        // .respectBackwardsCompatibility();
+        IoParameters query = IoParameters.createFromMultiValueMap(addAdditionalParameter(parameters));
         return new ModelAndView().addObject(createResources(query));
     }
 
-    private ResourceCollection add(String resource, String label, String description) {
+    private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
         return ResourceCollection.createResource(resource)
                                  .withDescription(description)
-                                 .withLabel(label);
+                                 .withLabel(label)
+                                 .withHref(HrefHelper.constructHref(parameters.getHrefBase(), resource));
     }
 
     private List<ResourceCollection> createResources(IoParameters parameters) {
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
+        if (parameterController == null || parameterController.isEmpty()) {
+            return createStaticResources(parameters, i18n);
+        }
+        return createDynamicResources(parameters, i18n);
+    }
 
-        ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));
-        // ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
-        ResourceCollection timeseries = add(TIMESERIES, "Timeseries", i18n.get("msg.web.resources.timeseries"));
-        ResourceCollection categories = add("categories", "Category", i18n.get("msg.web.resources.categories"));
-        ResourceCollection offerings = add("offerings", "Offering", i18n.get("msg.web.resources.offerings"));
-        ResourceCollection features = add("features", "Feature", i18n.get("msg.web.resources.features"));
-        ResourceCollection procedures = add("procedures", "Procedure", i18n.get("msg.web.resources.procedures"));
-        ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
+    private List<ResourceCollection> createDynamicResources(IoParameters parameters, I18N i18n) {
+        return parameterController.stream().filter(p -> p.getResource() != null && !p.getResource().isEmpty())
+                .map(p -> p.getResourceCollection(i18n, parameters)).collect(Collectors.toList());
+    }
+
+    private List<ResourceCollection> createStaticResources(IoParameters parameters, I18N i18n) {
+        ResourceCollection services =
+                add(RESOURCE_SERVICES, LABEL_SERVICES, i18n.get(DESCRIPTION_KEY_SERVICES), parameters);
+        ResourceCollection categories =
+                add(RESOURCE_CATEGORIES, LABEL_CATEGORIES, i18n.get(DESCRIPTION_KEY_CATEGORIES), parameters);
+        ResourceCollection offerings =
+                add(RESOURCE_OFFERINGS, LABEL_OFFERINGS, i18n.get(DESCRIPTION_KEY_OFFERINGS), parameters);
+        ResourceCollection features =
+                add(RESOURCE_FEATURES, LABEL_FEATURES, i18n.get(DESCRIPTION_KEY_FEATURES), parameters);
+        ResourceCollection procedures =
+                add(RESOURCE_PROCEDURES, LABEL_PROCEDURES, i18n.get(DESCRIPTION_KEY_PROCEDURES), parameters);
+        ResourceCollection phenomena =
+                add(RESOURCE_PHENOMENA, LABEL_PHENOMENA, i18n.get(DESCRIPTION_KEY_PHENOMENA), parameters);
+        ResourceCollection platforms =
+                add(RESOURCE_PLATFORMS, LABEL_PLATFORMS, i18n.get(DESCRIPTION_KEY_PLATFORMS), parameters);
+        ResourceCollection datasets =
+                add(RESOURCE_DATASETS, LABEL_DATASETS, i18n.get(DESCRIPTION_KEY_DATASETS), parameters);
+        ResourceCollection timeseries =
+                add(RESOURCE_TIMESERIES, LABEL_TIMESERIES, i18n.get(DESCRIPTION_KEY_TIMESERIES), parameters);
+        ResourceCollection individualObservations = add(RESOURCE_INDIVIDUAL_OBSERVATIONS,
+                LABEL_INDIVIDUAL_OBSERVATIONS, i18n.get(DESCRIPTION_KEY_TIMESERIES), parameters);
+        ResourceCollection trajectories =
+                add(RESOURCE_TRAJECTORIES, LABEL_TRAJECTORIES, i18n.get(DESCRIPTION_KEY_TRAJECTORIES), parameters);
+        ResourceCollection samplings =
+                add(RESOURCE_SAMPLINGS, LABEL_SAMPLINGS, i18n.get(DESCRIPTION_KEY_SAMPLINGS), parameters);
+        ResourceCollection measuringPrograms = add(RESOURCE_MEASURING_PROGRAMS, LABEL_MEASURING_PROGRAMS,
+                i18n.get(DESCRIPTION_KEY_MEASURING_PROGRAMS), parameters);
+        ResourceCollection tags = add(RESOURCE_TAGS, LABEL_TAGS, i18n.get(DESCRIPTION_KEY_TAGS), parameters);
         if (parameters.isExpanded()) {
             services.setSize(metadataService.getServiceCount(parameters));
-            // if (parameters.shallBehaveBackwardsCompatible()) {
-            // ensure backwards compatibility
-            // stations.setSize(metadataService.getStationCount());
-            // timeseries.setSize(metadataService.getTimeseriesCount());
-            // }
             categories.setSize(metadataService.getCategoryCount(parameters));
             offerings.setSize(metadataService.getOfferingCount(parameters));
             features.setSize(metadataService.getFeatureCount(parameters));
             procedures.setSize(metadataService.getProcedureCount(parameters));
             phenomena.setSize(metadataService.getPhenomenaCount(parameters));
+            platforms.setSize(metadataService.getPlatformCount(parameters));
+            datasets.setSize(metadataService.getDatasetCount(parameters));
+            List<String> datasetTypes = new LinkedList<>(parameters.getDatasetTypes());
+            timeseries.setSize(countDatasets(parameters, RESOURCE_TIMESERIES));
+            trajectories.setSize(countDatasets(parameters, RESOURCE_TRAJECTORIES));
+            individualObservations.setSize(countDatasets(parameters, RESOURCE_INDIVIDUAL_OBSERVATIONS));
+            parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
+            samplings.setSize(metadataService.getSamplingCounter(parameters));
+            measuringPrograms.setSize(metadataService.getMeasuringProgramCounter(parameters));
+            tags.setSize(metadataService.getTagCounter(parameters));
         }
-
         List<ResourceCollection> resources = new ArrayList<>();
         resources.add(services);
-        // resources.add(stations);
         resources.add(timeseries);
         resources.add(categories);
         resources.add(offerings);
         resources.add(features);
         resources.add(procedures);
         resources.add(phenomena);
-
-        // since 2.0.0
-        ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
-        ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
-        ResourceCollection individualObservations = add(INDIVIDUAL_OBSERVATIONS,
-                                                        "IndividualObservations",
-                                                        i18n.get("msg.web.resources.individualObservations"));
-        ResourceCollection trajectories = add(TAJECTORIES, "Trajectories", i18n.get("msg.web.resources.trajectories"));
         resources.add(platforms);
         resources.add(datasets);
         resources.add(individualObservations);
-        // resources.add(profiles);
         resources.add(trajectories);
+        resources.add(samplings);
+        resources.add(measuringPrograms);
+        resources.add(tags);
 
-        // resources.add(geometries);
-        if (parameters.isExpanded()) {
-            platforms.setSize(metadataService.getPlatformCount(parameters));
-            datasets.setSize(metadataService.getDatasetCount(parameters));
-
-            List<String> datasetTypes = new LinkedList<>(parameters.getDatasetTypes());
-            timeseries.setSize(countDatasets(parameters, TIMESERIES));
-            trajectories.setSize(countDatasets(parameters, TAJECTORIES));
-            individualObservations.setSize(countDatasets(parameters, INDIVIDUAL_OBSERVATIONS));
-            parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
-        }
-        resources.add(add("samplings", "Samplings", i18n.get("msg.web.resources.samplings")));
-        resources.add(add("measuringPrograms", "MeasuringPrograms", i18n.get("msg.web.resources.measuringPrograms")));
-        resources.add(add("tags", "Tags", i18n.get("msg.web.resources.tags")));
         return resources;
     }
 
@@ -156,11 +171,17 @@ public class ResourcesController {
         response.addHeader("API-Version", version);
     }
 
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        // TODO Auto-generated method stub
+    }
+
     public static final class ResourceCollection {
 
         private String id;
         private String label;
         private String description;
+        private String href;
 
         private Long size;
 
@@ -192,6 +213,14 @@ public class ResourcesController {
             this.description = description;
         }
 
+        public String getHref() {
+            return href;
+        }
+
+        public void setHref(String href) {
+            this.href = href;
+        }
+
         public Long getSize() {
             return size;
         }
@@ -205,12 +234,17 @@ public class ResourcesController {
         }
 
         public ResourceCollection withLabel(String name) {
-            this.label = name;
+           setLabel(name);
             return this;
         }
 
         public ResourceCollection withDescription(String details) {
-            this.description = details;
+            setDescription(details);
+            return this;
+        }
+
+        public ResourceCollection withHref(String href) {
+            setHref(href);
             return this;
         }
 
@@ -219,7 +253,7 @@ public class ResourcesController {
         }
 
         public ResourceCollection withCount(Long count) {
-            this.size = count;
+            setSize(count);
             return this;
         }
 

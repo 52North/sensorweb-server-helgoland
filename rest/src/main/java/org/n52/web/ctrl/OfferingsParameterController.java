@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.OfferingOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -47,5 +49,26 @@ public class OfferingsParameterController extends ParameterRequestMappingAdapter
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_OFFERINGS;
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_OFFERINGS;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_OFFERINGS;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_OFFERINGS) ? i18n.get(DESCRIPTION_KEY_OFFERINGS)
+                : DEFAULT_DESCRIPTION_OFFERINGS;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getOfferingCount(parameters);
     }
 }

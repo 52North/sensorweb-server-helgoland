@@ -28,6 +28,8 @@
  */
 package org.n52.web.ctrl;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.PlatformOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -47,5 +49,26 @@ public class PlatformsParameterController extends ParameterRequestMappingAdapter
     @Override
     public String getCollectionName() {
         return UrlSettings.COLLECTION_PLATFORMS;
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_PLATFORMS;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_PLATFORMS;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_PLATFORMS) ? i18n.get(DESCRIPTION_KEY_PLATFORMS)
+                : DEFAULT_DESCRIPTION_PLATFORMS;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getPlatformCount(parameters);
     }
 }

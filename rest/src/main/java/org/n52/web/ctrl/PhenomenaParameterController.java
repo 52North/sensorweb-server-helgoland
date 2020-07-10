@@ -29,6 +29,8 @@
 package org.n52.web.ctrl;
 
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.PhenomenonOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -50,4 +52,24 @@ public class PhenomenaParameterController extends ParameterRequestMappingAdapter
         return UrlSettings.COLLECTION_PHENOMENA;
     }
 
+    @Override
+    protected String getResource() {
+        return RESOURCE_PHENOMENA;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_PHENOMENA;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_PHENOMENA) ? i18n.get(DESCRIPTION_KEY_PHENOMENA)
+                : DEFAULT_DESCRIPTION_PHENOMENA;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return getEntityCounter().getPhenomenaCount(parameters);
+    }
 }

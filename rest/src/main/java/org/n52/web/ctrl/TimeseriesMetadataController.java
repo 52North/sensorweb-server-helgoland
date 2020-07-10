@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.I18N;
 import org.n52.io.extension.RenderingHintsExtension;
 import org.n52.io.extension.StatusIntervalsExtension;
 import org.n52.io.request.IoParameters;
@@ -158,6 +159,30 @@ public class TimeseriesMetadataController extends ParameterRequestMappingAdapter
                                       .map(x -> (MetadataExtension<TimeseriesMetadataOutput>) x)
                                       .map(x -> x.getExtras(output, parameters))
                                       .findFirst();
+    }
+
+    @Override
+    protected String getResource() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getLabel() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

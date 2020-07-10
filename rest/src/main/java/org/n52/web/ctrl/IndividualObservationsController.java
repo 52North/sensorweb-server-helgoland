@@ -31,6 +31,8 @@ package org.n52.web.ctrl;
 import java.util.Collections;
 import java.util.List;
 
+import org.n52.io.I18N;
+import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.IndividualObservationOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
@@ -61,5 +63,26 @@ public class IndividualObservationsController extends ParameterRequestMappingAda
         List<String> value = Collections.singletonList("individualObservation");
         query.put(Parameters.FILTER_DATASET_TYPES, value);
         return super.addAdditionalParameter(query);
+    }
+
+    @Override
+    protected String getResource() {
+        return RESOURCE_INDIVIDUAL_OBSERVATIONS;
+    }
+
+    @Override
+    protected String getLabel() {
+        return LABEL_INDIVIDUAL_OBSERVATIONS;
+    }
+
+    @Override
+    protected String getDescription(I18N i18n) {
+        return i18n.has(DESCRIPTION_KEY_INDIVIDUAL_OBSERVATIONS) ? i18n.get(DESCRIPTION_KEY_INDIVIDUAL_OBSERVATIONS)
+                : DEFAULT_DESCRIPTION_INDIVIDUAL_OBSERVATIONS;
+    }
+
+    @Override
+    protected Long getSize(IoParameters parameters) {
+        return countDatasets(parameters, getResource());
     }
 }
