@@ -437,7 +437,12 @@ public class GeoJSONTest {
         }
 
         @Override
-        protected int getSortIndex() {
+        protected Geometry reverseInternal() {
+            return null;
+        }
+
+        @Override
+        protected int getTypeCode() {
             return 0;
         }
     }

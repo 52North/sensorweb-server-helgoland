@@ -4,12 +4,12 @@
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
-        <version>18</version>
+        <version>19</version>
     </parent>
     
     <groupId>org.n52.sensorweb-server.helgoland</groupId>
     <artifactId>helgoland-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.2.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Sensor Web Server Helgoland</name>
     <url>https://52north.org/research/research-labs/sensor-web/</url>
@@ -56,7 +56,7 @@
 
         <jackson.version>2.11.1</jackson.version>
         <geotools.version>23.1</geotools.version>
-        <arctic-sea.version>7.5.1</arctic-sea.version>
+        <arctic-sea.version>7.6.1</arctic-sea.version>
         <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
         <spring.version>5.2.6.RELEASE</spring.version>
         <version.junit>5.6.2</version.junit>
@@ -293,7 +293,7 @@
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
-                <version>1.16.1</version>
+                <version>1.17.0</version>
             </dependency>
 
             <dependency>
