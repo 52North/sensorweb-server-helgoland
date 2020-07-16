@@ -221,11 +221,11 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
         return this;
     }
 
-    public AggregationOutput<?> getAggregation() {
+    public AggregationOutput<?> getAggregations() {
         return getIfSerialized(aggregation);
     }
 
-    public void setAggregation(OptionalOutput<AggregationOutput<V>> aggregation) {
+    public void setAggregations(OptionalOutput<AggregationOutput<V>> aggregation) {
         this.aggregation = aggregation;
     }
 }
