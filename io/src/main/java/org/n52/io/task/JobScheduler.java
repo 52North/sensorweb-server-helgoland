@@ -28,10 +28,12 @@
  */
 package org.n52.io.task;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.n52.faroe.annotation.Configurable;
+import org.n52.faroe.annotation.Setting;
+import org.n52.janmayen.lifecycle.Constructable;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -40,9 +42,12 @@ import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JobScheduler {
+@Configurable
+public class JobScheduler implements Constructable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
+    private static final String JOB_SCHEDULER_ENABLE_KEY = "helgoland.job.scheduler.enable";
+    private static final String JOB_SCHEDULER_STARTUP_DELAY_KEY = "helgoland.job.scheduler.startup.delay";
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
 
@@ -52,11 +57,14 @@ public class JobScheduler {
     private Scheduler scheduler;
 
     private boolean enabled = true;
+    private boolean initialized;
 
     /**
      * Runs all scheduled tasks
      */
+    @Override
     public void init() {
+        initialized = true;
         if (!enabled) {
             LOGGER.info("Job schedular disabled. No jobs will be triggered. "
                     + "This is also true for particularly enabled jobs.");
@@ -96,8 +104,12 @@ public class JobScheduler {
      * Shuts down the task scheduler without waiting tasks to be finished.
      */
     public void shutdown() {
+        shutdown(false);
+    }
+
+    protected void shutdown(boolean waitForJobs) {
         try {
-            scheduler.shutdown(false);
+            scheduler.shutdown(waitForJobs);
         } catch (SchedulerException e) {
             LOGGER.error("Could not shutdown scheduler.", e);
         }
@@ -115,6 +127,7 @@ public class JobScheduler {
         return startupDelayInSeconds;
     }
 
+    @Setting(JOB_SCHEDULER_STARTUP_DELAY_KEY)
     public void setStartupDelayInSeconds(int startupDelayInSeconds) {
         this.startupDelayInSeconds = startupDelayInSeconds;
     }
@@ -131,8 +144,18 @@ public class JobScheduler {
         return enabled;
     }
 
+    @Setting(JOB_SCHEDULER_ENABLE_KEY)
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        if (this.enabled != enabled) {
+            this.enabled = enabled;
+            if (initialized) {
+                if (enabled) {
+                    init();
+                } else {
+                    shutdown(true);
+                }
+            }
+        }
     }
 
 }

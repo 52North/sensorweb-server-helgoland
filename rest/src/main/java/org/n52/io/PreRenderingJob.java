@@ -52,6 +52,7 @@ import javax.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.n52.faroe.annotation.Setting;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
 import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
@@ -88,6 +89,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
+    private static final String PRERENDERING_JOB_ENABLE_KEY = "helgoland.job.prerendering.enable";
+    private static final String PRERENDERING_JOB_CONFIG_FILE_KEY = "helgoland.job.prerendering.config.file";
+    private static final String PRERENDERING_JOB_TRIGGER_NAME_KEY = "helgoland.job.prerendering.trigger.name";
+    private static final String PRERENDERING_JOB_TRIGGER_STARTUP_KEY = "helgoland.job.prerendering.trigger.startup";
+    private static final String PRERENDERING_JOB_CRON_EXPRESSION_KEY = "helgoland.job.prerendering.cron.expression";
+
 
     private static final int WIDTH_DEFAULT = 800;
     private static final int HEIGHT_DEFAULT = 500;
@@ -231,12 +238,39 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                                     .getRealPath("/");
     }
 
+    @Override
+    @Setting(PRERENDERING_JOB_ENABLE_KEY)
+    public void setEnabled(boolean enabled) {
+        if (isEnabled() != enabled) {
+            super.setEnabled(enabled);
+        }
+    }
+
     public String getConfigFile() {
         return configFile;
     }
 
+    @Setting(PRERENDERING_JOB_CONFIG_FILE_KEY)
     public void setConfigFile(String configFile) {
         this.configFile = configFile;
+    }
+
+    @Override
+    @Setting(PRERENDERING_JOB_TRIGGER_NAME_KEY)
+    public void setTriggerName(String triggerName) {
+        super.setTriggerName(triggerName);
+    }
+
+    @Override
+    @Setting(PRERENDERING_JOB_TRIGGER_STARTUP_KEY)
+    public void setTriggerAtStartup(boolean triggerAtStartup) {
+        super.setTriggerAtStartup(triggerAtStartup);
+    }
+
+    @Override
+    @Setting(PRERENDERING_JOB_CRON_EXPRESSION_KEY)
+    public void setCronExpression(String cronExpresssion) {
+        super.setCronExpression(cronExpresssion);
     }
 
     public List<String> getPrerenderedImages(final String datasetId) {
