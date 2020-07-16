@@ -90,4 +90,9 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
         this.avg = avg;
         return this;
     }
+
+    public boolean isEmpty() {
+        return min != null && min.isAbsent() && max != null && max.isAbsent() && count != null && count.isAbsent()
+                && avg != null && avg.isAbsent();
+    }
 }
