@@ -395,6 +395,8 @@ public interface Parameters {
 
     String UNIX_TIME = "unixTime";
 
+    String AGGREGATION = "aggregation";
+
     interface HttpHeader {
         String ACCEPT_LANGUAGE = "accept-language";
     }
