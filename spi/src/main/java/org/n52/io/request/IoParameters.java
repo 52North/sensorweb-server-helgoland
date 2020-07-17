@@ -1167,6 +1167,10 @@ public final class IoParameters implements Parameters {
         return getAsBoolean(UNIX_TIME);
     }
 
+    public Set<String> getAggregation() {
+        return !getAsString(AGGREGATION).isEmpty() ? getValuesOf(AGGREGATION) : Collections.emptySet();
+    }
+
     public Integer getLevel() {
         return !containsParameter(LEVEL) ? null
                 : getAsString(LEVEL).isEmpty() ? Integer.MAX_VALUE : getAsInteger(LEVEL);
