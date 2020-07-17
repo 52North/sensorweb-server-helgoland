@@ -52,6 +52,7 @@ import javax.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
 import org.n52.io.PrerenderingJobConfig.RenderingConfig;
 import org.n52.io.handler.DatasetFactoryException;
@@ -86,12 +87,12 @@ import org.springframework.web.context.ServletConfigAware;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Configurable
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
     private static final String PRERENDERING_JOB_ENABLE_KEY = "helgoland.job.prerendering.enable";
     private static final String PRERENDERING_JOB_CONFIG_FILE_KEY = "helgoland.job.prerendering.config.file";
-    private static final String PRERENDERING_JOB_TRIGGER_NAME_KEY = "helgoland.job.prerendering.trigger.name";
     private static final String PRERENDERING_JOB_TRIGGER_STARTUP_KEY = "helgoland.job.prerendering.trigger.startup";
     private static final String PRERENDERING_JOB_CRON_EXPRESSION_KEY = "helgoland.job.prerendering.cron.expression";
 
@@ -163,7 +164,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         List<RenderingConfig> styles = taskConfigPrerendering.getDatasetStyles();
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
-            parameters.put("phenomenon", config.getId());
+            parameters.put(Parameters.PHENOMENA, config.getId());
+            parameters.put(Parameters.FILTER_DATASET_TYPES, "timeseries");
+            parameters.put(Parameters.FILTER_OBSERVATION_TYPES, "simple");
+            parameters.put(Parameters.FILTER_VALUE_TYPES, "quantity");
             IoParameters query = IoParameters.createFromSingleValueMap(parameters);
             for (DatasetOutput< ? > metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
@@ -256,12 +260,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     @Override
-    @Setting(PRERENDERING_JOB_TRIGGER_NAME_KEY)
-    public void setTriggerName(String triggerName) {
-        super.setTriggerName(triggerName);
-    }
-
-    @Override
     @Setting(PRERENDERING_JOB_TRIGGER_STARTUP_KEY)
     public void setTriggerAtStartup(boolean triggerAtStartup) {
         super.setTriggerAtStartup(triggerAtStartup);
@@ -270,6 +268,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     @Override
     @Setting(PRERENDERING_JOB_CRON_EXPRESSION_KEY)
     public void setCronExpression(String cronExpresssion) {
+        if (getCronExpression() != null && !getCronExpression().equals(cronExpresssion)) {
+            setModified(true);
+        }
         super.setCronExpression(cronExpresssion);
     }
 

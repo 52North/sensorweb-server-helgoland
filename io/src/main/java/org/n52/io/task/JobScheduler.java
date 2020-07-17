@@ -29,16 +29,25 @@
 package org.n52.io.task;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
 import org.n52.janmayen.lifecycle.Constructable;
+import org.quartz.InterruptableJob;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +80,14 @@ public class JobScheduler implements Constructable {
             return;
         }
 
-        scheduledJobs.stream()
-                .filter(scheduledJob -> scheduledJob.isEnabled())
-                .forEach(scheduledJob -> scheduleJob(scheduledJob));
+        try {
+            ReSchedulerJob reSchedulerJob = new ReSchedulerJob();
+            if (!scheduler.checkExists(reSchedulerJob.createJobDetails().getKey())) {
+                scheduleJob(new ReSchedulerJob());
+            }
+        } catch (SchedulerException e) {
+            LOGGER.error("Could not start re-scheduler job.", e);
+        }
 
         try {
             scheduler.startDelayed(startupDelayInSeconds);
@@ -104,12 +118,8 @@ public class JobScheduler implements Constructable {
      * Shuts down the task scheduler without waiting tasks to be finished.
      */
     public void shutdown() {
-        shutdown(false);
-    }
-
-    protected void shutdown(boolean waitForJobs) {
         try {
-            scheduler.shutdown(waitForJobs);
+            scheduler.shutdown(false);
         } catch (SchedulerException e) {
             LOGGER.error("Could not shutdown scheduler.", e);
         }
@@ -149,13 +159,75 @@ public class JobScheduler implements Constructable {
         if (this.enabled != enabled) {
             this.enabled = enabled;
             if (initialized) {
-                if (enabled) {
-                    init();
-                } else {
-                    shutdown(true);
+                try {
+                    if (enabled) {
+                        init();
+                    } else {
+                        scheduler.standby();
+                    }
+                } catch (SchedulerException e) {
+                    LOGGER.error("Error while stopping/starting scheduler", e);
                 }
             }
         }
     }
 
+    public class ReSchedulerJob extends ScheduledJob implements InterruptableJob {
+
+        @Override
+        public Trigger createTrigger(JobKey jobKey) {
+            TriggerBuilder<Trigger> tb =
+                    TriggerBuilder.newTrigger().forJob(jobKey).withIdentity(getTriggerName()).startNow();
+            if (getCronExpression() != null) {
+                tb.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(30));
+            }
+            return tb.build();
+        }
+
+        @Override
+        public JobDetail createJobDetails() {
+            return JobBuilder.newJob(ReSchedulerJob.class)
+                    .withIdentity(getJobName())
+                    .build();
+        }
+
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            for (ScheduledJob scheduledJob : JobScheduler.this.scheduledJobs) {
+                JobDetail jobDetails = scheduledJob.createJobDetails();
+                Trigger trigger = scheduledJob.createTrigger(jobDetails.getKey());
+                try {
+                    if (!scheduler.checkExists(jobDetails.getKey()) && !scheduler.checkExists(trigger.getKey())) {
+                        if (scheduledJob.isEnabled()) {
+                            scheduleJob(scheduledJob);
+                        }
+                    } else {
+                        if (!scheduledJob.isEnabled()) {
+                            scheduler.deleteJob(jobDetails.getKey());
+                        } else if (scheduledJob.isModified()) {
+                            updateJob(scheduledJob);
+                        }
+                    }
+                } catch (SchedulerException e) {
+                    LOGGER.error("Error while processing trigger {} of job {}", trigger.getKey().getName(),
+                            jobDetails.getKey().getName());
+
+                }
+            }
+        }
+
+        public void updateJob(ScheduledJob taskToSchedule) throws SchedulerException {
+            JobDetail details = taskToSchedule.createJobDetails();
+            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
+            Date nextExecution = scheduler.rescheduleJob(trigger.getKey(), trigger);
+            LOGGER.debug("Rescheduled job '{}' will be executed at '{}'!", details.getKey(),
+                    new DateTime(nextExecution));
+            taskToSchedule.setModified(false);
+        }
+
+        @Override
+        public void interrupt() throws UnableToInterruptJobException {
+            LOGGER.info("Marked job to interrupt.");
+        }
+    }
 }

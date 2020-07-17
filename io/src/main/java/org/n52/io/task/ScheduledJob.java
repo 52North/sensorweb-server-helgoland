@@ -28,6 +28,7 @@
  */
 package org.n52.io.task;
 
+import org.n52.faroe.annotation.Configurable;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
@@ -35,6 +36,7 @@ import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
+@Configurable
 public abstract class ScheduledJob {
 
     private boolean enabled = true;
@@ -48,6 +50,8 @@ public abstract class ScheduledJob {
     private String cronExpression;
 
     private boolean triggerAtStartup;
+
+    private boolean modified;
 
     // XXX job details create a job instance! snake biting tail
     public abstract JobDetail createJobDetails();
@@ -118,4 +122,11 @@ public abstract class ScheduledJob {
         this.enabled = enabled;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
+
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
 }
