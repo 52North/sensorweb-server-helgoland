@@ -28,39 +28,31 @@
  */
 package org.n52.io.response;
 
-import java.util.Collection;
+import java.util.List;
 
-public abstract class HierarchicalParameterOutput extends AbstractOutput {
+public abstract class HierarchicalParameterOutput<T> extends AbstractOutput {
 
-    private Collection<ProcedureOutput> parents;
+    public static final String PARENTS = "parents";
 
-    private Collection<ProcedureOutput> children;
+    public static final String CHILDREN = "children";
 
-    public Collection<ProcedureOutput> getParents() {
-        return hasParents()
-                ? parents
-                : null;
+    private OptionalOutput<List<T>> parents;
+
+    private OptionalOutput<List<T>> children;
+
+    public List<T> getParents() {
+        return getIfSerialized(parents);
     }
 
-    public boolean hasParents() {
-        return parents != null && !parents.isEmpty();
-    }
-
-    public void setParents(Collection<ProcedureOutput> parents) {
+    public void setParents(OptionalOutput<List<T>> parents) {
         this.parents = parents;
     }
 
-    public Collection<ProcedureOutput> getChildren() {
-        return hasChildren()
-                ? children
-                : null;
+    public List<T> getChildren() {
+        return getIfSerialized(children);
     }
 
-    public boolean hasChildren() {
-        return children != null && !children.isEmpty();
-    }
-
-    public void setChildren(Collection<ProcedureOutput> children) {
+    public void setChildren(OptionalOutput<List<T>> children) {
         this.children = children;
     }
 
