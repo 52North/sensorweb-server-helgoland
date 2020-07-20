@@ -38,9 +38,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -994,20 +996,28 @@ public final class IoParameters implements Parameters {
             : extendWith(key, Arrays.asList(values));
     }
 
-    public IoParameters extendWith(String key, List<String> values) {
+    public IoParameters extendWith(String key, Collection<String> values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
-        newValues.put(key.toLowerCase(), values);
+        if (values != null) {
+            List<String> v = values instanceof List ? (List<String>) values : new LinkedList<>(values);
+            if (containsParameter(key.toLowerCase()) && getValuesOf(key.toLowerCase()) != null) {
+                v.addAll(getValuesOf(key.toLowerCase()));
+            }
+            newValues.put(key.toLowerCase(), v);
 
-        MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
-        mergedValues.putAll(convertToJsonNodes(newValues));
-        return new IoParameters(mergedValues).setParseExceptionHandle(parseExceptionHandle);
+            MultiValueMap<String, JsonNode> mergedValues = new LinkedMultiValueMap<>(query);
+            mergedValues.putAll(convertToJsonNodes(newValues));
+            return new IoParameters(mergedValues).setParseExceptionHandle(parseExceptionHandle);
+        } else {
+            return removeAllOf(key);
+        }
     }
 
     public IoParameters replaceWith(String key, String... values) {
         return removeAllOf(key).extendWith(key, values);
     }
 
-    public IoParameters replaceWith(String key, List<String> values) {
+    public IoParameters replaceWith(String key, Collection<String> values) {
         return removeAllOf(key).extendWith(key, values);
     }
 
@@ -1159,6 +1169,11 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getAggregation() {
         return !getAsString(AGGREGATION).isEmpty() ? getValuesOf(AGGREGATION) : Collections.emptySet();
+    }
+
+    public Integer getLevel() {
+        return !containsParameter(LEVEL) ? null
+                : getAsString(LEVEL).isEmpty() ? Integer.MAX_VALUE : getAsInteger(LEVEL);
     }
 
 }

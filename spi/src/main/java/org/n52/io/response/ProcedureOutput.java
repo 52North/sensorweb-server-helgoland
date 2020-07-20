@@ -28,7 +28,7 @@
  */
 package org.n52.io.response;
 
-public class ProcedureOutput extends HierarchicalParameterOutput {
+public class ProcedureOutput extends HierarchicalParameterOutput<ProcedureOutput> {
 
     public static final String COLLECTION_PATH = "procedures";
 
