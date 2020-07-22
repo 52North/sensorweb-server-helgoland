@@ -397,6 +397,10 @@ public interface Parameters {
 
     String UNIX_TIME = "unixTime";
 
+    String AGGREGATION = "aggregation";
+
+    String LEVEL = "level";
+
     interface HttpHeader {
         String ACCEPT_LANGUAGE = "accept-language";
     }
