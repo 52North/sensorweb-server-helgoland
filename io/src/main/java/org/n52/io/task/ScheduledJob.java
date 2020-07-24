@@ -28,16 +28,15 @@
  */
 package org.n52.io.task;
 
-import org.n52.faroe.annotation.Configurable;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
-@Configurable
-public abstract class ScheduledJob {
+public abstract class ScheduledJob extends QuartzJobBean {
 
     private boolean enabled = true;
 

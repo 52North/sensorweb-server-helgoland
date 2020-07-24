@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.task;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,9 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 
-public class PrerenderingJobConfig {
+public class PreRenderingConfig {
 
     private Map<String, String> generalConfig = new HashMap<>();
 
@@ -62,7 +63,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @return the styles
-     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
+     * @deprecated use {@link PreRenderingConfig#getDatasetStyles()}
      */
     @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
@@ -71,7 +72,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @param timeseriesStyles the styles to set
-     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
+     * @deprecated use {@link PreRenderingConfig#setDatasetStyles(List)}
      */
     @Deprecated
     public void setTimeseriesStyles(List<RenderingConfig> timeseriesStyles) {
@@ -80,7 +81,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @return the styles
-     * @deprecated use {@link PrerenderingJobConfig#getDatasetStyles()}
+     * @deprecated use {@link PreRenderingConfig#getDatasetStyles()}
      */
     @Deprecated
     public List<RenderingConfig> getSeriesStyles() {
@@ -89,7 +90,7 @@ public class PrerenderingJobConfig {
 
     /**
      * @param seriesStyles the styles to set
-     * @deprecated use {@link PrerenderingJobConfig#setDatasetStyles(List)}
+     * @deprecated use {@link PreRenderingConfig#setDatasetStyles(List)}
      */
     @Deprecated
     public void setSeriesStyles(List<RenderingConfig> seriesStyles) {

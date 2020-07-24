@@ -29,48 +29,33 @@
 package org.n52.io.task;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
 import org.n52.janmayen.lifecycle.Constructable;
-import org.quartz.InterruptableJob;
-import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
-import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Configurable
-public class JobScheduler implements Constructable {
+public class JobScheduler implements Constructable, JobUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
     private static final String JOB_SCHEDULER_ENABLE_KEY = "helgoland.job.scheduler.enable";
     private static final String JOB_SCHEDULER_STARTUP_DELAY_KEY = "helgoland.job.scheduler.startup.delay";
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
-
+    private Scheduler scheduler;
     // 5 seconds
     private int startupDelayInSeconds = 5;
-
-    private Scheduler scheduler;
-
     private boolean enabled = true;
     private boolean initialized;
 
-    /**
-     * Runs all scheduled tasks
-     */
     @Override
     public void init() {
         initialized = true;
@@ -82,35 +67,22 @@ public class JobScheduler implements Constructable {
 
         try {
             ReSchedulerJob reSchedulerJob = new ReSchedulerJob();
-            if (!scheduler.checkExists(reSchedulerJob.createJobDetails().getKey())) {
-                scheduleJob(new ReSchedulerJob());
+            JobDetail jobDetails = reSchedulerJob.createJobDetails();
+            Trigger trigger = new ReSchedulerJob().createTrigger(jobDetails.getKey());
+            if (getScheduler().getTriggersOfJob(trigger.getJobKey()).isEmpty()) {
+                getScheduler().scheduleJob(jobDetails, trigger);
+            } else {
+                getScheduler().rescheduleJob(trigger.getKey(), trigger);
             }
         } catch (SchedulerException e) {
             LOGGER.error("Could not start re-scheduler job.", e);
         }
 
         try {
-            scheduler.startDelayed(startupDelayInSeconds);
+            getScheduler().startDelayed(startupDelayInSeconds);
             LOGGER.info("Scheduler will start jobs in {}s ...", startupDelayInSeconds);
         } catch (SchedulerException e) {
             LOGGER.error("Could not start scheduler.", e);
-        }
-    }
-
-    private void scheduleJob(ScheduledJob taskToSchedule) {
-        try {
-            JobDetail details = taskToSchedule.createJobDetails();
-            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
-            scheduler.scheduleJob(details, trigger);
-            if (taskToSchedule.isTriggerAtStartup()) {
-                LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
-                Trigger onceAtStartup = TriggerBuilder.newTrigger()
-                        .withIdentity("onceAtStartup")
-                        .forJob(details.getKey()).build();
-                scheduler.scheduleJob(onceAtStartup);
-            }
-        } catch (SchedulerException e) {
-            LOGGER.warn("Could not schdule Job '{}'.", taskToSchedule.getJobName(), e);
         }
     }
 
@@ -119,7 +91,7 @@ public class JobScheduler implements Constructable {
      */
     public void shutdown() {
         try {
-            scheduler.shutdown(false);
+            getScheduler().shutdown(false);
         } catch (SchedulerException e) {
             LOGGER.error("Could not shutdown scheduler.", e);
         }
@@ -129,8 +101,17 @@ public class JobScheduler implements Constructable {
         return scheduledJobs;
     }
 
+    @Autowired
     public void setScheduledJobs(List<ScheduledJob> scheduledJobs) {
         this.scheduledJobs = scheduledJobs;
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public void setScheduler(Scheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     public int getStartupDelayInSeconds() {
@@ -140,14 +121,6 @@ public class JobScheduler implements Constructable {
     @Setting(JOB_SCHEDULER_STARTUP_DELAY_KEY)
     public void setStartupDelayInSeconds(int startupDelayInSeconds) {
         this.startupDelayInSeconds = startupDelayInSeconds;
-    }
-
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
-
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
     }
 
     public boolean isEnabled() {
@@ -163,7 +136,7 @@ public class JobScheduler implements Constructable {
                     if (enabled) {
                         init();
                     } else {
-                        scheduler.standby();
+                        getScheduler().standby();
                     }
                 } catch (SchedulerException e) {
                     LOGGER.error("Error while stopping/starting scheduler", e);
@@ -172,62 +145,9 @@ public class JobScheduler implements Constructable {
         }
     }
 
-    public class ReSchedulerJob extends ScheduledJob implements InterruptableJob {
-
-        @Override
-        public Trigger createTrigger(JobKey jobKey) {
-            TriggerBuilder<Trigger> tb =
-                    TriggerBuilder.newTrigger().forJob(jobKey).withIdentity(getTriggerName()).startNow();
-            if (getCronExpression() != null) {
-                tb.withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(30));
-            }
-            return tb.build();
-        }
-
-        @Override
-        public JobDetail createJobDetails() {
-            return JobBuilder.newJob(ReSchedulerJob.class)
-                    .withIdentity(getJobName())
-                    .build();
-        }
-
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            for (ScheduledJob scheduledJob : JobScheduler.this.scheduledJobs) {
-                JobDetail jobDetails = scheduledJob.createJobDetails();
-                Trigger trigger = scheduledJob.createTrigger(jobDetails.getKey());
-                try {
-                    if (!scheduler.checkExists(jobDetails.getKey()) && !scheduler.checkExists(trigger.getKey())) {
-                        if (scheduledJob.isEnabled()) {
-                            scheduleJob(scheduledJob);
-                        }
-                    } else {
-                        if (!scheduledJob.isEnabled()) {
-                            scheduler.deleteJob(jobDetails.getKey());
-                        } else if (scheduledJob.isModified()) {
-                            updateJob(scheduledJob);
-                        }
-                    }
-                } catch (SchedulerException e) {
-                    LOGGER.error("Error while processing trigger {} of job {}", trigger.getKey().getName(),
-                            jobDetails.getKey().getName());
-
-                }
-            }
-        }
-
-        public void updateJob(ScheduledJob taskToSchedule) throws SchedulerException {
-            JobDetail details = taskToSchedule.createJobDetails();
-            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
-            Date nextExecution = scheduler.rescheduleJob(trigger.getKey(), trigger);
-            LOGGER.debug("Rescheduled job '{}' will be executed at '{}'!", details.getKey(),
-                    new DateTime(nextExecution));
-            taskToSchedule.setModified(false);
-        }
-
-        @Override
-        public void interrupt() throws UnableToInterruptJobException {
-            LOGGER.info("Marked job to interrupt.");
-        }
+    @Override
+    public Logger getLogger() {
+        return LOGGER;
     }
+
 }

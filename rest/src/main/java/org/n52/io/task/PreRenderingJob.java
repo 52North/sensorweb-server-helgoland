@@ -26,7 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.io;
+package org.n52.io.task;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,9 +52,8 @@ import javax.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.n52.faroe.annotation.Configurable;
 import org.n52.faroe.annotation.Setting;
-import org.n52.io.PrerenderingJobConfig.RenderingConfig;
+import org.n52.io.IntervalWithTimeZone;
 import org.n52.io.handler.DatasetFactoryException;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.handler.IoHandlerException;
@@ -65,17 +64,19 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.quantity.QuantityValue;
-import org.n52.io.task.ScheduledJob;
+import org.n52.io.task.PreRenderingConfig.RenderingConfig;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.common.Stopwatch;
 import org.n52.web.exception.ResourceNotFoundException;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
 import org.quartz.UnableToInterruptJobException;
 import org.quartz.utils.FindbugsSuppressWarnings;
 import org.slf4j.Logger;
@@ -87,15 +88,11 @@ import org.springframework.web.context.ServletConfigAware;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Configurable
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
 public class PreRenderingJob extends ScheduledJob implements InterruptableJob, ServletConfigAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PreRenderingJob.class);
-    private static final String PRERENDERING_JOB_ENABLE_KEY = "helgoland.job.prerendering.enable";
-    private static final String PRERENDERING_JOB_CONFIG_FILE_KEY = "helgoland.job.prerendering.config.file";
-    private static final String PRERENDERING_JOB_TRIGGER_STARTUP_KEY = "helgoland.job.prerendering.trigger.startup";
-    private static final String PRERENDERING_JOB_CRON_EXPRESSION_KEY = "helgoland.job.prerendering.cron.expression";
-
 
     private static final int WIDTH_DEFAULT = 800;
     private static final int HEIGHT_DEFAULT = 500;
@@ -118,22 +115,23 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     // autowired due to quartz job creation
     private DataService<Data<AbstractValue< ? >>> dataService;
 
-    private PrerenderingJobConfig taskConfigPrerendering;
+    @Autowired
+    private PreRenderingJobConfig jobConfig;
+
+    private PreRenderingConfig taskConfigPrerendering;
 
     private String webappFolder;
-
-    private String configFile;
 
     private boolean interrupted;
 
     @FindbugsSuppressWarnings("OBL_UNSATISFIED_OBLIGATION")
-    private PrerenderingJobConfig readJobConfig(String file) {
+    private PreRenderingConfig readJobConfig(String file) {
         try (InputStream taskConfig = getClass().getResourceAsStream(file)) {
             ObjectMapper om = new ObjectMapper();
-            return om.readValue(taskConfig, PrerenderingJobConfig.class);
+            return om.readValue(taskConfig, PreRenderingConfig.class);
         } catch (IOException e) {
             LOGGER.error("Could not load {}. Using empty config.", file, e);
-            return new PrerenderingJobConfig();
+            return new PreRenderingConfig();
         }
     }
 
@@ -142,13 +140,13 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return JobBuilder.newJob(PreRenderingJob.class)
                          .withIdentity(getJobName())
                          .withDescription(getJobDescription())
-                         .usingJobData(JOB_DATA_CONFIG_FILE, configFile)
+                         .usingJobData(JOB_DATA_CONFIG_FILE, getConfigFile())
                          .usingJobData(JOB_DATA_WEBAPP_FOLDER, webappFolder)
                          .build();
     }
 
     @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         if (interrupted) {
             return;
         }
@@ -188,6 +186,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         LOGGER.debug("prerendering took '{}'", stopwatch.stopInSeconds());
     }
+
 
     private void renderConfiguredIntervals(String datasetId, RenderingConfig style) {
         try {
@@ -243,40 +242,31 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     @Override
-    @Setting(PRERENDERING_JOB_ENABLE_KEY)
+    @Setting(PreRenderingJobConfig.PRERENDERING_JOB_ENABLE_KEY)
     public void setEnabled(boolean enabled) {
-        if (isEnabled() != enabled) {
-            super.setEnabled(enabled);
-        }
+        getConfig().setEnabled(enabled);
     }
 
-    public String getConfigFile() {
-        return configFile;
-    }
-
-    @Setting(PRERENDERING_JOB_CONFIG_FILE_KEY)
+    @Setting(PreRenderingJobConfig.PRERENDERING_JOB_CONFIG_FILE_KEY)
     public void setConfigFile(String configFile) {
-        this.configFile = configFile;
+        getConfig().setConfigFile(configFile);
     }
 
     @Override
-    @Setting(PRERENDERING_JOB_TRIGGER_STARTUP_KEY)
+    @Setting(PreRenderingJobConfig.PRERENDERING_JOB_TRIGGER_STARTUP_KEY)
     public void setTriggerAtStartup(boolean triggerAtStartup) {
-        super.setTriggerAtStartup(triggerAtStartup);
+        getConfig().setTriggerAtStartup(triggerAtStartup);
     }
 
     @Override
-    @Setting(PRERENDERING_JOB_CRON_EXPRESSION_KEY)
+    @Setting(PreRenderingJobConfig.PRERENDERING_JOB_CRON_EXPRESSION_KEY)
     public void setCronExpression(String cronExpresssion) {
-        if (getCronExpression() != null && !getCronExpression().equals(cronExpresssion)) {
-            setModified(true);
-        }
-        super.setCronExpression(cronExpresssion);
+        getConfig().setCronExpression(cronExpresssion);
     }
 
     public List<String> getPrerenderedImages(final String datasetId) {
         if (taskConfigPrerendering == null) {
-            taskConfigPrerendering = readJobConfig(configFile);
+            taskConfigPrerendering = readJobConfig(getConfigFile());
         }
         Path outputPath = getOutputFolder();
         ArrayList<String> files = new ArrayList<>();
@@ -305,7 +295,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     public void writePrerenderedGraphToOutputStream(String datasetId, String qualifier, OutputStream outputStream) {
         if (taskConfigPrerendering == null) {
-            taskConfigPrerendering = readJobConfig(configFile);
+            taskConfigPrerendering = readJobConfig(getConfigFile());
         }
         try {
             BufferedImage image = loadImage(datasetId, qualifier);
@@ -357,7 +347,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private File createFileName(String datasetId, String qualifier) {
         if (taskConfigPrerendering == null) {
-            taskConfigPrerendering = readJobConfig(configFile);
+            taskConfigPrerendering = readJobConfig(getConfigFile());
         }
         Path outputDirectory = getOutputFolder();
         String filename = qualifier != null
@@ -410,5 +400,36 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
 
         return IoParameters.createFromSingleValueMap(configuration);
+    }
+
+    private PreRenderingJobConfig getConfig() {
+        if (jobConfig == null) {
+            jobConfig = new PreRenderingJobConfig();
+        }
+        return jobConfig;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return jobConfig.isEnabled();
+    }
+
+    public String getConfigFile() {
+        return jobConfig.getConfigFile();
+    }
+
+    @Override
+    public boolean isTriggerAtStartup() {
+        return jobConfig.isTriggerAtStartup();
+    }
+
+    @Override
+    public String getCronExpression() {
+        return jobConfig.getCronExpression();
+    }
+
+    @Override
+    public boolean isModified() {
+        return jobConfig.isModified();
     }
 }
