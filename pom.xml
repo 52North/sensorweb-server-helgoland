@@ -56,7 +56,7 @@
 
         <jackson.version>2.11.2</jackson.version>
         <geotools.version>23.2</geotools.version>
-        <arctic-sea.version>7.6.1</arctic-sea.version>
+        <arctic-sea.version>7.6.2</arctic-sea.version>
         <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
         <spring.version>5.2.6.RELEASE</spring.version>
         <version.junit>5.6.2</version.junit>
