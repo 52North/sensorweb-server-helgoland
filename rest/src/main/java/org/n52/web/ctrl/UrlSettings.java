@@ -56,20 +56,22 @@ import org.n52.io.response.sampling.SamplingOutput;
  */
 public interface UrlSettings {
 
+    String BASE = "/api/";
+
     /**
      * Subpath identifying the search.
      */
-    String SEARCH = "/search";
+    String SEARCH = BASE + "search";
 
     /**
      * Subpath identifying a collection of services available.
      */
-    String COLLECTION_SERVICES = "/" + ServiceOutput.COLLECTION_PATH;
+    String COLLECTION_SERVICES = BASE + ServiceOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of categories available.
      */
-    String COLLECTION_CATEGORIES = "/" + CategoryOutput.COLLECTION_PATH;
+    String COLLECTION_CATEGORIES = BASE + CategoryOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of tags available.
@@ -79,70 +81,70 @@ public interface UrlSettings {
     /**
      * Subpath identifying a collection of offerings available.
      */
-    String COLLECTION_OFFERINGS = "/" + OfferingOutput.COLLECTION_PATH;
+    String COLLECTION_OFFERINGS = BASE + OfferingOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of features available.
      */
-    String COLLECTION_FEATURES = "/" + FeatureOutput.COLLECTION_PATH;
+    String COLLECTION_FEATURES = BASE + FeatureOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of procedures available.
      */
-    String COLLECTION_PROCEDURES = "/" + ProcedureOutput.COLLECTION_PATH;
+    String COLLECTION_PROCEDURES = BASE + ProcedureOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of phenomenons available.
      */
-    String COLLECTION_PHENOMENA = "/" + PhenomenonOutput.COLLECTION_PATH;
+    String COLLECTION_PHENOMENA = BASE + PhenomenonOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of stations available.
      */
-    String COLLECTION_STATIONS = "/" + StationOutput.COLLECTION_PATH;
+    String COLLECTION_STATIONS = BASE + StationOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of timeseries metadata available.
      */
-    String COLLECTION_TIMESERIES = "/" + TimeseriesMetadataOutput.COLLECTION_PATH;
+    String COLLECTION_TIMESERIES = BASE + TimeseriesMetadataOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying platforms collections available.
      */
-    String COLLECTION_PLATFORMS = "/" + PlatformOutput.COLLECTION_PATH;
+    String COLLECTION_PLATFORMS = BASE + PlatformOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying datasets collections available.
      */
-    String COLLECTION_DATASETS = "/" + DatasetOutput.COLLECTION_PATH;
+    String COLLECTION_DATASETS = BASE + DatasetOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying individual observation collections available.
      */
-    String COLLECTION_INDIVIDUAL_OBSERVATIONS = "/" + IndividualObservationOutput.COLLECTION_PATH;
+    String COLLECTION_INDIVIDUAL_OBSERVATIONS = BASE + IndividualObservationOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying profile collections available.
      */
-    String COLLECTION_PROFILES = "/" + ProfileOutput.COLLECTION_PATH;
+    String COLLECTION_PROFILES = BASE + ProfileOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying trajectories collections available.
      */
-    String COLLECTION_TRAJECTORIES = "/" + TrajectoryOutput.COLLECTION_PATH;
+    String COLLECTION_TRAJECTORIES = BASE + TrajectoryOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of samplings available.
      */
-    String COLLECTION_SAMPLINGS = "/" + SamplingOutput.COLLECTION_PATH;
+    String COLLECTION_SAMPLINGS = BASE + SamplingOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of measuring programs available.
      */
-    String COLLECTION_MEASURING_PROGRAMS = "/" + MeasuringProgramOutput.COLLECTION_PATH;
+    String COLLECTION_MEASURING_PROGRAMS = BASE + MeasuringProgramOutput.COLLECTION_PATH;
 
     /**
      * Subpaths identifying geometries collections available.
      */
-    String COLLECTION_GEOMETRIES = "/" + GeometryOutput.COLLECTION_PATH;
+    String COLLECTION_GEOMETRIES = BASE + GeometryOutput.COLLECTION_PATH;
 }

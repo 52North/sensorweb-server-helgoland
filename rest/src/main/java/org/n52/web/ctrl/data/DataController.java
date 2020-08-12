@@ -68,7 +68,6 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -100,9 +99,6 @@ public abstract class DataController extends BaseController {
     private final DataService<Data<AbstractValue< ? >>> dataService;
 
     private final ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
-
-    @Value("${requestIntervalRestriction:P370D}")
-    private String requestIntervalRestriction;
 
     @Autowired
     public DataController(DefaultIoFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> ioFactory,
@@ -358,13 +354,13 @@ public abstract class DataController extends BaseController {
     }
 
     protected void checkAgainstTimespanRestriction(IntervalWithTimeZone timespan) {
-        if (requestIntervalRestriction != null) {
-            Duration duration = Period.parse(requestIntervalRestriction)
+        if (getRequestIntervalRestriction() != null) {
+            Duration duration = Period.parse(getRequestIntervalRestriction())
                                       .toDurationFrom(new DateTime());
             if (duration.getMillis() < Interval.parse(timespan.toString())
                                                .toDurationMillis()) {
                 throw new BadRequestException("Timespan too long, please use a period shorter than '"
-                        + requestIntervalRestriction
+                        + getRequestIntervalRestriction()
                         + "'");
             }
         }
@@ -415,14 +411,12 @@ public abstract class DataController extends BaseController {
     }
 
     public String getRequestIntervalRestriction() {
-        return requestIntervalRestriction;
+        return getConfig().getRequestIntervalRestriction();
     }
 
     public void setRequestIntervalRestriction(String requestIntervalRestriction) {
-        // validate requestIntervalRestriction, if it's no period an exception occured
-        Period.parse(requestIntervalRestriction);
         LOGGER.debug("CONFIG: request.interval.restriction={}", requestIntervalRestriction);
-        this.requestIntervalRestriction = requestIntervalRestriction;
+        getConfig().setRequestIntervalRestriction(requestIntervalRestriction);
     }
 
 }

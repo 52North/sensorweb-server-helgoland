@@ -58,7 +58,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.WebException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -97,15 +97,22 @@ public abstract class BaseController {
 
     private static final Pattern RESPONSE_SPLITTING_PATTERN = Pattern.compile("\\r|\\n");
 
-    @Value("${external.url:http://localhost:8080/api}")
-    private String externalUrl;
+    @Autowired
+    private HelgolandConfiguration config;
+
+    protected HelgolandConfiguration getConfig() {
+        if (config == null) {
+            config = new HelgolandConfiguration();
+        }
+        return config;
+    }
 
     public String getExternalUrl() {
-        return externalUrl;
+        return getConfig().getExternalUrl();
     }
 
     public void setExternalUrl(String externalUrl) {
-        this.externalUrl = RequestUtils.resolveQueryLessRequestUrl(externalUrl);
+        getConfig().setExternalUrl(externalUrl);
     }
 
     public String createCollectionUrl(String collectionName) {

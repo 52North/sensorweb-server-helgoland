@@ -28,9 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.IoParameters;
@@ -55,14 +52,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @Deprecated
-@RestController
-@RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
-    "application/json"
-})
+//@RestController
+//@RequestMapping(value = UrlSettings.COLLECTION_STATIONS, produces = {
+//    "application/json"
+//})
 public class StationsParameterController extends BaseController implements ResourceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StationsParameterController.class);
@@ -114,12 +110,6 @@ public class StationsParameterController extends BaseController implements Resou
             }
         }
         return new ModelAndView().addObject(result.getItems());
-    }
-
-    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        List<String> value = Collections.singletonList(getExternalUrl());
-        query.put(Parameters.HREF_BASE, value);
-        return query;
     }
 
     @Override

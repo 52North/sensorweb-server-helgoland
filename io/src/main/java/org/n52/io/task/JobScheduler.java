@@ -28,67 +28,61 @@
  */
 package org.n52.io.task;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
+import org.n52.faroe.annotation.Configurable;
+import org.n52.faroe.annotation.Setting;
+import org.n52.janmayen.lifecycle.Constructable;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class JobScheduler {
+@Configurable
+public class JobScheduler implements Constructable, JobUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JobScheduler.class);
+    private static final String JOB_SCHEDULER_ENABLE_KEY = "helgoland.job.scheduler.enable";
+    private static final String JOB_SCHEDULER_STARTUP_DELAY_KEY = "helgoland.job.scheduler.startup.delay";
 
     private List<ScheduledJob> scheduledJobs = new ArrayList<>();
-
+    private Scheduler scheduler;
     // 5 seconds
     private int startupDelayInSeconds = 5;
-
-    private Scheduler scheduler;
-
     private boolean enabled = true;
+    private boolean initialized;
 
-    /**
-     * Runs all scheduled tasks
-     */
+    @Override
     public void init() {
+        initialized = true;
         if (!enabled) {
             LOGGER.info("Job schedular disabled. No jobs will be triggered. "
                     + "This is also true for particularly enabled jobs.");
             return;
         }
 
-        scheduledJobs.stream()
-                .filter(scheduledJob -> scheduledJob.isEnabled())
-                .forEach(scheduledJob -> scheduleJob(scheduledJob));
+        try {
+            ReSchedulerJob reSchedulerJob = new ReSchedulerJob();
+            JobDetail jobDetails = reSchedulerJob.createJobDetails();
+            Trigger trigger = new ReSchedulerJob().createTrigger(jobDetails.getKey());
+            if (getScheduler().getTriggersOfJob(trigger.getJobKey()).isEmpty()) {
+                getScheduler().scheduleJob(jobDetails, trigger);
+            } else {
+                getScheduler().rescheduleJob(trigger.getKey(), trigger);
+            }
+        } catch (SchedulerException e) {
+            LOGGER.error("Could not start re-scheduler job.", e);
+        }
 
         try {
-            scheduler.startDelayed(startupDelayInSeconds);
+            getScheduler().startDelayed(startupDelayInSeconds);
             LOGGER.info("Scheduler will start jobs in {}s ...", startupDelayInSeconds);
         } catch (SchedulerException e) {
             LOGGER.error("Could not start scheduler.", e);
-        }
-    }
-
-    private void scheduleJob(ScheduledJob taskToSchedule) {
-        try {
-            JobDetail details = taskToSchedule.createJobDetails();
-            Trigger trigger = taskToSchedule.createTrigger(details.getKey());
-            scheduler.scheduleJob(details, trigger);
-            if (taskToSchedule.isTriggerAtStartup()) {
-                LOGGER.debug("Schedule job '{}' to run once at startup.", details.getKey());
-                Trigger onceAtStartup = TriggerBuilder.newTrigger()
-                        .withIdentity("onceAtStartup")
-                        .forJob(details.getKey()).build();
-                scheduler.scheduleJob(onceAtStartup);
-            }
-        } catch (SchedulerException e) {
-            LOGGER.warn("Could not schdule Job '{}'.", taskToSchedule.getJobName(), e);
         }
     }
 
@@ -97,7 +91,7 @@ public class JobScheduler {
      */
     public void shutdown() {
         try {
-            scheduler.shutdown(false);
+            getScheduler().shutdown(false);
         } catch (SchedulerException e) {
             LOGGER.error("Could not shutdown scheduler.", e);
         }
@@ -107,16 +101,9 @@ public class JobScheduler {
         return scheduledJobs;
     }
 
+    @Autowired
     public void setScheduledJobs(List<ScheduledJob> scheduledJobs) {
         this.scheduledJobs = scheduledJobs;
-    }
-
-    public int getStartupDelayInSeconds() {
-        return startupDelayInSeconds;
-    }
-
-    public void setStartupDelayInSeconds(int startupDelayInSeconds) {
-        this.startupDelayInSeconds = startupDelayInSeconds;
     }
 
     public Scheduler getScheduler() {
@@ -127,12 +114,40 @@ public class JobScheduler {
         this.scheduler = scheduler;
     }
 
+    public int getStartupDelayInSeconds() {
+        return startupDelayInSeconds;
+    }
+
+    @Setting(JOB_SCHEDULER_STARTUP_DELAY_KEY)
+    public void setStartupDelayInSeconds(int startupDelayInSeconds) {
+        this.startupDelayInSeconds = startupDelayInSeconds;
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Setting(JOB_SCHEDULER_ENABLE_KEY)
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        if (this.enabled != enabled) {
+            this.enabled = enabled;
+            if (initialized) {
+                try {
+                    if (enabled) {
+                        init();
+                    } else {
+                        getScheduler().standby();
+                    }
+                } catch (SchedulerException e) {
+                    LOGGER.error("Error while stopping/starting scheduler", e);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LOGGER;
     }
 
 }
