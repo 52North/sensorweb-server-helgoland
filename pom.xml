@@ -9,7 +9,7 @@
     
     <groupId>org.n52.sensorweb-server.helgoland</groupId>
     <artifactId>helgoland-parent</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>3.4.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Sensor Web Server Helgoland</name>
     <url>https://52north.org/research/research-labs/sensor-web/</url>
@@ -56,9 +56,9 @@
 
         <jackson.version>2.11.2</jackson.version>
         <geotools.version>23.2</geotools.version>
-        <arctic-sea.version>7.6.2</arctic-sea.version>
+        <arctic-sea.version>8.0.0</arctic-sea.version>
         <spring-boot.version>2.3.2.RELEASE</spring-boot.version>
-        <spring.version>5.2.6.RELEASE</spring.version>
+        <spring.version>5.2.8.RELEASE</spring.version>
         <version.junit>5.6.2</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
@@ -124,6 +124,11 @@
             <dependency>
                 <groupId>org.n52.arctic-sea</groupId>
                 <artifactId>janmayen</artifactId>
+                <version>${arctic-sea.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.n52.arctic-sea</groupId>
+                <artifactId>faroe-annotations</artifactId>
                 <version>${arctic-sea.version}</version>
             </dependency>
             

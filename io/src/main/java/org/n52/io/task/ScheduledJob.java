@@ -34,8 +34,9 @@ import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
-public abstract class ScheduledJob {
+public abstract class ScheduledJob extends QuartzJobBean {
 
     private boolean enabled = true;
 
@@ -48,6 +49,8 @@ public abstract class ScheduledJob {
     private String cronExpression;
 
     private boolean triggerAtStartup;
+
+    private boolean modified;
 
     // XXX job details create a job instance! snake biting tail
     public abstract JobDetail createJobDetails();
@@ -118,4 +121,11 @@ public abstract class ScheduledJob {
         this.enabled = enabled;
     }
 
+    public boolean isModified() {
+        return modified;
+    }
+
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
 }

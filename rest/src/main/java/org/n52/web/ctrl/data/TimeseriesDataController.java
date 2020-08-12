@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
-import org.n52.io.PreRenderingJob;
 import org.n52.io.handler.DefaultIoFactory;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
@@ -42,6 +41,7 @@ import org.n52.io.request.RequestStyledParameterSet;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.task.PreRenderingJob;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;

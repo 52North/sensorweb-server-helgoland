@@ -460,36 +460,43 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getCategories() {
         Set<String> values = getValuesOf(CATEGORIES);
+        values.addAll(getValuesOf(CATEGORY));
         return values;
     }
 
     public Set<String> getServices() {
         Set<String> values = getValuesOf(SERVICES);
+        values.addAll(getValuesOf(SERVICE));
         return values;
     }
 
     public Set<String> getOfferings() {
         Set<String> values = getValuesOf(OFFERINGS);
+        values.addAll(getValuesOf(OFFERING));
         return values;
     }
 
     public Set<String> getFeatures() {
         Set<String> values = getValuesOf(FEATURES);
+        values.addAll(getValuesOf(FEATURE));
         return values;
     }
 
     public Set<String> getProcedures() {
         Set<String> values = getValuesOf(PROCEDURES);
+        values.addAll(getValuesOf(PROCEDURE));
         return values;
     }
 
     public Set<String> getPhenomena() {
         Set<String> values = getValuesOf(PHENOMENA);
+        values.addAll(getValuesOf(PHENOMENON));
         return values;
     }
 
     public Set<String> getStations() {
         Set<String> values = getValuesOf(STATIONS);
+        values.addAll(getValuesOf(STATION));
         return values;
     }
 
@@ -999,7 +1006,7 @@ public final class IoParameters implements Parameters {
     public IoParameters extendWith(String key, Collection<String> values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         if (values != null) {
-            List<String> v = values instanceof List ? (List<String>) values : new LinkedList<>(values);
+            List<String> v = new LinkedList<>(values);
             if (containsParameter(key.toLowerCase()) && getValuesOf(key.toLowerCase()) != null) {
                 v.addAll(getValuesOf(key.toLowerCase()));
             }

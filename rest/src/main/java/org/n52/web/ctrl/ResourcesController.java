@@ -45,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = "/", produces = {
+@RequestMapping(value = UrlSettings.BASE, produces = {
     "application/json"
 })
 public class ResourcesController {
