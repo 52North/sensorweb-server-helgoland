@@ -92,7 +92,7 @@ public class ReSchedulerJob extends ScheduledJob implements InterruptableJob, Jo
                         scheduleJob(scheduledJob, scheduler);
                     }
                 } else {
-                    if (!scheduledJob.isEnabled()) {
+                    if (scheduler != null && !scheduledJob.isEnabled()) {
                         scheduler.deleteJob(jobDetails.getKey());
                     } else if (scheduledJob.isModified()) {
                         updateJob(scheduledJob, scheduler);
