@@ -76,7 +76,7 @@ public interface UrlSettings {
     /**
      * Subpath identifying a collection of tags available.
      */
-    String COLLECTION_TAGS = "/" + TagOutput.COLLECTION_PATH;
+    String COLLECTION_TAGS =  BASE + TagOutput.COLLECTION_PATH;
 
     /**
      * Subpath identifying a collection of offerings available.

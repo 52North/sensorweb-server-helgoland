@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(UrlSettings.COLLECTION_TAGS)
+@RequestMapping(path = UrlSettings.COLLECTION_TAGS)
 public class TagsParameterController extends ParameterRequestMappingAdapter<TagOutput> {
 
     public TagsParameterController(CountingMetadataService counter, ParameterService<TagOutput> service) {
