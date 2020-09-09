@@ -28,7 +28,7 @@
  */
 package org.n52.io.response;
 
-public class PhenomenonOutput extends AbstractOutput {
+public class PhenomenonOutput extends HierarchicalParameterOutput<PhenomenonOutput> {
 
     public static final String COLLECTION_PATH = "phenomena";
 

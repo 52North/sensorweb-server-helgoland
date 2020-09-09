@@ -28,7 +28,7 @@
  */
 package org.n52.io.response;
 
-public class OfferingOutput extends AbstractOutput {
+public class OfferingOutput extends HierarchicalParameterOutput<OfferingOutput> {
 
     public static final String COLLECTION_PATH = "offerings";
 
