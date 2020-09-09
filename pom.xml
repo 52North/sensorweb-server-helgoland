@@ -56,7 +56,7 @@
 
         <jackson.version>2.11.2</jackson.version>
         <geotools.version>23.2</geotools.version>
-        <arctic-sea.version>8.0.0</arctic-sea.version>
+        <arctic-sea.version>8.0.1</arctic-sea.version>
         <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
         <spring.version>5.2.8.RELEASE</spring.version>
         <version.junit>5.6.2</version.junit>
@@ -298,7 +298,7 @@
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
-                <version>1.17.0</version>
+                <version>1.17.1</version>
             </dependency>
 
             <dependency>
@@ -401,7 +401,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.14</version>
+                <version>1.15</version>
              </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
