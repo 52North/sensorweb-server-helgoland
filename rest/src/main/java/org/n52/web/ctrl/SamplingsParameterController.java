@@ -38,12 +38,14 @@ import org.n52.io.response.sampling.SamplingOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_SAMPLINGS)
+@Profile("sampling")
 public class SamplingsParameterController extends ParameterRequestMappingAdapter<SamplingOutput> {
 
     @Autowired
