@@ -74,6 +74,14 @@
             <artifactId>gt-epsg-hsql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>tech.units</groupId>
+            <artifactId>indriya</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>si.uom</groupId>
+            <artifactId>si-quantity</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>

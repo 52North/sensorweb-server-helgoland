@@ -55,11 +55,11 @@
         <env>dev</env>
 
         <jackson.version>2.11.2</jackson.version>
-        <geotools.version>23.2</geotools.version>
+        <geotools.version>24.0</geotools.version>
         <arctic-sea.version>8.0.1</arctic-sea.version>
         <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
         <spring.version>5.2.8.RELEASE</spring.version>
-        <version.junit>5.6.2</version.junit>
+        <version.junit>5.7.0</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -185,6 +185,14 @@
                         <groupId>org.eclipse.emf</groupId>
                         <artifactId>org.eclipse.emf.common</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>tech.units</groupId>
+                        <artifactId>indriya</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>si.uom</groupId>
+                        <artifactId>si-quantity</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -294,6 +302,18 @@
                         <artifactId>org.eclipse.emf.common</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>tech.units</groupId>
+                <artifactId>indriya</artifactId>
+                <version>2.0.4</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>si.uom</groupId>
+                <artifactId>si-quantity</artifactId>
+                <version>2.0.1</version>
+                <scope>runtime</scope>
             </dependency>
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
@@ -410,21 +430,10 @@
             </dependency>
             <!-- Testing -->
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
                 <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${version.junit}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
-                <version>${version.junit}</version>
+                <type>pom</type>
                 <scope>test</scope>
             </dependency>
             <dependency>

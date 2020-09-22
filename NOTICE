@@ -38,6 +38,7 @@ This project includes:
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
+  Jakarta Annotations API under EPL 2.0 or GPL2 w/ CPE
   Java implementation of GeographicLib under The MIT License(MIT)
   javax.inject under The Apache Software License, Version 2.0
   JCL 1.2 implemented over SLF4J under Apache License, Version 2.0
@@ -90,7 +91,7 @@ This project includes:
   Sensor Web Server Helgoland - SPI module under GNU General Public License, Version 2.0
   Sensor Web Server Helgoland - Web Resources under GNU General Public License, Version 2.0
   SI Quantities under BSD
-  SI Units for Java SE 8 under BSD
+  SI Units under BSD
   SLF4J API Module under MIT License
   Spring AOP under Apache License, Version 2.0
   Spring Beans under Apache License, Version 2.0
@@ -102,9 +103,9 @@ This project includes:
   Spring Web under Apache License, Version 2.0
   Spring Web MVC under Apache License, Version 2.0
   Units of Measurement API under BSD
-  Units of Measurement Common Library under BSD
-  Units of Measurement Common Unit Systems for Java 8 under BSD
-  Units of Measurement Implementation for Java SE under BSD
+  Units of Measurement Common Library for Java under BSD
+  Units of Measurement Common Unit Systems under BSD
+  Units of Measurement Reference Implementation under BSD 3-Clause
   Xalan Java under The Apache Software License, Version 2.0
   Xalan Java Serializer under The Apache Software License, Version 2.0
   Xlink Model under Lesser General Public License (LGPL)
