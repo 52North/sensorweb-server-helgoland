@@ -58,6 +58,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     public static final String FIRST_VALUE = "firstValue";
     public static final String LAST_VALUE = "lastValue";
     public static final String HAS_SAMPLINGS = "hasSamplings";
+    @Deprecated
     public static final String AGGREGATION = "agregation";
 
     private OptionalOutput<String> datasetType;
@@ -75,6 +76,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     private OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues;
     private OptionalOutput<V> firstValue;
     private OptionalOutput<V> lastValue;
+    @Deprecated
     private OptionalOutput<AggregationOutput<V>> aggregation;
 
     public DatasetOutput() {
@@ -221,10 +223,12 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
         return this;
     }
 
+    @Deprecated
     public AggregationOutput<?> getAggregations() {
         return getIfSerialized(aggregation);
     }
 
+    @Deprecated
     public void setAggregations(OptionalOutput<AggregationOutput<V>> aggregation) {
         this.aggregation = aggregation;
     }

@@ -396,7 +396,8 @@ public interface Parameters {
     String CACHE = "cache";
 
     String UNIX_TIME = "unixTime";
-
+    
+    @Deprecated
     String AGGREGATION = "aggregation";
 
     String LEVEL = "level";
