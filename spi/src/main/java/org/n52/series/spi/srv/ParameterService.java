@@ -96,16 +96,6 @@ public abstract class ParameterService<T extends ParameterOutput> implements Raw
      */
     public abstract boolean exists(String id, IoParameters parameters);
 
-    /**
-     * Check if raw data output is supported
-     *
-     * @return <code>true</code>, if raw data output is supported
-     */
-    @Override
-    public boolean supportsRawData() {
-        return rawDataService != null;
-    }
-
     @Override
     public RawDataService getRawDataService() {
         return rawDataService;

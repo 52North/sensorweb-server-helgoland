@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,7 +59,9 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.DatasetTypesService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawFormats;
@@ -108,8 +112,6 @@ public abstract class DataController extends BaseController {
         this.datasetService = datasetService;
         this.dataService = dataService;
     }
-
-    protected abstract String getValueType(IoParameters map, String requestUrl);
 
     protected ParameterService<DatasetOutput<AbstractValue< ? >>> getDatasetService() {
         return datasetService;
@@ -381,29 +383,42 @@ public abstract class DataController extends BaseController {
     }
 
     @SuppressWarnings("checkstyle:linelength")
-    protected IoHandlerFactory<DatasetOutput<AbstractValue< ? >>, AbstractValue< ? >> createIoFactory(final String valueType)
-            throws DatasetFactoryException {
+    protected IoHandlerFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> createIoFactory(
+            final String valueType) throws DatasetFactoryException {
         if (!ioFactoryCreator.isKnown(valueType)) {
             throw new ResourceNotFoundException("unknown dataset type: " + valueType);
         }
-        return ioFactoryCreator.create(valueType)
-                               .setDataService(dataService)
-                               .setDatasetService(datasetService);
+        return ioFactoryCreator.create(valueType).setDataService(dataService).setDatasetService(datasetService);
     }
 
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
-        parameter.getCache()
-                 .map(node -> node.asLong(0))
-                 .ifPresent(v -> addCacheHeader(response, v));
+        parameter.getCache().map(node -> node.asLong(0)).ifPresent(v -> addCacheHeader(response, v));
     }
 
-    protected boolean isProfileType(DatasetOutput<AbstractValue< ? >> item) {
-        String observationType = item.getObservationType();
-        String datasetType = item.getDatasetType();
-        return observationType.equals(PROFILE)
-                || datasetType.equals(PROFILE);
+    protected boolean isProfileType(DatasetOutput<AbstractValue<?>> item) {
+        return isProfileType(new DatasetTypesMetadata().setId(item.getId()).setDatasetType(item.getDatasetType())
+                .setObservationType(item.getObservationType()).setValueType(item.getValueType()));
     }
+
+    protected boolean isProfileType(DatasetTypesMetadata types) {
+        return types.getObservationType().equals(PROFILE) || types.getDatasetType().equals(PROFILE);
+    }
+
+    protected List<DatasetTypesMetadata> geDatasetTypes(IoParameters map) {
+        return (getDatasetService() instanceof DatasetTypesService)
+                ? ((DatasetTypesService) getDatasetService()).getDatasetTypesMetadata(map)
+                : geDatasetTypes(getFirstDatasetOutput(map));
+    }
+
+    private List<DatasetTypesMetadata> geDatasetTypes(DatasetOutput<AbstractValue<?>> item) {
+        List<DatasetTypesMetadata> list = new LinkedList<>();
+        list.add(new DatasetTypesMetadata().setId(item.getId()).setDatasetType(item.getDatasetType())
+                .setObservationType(item.getObservationType()).setValueType(item.getValueType()));
+        return list;
+    }
+
+    protected abstract String getValueType(IoParameters parameters, String requestURI);
 
     protected DatasetOutput<AbstractValue< ? >> getFirstDatasetOutput(IoParameters map) {
         return datasetService.getCondensedParameters(map)

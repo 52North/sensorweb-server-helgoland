@@ -28,20 +28,13 @@
  */
 package org.n52.series.spi.srv;
 
-/**
- * @since 2.0.0
- */
-public interface RawDataInfo {
 
-    /**
-     * Check if raw data output is supported
-     *
-     * @return <code>true</code>, if raw data output is supported
-     */
-    default boolean supportsRawData() {
-        return getRawDataService() != null;
-    }
+import java.util.List;
 
-    RawDataService getRawDataService();
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 
+public interface DatasetTypesService {
+
+    List<DatasetTypesMetadata> getDatasetTypesMetadata(IoParameters map);
 }

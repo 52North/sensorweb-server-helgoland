@@ -26,22 +26,54 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.series.spi.srv;
+package org.n52.io.response.dataset;
 
-/**
- * @since 2.0.0
- */
-public interface RawDataInfo {
+public class DatasetTypesMetadata {
 
-    /**
-     * Check if raw data output is supported
-     *
-     * @return <code>true</code>, if raw data output is supported
-     */
-    default boolean supportsRawData() {
-        return getRawDataService() != null;
+    private String id;
+    private String datasetType;
+    private String observationType;
+    private String valueType;
+
+    public String getId() {
+        return id;
     }
 
-    RawDataService getRawDataService();
+    public DatasetTypesMetadata setId(Long id) {
+        this.id = Long.toString(id);
+        return this;
+    }
+
+    public DatasetTypesMetadata setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getDatasetType() {
+        return datasetType;
+    }
+
+    public DatasetTypesMetadata setDatasetType(String datasetType) {
+        this.datasetType = datasetType;
+        return this;
+    }
+
+    public String getObservationType() {
+        return observationType;
+    }
+
+    public DatasetTypesMetadata setObservationType(String observationType) {
+        this.observationType = observationType;
+        return this;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public DatasetTypesMetadata setValueType(String valueType) {
+        this.valueType = valueType;
+        return this;
+    }
 
 }
