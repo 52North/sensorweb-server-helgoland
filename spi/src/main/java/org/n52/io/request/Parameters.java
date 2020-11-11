@@ -98,6 +98,8 @@ public interface Parameters {
      */
     String TIMESPAN = "timespan";
 
+    String LAST_VALUE_MATCHES = "lastValueMatches";
+
     /**
      * Determines the timezone output parameter
      */
