@@ -360,7 +360,11 @@ public final class IoParameters implements Parameters {
     }
 
     protected String getNormalizedTimespan(DateTimeFormatter dateFormat) {
-        String parameterValue = getAsString(TIMESPAN);
+        return getNormalizedTimespan(dateFormat, TIMESPAN);
+    }
+
+    protected String getNormalizedTimespan(DateTimeFormatter dateFormat, String parameter) {
+        String parameterValue = getAsString(parameter);
         String now = dateFormat == null
             ? new DateTime().toString()
             : dateFormat.print(new DateTime());
@@ -400,6 +404,12 @@ public final class IoParameters implements Parameters {
             ? DateTimeZone.forID(timezone)
             : DateTimeZone.UTC;
         return zone.toString();
+    }
+
+    public IntervalWithTimeZone getLastValueMatches() {
+        return containsParameter(LAST_VALUE_MATCHES)
+            ? validateTimespan(getNormalizedTimespan(null, LAST_VALUE_MATCHES))
+            : null;
     }
 
     public Instant getResultTime() {
