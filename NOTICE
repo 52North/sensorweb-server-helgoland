@@ -102,7 +102,7 @@ This project includes:
   Spring Expression Language (SpEL) under Apache License, Version 2.0
   Spring Web under Apache License, Version 2.0
   Spring Web MVC under Apache License, Version 2.0
-  Units of Measurement API under BSD
+  Units of Measurement API under BSD 3-Clause
   Units of Measurement Common Library for Java under BSD
   Units of Measurement Common Unit Systems under BSD
   Units of Measurement Reference Implementation under BSD 3-Clause
