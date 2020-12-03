@@ -374,7 +374,7 @@ public final class IoParameters implements Parameters {
         String interval = lastWeek.toString()
                                   .concat("/")
                                   .concat(now.toString());
-        return new IntervalWithTimeZone(interval);
+        return new IntervalWithTimeZone(interval, false);
     }
 
     private IntervalWithTimeZone validateTimespan(String timespan) {

@@ -44,6 +44,7 @@ import org.joda.time.Interval;
 public class IntervalWithTimeZone {
 
     private String timespan;
+    private boolean requested = true;
 
     /**
      * @param timespan
@@ -52,8 +53,13 @@ public class IntervalWithTimeZone {
      *         if timespan is not a valid interval.
      */
     public IntervalWithTimeZone(String timespan) {
+        this(timespan, true);
+    }
+
+    public IntervalWithTimeZone(String timespan, boolean requested) {
         Interval.parse(timespan);
         this.timespan = timespan;
+        this.requested = requested;
     }
 
     public DateTimeZone getTimezone() {
@@ -64,6 +70,10 @@ public class IntervalWithTimeZone {
 
     public Interval toInterval() {
         return Interval.parse(timespan);
+    }
+
+    public boolean isRequested() {
+        return requested;
     }
 
     @Override
