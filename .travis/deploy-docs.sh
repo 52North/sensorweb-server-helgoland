@@ -49,8 +49,8 @@ output_folder=$(echo $TRAVIS_BRANCH | \sed 's/\//_/')
 pushd "${docs_dir}"
 echo "Current directory `pwd`"
 bundle update
-bundle exec jekyll build --baseurl "/series-rest-api/${output_folder}"
-bundle exec htmlproofer "./site"
+bundle exec jekyll build --baseurl "/sensorweb-server-helgoland/${output_folder}"
+#bundle exec htmlproofer "./site"
 popd
 
 rm -rf "${build_dir:?}/${output_folder}"
