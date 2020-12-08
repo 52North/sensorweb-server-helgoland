@@ -68,7 +68,7 @@ public class TrajectoriesDataController extends DataController {
             throw new ResourceNotFoundException(message);
         }
         return isProfileType(types)
-                ? PROFILE
+                ? types.getValueType() + "-" + PROFILE
                 : types.getValueType();
     }
 
