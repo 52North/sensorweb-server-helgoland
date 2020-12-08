@@ -35,6 +35,16 @@ public class DatasetTypesMetadata {
     private String observationType;
     private String valueType;
 
+    public DatasetTypesMetadata() {
+    }
+
+    public DatasetTypesMetadata(String id, String datasetType, String observationType, String valueType) {
+        this.id = id;
+        this.datasetType = datasetType;
+        this.observationType = observationType;
+        this.valueType = valueType;
+    }
+
     public String getId() {
         return id;
     }
