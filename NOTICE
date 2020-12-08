@@ -4,12 +4,24 @@ Licensed under GNU General Public License, Version 2.0
 
 This project includes: 
   52North Sensor Web Client PDF report structure under GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+  52°North Faroe Annotations under The Apache Software License, Version 2.0
+  52°North Faroe Utilities under The Apache Software License, Version 2.0
+  52°North Jan Mayen under The Apache Software License, Version 2.0
+  52°North Shetland under The Apache Software License, Version 2.0
+  52°North Svalbard Core under The Apache Software License, Version 2.0
+  52°North Svalbard OData under The Apache Software License, Version 2.0
+  abego TreeLayout Core under BSD 3-Clause "New" or "Revised" License (BSD-3-Clause)
+  Animal Sniffer Annotations under MIT license
+  ANTLR 4 Runtime under BSD 3-Clause License
   AOP alliance under Public Domain
   Apache Commons Codec under Apache License, Version 2.0
+  Apache Commons Lang under The Apache Software License, Version 2.0
   Apache Commons Logging under The Apache Software License, Version 2.0
   Apache FOP under The Apache Software License, Version 2.0
+  Apache HttpClient under Apache License, Version 2.0
+  Apache HttpCore under Apache License, Version 2.0
   Apache XML Graphics Commons under The Apache Software License, Version 2.0
-  API interfaces under GNU Lesser General Public License (LGPL) version 2.1
+  API interfaces under Lesser General Public License (LGPL)
   Avalon Framework API under The Apache Software License, Version 2.0
   Avalon Framework Implementation under The Apache Software License, Version 2.0
   Batik animation engine under The Apache Software License, Version 2.0
@@ -28,33 +40,44 @@ This project includes:
   Batik utility library under The Apache Software License, Version 2.0
   Batik XML utility library under The Apache Software License, Version 2.0
   c3p0:JDBC DataSources/Resource Pools under GNU LESSER GENERAL PUBLIC LICENSE
+  com.vividsolutions:jts-core under GNU Lesser General Public License, Version 2.1
   Commons IO under The Apache Software License, Version 2.0
+  Commons Lang under The Apache Software License, Version 2.0
   Commons Pool under The Apache Software License, Version 2.0
   EJML under The Apache Software License, Version 2.0
-  EPSG Authority Service using HSQL database under GNU Lesser General Public License (LGPL) version 2.1
+  EPSG Authority Service using HSQL database under Lesser General Public License (LGPL) or EPSG database distribution license or BSD License for HSQL
+  error-prone annotations under Apache 2.0
+  FindBugs-jsr305 under The Apache Software License, Version 2.0
+  Guava: Google Core Libraries for Java under The Apache Software License, Version 2.0
   Hamcrest All under New BSD License
   Hamcrest Core under New BSD License
   HyperSQL Database under HSQLDB License, a BSD open source license
+  J2ObjC Annotations under The Apache Software License, Version 2.0
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0
   Java implementation of GeographicLib under The MIT License(MIT)
   Java Servlet API under CDDL 1.1 or GPL2 w/ CPE
+  javax.inject under The Apache Software License, Version 2.0
   JCL 1.2 implemented over SLF4J under MIT License
   JCommon under GNU Lesser General Public Licence
   JFreeChart under GNU Lesser General Public Licence
   jgridshift under GNU Lesser General Public License, version 2.0 (LGPLv2)
   Joda-Time under Apache 2
   jsr-275 under BSD License
-  JTS Topology Suite under Lesser General Public License (LGPL)
   JUnit under Eclipse Public License 1.0
   Log4j Implemented Over SLF4J under Apache Software Licenses
   Logback Classic Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
   Logback Core Module under Eclipse Public License - v 1.0 or GNU Lesser General Public License
-  Metadata under GNU Lesser General Public License (LGPL) version 2.1
-  Open GIS Interfaces under GNU Lesser General Public License (LGPL) version 2.1
+  Metadata under Lesser General Public License (LGPL)
+  odata-commons-api under The Apache Software License, Version 2.0
+  odata-commons-core under The Apache Software License, Version 2.0
+  odata-server-api under The Apache Software License, Version 2.0
+  odata-server-core under The Apache Software License, Version 2.0
+  Open GIS Interfaces under OGC copyright or Lesser General Public License (LGPL)
+  org.locationtech.jts:jts-core under Eclipse Publish License, Version 1.0 or Eclipse Distribution License - v 1.0
   quartz under The Apache Software License, Version 2.0
-  Referencing services under GNU Lesser General Public License (LGPL) version 2.1
+  Referencing services under Lesser General Public License (LGPL)
   Series REST API under GNU General Public License, Version 2.0
   Series REST API - IO module under GNU General Public License, Version 2.0
   Series REST API - REST module under GNU General Public License, Version 2.0
