@@ -333,6 +333,8 @@ public interface Parameters {
 
     String FILTER_OBSERVED_GEOMETRIES = "observedGeometries";
 
+    String FILTER_CLASSIFICATIONS = "classifications";
+
     /**
      * SimpleFeature types e.g. POINT, LINESTRING, ...
      */

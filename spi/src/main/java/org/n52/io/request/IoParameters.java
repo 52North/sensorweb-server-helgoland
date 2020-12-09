@@ -605,6 +605,10 @@ public final class IoParameters implements Parameters {
         return getValuesOf(GEOMETRY_TYPES);
     }
 
+    public Set<String> getClassifications() {
+        return getValuesOf(FILTER_CLASSIFICATIONS);
+    }
+
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
