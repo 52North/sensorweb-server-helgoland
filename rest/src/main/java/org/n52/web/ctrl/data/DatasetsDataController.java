@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class DatasetsDataController extends DataController {
 
+    private final String MINUS = "-";
     @Autowired
     public DatasetsDataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> ioFactory,
                                   ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
@@ -58,7 +59,13 @@ public class DatasetsDataController extends DataController {
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetTypesMetadata types = geDatasetTypes(map).iterator().next();
-        return isProfileType(types) ? types.getValueType() + "-" + PROFILE : types.getValueType();
+        if (isProfileType(types)) {
+            return types.getValueType() + MINUS + PROFILE;
+        } else if (isTrajectoryType(types)) {
+            return types.getValueType() + MINUS + TRAJECTORY;
+        } else {
+            return types.getValueType();
+        }
     }
 
 }

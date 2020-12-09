@@ -91,6 +91,7 @@ public abstract class DataController extends BaseController {
     protected static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
     protected static final String PROFILE = "profile";
+    protected static final String TRAJECTORY = "trajectory";
 
     protected static final String OBSERVATIONS = "observations";
 
@@ -403,6 +404,10 @@ public abstract class DataController extends BaseController {
 
     protected boolean isProfileType(DatasetTypesMetadata types) {
         return types.getObservationType().equals(PROFILE) || types.getDatasetType().equals(PROFILE);
+    }
+
+    protected boolean isTrajectoryType(DatasetTypesMetadata types) {
+        return types.getObservationType().equals(TRAJECTORY) || types.getDatasetType().equals(TRAJECTORY);
     }
 
     protected List<DatasetTypesMetadata> geDatasetTypes(IoParameters map) {
