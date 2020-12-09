@@ -34,6 +34,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput {
@@ -45,6 +46,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     public static final String FIRST_VALUE = "firstvalue";
     public static final String LAST_VALUE = "lastvalue";
     public static final String UOM = "uom";
+    public static final String STATION_CLASSIFICATION = "stationClassification";
 
     private OptionalOutput<String> valueType;
 
@@ -59,6 +61,8 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     private OptionalOutput<V> lastValue;
 
     private OptionalOutput<String> uom;
+
+    private OptionalOutput<String> stationClassification;
 
     protected DatasetOutput() {
         // use static constructor method
@@ -115,6 +119,19 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     public DatasetOutput<V> setUom(OptionalOutput<String> uom) {
         this.uom = uom;
         return this;
+    }
+
+    public String getStationClassification() {
+        return getIfSerialized(stationClassification);
+    }
+
+    public void setStationClassification(OptionalOutput<String> stationClassification) {
+        this.stationClassification = stationClassification;
+    }
+
+    @JsonIgnore
+    public boolean isSetStationClassification() {
+        return isSet(stationClassification) && stationClassification.isSerialize();
     }
 
     public V getFirstValue() {

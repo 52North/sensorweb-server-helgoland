@@ -36,6 +36,7 @@ import org.n52.io.geojson.GeoJSONFeature;
 import org.n52.io.geojson.GeoJSONObject;
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.OptionalOutput;
+import org.n52.io.response.ParameterOutput;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.vividsolutions.jts.geom.Geometry;
@@ -49,12 +50,15 @@ import com.vividsolutions.jts.geom.Geometry;
 public class StationOutput extends AbstractOutput implements GeoJSONFeature {
 
     public static final String TIMESERIES = "timeseries";
+    public static final String CLASSIFICATION = "classification";
+    public static final String RAW_FORMATS = "rawFormats";
     public static final String PROPERTIES = "properties";
     public static final String GEOMETRY = "geometry";
 
     private OptionalOutput<Map<String, DatasetParameters>> timeseries;
 
     private OptionalOutput<Geometry> geometry;
+    private OptionalOutput<String> classification;
 
     public Map<String, DatasetParameters> getTimeseries() {
         return getIfSerialized(timeseries);
@@ -79,13 +83,27 @@ public class StationOutput extends AbstractOutput implements GeoJSONFeature {
         return isSet(geometry) && geometry.isSerialize();
     }
 
+    public String getClassification() {
+        return getIfSerialized(classification);
+    }
+
+    public ParameterOutput setClassification(OptionalOutput<String> classification) {
+        this.classification = classification;
+        return this;
+    }
+
+    public boolean isSetClassification() {
+        return isSet(classification) && classification.isSerialize();
+    }
+
     @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
-        nullSafePut("label", getLabel(), properties);
-        nullSafePut("domainId", getDomainId(), properties);
-        nullSafePut("href", getHref(), properties);
-        nullSafePut("rawFormats", getRawFormats(), properties);
+        nullSafePut(LABEL, getLabel(), properties);
+        nullSafePut(DOMAIN_ID, getDomainId(), properties);
+        nullSafePut(HREF, getHref(), properties);
+        nullSafePut(RAW_FORMATS, getRawFormats(), properties);
+        nullSafePut(CLASSIFICATION, getClassification(), properties);
         nullSafePut(TIMESERIES, getTimeseries(), properties);
         return properties;
     }
