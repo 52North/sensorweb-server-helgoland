@@ -67,9 +67,7 @@ public class TrajectoriesDataController extends DataController {
             String message = MessageFormat.format(template, types.getId(), expectedType);
             throw new ResourceNotFoundException(message);
         }
-        return isProfileType(types)
-                ? PROFILE
-                : types.getValueType();
+        return types.getValueType() + "-" + TRAJECTORY;
     }
 
 }

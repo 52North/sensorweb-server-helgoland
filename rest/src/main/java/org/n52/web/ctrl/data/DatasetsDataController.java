@@ -26,6 +26,7 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
+
 package org.n52.web.ctrl.data;
 
 import org.n52.io.handler.DefaultIoFactory;
@@ -47,17 +48,24 @@ import org.springframework.web.bind.annotation.RestController;
 })
 public class DatasetsDataController extends DataController {
 
+    private final String MINUS = "-";
     @Autowired
     public DatasetsDataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> ioFactory,
-            ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
-            DataService<Data<AbstractValue<?>>> dataService) {
+                                  ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
+                                  DataService<Data<AbstractValue<?>>> dataService) {
         super(ioFactory, datasetService, dataService);
     }
 
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetTypesMetadata types = geDatasetTypes(map).iterator().next();
-        return isProfileType(types) ? PROFILE : types.getValueType();
+        if (isProfileType(types)) {
+            return types.getValueType() + MINUS + PROFILE;
+        } else if (isTrajectoryType(types)) {
+            return types.getValueType() + MINUS + TRAJECTORY;
+        } else {
+            return types.getValueType();
+        }
     }
 
 }
