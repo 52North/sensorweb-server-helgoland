@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DatasetsDataController extends DataController {
 
     private final String MINUS = "-";
-    
+
     @Autowired
     public DatasetsDataController(DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> ioFactory,
                                   ParameterService<DatasetOutput<AbstractValue<?>>> datasetService,
