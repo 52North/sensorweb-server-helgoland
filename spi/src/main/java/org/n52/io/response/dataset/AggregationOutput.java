@@ -68,7 +68,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
 
     /**
      * @param count the count to set
-     * @return
+     * @return this
      */
     public AggregationOutput<V> setCount(OptionalOutput<Long> count) {
         this.count = count;
@@ -84,7 +84,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
 
     /**
      * @param avg the avg to set
-     * @return
+     * @return this
      */
     public AggregationOutput<V> setAvg(OptionalOutput<BigDecimal> avg) {
         this.avg = avg;
