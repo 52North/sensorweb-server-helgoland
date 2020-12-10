@@ -29,6 +29,7 @@
 package org.n52.io.response.dataset;
 
 import java.util.List;
+import java.util.Set;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.response.OptionalOutput;
@@ -47,6 +48,8 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     public static final String LAST_VALUE = "lastvalue";
     public static final String UOM = "uom";
     public static final String STATION_CLASSIFICATION = "stationClassification";
+    public static final String PRIMARY_DATA = "primaryData";
+    public static final String AGGREGATION_TYPES = "aggregationTypess";
 
     private OptionalOutput<String> valueType;
 
@@ -63,6 +66,10 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     private OptionalOutput<String> uom;
 
     private OptionalOutput<String> stationClassification;
+
+    private OptionalOutput<String> primaryData;
+
+    private OptionalOutput<Set<String>> aggregationTypes;
 
     protected DatasetOutput() {
         // use static constructor method
@@ -159,5 +166,43 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends ParameterOutput
     public DatasetOutput<V> setReferenceValues(OptionalOutput<List<ReferenceValueOutput<V>>> referenceValues) {
         this.referenceValues = referenceValues;
         return this;
+    }
+
+    /**
+     * @return the primaryData
+     */
+    public String getPrimaryData() {
+        return getIfSerialized(primaryData);
+    }
+
+    /**
+     * @param primaryData the primaryData to set
+     */
+    public void setPrimaryData(OptionalOutput<String> primaryData) {
+        this.primaryData = primaryData;
+    }
+
+    @JsonIgnore
+    public boolean isSetPrimaryData() {
+        return isSet(primaryData) && primaryData.isSerialize();
+    }
+
+    /**
+     * @return the aggregationTypes
+     */
+    public Set<String> getAggregationTypes() {
+        return getIfSerialized(aggregationTypes);
+    }
+
+    /**
+     * @param aggregationTypes the aggregationTypes to set
+     */
+    public void setAggregationTypes(OptionalOutput<Set<String>> aggregationTypes) {
+        this.aggregationTypes = aggregationTypes;
+    }
+
+    @JsonIgnore
+    public boolean isSetAggregationTypes() {
+        return isSet(aggregationTypes) && aggregationTypes.isSerialize();
     }
 }

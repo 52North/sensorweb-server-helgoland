@@ -335,6 +335,8 @@ public interface Parameters {
 
     String FILTER_CLASSIFICATIONS = "classifications";
 
+    String FILTER_AVERAGING_TIME = "averagingtime";
+
     /**
      * SimpleFeature types e.g. POINT, LINESTRING, ...
      */

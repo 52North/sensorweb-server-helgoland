@@ -609,6 +609,10 @@ public final class IoParameters implements Parameters {
         return getValuesOf(FILTER_CLASSIFICATIONS);
     }
 
+    public String getAveragingTime() {
+        return getAsString(FILTER_AVERAGING_TIME);
+    }
+
     Set<String> getValuesOf(String parameterName) {
         return containsParameter(parameterName)
                 ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
