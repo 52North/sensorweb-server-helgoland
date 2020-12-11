@@ -92,7 +92,6 @@ public abstract class DataController extends BaseController {
 
     protected static final String PROFILE = "profile";
     protected static final String TRAJECTORY = "trajectory";
-
     protected static final String OBSERVATIONS = "observations";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetsDataController.class);

@@ -67,7 +67,8 @@ public class TrajectoriesDataController extends DataController {
             String message = MessageFormat.format(template, types.getId(), expectedType);
             throw new ResourceNotFoundException(message);
         }
-        return types.getValueType() + "-" + TRAJECTORY;
+//        return types.getValueType() + "-" + TRAJECTORY;
+        return TRAJECTORY;
     }
 
 }

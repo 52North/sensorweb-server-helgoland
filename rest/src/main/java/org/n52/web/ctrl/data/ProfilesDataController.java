@@ -67,7 +67,8 @@ public class ProfilesDataController extends DataController {
             String message = MessageFormat.format(template, types.getId(), expectedType);
             throw new ResourceNotFoundException(message);
         }
-        return types.getValueType() + "-" + PROFILE;
+//        return types.getValueType() + "-" + PROFILE;
+        return PROFILE;
     }
 
 }

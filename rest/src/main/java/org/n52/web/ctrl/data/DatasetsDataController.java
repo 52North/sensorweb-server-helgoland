@@ -61,9 +61,11 @@ public class DatasetsDataController extends DataController {
     protected String getValueType(IoParameters map, String requestUrl) {
         DatasetTypesMetadata types = geDatasetTypes(map).iterator().next();
         if (isProfileType(types)) {
-            return types.getValueType() + MINUS + PROFILE;
+//            return types.getValueType() + MINUS + PROFILE;
+            return PROFILE;
         } else if (isTrajectoryType(types)) {
-            return types.getValueType() + MINUS + TRAJECTORY;
+//            return types.getValueType() + MINUS + TRAJECTORY;
+            return TRAJECTORY;
         } else {
             return types.getValueType();
         }
