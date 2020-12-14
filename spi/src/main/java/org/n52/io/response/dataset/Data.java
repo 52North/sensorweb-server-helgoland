@@ -29,10 +29,11 @@
 package org.n52.io.response.dataset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,7 +45,7 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
 
-    private final List<V> values = new ArrayList<>();
+    private final SortedSet<V> values = new TreeSet<>();
 
     private DatasetMetadata<V> metadata;
 
@@ -80,8 +81,8 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
     // TODO @JsonSerialize may not be needed anymore from jackson 2.9.6
     // https://github.com/FasterXML/jackson-databind/issues/1964#issuecomment-382877148
     @JsonSerialize(typing = JsonSerialize.Typing.STATIC)
-    public List<V> getValues() {
-        return Collections.unmodifiableList(this.values);
+    public Set<V> getValues() {
+        return Collections.unmodifiableSortedSet(values);
     }
 
     public long size() {
