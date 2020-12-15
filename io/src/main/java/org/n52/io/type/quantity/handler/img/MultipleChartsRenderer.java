@@ -203,7 +203,7 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             if (hasValues(referenceData)) {
                 if (isBarStyle(style)) {
                     QuantityValue timeseriesValue = referenceData.getValues()
-                                                                 .get(0);
+                                                                 .iterator().next();
                     Date timeOfFirstValue = timeseriesValue.getTimestamp().getDateTime().toDate();
                     RegularTimePeriod timeinterval = determineTimeInterval(timeOfFirstValue, style);
 
