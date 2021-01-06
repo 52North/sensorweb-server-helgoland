@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2020 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2021 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -163,7 +163,7 @@ public abstract class ConfigTypedFactory<T> implements
         }
     }
 
-    private T createInstance(Class< ? > clazz) throws InstantiationException, IllegalAccessException {
+    protected T createInstance(Class< ? > clazz) throws InstantiationException, IllegalAccessException {
         final Object instance = clazz.newInstance();
         try {
             return (T) instance;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2020 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2021 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -32,11 +32,18 @@ import java.math.BigDecimal;
 
 import org.n52.io.response.dataset.AbstractValue;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({ "timestamp", "timestart", "timeend", "primaryData", "value" })
 public class QuantityValue extends AbstractValue<BigDecimal> {
 
     public static final String TYPE = "quantity";
 
     private static final long serialVersionUID = -7292181682632614697L;
+
+    private String primaryData;
 
     public QuantityValue() {
         // for serialization
@@ -50,4 +57,12 @@ public class QuantityValue extends AbstractValue<BigDecimal> {
         super(timestamp, value);
     }
 
+    @JsonInclude(value = Include.NON_EMPTY)
+    public String getPrimaryData() {
+        return primaryData;
+    }
+
+    public void setPrimaryData(String primaryData) {
+        this.primaryData = primaryData;
+    }
 }

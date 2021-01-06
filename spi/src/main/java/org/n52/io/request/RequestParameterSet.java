@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2020 52°North Initiative for Geospatial Open Source
+ * Copyright (C) 2013-2021 52°North Initiative for Geospatial Open Source
  * Software GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -113,6 +113,21 @@ abstract class RequestParameterSet {
                 ? IoParameters.createDefaultTimespan()
                 : validateTimespan(timespan);
         setParameter(Parameters.TIMESPAN, IoParameters.getJsonNodeFrom(nonNullTimespan.toString()));
+    }
+
+    @JsonProperty
+    public String getAveragingtime() {
+        return getAsString(Parameters.FILTER_AVERAGING_TIME);
+    }
+
+    /**
+     * @param averagingtime
+     *        the averagingtime to set.
+     */
+    public void setAveragingtime(String averagingtime) {
+        if (averagingtime != null && !averagingtime.isEmpty()) {
+            setParameter(Parameters.FILTER_AVERAGING_TIME, IoParameters.getJsonNodeFrom(averagingtime));
+        }
     }
 
     /**
