@@ -28,16 +28,46 @@
  */
 package org.n52.io.format;
 
-public class HighchartData extends AbstractData {
+import java.util.Arrays;
+import java.util.List;
 
-    private String name;
+public abstract class AbstractData {
 
-    public String getName() {
-        return name;
+    private List<Number[]> values;
+
+    private Number[] valueBeforeTimespan;
+
+    private Number[] valueAfterTimespan;
+
+    public List<Number[]> getValues() {
+        return values;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValues(List<Number[]> values) {
+        this.values = values;
     }
 
+    public Number[] getValueBeforeTimespan() {
+        return valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;
+    }
+
+    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
+        this.valueBeforeTimespan = valueBeforeTimespan != null
+                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
+                : null;
+    }
+
+    public Number[] getValueAfterTimespan() {
+        return valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
+    }
+
+    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
+        this.valueAfterTimespan = valueAfterTimespan != null
+                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
+                : null;
+    }
 }

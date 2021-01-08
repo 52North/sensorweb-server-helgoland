@@ -74,7 +74,7 @@ public class HighchartFormatter<T extends NumericValue<?>> implements DataFormat
         List<Number[]> formattedSeries = formatSeries(timeseriesData);
         HighchartData series = new HighchartData();
         series.setName(seriesId);
-        series.setData(formattedSeries);
+        series.setValues(formattedSeries);
         return series;
     }
 

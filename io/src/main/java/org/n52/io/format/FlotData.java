@@ -28,34 +28,18 @@
  */
 package org.n52.io.format;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-public class FlotData {
-
-    private List<Number[]> values;
+public class FlotData extends AbstractData {
 
     private Map<String, FlotData> referenceValues;
 
-    private Number[] valueBeforeTimespan;
-
-    private Number[] valueAfterTimespan;
-
     public FlotData() {
         referenceValues = new HashMap<>();
-    }
-
-    public List<Number[]> getValues() {
-        return values;
-    }
-
-    public void setValues(List<Number[]> values) {
-        this.values = values;
     }
 
     @JsonInclude(Include.NON_EMPTY)
@@ -71,28 +55,5 @@ public class FlotData {
         this.referenceValues.put(id, toAdd);
     }
 
-    public Number[] getValueBeforeTimespan() {
-        return valueBeforeTimespan != null
-                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
-                : null;
-    }
-
-    public void setValueBeforeTimespan(Number[] valueBeforeTimespan) {
-        this.valueBeforeTimespan = valueBeforeTimespan != null
-                ? Arrays.copyOf(valueBeforeTimespan, valueBeforeTimespan.length)
-                : null;
-    }
-
-    public Number[] getValueAfterTimespan() {
-        return valueAfterTimespan != null
-                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
-                : null;
-    }
-
-    public void setValueAfterTimespan(Number[] valueAfterTimespan) {
-        this.valueAfterTimespan = valueAfterTimespan != null
-                ? Arrays.copyOf(valueAfterTimespan, valueAfterTimespan.length)
-                : null;
-    }
 
 }
