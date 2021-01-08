@@ -142,10 +142,10 @@ public abstract class DataController extends BaseController {
         IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
                                                                 .createProcessChain();
 
-        DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
+        DataCollection< ? > dataCollection = ioChain.getProcessedData();
         return map.isExpanded()
-                ? new ModelAndView().addObject(formattedDataCollection.getSeriesOutput())
-                : new ModelAndView().addObject(formattedDataCollection.getAllSeries().get(datasetId));
+                ? new ModelAndView().addObject(dataCollection.getSeriesOutput())
+                : new ModelAndView().addObject(dataCollection.getSeries(datasetId));
     }
 
     @RequestMapping(value = "/observations",
