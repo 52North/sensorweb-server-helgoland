@@ -195,7 +195,7 @@ public class TimeseriesDataController extends BaseController {
         // TODO add paging
         DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
-        return parameters.isExpanded() 
+        return parameters.isExpanded()
                 ? new ModelAndView().addObject(formattedDataCollection.getSeriesOutput())
                 : new ModelAndView().addObject(formattedDataCollection.getSeries(timeseriesId));
     }
