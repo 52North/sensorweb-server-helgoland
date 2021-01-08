@@ -31,6 +31,7 @@ package org.n52.io.response.dataset;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -38,7 +39,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Data<V extends AbstractValue< ? >> implements Serializable {
@@ -93,20 +95,54 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
         this.metadata = metadata;
     }
 
-    @JsonProperty("extra")
+//    @JsonProperty("extra")
+    @JsonIgnore
     public DatasetMetadata<V> getMetadata() {
         return this.metadata;
     }
 
+    public Map<String, Data<V>> getReferenceValues() {
+        return isSetMetadata() ? getMetadata().getReferenceValues() : Collections.emptyMap();
+    }
+
+    /**
+     * @return the value before to the lower timespan bounds
+     */
+    @JsonInclude(Include.ALWAYS)
+    public V getValueBeforeTimespan() {
+        return isSetMetadata() ? getMetadata().getValueBeforeTimespan() : null;
+    }
+
+    /**
+     * @return the value after to the upper timespan bounds
+     */
+    @JsonInclude(Include.ALWAYS)
+    public V getValueAfterTimespan() {
+        return isSetMetadata() ? getMetadata().getValueAfterTimespan() : null;
+    }
+
     @JsonIgnore
     public boolean hasMetadata() {
-        return metadata != null
-                && (hasReferenceValues() || metadata.hasValueBeforeTimespan() || metadata.hasValueAfterTimespan());
+        return isSetMetadata() && (hasReferenceValues() || hasValueBeforeTimespan() || hasValueAfterTimespan());
+    }
+
+    private boolean isSetMetadata() {
+        return metadata != null;
     }
 
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return (metadata != null) && metadata.hasReferenceValues();
+        return isSetMetadata() && metadata.hasReferenceValues();
+    }
+
+    @JsonIgnore
+    public boolean hasValueBeforeTimespan() {
+        return isSetMetadata() && metadata.hasValueBeforeTimespan();
+    }
+
+    @JsonIgnore
+    public boolean hasValueAfterTimespan() {
+        return isSetMetadata() && metadata.hasValueAfterTimespan();
     }
 
 }

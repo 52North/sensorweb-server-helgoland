@@ -175,7 +175,7 @@ public class TimeseriesDataController extends BaseController {
 
         DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
-        return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
+        return new ModelAndView().addObject(formattedDataCollection.getSeriesOutput());
     }
 
     @RequestMapping(value = "/{timeseriesId}/getData", produces = Constants.APPLICATION_JSON,
@@ -196,7 +196,7 @@ public class TimeseriesDataController extends BaseController {
         DataCollection<Data<QuantityValue>> seriesData = getTimeseriesData(parameters);
         DataCollection< ? > formattedDataCollection = format(seriesData, parameters);
         if (parameters.isExpanded()) {
-            return new ModelAndView().addObject(formattedDataCollection.getAllSeries());
+            return new ModelAndView().addObject(formattedDataCollection.getSeriesOutput());
         }
         Map<String, ? > allSeries = formattedDataCollection.getAllSeries();
         Object formattedTimeseries = allSeries.get(timeseriesId);

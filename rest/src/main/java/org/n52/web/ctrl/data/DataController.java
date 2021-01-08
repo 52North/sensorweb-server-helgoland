@@ -34,7 +34,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -144,10 +143,9 @@ public abstract class DataController extends BaseController {
                                                                 .createProcessChain();
 
         DataCollection< ? > formattedDataCollection = ioChain.getProcessedData();
-        final Map<String, ? > processed = formattedDataCollection.getAllSeries();
         return map.isExpanded()
-                ? new ModelAndView().addObject(processed)
-                : new ModelAndView().addObject(processed.get(datasetId));
+                ? new ModelAndView().addObject(formattedDataCollection.getSeriesOutput())
+                : new ModelAndView().addObject(formattedDataCollection.getAllSeries().get(datasetId));
     }
 
     @RequestMapping(value = "/observations",
@@ -172,7 +170,7 @@ public abstract class DataController extends BaseController {
                                                                 .createProcessChain();
 
         DataCollection< ? > processed = ioChain.getData();
-        return new ModelAndView().addObject(processed.getAllSeries());
+        return new ModelAndView().addObject(processed.getSeriesOutput());
     }
 
     // private String getValueType(IoParameters parameters) {
