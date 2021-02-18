@@ -73,9 +73,7 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
                              T value,
                              IoParameters parameters,
                              Consumer<OptionalOutput<T>> consumer) {
-        Set<String> fields = parameters.getFields();
-        boolean serialize = fields.isEmpty() || fields.contains(parameter);
-        consumer.accept(OptionalOutput.of(value, serialize));
+        consumer.accept(OptionalOutput.of(value));
     }
 
     public String getId() {
