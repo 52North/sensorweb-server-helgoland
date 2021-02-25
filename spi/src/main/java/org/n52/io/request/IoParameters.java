@@ -1009,7 +1009,7 @@ public final class IoParameters implements Parameters {
     public IoParameters extendWith(String key, Collection<String> values) {
         MultiValueMap<String, String> newValues = new LinkedMultiValueMap<>();
         if (values != null) {
-            List<String> v = values instanceof List ? (List<String>) values : new LinkedList<>(values);
+            List<String> v = new LinkedList<>(values);
             if (containsParameter(key.toLowerCase()) && getValuesOf(key.toLowerCase()) != null) {
                 v.addAll(getValuesOf(key.toLowerCase()));
             }
