@@ -10,8 +10,6 @@ This project includes:
   52°North Svalbard Core under The Apache Software License, Version 2.0
   52°North Svalbard OData under The Apache Software License, Version 2.0
   ANTLR 4 Runtime under The BSD License
-  Apache Ant Core under The Apache Software License, Version 2.0
-  Apache Ant Launcher under The Apache Software License, Version 2.0
   Apache Commons Codec under Apache License, Version 2.0
   Apache Commons IO under Apache License, Version 2.0
   Apache Commons Lang under Apache License, Version 2.0
@@ -33,6 +31,7 @@ This project includes:
   Guava InternalFutureFailureAccess and InternalFutures under The Apache Software License, Version 2.0
   Guava ListenableFuture only under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under Apache License, Version 2.0
+  HTTP Clients under Lesser General Public License (LGPL)
   HyperSQL Database under HSQLDB License, a BSD open source license
   J2ObjC Annotations under The Apache Software License, Version 2.0
   Jackson-annotations under The Apache Software License, Version 2.0

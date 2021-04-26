@@ -264,13 +264,12 @@ public final class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
-     *         is returned.
+     * @return the value of {@value #LOCALE} parameter.
      * @throws IoParseException
      *         if parsing parameter fails.
      */
     public String getLocale() {
-        return getAsString(LOCALE, DEFAULT_LOCALE);
+        return getAsString(LOCALE);
     }
 
     /**
@@ -413,10 +412,10 @@ public final class IoParameters implements Parameters {
     }
 
     public Instant getResultTime() {
-        if (!containsParameter(RESULTTIME)) {
+        if (!containsParameter(RESULTTIMES)) {
             return null;
         }
-        return validateTimestamp(getAsString(RESULTTIME));
+        return validateTimestamp(getAsString(RESULTTIMES));
     }
 
     public boolean shallClassifyByResultTimes() {
@@ -470,43 +469,36 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getCategories() {
         Set<String> values = getValuesOf(CATEGORIES);
-        values.addAll(getValuesOf(CATEGORY));
         return values;
     }
 
     public Set<String> getServices() {
         Set<String> values = getValuesOf(SERVICES);
-        values.addAll(getValuesOf(SERVICE));
         return values;
     }
 
     public Set<String> getOfferings() {
         Set<String> values = getValuesOf(OFFERINGS);
-        values.addAll(getValuesOf(OFFERING));
         return values;
     }
 
     public Set<String> getFeatures() {
         Set<String> values = getValuesOf(FEATURES);
-        values.addAll(getValuesOf(FEATURE));
         return values;
     }
 
     public Set<String> getProcedures() {
         Set<String> values = getValuesOf(PROCEDURES);
-        values.addAll(getValuesOf(PROCEDURE));
         return values;
     }
 
     public Set<String> getPhenomena() {
         Set<String> values = getValuesOf(PHENOMENA);
-        values.addAll(getValuesOf(PHENOMENON));
         return values;
     }
 
     public Set<String> getStations() {
         Set<String> values = getValuesOf(STATIONS);
-        values.addAll(getValuesOf(STATION));
         return values;
     }
 
@@ -565,6 +557,14 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getGeometryTypes() {
         return getValuesOf(GEOMETRY_TYPES);
+    }
+
+    public boolean isSelect() {
+        return containsParameter(SELECT) && !getSelect().isEmpty();
+    }
+
+    public Set<String> getSelect() {
+        return getValuesOf(SELECT);
     }
 
     Set<String> getValuesOf(String parameterName) {
@@ -1191,6 +1191,10 @@ public final class IoParameters implements Parameters {
     public Integer getLevel() {
         return !containsParameter(LEVEL) ? null
                 : getAsString(LEVEL).isEmpty() ? Integer.MAX_VALUE : getAsInteger(LEVEL);
+    }
+
+    public boolean isSelected(String selection) {
+        return !isSelect() || getSelect().contains(selection);
     }
 
 }

@@ -58,10 +58,10 @@ public class SearchController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView searchResources(@RequestParam String q,
                                         @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                            required = false) String locale,
+                                            required = false) String httpLocale,
                                         @RequestParam(required = false) MultiValueMap<String, String> query,
                                         HttpServletResponse response) {
-        IoParameters parameters = createParameters(query, locale, response).extendWith(Parameters.SEARCH_TERM, q)
+        IoParameters parameters = createParameters(query, httpLocale, response).extendWith(Parameters.SEARCH_TERM, q)
                                                                  .respectBackwardsCompatibility();
         return new ModelAndView().addObject(searchService.searchResources(parameters));
     }

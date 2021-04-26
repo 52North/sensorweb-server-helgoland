@@ -85,11 +85,11 @@ public abstract class BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourcesController.class);
 
-    private static final String REFER_TO_API_SYNTAX = "Refer to the API documentation and check parameter "
-            + "value against required syntax!";
+    private static final String REFER_TO_API_SYNTAX =
+            "Refer to the API documentation and check parameter " + "value against required syntax!";
 
-    private static final String INVALID_REQUEST_BODY = "Check the request body which has been sent to the "
-            + "server. Probably it is not valid.";
+    private static final String INVALID_REQUEST_BODY =
+            "Check the request body which has been sent to the " + "server. Probably it is not valid.";
 
     private static final String HEADER_ACCEPT = "Accept";
 
@@ -120,76 +120,69 @@ public abstract class BaseController {
     protected BiConsumer<String, IoParseException> getExceptionHandle() {
         return (parameter, e) -> {
             BadRequestException ex = new BadRequestException("Invalid '" + parameter + "' parameter.", e);
-            throw ex.addHint(REFER_TO_API_SYNTAX)
-                    .addHint(e.getMessage())
-                    .addHint(e.getHints());
+            throw ex.addHint(REFER_TO_API_SYNTAX).addHint(e.getMessage()).addHint(e.getHints());
         };
     }
 
-    protected IoParameters createParameters(RequestSimpleParameterSet query, String locale,
+    protected IoParameters createParameters(RequestSimpleParameterSet query, String httpLocale,
             HttpServletResponse response) {
-        return createParameters(query.toParameters(), locale, response);
+        return createParameters(query.toParameters(), httpLocale, response);
     }
 
-    protected IoParameters createParameters(RequestStyledParameterSet query, String locale,
+    protected IoParameters createParameters(RequestStyledParameterSet query, String httpLocale,
             HttpServletResponse response) {
-        return createParameters(query.toParameters(), locale, response);
+        return createParameters(query.toParameters(), httpLocale, response);
     }
 
-    protected IoParameters createParameters(MultiValueMap<String, String> query, String locale,
+    protected IoParameters createParameters(MultiValueMap<String, String> query, String httpLocale,
             HttpServletResponse response) {
-        return createParameters(IoParameters.createFromMultiValueMap(query), locale, response);
+        return createParameters(IoParameters.createFromMultiValueMap(query), httpLocale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String locale,
+    protected IoParameters createParameters(String datasetId, MultiValueMap<String, String> query, String httpLocale,
             HttpServletResponse response) {
         IoParameters parameters =
                 IoParameters.createFromMultiValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
-        return createParameters(parameters, locale, response);
+        return createParameters(parameters, httpLocale, response);
     }
 
-    protected IoParameters createParameters(Map<String, String> query, String locale, HttpServletResponse response) {
-        return createParameters(IoParameters.createFromSingleValueMap(query), locale, response);
+    protected IoParameters createParameters(Map<String, String> query, String httpLocale,
+            HttpServletResponse response) {
+        return createParameters(IoParameters.createFromSingleValueMap(query), httpLocale, response);
     }
 
-    protected IoParameters createParameters(String datasetId, Map<String, String> query, String locale,
+    protected IoParameters createParameters(String datasetId, Map<String, String> query, String httpLocale,
             HttpServletResponse response) {
         IoParameters parameters =
                 IoParameters.createFromSingleValueMap(query).replaceWith(Parameters.DATASETS, datasetId);
-        return createParameters(parameters, locale, response);
+        return createParameters(parameters, httpLocale, response);
     }
 
-    private IoParameters createParameters(IoParameters parameters, String locale, HttpServletResponse response) {
+    private IoParameters createParameters(IoParameters parameters, String httpLocale, HttpServletResponse response) {
         if (parameters != null && response != null) {
             addCacheHeader(parameters, response);
         }
-        return RequestUtils.overrideQueryLocaleWhenSet(locale, parameters)
-                           .setParseExceptionHandle(getExceptionHandle());
+        return RequestUtils.overrideQueryLocaleWhenSet(httpLocale, getConfig().getDefaultLocale(), parameters)
+                .setParseExceptionHandle(getExceptionHandle());
     }
 
     protected boolean isRequestingJsonData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_JSON.getMimeType()
-                                                  .equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_JSON.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPdfData(HttpServletRequest request) {
-        return Constants.MimeType.APPLICATION_PDF.getMimeType()
-                                                 .equals(getAcceptHeader(request));
+        return Constants.MimeType.APPLICATION_PDF.getMimeType().equals(getAcceptHeader(request));
     }
 
     protected boolean isRequestingPngData(HttpServletRequest request) {
-        return Constants.MimeType.IMAGE_PNG.getMimeType()
-                                           .equals(getAcceptHeader(request));
+        return Constants.MimeType.IMAGE_PNG.getMimeType().equals(getAcceptHeader(request));
     }
 
     private static String getAcceptHeader(HttpServletRequest request) {
         return request.getHeader(HEADER_ACCEPT);
     }
 
-    @ExceptionHandler(value = {
-        BadRequestException.class,
-        BadQueryParameterException.class
-    })
+    @ExceptionHandler(value = { BadRequestException.class, BadQueryParameterException.class })
     public void handle400(Exception e, HttpServletRequest request, HttpServletResponse response) {
         writeExceptionResponse((WebException) e, response, HttpStatus.BAD_REQUEST);
     }
@@ -204,15 +197,11 @@ public abstract class BaseController {
         writeExceptionResponse((WebException) e, response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = {
-        RuntimeException.class,
-        Exception.class,
-        Throwable.class
-    })
+    @ExceptionHandler(value = { RuntimeException.class, Exception.class, Throwable.class })
     public void handleException(Exception e, HttpServletRequest request, HttpServletResponse response) {
         if (e instanceof HttpMessageNotReadableException) {
             WebException ex = new BadRequestException("Invalid Request", e).addHint(INVALID_REQUEST_BODY)
-                                                                           .addHint(REFER_TO_API_SYNTAX);
+                    .addHint(REFER_TO_API_SYNTAX);
             writeExceptionResponse(ex, response, HttpStatus.BAD_REQUEST);
         } else {
             WebException wrappedException = new InternalServerException("Unexpected Exception occured.", e);
@@ -249,8 +238,7 @@ public abstract class BaseController {
     protected abstract void addCacheHeader(IoParameters parameter, HttpServletResponse response);
 
     protected void addCacheHeader(HttpServletResponse response, long maxAge) {
-        String maxAgeHeader = maxAge > 0
-                ? CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue()
+        String maxAgeHeader = maxAge > 0 ? CacheControl.maxAge(maxAge, TimeUnit.MINUTES).getHeaderValue()
                 : CacheControl.noStore().getHeaderValue();
         response.setHeader(HttpHeaders.CACHE_CONTROL, maxAgeHeader);
     }

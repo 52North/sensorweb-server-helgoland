@@ -32,11 +32,16 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Locale.LanguageRange;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.janmayen.i18n.LocaleHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestAttributes;
@@ -52,25 +57,47 @@ public class RequestUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
-    public static IoParameters overrideQueryLocaleWhenSet(String locale, IoParameters query) {
+    public static IoParameters overrideQueryLocaleWhenSet(String httpLocale, String defaultLocale,
+            IoParameters query) {
         // TODO: Discuss which definition should be stronger HTTP-Header (locale) or the query parameter?
-        return locale != null
-                ? query.replaceWith(Parameters.LOCALE, locale)
-                : query;
+        IoParameters params = query == null ? IoParameters.createDefaults() : query;
+        String checkForDefault = checkForDefault(httpLocale, defaultLocale, params);
+        return checkForDefault != null ? params.replaceWith(Parameters.LOCALE, checkForDefault)
+                : params.removeAllOf(Parameters.LOCALE);
+    }
+
+    private static String checkForDefault(String httpLocale, String defaultLocaleString, IoParameters query) {
+        Locale defaulLocale = LocaleHelper.decode(defaultLocaleString);
+        if (query.getLocale() != null && !query.getLocale().isEmpty()) {
+            Locale queried = LocaleHelper.decode(query.getLocale());
+            return checkLocales(queried, defaulLocale);
+        } else if (httpLocale != null && !httpLocale.isEmpty()) {
+            List<LanguageRange> localeRange = Locale.LanguageRange.parse(httpLocale);
+            Locale lookup = Locale.lookup(localeRange, Arrays.asList(defaulLocale));
+            return lookup == null ? httpLocale : checkLocales(lookup, defaulLocale);
+        }
+        return null;
+    }
+
+    private static String checkLocales(Locale queried, Locale defaulLocale) {
+        return defaulLocale.equals(queried)
+                || (((defaulLocale.getCountry() != null && !defaulLocale.getCountry().isEmpty())
+                        || (queried.getCountry() != null && !queried.getCountry().isEmpty()))
+                        && defaulLocale.getCountry().equalsIgnoreCase(queried.getCountry()))
+                || defaulLocale.getLanguage().equalsIgnoreCase(queried.getLanguage()) ? null : queried.toString();
     }
 
     /**
      * Get the request {@link URL} without the query parameter
      *
      * @param externalUrl
-     *        the external URL.
+     *            the external URL.
      * @return Request {@link URL} without query parameter
      */
     public static String resolveQueryLessRequestUrl(String externalUrl) {
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
-        return externalUrl == null || externalUrl.isEmpty()
-                ? createRequestUrl(request)
+        return externalUrl == null || externalUrl.isEmpty() ? createRequestUrl(request)
                 : createRequestUrl(externalUrl);
     }
 
@@ -87,8 +114,7 @@ public class RequestUtils {
 
     private static String createRequestUrl(HttpServletRequest request) {
         try {
-            URL url = new URL(request.getRequestURL()
-                                     .toString());
+            URL url = new URL(request.getRequestURL().toString());
             String scheme = url.getProtocol();
             String userInfo = url.getUserInfo();
             String host = url.getHost();
@@ -111,9 +137,7 @@ public class RequestUtils {
     }
 
     private static String removeTrailingSlash(String path) {
-        return path != null && path.endsWith("/")
-                ? path.substring(0, path.length() - 1)
-                : path;
+        return path != null && path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
     }
 
 }
