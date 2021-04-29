@@ -41,21 +41,27 @@ public class RequestUtilsTest {
     public void test_notLocale() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet(null, DEFAULT_LOCALE, createParameters());
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     @Test
     public void test_params_local_de() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet(null, DEFAULT_LOCALE, createParameters("de"));
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     @Test
     public void test_params_local_de_de() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet(null, DEFAULT_LOCALE, createParameters("de_de"));
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     @Test
@@ -64,13 +70,16 @@ public class RequestUtilsTest {
         Assertions.assertNotNull(params);
         Assertions.assertNotNull(params.getLocale());
         Assertions.assertEquals("en", params.getLocale());
+        Assertions.assertFalse(params.isDefaultLocal());
     }
 
     @Test
     public void test_http_local_de() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet("de", DEFAULT_LOCALE, createParameters());
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     @Test
@@ -79,13 +88,16 @@ public class RequestUtilsTest {
         Assertions.assertNotNull(params);
         Assertions.assertNotNull(params.getLocale());
         Assertions.assertEquals("en", params.getLocale());
+        Assertions.assertFalse(params.isDefaultLocal());
     }
 
     @Test
     public void test_params_de_http_en() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet("en", DEFAULT_LOCALE, createParameters("de"));
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     @Test
@@ -94,13 +106,34 @@ public class RequestUtilsTest {
         Assertions.assertNotNull(params);
         Assertions.assertNotNull(params.getLocale());
         Assertions.assertEquals("en", params.getLocale());
+        Assertions.assertFalse(params.isDefaultLocal());
     }
 
     @Test
     public void test_http_locale() {
         IoParameters params = RequestUtils.overrideQueryLocaleWhenSet("de,en-US;q=0.7,en;q=0.3", DEFAULT_LOCALE, createParameters());
         Assertions.assertNotNull(params);
-        Assertions.assertNull(params.getLocale());
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
+    }
+
+    @Test
+    public void test_http_locale_default_en() {
+        IoParameters params = RequestUtils.overrideQueryLocaleWhenSet("de,en-US;q=0.7,en;q=0.3", "en", createParameters());
+        Assertions.assertNotNull(params);
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals("de,en-US;q=0.7,en;q=0.3", params.getLocale());
+        Assertions.assertFalse(params.isDefaultLocal());
+    }
+
+    @Test
+    public void test_http_locale_any() {
+        IoParameters params = RequestUtils.overrideQueryLocaleWhenSet("*", DEFAULT_LOCALE, createParameters());
+        Assertions.assertNotNull(params);
+        Assertions.assertNotNull(params.getLocale());
+        Assertions.assertEquals(DEFAULT_LOCALE, params.getLocale());
+        Assertions.assertTrue(params.isDefaultLocal());
     }
 
     private IoParameters createParameters(String locale) {

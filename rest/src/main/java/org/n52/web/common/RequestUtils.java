@@ -57,13 +57,15 @@ public class RequestUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestUtils.class);
 
+    private static final String ANY_LOCALE_STRING = "*";
+
     public static IoParameters overrideQueryLocaleWhenSet(String httpLocale, String defaultLocale,
             IoParameters query) {
         // TODO: Discuss which definition should be stronger HTTP-Header (locale) or the query parameter?
         IoParameters params = query == null ? IoParameters.createDefaults() : query;
         String checkForDefault = checkForDefault(httpLocale, defaultLocale, params);
         return checkForDefault != null ? params.replaceWith(Parameters.LOCALE, checkForDefault)
-                : params.removeAllOf(Parameters.LOCALE);
+                : params.removeAllOf(Parameters.LOCALE).setDefaultLocale(defaultLocale);
     }
 
     private static String checkForDefault(String httpLocale, String defaultLocaleString, IoParameters query) {
@@ -73,10 +75,28 @@ public class RequestUtils {
             return checkLocales(queried, defaulLocale);
         } else if (httpLocale != null && !httpLocale.isEmpty()) {
             List<LanguageRange> localeRange = Locale.LanguageRange.parse(httpLocale);
+            LanguageRange highest = getHighestPriority(localeRange);
+            if (highest != null) {
+                if (highest.getRange().equals(ANY_LOCALE_STRING)) {
+                    return null;
+                }
+                Locale lookup = Locale.lookup(Arrays.asList(highest), Arrays.asList(defaulLocale));
+                return lookup == null ? httpLocale : checkLocales(lookup, defaulLocale);
+            }
             Locale lookup = Locale.lookup(localeRange, Arrays.asList(defaulLocale));
             return lookup == null ? httpLocale : checkLocales(lookup, defaulLocale);
         }
         return null;
+    }
+
+    private static LanguageRange getHighestPriority(List<LanguageRange> ranges) {
+        LanguageRange lr = null;
+        for (LanguageRange languageRange : ranges) {
+            if (lr == null || lr.getWeight() < languageRange.getWeight()) {
+                lr = languageRange;
+            }
+        }
+        return lr;
     }
 
     private static String checkLocales(Locale queried, Locale defaulLocale) {

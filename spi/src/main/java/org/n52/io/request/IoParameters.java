@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -101,6 +102,8 @@ public final class IoParameters implements Parameters {
     private boolean behaveBackwardsCompatible;
 
     private BiConsumer<String, IoParseException> parseExceptionHandle;
+
+    private String defaultLocale;
 
     protected IoParameters() {
         this(Collections.<String, JsonNode> emptyMap());
@@ -269,7 +272,20 @@ public final class IoParameters implements Parameters {
      *         if parsing parameter fails.
      */
     public String getLocale() {
-        return getAsString(LOCALE);
+        return getAsString(LOCALE) != null ? getAsString(LOCALE) : getDefaultLocale();
+    }
+
+    public boolean isDefaultLocal() {
+        return getAsString(LOCALE) == null || getAsString(LOCALE).isEmpty();
+    }
+
+    public String getDefaultLocale() {
+        return defaultLocale;
+    }
+
+    public IoParameters setDefaultLocale(String defaultLocale) {
+        this.defaultLocale = defaultLocale;
+        return this;
     }
 
     /**
