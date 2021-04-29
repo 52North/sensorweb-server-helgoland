@@ -1210,7 +1210,12 @@ public final class IoParameters implements Parameters {
     }
 
     public boolean isSelected(String selection) {
-        return !isSelect() || getSelect().contains(selection);
+        return !isSelect() || getSelect().contains(selection) || checkSelected(selection);
+    }
+
+    private boolean checkSelected(String selection) {
+        return getSelect().stream().filter(s -> s.startsWith(selection.toLowerCase(Locale.ROOT))).findFirst()
+                .isPresent();
     }
 
 }
