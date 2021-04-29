@@ -32,6 +32,13 @@ import org.n52.io.response.ParameterOutput;
 
 public class DatasetParameters {
 
+    public static final String OFFERING = "offering";
+    public static final String PROCEDURE = "procedure";
+    public static final String PHENOMENON = "phenomenon";
+    public static final String CATEGORY = "category";
+    public static final String PLATFORM = "platform";
+    public static final String SERVICE = "service";
+
     private ParameterOutput phenomenon;
 
     private ParameterOutput procedure;
