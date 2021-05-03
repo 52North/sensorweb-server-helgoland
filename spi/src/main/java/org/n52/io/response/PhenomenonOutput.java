@@ -33,7 +33,7 @@ public class PhenomenonOutput extends AbstractOutput {
     public static final String COLLECTION_PATH = "phenomena";
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

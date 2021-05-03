@@ -71,7 +71,7 @@ public class MeasuringProgramOutput extends AbstractOutput {
     private OptionalOutput<List<CategoryOutput>> categories;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 
@@ -108,6 +108,7 @@ public class MeasuringProgramOutput extends AbstractOutput {
      * @return the measuringProgramTimeEnd
      */
     @JsonSerialize(converter = TimeOutputConverter.class)
+    @JsonInclude(Include.ALWAYS)
     public TimeOutput getMeasuringProgramTimeEnd() {
         return getIfSerialized(measuringProgramTimeEnd);
     }
@@ -115,7 +116,7 @@ public class MeasuringProgramOutput extends AbstractOutput {
     /**
      * @param measuringProgramTimeEnd the measuringProgramTimeEnd to set
      */
-    @JsonInclude(Include.ALWAYS)
+
     public void setMeasuringProgramTimeEnd(OptionalOutput<TimeOutput> measuringProgramTimeEnd) {
         this.measuringProgramTimeEnd = measuringProgramTimeEnd;
     }
@@ -218,4 +219,5 @@ public class MeasuringProgramOutput extends AbstractOutput {
     public void setCategories(OptionalOutput<List<CategoryOutput>> categories) {
         this.categories = categories;
     }
+
 }

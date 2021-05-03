@@ -33,7 +33,7 @@ public class ProcedureOutput extends HierarchicalParameterOutput<ProcedureOutput
     public static final String COLLECTION_PATH = "procedures";
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

@@ -33,7 +33,7 @@ public class ProfileOutput extends DatasetOutput<AbstractValue< ? >> {
     public static final String COLLECTION_PATH = "profiles";
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 }

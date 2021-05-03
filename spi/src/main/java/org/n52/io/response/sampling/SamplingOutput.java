@@ -63,7 +63,7 @@ public class SamplingOutput extends AbstractOutput {
     private OptionalOutput<List<SamplingObservationOutput>> samplingObservations;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 
