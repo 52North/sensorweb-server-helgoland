@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -575,12 +576,18 @@ public final class IoParameters implements Parameters {
         return getValuesOf(GEOMETRY_TYPES);
     }
 
-    public boolean isSelect() {
+    public boolean hasSelect() {
         return containsParameter(SELECT) && !getSelect().isEmpty();
     }
 
     public Set<String> getSelect() {
         return getValuesOf(SELECT);
+    }
+
+    public Set<String> getSelectOriginal() {
+        return containsParameter(SELECT)
+                ? new HashSet<>(csvToSet(getAsString(SELECT)))
+                : new HashSet<>(0);
     }
 
     Set<String> getValuesOf(String parameterName) {
@@ -1210,12 +1217,28 @@ public final class IoParameters implements Parameters {
     }
 
     public boolean isSelected(String selection) {
-        return !isSelect() || getSelect().contains(selection) || checkSelected(selection);
+        return !hasSelect() || getSelect().contains(selection) || checkSelected(selection);
     }
 
     private boolean checkSelected(String selection) {
         return getSelect().stream().filter(s -> s.startsWith(selection.toLowerCase(Locale.ROOT))).findFirst()
                 .isPresent();
+    }
+
+    public IoParameters withoutSelectFilter() {
+        return removeAllOf(Parameters.SELECT);
+    }
+
+    public IoParameters withSubSelectFilter(String selection) {
+        Set<String> subSelection = new LinkedHashSet<>();
+        String toCheck = selection + "/";
+        for (String selected : getSelectOriginal()) {
+            if (selected.startsWith(toCheck)) {
+                subSelection.add(selected.substring(selected.indexOf("/") + 1));
+            }
+        }
+        return subSelection.isEmpty() ? withoutSelectFilter()
+                : replaceWith(Parameters.SELECT, String.join(",", subSelection));
     }
 
 }
