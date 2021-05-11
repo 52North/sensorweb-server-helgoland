@@ -26,7 +26,7 @@ The following main frameworks are used to provide this API:
 
 ### Existing SPI implementations:
 
-- [SOS Proxy](https://github.com/52North/series-sos-proxy): Allows to aggregate multiple OGC SOS instances under one API
+- [Sensor Web Server Adapters](https://github.com/52North/sensorweb-server-helgoland-adapters): Allows to aggregate multiple OGC SOS instances under one API
 - [Direct database access](https://github.com/52North/sensorweb-server-dao-impl): Allows to define Hibernate mappings to serve data directly from a database
 - [Fotoquest database access](https://github.com/52North/fotoquest-series-api): tbd
 - [DWD Weather Alerts](https://github.com/52North/dwd-series-api): tbd
@@ -34,7 +34,7 @@ The following main frameworks are used to provide this API:
 ## References
 * The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
 * The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
-* The [52°North Helgoland Web Client](https://githum.com/52North/helgoland) consumes one or multiple instances of the REST API. A demo can be found under the http://sensorweb.demo.52north.org/client/#/
+* The [52°North Helgoland Web Client](https://githum.com/52North/helgoland) consumes one or multiple instances of the Sensor Web Server Helgoland API. A demo can be found under the http://sensorweb.demo.52north.org/client/#/
 
 ## License
 
