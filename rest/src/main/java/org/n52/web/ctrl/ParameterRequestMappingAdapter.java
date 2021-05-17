@@ -28,8 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -100,12 +98,6 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
                                              required = false) String httpLocale,
                                          @RequestParam(required = false) MultiValueMap<String, String> query) {
         return super.getExtras(response, resourceId, httpLocale, addAdditionalParameter(query));
-    }
-
-    protected MultiValueMap<String, String> addHrefBase(MultiValueMap<String, String> query) {
-        List<String> value = Collections.singletonList(getExternalUrl());
-        query.put(Parameters.HREF_BASE, value);
-        return query;
     }
 
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {

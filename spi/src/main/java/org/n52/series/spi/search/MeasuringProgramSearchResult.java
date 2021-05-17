@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class MeasuringProgramSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./measuringPrograms/" + getId();
+    public String getType() {
+        return "measuringProgram";
     }
 
     @Override
-    public String getType() {
-        return "measuringProgram";
+    protected String getCollectionName() {
+        return "measuringPrograms";
     }
 
 }

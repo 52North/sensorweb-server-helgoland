@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class ProcedureSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./procedures/" + getId();
+    public String getType() {
+        return "procedure";
     }
 
     @Override
-    public String getType() {
-        return "procedure";
+    protected String getCollectionName() {
+        return "procedures";
     }
 
 }
