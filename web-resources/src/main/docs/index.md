@@ -4,12 +4,12 @@ title: Introduction
 permalink: /
 ---
 
-The Series REST API provides an access layer to sensor data via RESTful Web binding 
+The Sensor Web Server Helgoland API provides an access layer to sensor data via RESTful Web binding 
 with different output formats like json, pdf or png. It provides a well defined Sevice 
 Provider Interface (SPI) which can be implemented by arbitrary backend services to make 
 series data available via the API
 
-The Series REST API provides a thin access layer to sensor and observation data via 
+The Sensor Web Server Helgoland API provides a thin access layer to sensor and observation data via 
 RESTful Web binding. In addition, it offers several IO functionalities e.g. 
   * prerendering of series data, 
   * generalization, 
