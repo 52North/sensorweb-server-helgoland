@@ -104,7 +104,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private static final String JOB_DATA_CONFIG_FILE = "configFile";
     private static final String JOB_DATA_WEBAPP_FOLDER = "webappFolder";
     private static final String IMAGE_EXTENSION = "png";
-
+    private static final String IMAGE_FILE_ENDING = "." + IMAGE_EXTENSION;
     @Autowired
     @Qualifier("datasetService")
     // autowired due to quartz job creation
@@ -351,9 +351,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         }
         Path outputDirectory = getOutputFolder();
         String filename = qualifier != null
-                ? datasetId + "_" + qualifier
+                ? qualifier.startsWith(datasetId) ? qualifier : datasetId + "_" + qualifier
                 : datasetId;
-        return outputDirectory.resolve(filename + ".png")
+        return outputDirectory.resolve(filename.endsWith(IMAGE_FILE_ENDING) ? filename : filename + ".png")
                               .toFile();
     }
 

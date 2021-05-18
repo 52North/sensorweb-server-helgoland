@@ -127,6 +127,17 @@ public class TimeseriesDataController extends DataController {
                                   .writeBinary(response.getOutputStream());
     }
 
+    @RequestMapping(value = "/{datasetId}/observations.png", produces = Constants.IMAGE_PNG, method = RequestMethod.GET)
+    public void getSeriesChartPng(HttpServletRequest request,
+            HttpServletResponse response,
+            @PathVariable String datasetId,
+            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                required = false) String httpLocale,
+            @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        getSeriesChart(request, response, datasetId, httpLocale, query);
+    }
+
     @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
     public ModelAndView getSeriesChartByInterval(@PathVariable String datasetId) {
         assertPrerenderingIsEnabled();
