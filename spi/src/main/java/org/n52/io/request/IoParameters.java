@@ -81,6 +81,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 public final class IoParameters implements Parameters {
 
@@ -139,6 +140,7 @@ public final class IoParameters implements Parameters {
         config.setAll(readDefaultConfig(defaultConfig));
         query = mergeToLowerCasedKeys(config);
         filterResolver = new FilterResolver(this);
+        OBJECT_MAPPER.registerModule(new JodaModule());
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
