@@ -66,7 +66,7 @@ public abstract class SelfSerializedOutput {
     }
 
     protected <T> boolean isSet(OptionalOutput<T> optional) {
-        return (optional != null) && optional.isPresent();
+        return optional != null && optional.isPresent();
     }
 
     protected <T> boolean resolvesToNonNullValue(OptionalOutput<T> optional) {

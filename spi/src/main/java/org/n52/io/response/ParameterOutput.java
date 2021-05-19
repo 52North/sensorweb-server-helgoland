@@ -91,7 +91,9 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
         }
         return !isSet(href) && (getHrefBase() != null)
                 ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
-                : href.getValue();
+                : isSet(href)
+                    ? href.getValue()
+                    : HrefHelper.constructHref(".", getCollectionName()) + "/" + getId();
     }
 
     @JsonIgnore
