@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class FeatureSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./features/" + getId();
+    public String getType() {
+        return "feature";
     }
 
     @Override
-    public String getType() {
-        return "feature";
+    protected String getCollectionName() {
+        return "features";
     }
 
 }

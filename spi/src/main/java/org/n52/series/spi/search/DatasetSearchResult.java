@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class DatasetSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./datasets/" + getId();
+    public String getType() {
+        return "dataset";
     }
 
     @Override
-    public String getType() {
-        return "dataset";
+    protected String getCollectionName() {
+        return "datasets";
     }
 
 }

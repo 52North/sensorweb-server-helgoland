@@ -182,11 +182,13 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     protected T addExtensionInfos(T output, IoParameters parameters) {
-        Collection<String> extras = metadataExtensions.stream()
-                                                      .map(e -> e.getExtraMetadataFieldNames(output))
-                                                      .flatMap(c -> c.stream())
-                                                      .collect(Collectors.toList());
-        output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
+        if (parameters.isSelected(ParameterOutput.EXTRAS)) {
+            Collection<String> extras = metadataExtensions.stream()
+                                                          .map(e -> e.getExtraMetadataFieldNames(output))
+                                                          .flatMap(c -> c.stream())
+                                                          .collect(Collectors.toList());
+            output.setValue(ParameterOutput.EXTRAS, extras, parameters, output::setExtras);
+        }
         return output;
     }
 

@@ -51,7 +51,7 @@ public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> im
     private OptionalOutput<Map<String, DatasetParameters>> datasets;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

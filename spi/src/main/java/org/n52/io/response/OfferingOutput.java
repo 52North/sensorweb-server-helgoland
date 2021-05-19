@@ -33,7 +33,7 @@ public class OfferingOutput extends HierarchicalParameterOutput<OfferingOutput> 
     public static final String COLLECTION_PATH = "offerings";
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

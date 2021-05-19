@@ -57,7 +57,7 @@ public class ServiceOutput extends ParameterOutput {
     private OptionalOutput<Map<String, Object>> features;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

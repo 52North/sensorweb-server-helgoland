@@ -28,7 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.io.HrefHelper;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -48,9 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = UrlSettings.BASE, produces = {
-    "application/json"
-})
+@RequestMapping(value = UrlSettings.BASE, produces = { "application/json" })
 public class ResourcesController extends BaseController implements ResoureControllerConstants {
 
     private final CountingMetadataService metadataService;
@@ -65,7 +63,7 @@ public class ResourcesController extends BaseController implements ResoureContro
 
     @RequestMapping("/")
     public ModelAndView getResources(HttpServletResponse response,
-                                     @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
         IoParameters query = IoParameters.createFromMultiValueMap(addAdditionalParameter(parameters));
         return new ModelAndView().addObject(createResources(query));
@@ -78,7 +76,13 @@ public class ResourcesController extends BaseController implements ResoureContro
                                  .withHref(HrefHelper.constructHref(parameters.getHrefBase(), resource));
     }
 
-    private List<ResourceCollection> createResources(IoParameters parameters) {
+    private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
+        return parameters != null && parameters.containsParameter(Parameters.HREF_BASE)
+                ? add(resource, label, description).withHref(parameters.getHrefBase() + "/" + resource)
+                : add(resource, label, description);
+    }
+
+    private Set<ResourceCollection> createResources(IoParameters parameters) {
         I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
         if (parameterController == null || parameterController.isEmpty()) {
             return createStaticResources(parameters, i18n);
@@ -137,7 +141,7 @@ public class ResourcesController extends BaseController implements ResoureContro
             measuringPrograms.setSize(metadataService.getMeasuringProgramCounter(parameters));
             tags.setSize(metadataService.getTagCounter(parameters));
         }
-        List<ResourceCollection> resources = new ArrayList<>();
+        Set<ResourceCollection> resources = new TreeSet<>();
         resources.add(services);
         resources.add(timeseries);
         resources.add(categories);
@@ -163,11 +167,8 @@ public class ResourcesController extends BaseController implements ResoureContro
     }
 
     private void addVersionHeader(HttpServletResponse response) {
-        String implementationVersion = getClass().getPackage()
-                                                 .getImplementationVersion();
-        String version = implementationVersion != null
-                ? implementationVersion
-                : "unknown";
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String version = implementationVersion != null ? implementationVersion : "unknown";
         response.addHeader("API-Version", version);
     }
 
@@ -260,5 +261,24 @@ public class ResourcesController extends BaseController implements ResoureContro
         public static ResourceCollection createResource(String id) {
             return new ResourceCollection(id);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof ResourceCollection) {
+                return getId().equals(((ResourceCollection) obj).getId());
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return  Objects.hash(getId(), getLabel());
+        }
+
+        @Override
+        public int compareTo(ResourceCollection o) {
+            return getId().compareTo(o.getId());
+        }
+
     }
 }

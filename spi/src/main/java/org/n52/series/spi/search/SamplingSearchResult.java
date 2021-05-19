@@ -31,15 +31,12 @@ package org.n52.series.spi.search;
 public class SamplingSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./samplings/" + getId();
+    public String getType() {
+        return "sampling";
     }
 
     @Override
-    public String getType() {
+    protected String getCollectionName() {
         return "samplings";
     }
 

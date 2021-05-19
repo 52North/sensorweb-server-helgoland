@@ -192,7 +192,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     }
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

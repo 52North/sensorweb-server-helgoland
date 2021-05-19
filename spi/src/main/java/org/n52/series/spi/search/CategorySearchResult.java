@@ -32,15 +32,17 @@ public class CategorySearchResult extends SearchResult {
 
     @Override
     public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./categories/" + getId();
+        return hasBaseUrl() ? createFullHref() : "./" + getCollectionName() + "/" + getId();
     }
 
     @Override
     public String getType() {
         return "category";
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return "categories";
     }
 
 }

@@ -125,10 +125,10 @@ public abstract class DataController extends BaseController {
                                       HttpServletResponse response,
                                       @PathVariable String datasetId,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                          required = false) String locale,
+                                          required = false) String httpLocale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(datasetId, query, locale, response);
+        IoParameters map = createParameters(datasetId, query, httpLocale, response);
         LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
         checkAgainstTimespanRestriction(map.getTimespan());
         checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
@@ -156,10 +156,10 @@ public abstract class DataController extends BaseController {
     public ModelAndView getCollectionData(HttpServletRequest request,
                                           HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                              required = false) String locale,
+                                              required = false) String httpLocale,
                                           @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale, response);
+        IoParameters parameters = createParameters(simpleParameters, httpLocale, response);
         LOGGER.debug("get data collection with parameter set: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -189,10 +189,10 @@ public abstract class DataController extends BaseController {
         method = RequestMethod.POST)
     public void getRawSeriesCollectionData(HttpServletResponse response,
                                            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                               required = false) String locale,
+                                               required = false) String httpLocale,
                                            @RequestBody RequestSimpleParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale, response);
+        IoParameters parameters = createParameters(simpleParameters, httpLocale, response);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         writeRawData(parameters, response);
     }
@@ -205,9 +205,9 @@ public abstract class DataController extends BaseController {
     public void getRawSeriesData(HttpServletResponse response,
                                  @PathVariable String datasetId,
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                     required = false) String locale,
+                                     required = false) String httpLocale,
                                  @RequestParam MultiValueMap<String, String> query) {
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
         checkForUnknownDatasetId(parameters, datasetId);
         writeRawData(parameters, response);
     }
@@ -236,10 +236,10 @@ public abstract class DataController extends BaseController {
     public void getSeriesCollectionReport(HttpServletRequest request,
                                           HttpServletResponse response,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                              required = false) String locale,
+                                              required = false) String httpLocale,
                                           @RequestBody RequestStyledParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale, response);
+        IoParameters parameters = createParameters(simpleParameters, httpLocale, response);
         LOGGER.debug("get data collection report with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
         checkAgainstTimespanRestriction(parameters.getTimespan());
@@ -262,10 +262,10 @@ public abstract class DataController extends BaseController {
                                 HttpServletResponse response,
                                 @PathVariable String datasetId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                    required = false) String locale,
+                                    required = false) String httpLocale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
         LOGGER.debug("get data collection report for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -291,13 +291,13 @@ public abstract class DataController extends BaseController {
                                      HttpServletResponse response,
                                      @PathVariable String datasetId,
                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                         required = false) String locale,
+                                         required = false) String httpLocale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         // Needed to retrieve Time Ends from Database
         query.putIfAbsent(SHOWTIMEINTERVALS_QUERY_OPTION, Arrays.asList(Boolean.TRUE.toString()));
 
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
         LOGGER.debug("get data collection zip for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -323,10 +323,10 @@ public abstract class DataController extends BaseController {
                                HttpServletResponse response,
                                @PathVariable String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                   required = false) String locale,
+                                   required = false) String httpLocale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
         LOGGER.debug("get data collection csv for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);

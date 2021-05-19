@@ -156,10 +156,9 @@ abstract class RequestParameterSet {
      *        A language code to determine the requested locale.
      */
     public void setLocale(String locale) {
-        String nonNullLanguage = !(locale == null || locale.isEmpty())
-                ? locale
-                : Parameters.DEFAULT_LOCALE;
-        setParameter(Parameters.LOCALE, IoParameters.getJsonNodeFrom(nonNullLanguage));
+        if (!(locale == null || locale.isEmpty())) {
+            setParameter(Parameters.LOCALE, IoParameters.getJsonNodeFrom(locale));
+        }
     }
 
     /**

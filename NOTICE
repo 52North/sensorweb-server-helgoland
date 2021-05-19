@@ -31,8 +31,10 @@ This project includes:
   Guava InternalFutureFailureAccess and InternalFutures under The Apache Software License, Version 2.0
   Guava ListenableFuture only under The Apache Software License, Version 2.0
   Guava: Google Core Libraries for Java under Apache License, Version 2.0
+  HTTP Clients under Lesser General Public License (LGPL)
   HyperSQL Database under HSQLDB License, a BSD open source license
   J2ObjC Annotations under The Apache Software License, Version 2.0
+  Jackson datatype: Joda under The Apache Software License, Version 2.0
   Jackson-annotations under The Apache Software License, Version 2.0
   Jackson-core under The Apache Software License, Version 2.0
   jackson-databind under The Apache Software License, Version 2.0

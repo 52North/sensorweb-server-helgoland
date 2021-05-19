@@ -33,7 +33,7 @@ public class IndividualObservationOutput extends DatasetOutput<AbstractValue<?>>
     public static final String COLLECTION_PATH = "individualObservations";
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

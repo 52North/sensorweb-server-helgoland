@@ -56,7 +56,7 @@ public class GeometryOutput extends AbstractOutput implements GeoJSONFeature {
     private OptionalOutput<Geometry> geometry;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 
