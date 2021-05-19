@@ -28,7 +28,6 @@
  */
 package org.n52.io.task;
 
-import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -101,11 +100,6 @@ public interface JobUtils {
         factoryBean.setName(triggerName);
         factoryBean.setMisfireInstruction(CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING);
         return factoryBean;
-    }
-
-    default String getSensorPath(String fileName, String baseDir) {
-        return Paths.get(baseDir, Paths.get(fileName).getName(Paths.get(baseDir).getNameCount()).toString())
-                .toString();
     }
 
     default BeanCreationException createBeanCreationException(String expectedType, Object factory) {
