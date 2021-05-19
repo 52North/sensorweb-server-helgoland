@@ -84,10 +84,10 @@ public class TimeseriesDataController extends DataController {
     public void getSeriesCollectionChart(HttpServletRequest request,
                                          HttpServletResponse response,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                             required = false) String locale,
+                                             required = false) String httpLocale,
                                          @RequestBody RequestStyledParameterSet simpleParameters)
             throws Exception {
-        IoParameters parameters = createParameters(simpleParameters, locale, response);
+        IoParameters parameters = createParameters(simpleParameters, httpLocale, response);
         LOGGER.debug("get data collection chart with query: {}", parameters);
         checkForUnknownDatasetIds(parameters, parameters.getDatasets());
 
@@ -109,10 +109,10 @@ public class TimeseriesDataController extends DataController {
                                HttpServletResponse response,
                                @PathVariable String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                   required = false) String locale,
+                                   required = false) String httpLocale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters parameters = createParameters(datasetId, query, locale, response);
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
         LOGGER.debug("get data collection chart for '{}' with query: {}", datasetId, parameters);
         checkAgainstTimespanRestriction(parameters.getTimespan());
         checkForUnknownDatasetId(parameters, datasetId);
@@ -125,6 +125,17 @@ public class TimeseriesDataController extends DataController {
         createIoFactory(valueType).setParameters(parameters)
                                   .createHandler(outputFormat)
                                   .writeBinary(response.getOutputStream());
+    }
+
+    @RequestMapping(value = "/{datasetId}/observations.png", produces = Constants.IMAGE_PNG, method = RequestMethod.GET)
+    public void getSeriesChartPng(HttpServletRequest request,
+            HttpServletResponse response,
+            @PathVariable String datasetId,
+            @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
+                required = false) String httpLocale,
+            @RequestParam(required = false) MultiValueMap<String, String> query)
+            throws Exception {
+        getSeriesChart(request, response, datasetId, httpLocale, query);
     }
 
     @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
@@ -170,11 +181,11 @@ public class TimeseriesDataController extends DataController {
                                           HttpServletResponse response,
                                           @PathVariable String datasetId,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                              required = false) String locale,
+                                              required = false) String httpLocale,
                                           @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
         query.add(Parameters.UNIX_TIME, "true");
-        return getSeriesData(request, response, datasetId, locale, query);
+        return getSeriesData(request, response, datasetId, httpLocale, query);
     }
 
     @Override

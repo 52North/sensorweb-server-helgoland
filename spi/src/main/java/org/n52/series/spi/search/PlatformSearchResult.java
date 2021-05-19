@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class PlatformSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./platforms/" + getId();
+    public String getType() {
+        return "platform";
     }
 
     @Override
-    public String getType() {
-        return "platform";
+    protected String getCollectionName() {
+        return "platforms";
     }
 
 }

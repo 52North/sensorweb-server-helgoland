@@ -42,8 +42,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -79,6 +81,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 public final class IoParameters implements Parameters {
 
@@ -101,6 +104,8 @@ public final class IoParameters implements Parameters {
     private boolean behaveBackwardsCompatible;
 
     private BiConsumer<String, IoParseException> parseExceptionHandle;
+
+    private String defaultLocale;
 
     protected IoParameters() {
         this(Collections.<String, JsonNode> emptyMap());
@@ -135,6 +140,7 @@ public final class IoParameters implements Parameters {
         config.setAll(readDefaultConfig(defaultConfig));
         query = mergeToLowerCasedKeys(config);
         filterResolver = new FilterResolver(this);
+        OBJECT_MAPPER.registerModule(new JodaModule());
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
@@ -264,13 +270,25 @@ public final class IoParameters implements Parameters {
     }
 
     /**
-     * @return the value of {@value #LOCALE} parameter. If not present, the default {@value #DEFAULT_LOCALE}
-     *         is returned.
+     * @return the value of {@value #LOCALE} parameter.
      * @throws IoParseException
      *         if parsing parameter fails.
      */
     public String getLocale() {
-        return getAsString(LOCALE, DEFAULT_LOCALE);
+        return getAsString(LOCALE) != null ? getAsString(LOCALE) : getDefaultLocale();
+    }
+
+    public boolean isDefaultLocal() {
+        return getAsString(LOCALE) == null || getAsString(LOCALE).isEmpty();
+    }
+
+    public String getDefaultLocale() {
+        return defaultLocale;
+    }
+
+    public IoParameters setDefaultLocale(String defaultLocale) {
+        this.defaultLocale = defaultLocale;
+        return this;
     }
 
     /**
@@ -413,10 +431,10 @@ public final class IoParameters implements Parameters {
     }
 
     public Instant getResultTime() {
-        if (!containsParameter(RESULTTIME)) {
+        if (!containsParameter(RESULTTIMES)) {
             return null;
         }
-        return validateTimestamp(getAsString(RESULTTIME));
+        return validateTimestamp(getAsString(RESULTTIMES));
     }
 
     public boolean shallClassifyByResultTimes() {
@@ -470,43 +488,36 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getCategories() {
         Set<String> values = getValuesOf(CATEGORIES);
-        values.addAll(getValuesOf(CATEGORY));
         return values;
     }
 
     public Set<String> getServices() {
         Set<String> values = getValuesOf(SERVICES);
-        values.addAll(getValuesOf(SERVICE));
         return values;
     }
 
     public Set<String> getOfferings() {
         Set<String> values = getValuesOf(OFFERINGS);
-        values.addAll(getValuesOf(OFFERING));
         return values;
     }
 
     public Set<String> getFeatures() {
         Set<String> values = getValuesOf(FEATURES);
-        values.addAll(getValuesOf(FEATURE));
         return values;
     }
 
     public Set<String> getProcedures() {
         Set<String> values = getValuesOf(PROCEDURES);
-        values.addAll(getValuesOf(PROCEDURE));
         return values;
     }
 
     public Set<String> getPhenomena() {
         Set<String> values = getValuesOf(PHENOMENA);
-        values.addAll(getValuesOf(PHENOMENON));
         return values;
     }
 
     public Set<String> getStations() {
         Set<String> values = getValuesOf(STATIONS);
-        values.addAll(getValuesOf(STATION));
         return values;
     }
 
@@ -565,6 +576,20 @@ public final class IoParameters implements Parameters {
 
     public Set<String> getGeometryTypes() {
         return getValuesOf(GEOMETRY_TYPES);
+    }
+
+    public boolean hasSelect() {
+        return containsParameter(SELECT) && !getSelect().isEmpty();
+    }
+
+    public Set<String> getSelect() {
+        return getValuesOf(SELECT);
+    }
+
+    public Set<String> getSelectOriginal() {
+        return containsParameter(SELECT)
+                ? new HashSet<>(csvToSet(getAsString(SELECT)))
+                : new HashSet<>(0);
     }
 
     Set<String> getValuesOf(String parameterName) {
@@ -1191,6 +1216,31 @@ public final class IoParameters implements Parameters {
     public Integer getLevel() {
         return !containsParameter(LEVEL) ? null
                 : getAsString(LEVEL).isEmpty() ? Integer.MAX_VALUE : getAsInteger(LEVEL);
+    }
+
+    public boolean isSelected(String selection) {
+        return !hasSelect() || getSelect().contains(selection) || checkSelected(selection);
+    }
+
+    private boolean checkSelected(String selection) {
+        return getSelect().stream().filter(s -> s.startsWith(selection.toLowerCase(Locale.ROOT))).findFirst()
+                .isPresent();
+    }
+
+    public IoParameters withoutSelectFilter() {
+        return removeAllOf(Parameters.SELECT);
+    }
+
+    public IoParameters withSubSelectFilter(String selection) {
+        Set<String> subSelection = new LinkedHashSet<>();
+        String toCheck = selection + "/";
+        for (String selected : getSelectOriginal()) {
+            if (selected.startsWith(toCheck)) {
+                subSelection.add(selected.substring(selected.indexOf("/") + 1));
+            }
+        }
+        return subSelection.isEmpty() ? withoutSelectFilter()
+                : replaceWith(Parameters.SELECT, String.join(",", subSelection));
     }
 
 }

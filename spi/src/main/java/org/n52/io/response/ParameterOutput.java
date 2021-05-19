@@ -95,7 +95,7 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
     }
 
     @JsonIgnore
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return "";
     }
 

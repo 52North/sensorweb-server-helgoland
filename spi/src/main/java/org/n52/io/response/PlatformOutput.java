@@ -48,7 +48,7 @@ public class PlatformOutput extends OutputWithParameters {
     private OptionalOutput<Collection<DatasetOutput<AbstractValue<?>>>> datasets;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

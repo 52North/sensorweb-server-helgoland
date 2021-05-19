@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class PhenomenonSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./phenomena/" + getId();
+    public String getType() {
+        return "phenomenon";
     }
 
     @Override
-    public String getType() {
-        return "phenomenon";
+    protected String getCollectionName() {
+        return "phenomena";
     }
 
 }

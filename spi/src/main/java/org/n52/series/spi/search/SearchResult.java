@@ -28,6 +28,8 @@
  */
 package org.n52.series.spi.search;
 
+import org.n52.io.HrefHelper;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class SearchResult {
@@ -71,10 +73,14 @@ public abstract class SearchResult {
     }
 
     protected String createFullHref() {
-        return getBaseUrl() + getId();
+        return HrefHelper.constructHref(getBaseUrl(), getCollectionName()) + "/" + getId();
     }
 
-    public abstract String getHref();
+    protected abstract String getCollectionName();
+
+    public String getHref() {
+        return hasBaseUrl() ? createFullHref() : "./" + getCollectionName() + "/" + getId();
+    }
 
     public abstract String getType();
 

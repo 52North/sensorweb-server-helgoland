@@ -84,9 +84,9 @@ public class StationsParameterController extends BaseController implements Resou
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView getCollection(HttpServletResponse response,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                        required = false) String locale,
+                                        required = false) String httpLocale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query) {
-        IoParameters map = createParameters(query, locale, response).respectBackwardsCompatibility();
+        IoParameters map = createParameters(query, httpLocale, response).respectBackwardsCompatibility();
         OutputCollection< ? > result;
 
         if (map.isExpanded()) {
@@ -116,10 +116,10 @@ public class StationsParameterController extends BaseController implements Resou
     @RequestMapping(value = "/{item}", method = RequestMethod.GET)
     public ModelAndView getItem(@PathVariable("item") String procedureId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
-                                    required = false) String locale,
+                                    required = false) String httpLocale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query,
                                 HttpServletResponse response) {
-        IoParameters parameters = createParameters(query, locale, response);
+        IoParameters parameters = createParameters(query, httpLocale, response);
 
         // TODO check parameters and throw BAD_REQUEST if invalid
         Stopwatch stopwatch = Stopwatch.startStopwatch();

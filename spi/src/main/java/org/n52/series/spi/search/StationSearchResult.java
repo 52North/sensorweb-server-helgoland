@@ -32,13 +32,15 @@ package org.n52.series.spi.search;
 public class StationSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return "./stations/" + getId();
-    }
-
-    @Override
     public String getType() {
         return "station";
     }
+
+    @Override
+    protected String getCollectionName() {
+        return "stations";
+    }
+
+
 
 }

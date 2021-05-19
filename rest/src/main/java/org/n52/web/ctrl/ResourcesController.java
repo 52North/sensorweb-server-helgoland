@@ -28,14 +28,17 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
+import org.n52.io.request.Parameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -45,9 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 @RestController
-@RequestMapping(value = UrlSettings.BASE, produces = {
-    "application/json"
-})
+@RequestMapping(value = UrlSettings.BASE, produces = { "application/json" })
 public class ResourcesController {
 
     private static final String TIMESERIES = "timeseries";
@@ -63,7 +64,7 @@ public class ResourcesController {
 
     @RequestMapping("/")
     public ModelAndView getResources(HttpServletResponse response,
-                                     @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
         IoParameters query = IoParameters.createFromMultiValueMap(parameters);
         // .respectBackwardsCompatibility();
@@ -71,22 +72,31 @@ public class ResourcesController {
     }
 
     private ResourceCollection add(String resource, String label, String description) {
-        return ResourceCollection.createResource(resource)
-                                 .withDescription(description)
-                                 .withLabel(label);
+        return ResourceCollection.createResource(resource).withDescription(description).withLabel(label);
     }
 
-    private List<ResourceCollection> createResources(IoParameters parameters) {
-        I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
+    private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
+        return parameters != null && parameters.containsParameter(Parameters.HREF_BASE)
+                ? add(resource, label, description).withHref(parameters.getHrefBase() + "/" + resource)
+                : add(resource, label, description);
+    }
 
-        ResourceCollection services = add("services", "Service Provider", i18n.get("msg.web.resources.services"));
+    private Set<ResourceCollection> createResources(IoParameters parameters) {
+        I18N i18n = I18N.getMessageLocalizer(parameters.getLocale());
+        ResourceCollection services =
+                add("services", "Service Provider", i18n.get("msg.web.resources.services"), parameters);
         // ResourceCollection stations = add("stations", "Station", i18n.get("msg.web.resources.stations"));
-        ResourceCollection timeseries = add(TIMESERIES, "Timeseries", i18n.get("msg.web.resources.timeseries"));
-        ResourceCollection categories = add("categories", "Category", i18n.get("msg.web.resources.categories"));
-        ResourceCollection offerings = add("offerings", "Offering", i18n.get("msg.web.resources.offerings"));
-        ResourceCollection features = add("features", "Feature", i18n.get("msg.web.resources.features"));
-        ResourceCollection procedures = add("procedures", "Procedure", i18n.get("msg.web.resources.procedures"));
-        ResourceCollection phenomena = add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"));
+        ResourceCollection timeseries =
+                add(TIMESERIES, "Timeseries", i18n.get("msg.web.resources.timeseries"), parameters);
+        ResourceCollection categories =
+                add("categories", "Category", i18n.get("msg.web.resources.categories"), parameters);
+        ResourceCollection offerings =
+                add("offerings", "Offering", i18n.get("msg.web.resources.offerings"), parameters);
+        ResourceCollection features = add("features", "Feature", i18n.get("msg.web.resources.features"), parameters);
+        ResourceCollection procedures =
+                add("procedures", "Procedure", i18n.get("msg.web.resources.procedures"), parameters);
+        ResourceCollection phenomena =
+                add("phenomena", "Phenomenon", i18n.get("msg.web.resources.phenomena"), parameters);
         if (parameters.isExpanded()) {
             services.setSize(metadataService.getServiceCount(parameters));
             // if (parameters.shallBehaveBackwardsCompatible()) {
@@ -101,7 +111,7 @@ public class ResourcesController {
             phenomena.setSize(metadataService.getPhenomenaCount(parameters));
         }
 
-        List<ResourceCollection> resources = new ArrayList<>();
+        Set<ResourceCollection> resources = new TreeSet<>();
         resources.add(services);
         // resources.add(stations);
         resources.add(timeseries);
@@ -112,14 +122,15 @@ public class ResourcesController {
         resources.add(phenomena);
 
         // since 2.0.0
-        ResourceCollection platforms = add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"));
-        ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"));
-        ResourceCollection individualObservations = add(INDIVIDUAL_OBSERVATIONS,
-                                                        "IndividualObservations",
-                                                        i18n.get("msg.web.resources.individualObservations"));
+        ResourceCollection platforms =
+                add("platforms", "Platforms", i18n.get("msg.web.resources.platforms"), parameters);
+        ResourceCollection datasets = add("datasets", "Datasets", i18n.get("msg.web.resources.datasets"), parameters);
+        ResourceCollection individualObservations = add(INDIVIDUAL_OBSERVATIONS, "IndividualObservations",
+                i18n.get("msg.web.resources.individualObservations"), parameters);
         // ResourceCollection profiles = add("profiles", "Profiles",
         // i18n.get("msg.web.resources.profiles"));
-        ResourceCollection trajectories = add(TAJECTORIES, "Trajectories", i18n.get("msg.web.resources.trajectories"));
+        ResourceCollection trajectories =
+                add(TAJECTORIES, "Trajectories", i18n.get("msg.web.resources.trajectories"), parameters);
         // ResourceCollection geometries = add("geometries", "Geometries",
         // i18n.get("msg.web.resources.geometries"));
         resources.add(platforms);
@@ -140,10 +151,10 @@ public class ResourcesController {
             parameters.extendWith(IoParameters.FILTER_DATASET_TYPES, datasetTypes);
         }
 
-        ResourceCollection samplings = add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"));
-        ResourceCollection measuringPrograms = add("measuringPrograms",
-                                                   "MeasuringPrograms",
-                                                   i18n.get("msg.web.resources.measuringPrograms"));
+        ResourceCollection samplings =
+                add("samplings", "Samplings", i18n.get("msg.web.resources.samplings"), parameters);
+        ResourceCollection measuringPrograms = add("measuringPrograms", "MeasuringPrograms",
+                i18n.get("msg.web.resources.measuringPrograms"), parameters);
         resources.add(samplings);
         resources.add(measuringPrograms);
 
@@ -157,19 +168,17 @@ public class ResourcesController {
     }
 
     private void addVersionHeader(HttpServletResponse response) {
-        String implementationVersion = getClass().getPackage()
-                                                 .getImplementationVersion();
-        String version = implementationVersion != null
-                ? implementationVersion
-                : "unknown";
+        String implementationVersion = getClass().getPackage().getImplementationVersion();
+        String version = implementationVersion != null ? implementationVersion : "unknown";
         response.addHeader("API-Version", version);
     }
 
-    public static final class ResourceCollection {
+    public static final class ResourceCollection implements Comparable<ResourceCollection> {
 
         private String id;
         private String label;
         private String description;
+        private String href;
 
         private Long size;
 
@@ -201,6 +210,14 @@ public class ResourcesController {
             this.description = description;
         }
 
+        public String getHref() {
+            return href;
+        }
+
+        public void setHref(String href) {
+            this.href = href;
+        }
+
         public Long getSize() {
             return size;
         }
@@ -223,6 +240,11 @@ public class ResourcesController {
             return this;
         }
 
+        public ResourceCollection withHref(String href) {
+            this.href = href;
+            return this;
+        }
+
         public ResourceCollection withCount(Integer count) {
             return withCount(count.longValue());
         }
@@ -235,5 +257,24 @@ public class ResourcesController {
         public static ResourceCollection createResource(String id) {
             return new ResourceCollection(id);
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof ResourceCollection) {
+                return getId().equals(((ResourceCollection) obj).getId());
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return  Objects.hash(getId(), getLabel());
+        }
+
+        @Override
+        public int compareTo(ResourceCollection o) {
+            return getId().compareTo(o.getId());
+        }
+
     }
 }

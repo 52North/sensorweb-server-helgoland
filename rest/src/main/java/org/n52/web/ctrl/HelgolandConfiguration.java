@@ -43,8 +43,10 @@ public class HelgolandConfiguration {
 
     public static final String DEFAULT_URL = "http://localhost:8080";
     public static final String DEFAULT_REQUEST_INTERVAL_RESTRICTION = "P370D";
+    public static final String DEFAULT_DEFAULT_LOCALE = "en";
     private static final String EXTERNAL_URL_KEY = "helgoland.externa.url";
     private static final String REQUEST_INTERVAL_RESTRICTION_KEY = "helgoland.request.interval.restriction";
+    private static final String REQUEST_DEFAULT_LOCALE_KEY = "helgoland.request.default.locale";
 
     @Value("${external.url:http://localhost:8080}")
     private String externalUrl;
@@ -53,6 +55,9 @@ public class HelgolandConfiguration {
 
     @Value("${requestIntervalRestriction:P370D}")
     private String requestIntervalRestriction;
+
+    @Value("${requestDefaultLocale:en}")
+    private String defaultLocale = DEFAULT_DEFAULT_LOCALE;
 
     public String getExternalUrl() {
         return checkForApi(externalHelgolandUri != null ? externalHelgolandUri.toString() : externalUrl);
@@ -75,6 +80,17 @@ public class HelgolandConfiguration {
     public void setRequestIntervalRestriction(String requestIntervalRestriction) {
         Period.parse(requestIntervalRestriction);
         this.requestIntervalRestriction = requestIntervalRestriction;
+    }
+
+    @Setting(REQUEST_DEFAULT_LOCALE_KEY)
+    public void setDefaultLocale(String defaultLocale) {
+        if (defaultLocale != null && !defaultLocale.isEmpty()) {
+            this.defaultLocale = defaultLocale;
+        }
+    }
+
+    public String getDefaultLocale() {
+        return defaultLocale;
     }
 
     protected String checkForApi(String url) {

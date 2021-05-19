@@ -34,6 +34,7 @@ import java.util.Objects;
 import org.n52.io.Utils;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class ServiceOutput extends ParameterOutput {
 
@@ -64,7 +65,7 @@ public class ServiceOutput extends ParameterOutput {
     private OptionalOutput<Boolean> supportsFirstLatest;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 
@@ -161,6 +162,8 @@ public class ServiceOutput extends ParameterOutput {
         }
     }
 
+    @JsonPropertyOrder({ "features", "phenomena",
+            "procedures", "categories", "platforms", "offerings", "datasets", "sampling", "measuringPrograms"})
     public static class ParameterCount {
 
         private String[] selectedPlatformTypes;
@@ -290,6 +293,7 @@ public class ServiceOutput extends ParameterOutput {
         }
     }
 
+    @JsonPropertyOrder({ "total", "timeseries", "individualObservations", "trajectories", "profiles" })
     public static class DatasetCount {
 
         private Long totalAmount;
