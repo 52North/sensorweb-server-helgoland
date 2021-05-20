@@ -40,7 +40,7 @@ public class TagOutput extends AbstractOutput {
     private OptionalOutput<List<DatasetOutput<?>>> datasets;
 
     @Override
-    protected String getCollectionName() {
+    public String getCollectionName() {
         return COLLECTION_PATH;
     }
 

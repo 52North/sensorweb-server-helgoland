@@ -31,6 +31,9 @@ package org.n52.web.ctrl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
@@ -38,7 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.n52.io.HrefHelper;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -70,16 +72,8 @@ public class ResourcesController extends BaseController implements ResoureContro
     }
 
     private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
-        return ResourceCollection.createResource(resource)
-                                 .withDescription(description)
-                                 .withLabel(label)
-                                 .withHref(HrefHelper.constructHref(parameters.getHrefBase(), resource));
-    }
-
-    private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
-        return parameters != null && parameters.containsParameter(Parameters.HREF_BASE)
-                ? add(resource, label, description).withHref(parameters.getHrefBase() + "/" + resource)
-                : add(resource, label, description);
+        return ResourceCollection.createResource(resource).withDescription(description).withLabel(label)
+                .withHref(HrefHelper.constructHref(parameters.getHrefBase(), resource));
     }
 
     private Set<ResourceCollection> createResources(IoParameters parameters) {
@@ -90,12 +84,12 @@ public class ResourcesController extends BaseController implements ResoureContro
         return createDynamicResources(parameters, i18n);
     }
 
-    private List<ResourceCollection> createDynamicResources(IoParameters parameters, I18N i18n) {
+    private Set<ResourceCollection> createDynamicResources(IoParameters parameters, I18N i18n) {
         return parameterController.stream().filter(p -> p.getResource() != null && !p.getResource().isEmpty())
-                .map(p -> p.getResourceCollection(i18n, parameters)).collect(Collectors.toList());
+                .map(p -> p.getResourceCollection(i18n, parameters)).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    private List<ResourceCollection> createStaticResources(IoParameters parameters, I18N i18n) {
+    private Set<ResourceCollection> createStaticResources(IoParameters parameters, I18N i18n) {
         ResourceCollection services =
                 add(RESOURCE_SERVICES, LABEL_SERVICES, i18n.get(DESCRIPTION_KEY_SERVICES), parameters);
         ResourceCollection categories =
@@ -177,7 +171,7 @@ public class ResourcesController extends BaseController implements ResoureContro
         // TODO Auto-generated method stub
     }
 
-    public static final class ResourceCollection {
+    public static final class ResourceCollection implements Comparable<ResourceCollection> {
 
         private String id;
         private String label;
@@ -235,7 +229,7 @@ public class ResourcesController extends BaseController implements ResoureContro
         }
 
         public ResourceCollection withLabel(String name) {
-           setLabel(name);
+            setLabel(name);
             return this;
         }
 
@@ -272,7 +266,7 @@ public class ResourcesController extends BaseController implements ResoureContro
 
         @Override
         public int hashCode() {
-            return  Objects.hash(getId(), getLabel());
+            return Objects.hash(getId(), getLabel());
         }
 
         @Override

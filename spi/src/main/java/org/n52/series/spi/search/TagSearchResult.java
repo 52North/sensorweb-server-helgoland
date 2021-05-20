@@ -31,16 +31,13 @@ package org.n52.series.spi.search;
 public class TagSearchResult extends SearchResult {
 
     @Override
-    public String getHref() {
-        return hasBaseUrl()
-                ? createFullHref()
-                // stay backwards compatible
-                : "./tags/" + getId();
+    public String getType() {
+        return "tag";
     }
 
     @Override
-    public String getType() {
-        return "tag";
+    protected String getCollectionName() {
+        return "tags";
     }
 
 }
