@@ -76,6 +76,7 @@ public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> im
         nullSafePut("label", getLabel(), properties);
         nullSafePut("domainId", getDomainId(), properties);
         nullSafePut("href", getHref(), properties);
+        nullSafePut(EXTRAS, getExtras(), properties);
         nullSafePut(DATASETS, getDatasets(), properties);
         nullSafePut(PARENTS, getParents(), properties);
         nullSafePut(CHILDREN, getChildren(), properties);
