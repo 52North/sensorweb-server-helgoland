@@ -41,11 +41,12 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SuppressWarnings("deprecation")
-public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends MetadataExtension<T> {
+@Component
+public class StatusIntervalsExtension extends MetadataExtension<DatasetOutput< ? >> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusIntervalsExtension.class);
 
@@ -71,28 +72,28 @@ public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends Meta
     }
 
     @Override
-    public Collection<String> getExtraMetadataFieldNames(T output) {
+    public Collection<String> getExtraMetadataFieldNames(DatasetOutput< ? > output) {
         return hasStatusIntervals(output)
             ? Collections.singleton(EXTENSION_NAME)
             : Collections.emptySet();
     }
 
-    private boolean hasStatusIntervals(T output) {
+    private boolean hasStatusIntervals(DatasetOutput< ? > output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(T output) {
-        Map<String, ConfigInterval> intervals = intervalConfig.getTimeseriesIntervals();
+    private boolean hasSeriesConfiguration(DatasetOutput< ? > output) {
+        Map<String, ConfigInterval> intervals = intervalConfig.getDatasetIntervals();
         return intervals.containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(T output) {
+    private boolean hasPhenomenonConfiguration(DatasetOutput< ? > output) {
         Map<String, ConfigInterval> intervals = intervalConfig.getPhenomenonIntervals();
         return intervals.containsKey(output.getId());
     }
 
     @Override
-    public Map<String, Object> getExtras(T output, IoParameters parameters) {
+    public Map<String, Object> getExtras(DatasetOutput< ? > output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
@@ -107,13 +108,13 @@ public class StatusIntervalsExtension<T extends DatasetOutput< ? >> extends Meta
     }
 
     @Override
-    protected boolean hasExtrasToReturn(T output, IoParameters parameters) {
+    protected boolean hasExtrasToReturn(DatasetOutput< ? > output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasStatusIntervals(output);
     }
 
-    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(T output) {
-        return intervalConfig.getTimeseriesIntervals()
+    private StatusIntervalsExtensionConfig.ConfigInterval getSeriesIntervals(DatasetOutput< ? > output) {
+        return intervalConfig.getDatasetIntervals()
                              .get(output.getId());
     }
 

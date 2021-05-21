@@ -34,7 +34,7 @@ import java.util.List;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.dataset.IndividualObservationOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +45,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_INDIVIDUAL_OBSERVATIONS, method = RequestMethod.GET)
-public class IndividualObservationsController extends ParameterRequestMappingAdapter<IndividualObservationOutput> {
+public class IndividualObservationsController extends AbstractDatasetController {
 
     @Autowired
     public IndividualObservationsController(CountingMetadataService counter,
-            ParameterService<IndividualObservationOutput> service) {
+            ParameterService<DatasetOutput<?>> service) {
         super(counter, service);
     }
 

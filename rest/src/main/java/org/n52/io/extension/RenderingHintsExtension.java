@@ -40,11 +40,12 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SuppressWarnings("deprecation")
-public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends MetadataExtension<T> {
+@Component
+public class RenderingHintsExtension extends MetadataExtension<DatasetOutput< ? >> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RenderingHintsExtension.class);
 
@@ -70,22 +71,22 @@ public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends Metad
     }
 
     @Override
-    public Collection<String> getExtraMetadataFieldNames(T output) {
+    public Collection<String> getExtraMetadataFieldNames(DatasetOutput< ? > output) {
         return hasRenderingHints(output)
             ? Collections.singleton(EXTENSION_NAME)
             : Collections.emptySet();
     }
 
-    private boolean hasRenderingHints(T output) {
+    private boolean hasRenderingHints(DatasetOutput< ? > output) {
         return hasSeriesConfiguration(output) || hasPhenomenonConfiguration(output);
     }
 
-    private boolean hasSeriesConfiguration(T output) {
+    private boolean hasSeriesConfiguration(DatasetOutput< ? > output) {
         return renderingConfig.getTimeseriesStyles()
                               .containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(T output) {
+    private boolean hasPhenomenonConfiguration(DatasetOutput< ? > output) {
         String id = output.getDatasetParameters(true)
                           .getPhenomenon()
                           .getId();
@@ -94,7 +95,7 @@ public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends Metad
     }
 
     @Override
-    public Map<String, Object> getExtras(T output, IoParameters parameters) {
+    public Map<String, Object> getExtras(DatasetOutput< ? > output, IoParameters parameters) {
         if (!hasExtrasToReturn(output, parameters)) {
             return Collections.emptyMap();
         }
@@ -110,17 +111,17 @@ public class RenderingHintsExtension<T extends DatasetOutput< ? >> extends Metad
     }
 
     @Override
-    protected boolean hasExtrasToReturn(T output, IoParameters parameters) {
+    protected boolean hasExtrasToReturn(DatasetOutput< ? > output, IoParameters parameters) {
         return super.hasExtrasToReturn(output, parameters)
                 && hasRenderingHints(output);
     }
 
-    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(T output) {
+    private RenderingHintsExtensionConfig.ConfiguredStyle getSeriesStyle(DatasetOutput< ? > output) {
         return renderingConfig.getTimeseriesStyles()
                               .get(output.getId());
     }
 
-    private RenderingHintsExtensionConfig.ConfiguredStyle getPhenomenonStyle(T output) {
+    private RenderingHintsExtensionConfig.ConfiguredStyle getPhenomenonStyle(DatasetOutput< ? > output) {
         String id = output.getDatasetParameters()
                           .getPhenomenon()
                           .getId();

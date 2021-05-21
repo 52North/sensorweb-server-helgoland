@@ -43,11 +43,12 @@ import java.util.Scanner;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.stereotype.Component;
 import org.n52.io.request.IoParameters;
-import org.n52.io.response.ParameterOutput;
+import org.n52.io.response.ServiceOutput;
 
-public class LicenseExtension extends MetadataExtension<ParameterOutput> {
+@Component
+public class LicenseExtension extends MetadataExtension<ServiceOutput> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LicenseExtension.class);
 
@@ -104,7 +105,7 @@ public class LicenseExtension extends MetadataExtension<ParameterOutput> {
     }
 
     @Override
-    public Map<String, Object> getExtras(ParameterOutput output, IoParameters parameters) {
+    public Map<String, Object> getExtras(ServiceOutput output, IoParameters parameters) {
         return hasExtrasToReturn(output, parameters)
                 ? wrapSingleIntoMap(licenseText)
                 : Collections.emptyMap();

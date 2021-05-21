@@ -75,8 +75,6 @@ public class RenderingHintsExtensionConfig {
         this.datasetStyles = datasetStyles;
     }
 
-
-
     public static class ConfiguredStyle {
 
         private StyleProperties style;

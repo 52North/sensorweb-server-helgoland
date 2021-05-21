@@ -104,6 +104,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
         return super.getExtras(response, resourceId, httpLocale, addAdditionalParameter(query));
     }
 
+    @Override
     protected MultiValueMap<String, String> addAdditionalParameter(MultiValueMap<String, String> query) {
         return addHrefBase(query);
     }

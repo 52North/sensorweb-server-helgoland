@@ -30,11 +30,10 @@ package org.n52.web.ctrl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,6 +57,7 @@ import org.n52.web.exception.ResourceNotFoundException;
 import org.n52.web.exception.SpiAssertionExceptionAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -66,7 +66,7 @@ public abstract class ParameterController<T extends ParameterOutput>
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ParameterController.class);
 
-    private List<MetadataExtension<T>> metadataExtensions = new ArrayList<>();
+    private Set<MetadataExtension<T>> metadataExtensions = new LinkedHashSet<>();
 
     private final ParameterService<T> parameterService;
 
@@ -199,18 +199,16 @@ public abstract class ParameterController<T extends ParameterOutput>
         return toBeProcessed;
     }
 
-    public void addMetadataExtension(MetadataExtension<T> extension) {
-        if (metadataExtensions != null) {
-            metadataExtensions.add(extension);
-        }
-    }
-
-    public List<MetadataExtension<T>> getMetadataExtensions() {
+    public Set<MetadataExtension<T>> getMetadataExtensions() {
         return metadataExtensions;
     }
 
-    public void setMetadataExtensions(List<MetadataExtension<T>> metadataExtensions) {
-        this.metadataExtensions = metadataExtensions;
+    @Autowired(required = false)
+    public void setMetadataExtensions(Set<MetadataExtension<T>> metadataExtensions) {
+        this.metadataExtensions.clear();
+        if (metadataExtensions != null) {
+            this.metadataExtensions.addAll(metadataExtensions);
+        }
     }
 
     /**

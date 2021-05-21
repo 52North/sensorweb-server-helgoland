@@ -34,6 +34,7 @@ import java.util.List;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
@@ -45,10 +46,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_PROFILES, method = RequestMethod.GET)
-public class ProfilesController extends ParameterRequestMappingAdapter<ProfileOutput> {
+public class ProfilesController extends AbstractDatasetController {
 
     @Autowired
-    public ProfilesController(CountingMetadataService counter, ParameterService<ProfileOutput> service) {
+    public ProfilesController(CountingMetadataService counter, ParameterService<DatasetOutput<?>> service) {
         super(counter, service);
     }
 

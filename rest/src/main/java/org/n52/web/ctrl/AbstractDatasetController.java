@@ -28,48 +28,15 @@
  */
 package org.n52.web.ctrl;
 
-import org.n52.io.I18N;
-import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping(path = UrlSettings.COLLECTION_DATASETS, method = RequestMethod.GET)
-public class DatasetController extends AbstractDatasetController {
+public abstract class AbstractDatasetController extends ParameterRequestMappingAdapter<DatasetOutput<?>> {
 
-    @Autowired
-    public DatasetController(CountingMetadataService counter, ParameterService<DatasetOutput< ? >> service) {
-        super(counter, service);
-    }
-
-    @Override
-    public String getCollectionName() {
-        return UrlSettings.COLLECTION_DATASETS;
-    }
-
-    @Override
-    protected String getResource() {
-        return RESOURCE_DATASETS;
-    }
-
-    @Override
-    protected String getLabel() {
-        return LABEL_DATASETS;
-    }
-
-    @Override
-    protected String getDescription(I18N i18n) {
-        return i18n.has(DESCRIPTION_KEY_DATASETS) ? i18n.get(DESCRIPTION_KEY_DATASETS) : DEFAULT_DESCRIPTION_DATASETS;
-    }
-
-    @Override
-    protected Long getSize(IoParameters parameters) {
-        return getEntityCounter().getDatasetCount(parameters);
+    public AbstractDatasetController(CountingMetadataService counter,
+            ParameterService<DatasetOutput<?>> parameterService) {
+        super(counter, parameterService);
     }
 
 }
