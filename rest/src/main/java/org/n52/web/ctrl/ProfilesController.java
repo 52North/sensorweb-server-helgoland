@@ -35,7 +35,6 @@ import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
 import org.n52.io.response.dataset.DatasetOutput;
-import org.n52.io.response.dataset.ProfileOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
