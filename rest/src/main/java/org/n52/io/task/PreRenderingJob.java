@@ -188,13 +188,15 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
 
-    private void renderConfiguredIntervals(String datasetId, RenderingConfig style) {
-        try {
-            for (String interval : style.getInterval()) {
-                renderWithStyle(datasetId, style, interval);
+    private void renderConfiguredIntervals(String datasetId, RenderingConfig config) {
+        if (config != null && config.getInterval() != null) {
+            try {
+                for (String interval : config.getInterval()) {
+                    renderWithStyle(datasetId, config, interval);
+                }
+            } catch (Throwable e) {
+                LOGGER.error("Error occured while prerendering timeseries {}.", datasetId, e);
             }
-        } catch (Throwable e) {
-            LOGGER.error("Error occured while prerendering timeseries {}.", datasetId, e);
         }
     }
 

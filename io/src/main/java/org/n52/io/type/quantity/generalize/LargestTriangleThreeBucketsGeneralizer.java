@@ -219,7 +219,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         avgRangeEnd = avgRangeEnd < dataLength ? avgRangeEnd : dataLength;
         double avgRangeLength = avgRangeEnd - avgRangeStart;
 
-        Double avgTimestamp = 0d;
+        double avgTimestamp = 0d;
         BigDecimal avgValue = BigDecimal.ZERO;
         int amountOfNodataValues = 0;
         boolean noDataThresholdExceeded = false;
