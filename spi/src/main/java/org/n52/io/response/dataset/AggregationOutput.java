@@ -33,6 +33,10 @@ import java.math.BigDecimal;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.SelfSerializedOutput;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerializedOutput {
 
     private OptionalOutput<V> min;
@@ -40,7 +44,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
     private OptionalOutput<Long> count;
     private OptionalOutput<BigDecimal> avg;
 
-
+    @JsonInclude(Include.NON_EMPTY)
     public V getMin() {
         return getIfSerialized(min);
     }
@@ -50,6 +54,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
         return this;
     }
 
+    @JsonInclude(Include.NON_EMPTY)
     public V getMax() {
         return getIfSerialized(max);
     }
@@ -62,6 +67,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
     /**
      * @return the count
      */
+    @JsonInclude(Include.NON_EMPTY)
     public Long getCount() {
         return getIfSerialized(count);
     }
@@ -78,6 +84,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
     /**
      * @return the avg
      */
+    @JsonInclude(Include.NON_EMPTY)
     public BigDecimal getAvg() {
         return getIfSerialized(avg);
     }
@@ -91,6 +98,7 @@ public class AggregationOutput<V extends AbstractValue<?>> extends SelfSerialize
         return this;
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return min != null && min.isAbsent() && max != null && max.isAbsent() && count != null && count.isAbsent()
                 && avg != null && avg.isAbsent();
