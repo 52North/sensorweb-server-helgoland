@@ -95,7 +95,7 @@ public abstract class ParameterController<T extends ParameterOutput>
     }
 
     @Override
-    public Map<String, Object> getExtras(HttpServletResponse response, String resourceId, String locale,
+    public ModelAndView getExtras(HttpServletResponse response, String resourceId, String locale,
             MultiValueMap<String, String> query) {
         IoParameters map = createParameters(query, locale, response);
         LOGGER.debug("getExtras() with id '{}' and query '{}'", resourceId, map);
@@ -111,7 +111,7 @@ public abstract class ParameterController<T extends ParameterOutput>
             }
             extras.putAll(furtherExtras);
         }
-        return extras;
+        return new ModelAndView().addObject(extras);
     }
 
     private Collection<String> checkForOverridingData(Map<String, Object> data, Map<String, Object> dataToAdd) {

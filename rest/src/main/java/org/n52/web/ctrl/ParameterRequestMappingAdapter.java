@@ -28,8 +28,6 @@
  */
 package org.n52.web.ctrl;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
@@ -96,7 +94,7 @@ public abstract class ParameterRequestMappingAdapter<T extends ParameterOutput> 
 
     @Override
     @RequestMapping(value = "/{item}/extras", produces = Constants.APPLICATION_JSON)
-    public Map<String, Object> getExtras(HttpServletResponse response,
+    public ModelAndView getExtras(HttpServletResponse response,
                                          @PathVariable("item") String resourceId,
                                          @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                              required = false) String httpLocale,
