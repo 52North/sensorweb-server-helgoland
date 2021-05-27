@@ -168,7 +168,7 @@ public class ResourcesController extends BaseController implements ResoureContro
 
     @Override
     protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
-        // TODO Auto-generated method stub
+        addCacheHeader(response, 1440);
     }
 
     public static final class ResourceCollection implements Comparable<ResourceCollection> {
