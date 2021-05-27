@@ -34,7 +34,7 @@ import java.util.List;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;
-import org.n52.io.response.dataset.TimeseriesOutput;
+import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +45,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = UrlSettings.COLLECTION_TIMESERIES, method = RequestMethod.GET)
-public class TimeseriesController extends ParameterRequestMappingAdapter<TimeseriesOutput> {
+public class TimeseriesController extends AbstractDatasetController {
 
     @Autowired
-    public TimeseriesController(CountingMetadataService counter, ParameterService<TimeseriesOutput> service) {
+    public TimeseriesController(CountingMetadataService counter, ParameterService<DatasetOutput<?>> service) {
         super(counter, service);
     }
 
