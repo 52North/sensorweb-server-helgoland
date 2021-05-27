@@ -34,7 +34,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.joda.time.DateTime;
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.DetectionLimitOutput;
@@ -65,7 +64,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private ValidTime validTime;
 
-    private DateTime resultTime;
+    private TimeOutput resultTime;
 
     private DetectionLimitOutput detectionLimit;
 
@@ -87,7 +86,9 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      */
     @JsonSerialize(converter = TimeOutputConverter.class)
     public TimeOutput getTimestamp() {
-        return this.timestamp;
+        return isSetTimestamp()
+                ? this.timestamp
+                : null;
     }
 
     /**
@@ -218,12 +219,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         this.validTime = new ValidTime(start, end);
     }
 
-    @JsonIgnore
-    public DateTime getResultTime() {
-        return resultTime;
+    public TimeOutput getResultTime() {
+        return resultTime != null && !resultTime.equals(timestamp) ? resultTime : null;
     }
 
-    public void setResultTime(DateTime resultTime) {
+    public void setResultTime(TimeOutput resultTime) {
         this.resultTime = resultTime;
     }
 
