@@ -36,9 +36,9 @@ import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.n52.io.HrefHelper;
 import org.n52.io.I18N;
 import org.n52.io.request.IoParameters;
-import org.n52.io.request.Parameters;
 import org.n52.series.spi.srv.CountingMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.MultiValueMap;
@@ -49,7 +49,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value = UrlSettings.BASE, produces = { "application/json" })
-public class ResourcesController {
+public class ResourcesController extends BaseController {
 
     private static final String TIMESERIES = "timeseries";
     private static final String TAJECTORIES = "trajectories";
@@ -66,19 +66,14 @@ public class ResourcesController {
     public ModelAndView getResources(HttpServletResponse response,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
         this.addVersionHeader(response);
-        IoParameters query = IoParameters.createFromMultiValueMap(parameters);
+        IoParameters query = IoParameters.createFromMultiValueMap(addHrefBase(parameters));
         // .respectBackwardsCompatibility();
         return new ModelAndView().addObject(createResources(query));
     }
 
-    private ResourceCollection add(String resource, String label, String description) {
-        return ResourceCollection.createResource(resource).withDescription(description).withLabel(label);
-    }
-
     private ResourceCollection add(String resource, String label, String description, IoParameters parameters) {
-        return parameters != null && parameters.containsParameter(Parameters.HREF_BASE)
-                ? add(resource, label, description).withHref(parameters.getHrefBase() + "/" + resource)
-                : add(resource, label, description);
+        return ResourceCollection.createResource(resource).withDescription(description).withLabel(label)
+                .withHref(HrefHelper.constructHref(parameters.getHrefBase(), resource));
     }
 
     private Set<ResourceCollection> createResources(IoParameters parameters) {
@@ -171,6 +166,11 @@ public class ResourcesController {
         String implementationVersion = getClass().getPackage().getImplementationVersion();
         String version = implementationVersion != null ? implementationVersion : "unknown";
         response.addHeader("API-Version", version);
+    }
+
+    @Override
+    protected void addCacheHeader(IoParameters parameter, HttpServletResponse response) {
+        addCacheHeader(response, 1440);
     }
 
     public static final class ResourceCollection implements Comparable<ResourceCollection> {
