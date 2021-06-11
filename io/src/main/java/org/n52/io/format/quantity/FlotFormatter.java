@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.Period;
 import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -71,7 +72,7 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
         List<Number[]> series = new ArrayList<>();
         for (QuantityValue currentValue : referenceValueData.getValues()) {
             List<Number> list = new ArrayList<>();
-            list.add(currentValue.getTimestamp());
+            list.add(getTimestamp(currentValue));
             list.add(currentValue.getValue());
             if (currentValue.isSetGeometry()) {
                 Coordinate coordinate = currentValue.getGeometry().getCoordinate();
@@ -86,4 +87,14 @@ public class FlotFormatter implements DataFormatter<Data<QuantityValue>, FlotDat
         return series;
     }
 
+    private Long getTimestamp(QuantityValue value) {
+        if (value.getTimestart() != null) {
+            Period period = new Period(value.getTimestart(), value.getTimeend());
+            if (period.getHours() == 1 || period.getDays() == 1 || period.getMonths() == 1 || period.getYears() == 1) {
+                return value.getTimestart();
+            }
+            return value.getTimeend();
+        }
+        return value.getTimestamp();
+    }
 }
