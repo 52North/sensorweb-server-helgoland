@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.Period;
 import org.n52.io.format.DataFormatter;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
@@ -93,10 +92,11 @@ public class HighchartFormatter implements DataFormatter<Data<QuantityValue>, Hi
 
     private Long getTimestamp(QuantityValue value) {
         if (value.getTimestart() != null) {
-            Period period = new Period(value.getTimestart(), value.getTimeend());
-            if (period.getHours() == 1 || period.getDays() == 1 || period.getMonths() == 1 || period.getYears() == 1) {
-                return value.getTimestart();
-            }
+            // Period period = new Period(value.getTimestart(), value.getTimeend());
+            // if (period.getHours() == 1 || period.getDays() == 1 || period.getMonths() == 1 ||
+            // period.getYears() == 1) {
+            // return value.getTimestart();
+            // }
             return value.getTimeend();
         }
         return value.getTimestamp();
