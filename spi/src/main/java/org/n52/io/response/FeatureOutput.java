@@ -45,9 +45,11 @@ public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> im
     public static final String PROPERTIES = "properties";
     public static final String GEOMETRY = "geometry";
     public static final String DATASETS = "datasets";
+    public static final String PARAMETERS = "parameters";
 
     private OptionalOutput<Geometry> geometry;
     private OptionalOutput<Map<String, DatasetParameters>> datasets;
+    private OptionalOutput<Map<String, Object>> parameters;
 
     @Override
     public String getCollectionName() {
@@ -69,6 +71,22 @@ public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> im
         return isSet(geometry) && geometry.isSerialize();
     }
 
+    public Map<String, DatasetParameters> getDatasets() {
+        return getIfSerialized(datasets);
+    }
+
+    public void setDatasets(OptionalOutput<Map<String, DatasetParameters>> datasets) {
+        this.datasets = datasets;
+    }
+
+    public void setParameters(OptionalOutput< Map<String, Object>> parameters) {
+        this.parameters = parameters;
+    }
+
+    public  Map<String, Object> getParameters() {
+        return getIfSerialized(parameters);
+    }
+
     @Override
     public Map<String, Object> getProperties() {
         Map<String, Object> properties = new HashMap<>();
@@ -79,15 +97,8 @@ public class FeatureOutput extends HierarchicalParameterOutput<FeatureOutput> im
         nullSafePut(DATASETS, getDatasets(), properties);
         nullSafePut(PARENTS, getParents(), properties);
         nullSafePut(CHILDREN, getChildren(), properties);
+        nullSafePut(PARAMETERS, getParameters(), properties);
         return properties;
-    }
-
-    public Map<String, DatasetParameters> getDatasets() {
-        return getIfSerialized(datasets);
-    }
-
-    public void setDatasets(OptionalOutput<Map<String, DatasetParameters>> datasets) {
-        this.datasets = datasets;
     }
 
     private void nullSafePut(String key, Object value, Map<String, Object> container) {
