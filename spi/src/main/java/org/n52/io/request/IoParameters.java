@@ -41,6 +41,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -92,6 +93,8 @@ public final class IoParameters implements Parameters {
 
     private static final ODataFesParser ODATA_PARSER = new ODataFesParser();
 
+    private static final Map<String, Map<String, JsonNode>> LOADED_CONFIGS = new LinkedHashMap<>();
+
     private static final String QUANTITY = "quantity";
 
     private static final String SPLIT_REGEX = "\\,";
@@ -136,10 +139,26 @@ public final class IoParameters implements Parameters {
 
     private IoParameters(File defaultConfig) {
         MultiValueMap<String, JsonNode> config = new LinkedMultiValueMap<>();
-        config.setAll(readDefaultConfig(defaultConfig));
+        config.setAll(getFileConfig(defaultConfig));
         query = mergeToLowerCasedKeys(config);
         filterResolver = new FilterResolver(this);
         OBJECT_MAPPER.registerModule(new JodaModule());
+    }
+
+    private Map<String, JsonNode> getFileConfig(File file) {
+        if (file != null) {
+            if (!LOADED_CONFIGS.containsKey(file.getAbsolutePath())) {
+                Map<String, JsonNode> config = readDefaultConfig(file);
+                LOADED_CONFIGS.put(file.getAbsolutePath(), config);
+            }
+            return LOADED_CONFIGS.get(file.getAbsolutePath());
+        } else {
+            if (!LOADED_CONFIGS.containsKey(DEFAULT_CONFIG_FILE)) {
+                Map<String, JsonNode> config = readDefaultConfig(null);
+                LOADED_CONFIGS.put(DEFAULT_CONFIG_FILE, config);
+            }
+        }
+        return LOADED_CONFIGS.get(DEFAULT_CONFIG_FILE);
     }
 
     private Map<String, JsonNode> readDefaultConfig(File config) {
