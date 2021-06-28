@@ -561,7 +561,7 @@ public final class IoParameters implements Parameters {
     }
 
     public Set<String> getFields() {
-        return getValuesOf(FILTER_FIELDS);
+        return getValuesOf(FILTER_FIELDS, true);
     }
 
     public Set<String> getPlatformGeometryTypes() {
@@ -615,9 +615,13 @@ public final class IoParameters implements Parameters {
     }
 
     Set<String> getValuesOf(String parameterName) {
+        return getValuesOf(parameterName, false);
+    }
+
+    Set<String> getValuesOf(String parameterName, boolean lowerCase) {
         return containsParameter(parameterName)
-            ? new HashSet<>(csvToLowerCasedSet(getAsString(parameterName)))
-            : new HashSet<>(0);
+                ? new HashSet<>(lowerCase ? csvToLowerCasedSet(parameterName) : csvToSet(getAsString(parameterName)))
+                : new HashSet<>(0);
     }
 
     private Set<String> csvToLowerCasedSet(String csv) {
