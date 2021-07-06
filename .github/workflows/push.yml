@@ -1,6 +1,10 @@
-name: Java CI
+name: Java CI on Push
 
-on: [push]
+on:
+  push:
+    branches:
+      - develop
+      - 'version/*'
 
 jobs:
   build:
