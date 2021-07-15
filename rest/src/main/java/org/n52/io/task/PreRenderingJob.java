@@ -354,6 +354,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return outputDirectory.resolve(checkFileName(datasetId, qualifier)).toFile();
     }
 
+    @FindbugsSuppressWarnings("RE_POSSIBLE_UNINTENDED_PATTERN")
     private String checkFileName(String datasetId, String qualifier) {
         if (qualifier != null) {
             String filename = qualifier.replaceAll(IMAGE_FILE_ENDING, "").replaceAll(".", "").replaceAll("/", "");
