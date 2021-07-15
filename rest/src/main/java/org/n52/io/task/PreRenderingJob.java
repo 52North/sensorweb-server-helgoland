@@ -346,21 +346,20 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return new FileOutputStream(file);
     }
 
+    @FindbugsSuppressWarnings("RE_POSSIBLE_UNINTENDED_PATTERN")
     private File createFileName(String datasetId, String qualifier) {
         if (taskConfigPrerendering == null) {
             taskConfigPrerendering = readJobConfig(getConfigFile());
         }
-        Path outputDirectory = getOutputFolder();
-        return outputDirectory.resolve(checkFileName(datasetId, qualifier)).toFile();
-    }
-
-    @FindbugsSuppressWarnings("RE_POSSIBLE_UNINTENDED_PATTERN")
-    private String checkFileName(String datasetId, String qualifier) {
+        String filename = datasetId;
         if (qualifier != null) {
-            String filename = qualifier.replaceAll(IMAGE_FILE_ENDING, "").replaceAll(".", "").replaceAll("/", "");
-            return (filename.startsWith(datasetId) ? filename : datasetId + "_" + filename) + IMAGE_FILE_ENDING ;
+            filename = qualifier.replaceAll(IMAGE_FILE_ENDING, "").replaceAll(".", "").replaceAll("/", "");
+            filename = filename.startsWith(datasetId) ? filename : datasetId + "_" + filename;
         }
-        return datasetId;
+        Path outputDirectory = getOutputFolder();
+        return outputDirectory
+                .resolve(filename  + IMAGE_FILE_ENDING)
+                .toFile();
     }
 
     private Path getOutputFolder() {
