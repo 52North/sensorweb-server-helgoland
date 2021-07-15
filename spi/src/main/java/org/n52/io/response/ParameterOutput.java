@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Initiative for Geospatial Open Source
- * Software GmbH
+ * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -91,7 +90,9 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
         }
         return !isSet(href) && (getHrefBase() != null)
                 ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
-                : href.getValue();
+                : isSet(href)
+                    ? href.getValue()
+                    : HrefHelper.constructHref(".", getCollectionName()) + "/" + getId();
     }
 
     @JsonIgnore
