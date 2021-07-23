@@ -27,6 +27,7 @@
  */
 package org.n52.io.task;
 
+import org.joda.time.DateTime;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobDetail;
@@ -48,6 +49,8 @@ public abstract class ScheduledJob extends QuartzJobBean {
     private String cronExpression;
 
     private boolean triggerAtStartup;
+    
+    private DateTime startUpDelay;
 
     private boolean modified;
 
@@ -91,11 +94,15 @@ public abstract class ScheduledJob extends QuartzJobBean {
     }
 
     public boolean isTriggerAtStartup() {
-        return triggerAtStartup;
+        return triggerAtStartup || isStartUpDelay();
     }
 
     public void setTriggerAtStartup(boolean triggerAtStartup) {
         this.triggerAtStartup = triggerAtStartup;
+    }
+    
+    public boolean isStartUpDelay() {
+        return getStartUpDelay() != null && getStartUpDelay().isAfter(DateTime.now());
     }
 
     public Trigger createTrigger(JobKey jobKey) {
@@ -107,7 +114,8 @@ public abstract class ScheduledJob extends QuartzJobBean {
         }
 
         if (isTriggerAtStartup()) {
-            tb.startAt(DateBuilder.futureDate(5, DateBuilder.IntervalUnit.SECOND));
+            tb.startAt(isStartUpDelay() ? getStartUpDelay().toDate()
+                    : DateBuilder.futureDate(5, DateBuilder.IntervalUnit.SECOND));
         }
         return tb.build();
     }
@@ -126,5 +134,13 @@ public abstract class ScheduledJob extends QuartzJobBean {
 
     public void setModified(boolean modified) {
         this.modified = modified;
+    }
+
+    public DateTime getStartUpDelay() {
+        return startUpDelay;
+    }
+
+    public void setStartUpDelay(DateTime startUpDelay) {
+        this.startUpDelay = startUpDelay;
     }
 }
