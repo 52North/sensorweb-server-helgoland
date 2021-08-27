@@ -36,6 +36,9 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public abstract class ScheduledJob extends QuartzJobBean {
 
     private boolean enabled = true;
@@ -49,7 +52,7 @@ public abstract class ScheduledJob extends QuartzJobBean {
     private String cronExpression;
 
     private boolean triggerAtStartup;
-    
+
     private DateTime startUpDelay;
 
     private boolean modified;
@@ -100,7 +103,7 @@ public abstract class ScheduledJob extends QuartzJobBean {
     public void setTriggerAtStartup(boolean triggerAtStartup) {
         this.triggerAtStartup = triggerAtStartup;
     }
-    
+
     public boolean isStartUpDelay() {
         return getStartUpDelay() != null && getStartUpDelay().isAfter(DateTime.now());
     }

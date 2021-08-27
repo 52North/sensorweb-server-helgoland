@@ -117,11 +117,11 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
     }
 
     private InputStream createConfigStream(File file, Class< ? > clazz) throws FileNotFoundException {
-        if ((file != null) && file.exists()) {
+        if (file != null && file.exists()) {
             LOGGER.debug("loading factory config from '{}'", file.getAbsolutePath());
             return new FileInputStream(file);
         }
-        if ((file != null) && !file.exists()) {
+        if (file != null && !file.exists()) {
             LOGGER.debug("Config file not found: '{}'", file.getAbsolutePath());
         }
 

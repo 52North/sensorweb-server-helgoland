@@ -166,7 +166,7 @@ public class FilterResolver {
 
     public boolean shallIncludeAllDatasetTypes() {
         Set<String> types = parameters.getDatasetTypes();
-        return (!isSetDatasetTypeFilter() && !isSetObservationTypeFilter() && !isSetValueTypeFilter())
+        return !isSetDatasetTypeFilter() && !isSetObservationTypeFilter() && !isSetValueTypeFilter()
                 || types.contains(ALL);
     }
 

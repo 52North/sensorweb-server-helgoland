@@ -39,6 +39,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
@@ -56,7 +59,7 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
     }
 
     public void addValues(final V[] toAdd) {
-        if ((toAdd != null) && (toAdd.length > 0)) {
+        if (toAdd != null && toAdd.length > 0) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }
@@ -104,7 +107,7 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     @JsonIgnore
     public boolean hasReferenceValues() {
-        return (metadata != null) && metadata.hasReferenceValues();
+        return metadata != null && metadata.hasReferenceValues();
     }
 
 }

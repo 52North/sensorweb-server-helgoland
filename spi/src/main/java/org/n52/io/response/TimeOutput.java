@@ -29,6 +29,9 @@ package org.n52.io.response;
 
 import org.joda.time.DateTime;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TimeOutput implements Comparable<TimeOutput> {
 
     private DateTime dateTime;

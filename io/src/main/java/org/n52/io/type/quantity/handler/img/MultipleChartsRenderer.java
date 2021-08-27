@@ -259,11 +259,11 @@ public class MultipleChartsRenderer extends ChartIoHandler {
             if (value == null) {
                 throw new IllegalArgumentException("TimeseriesValue must not be null.");
             }
-            return (interval == null)
-                    || ((interval.getStart()
-                               .getTime() <= value.getTimestamp().getMillis())
-                            && (value.getTimestamp().getMillis() < interval.getEnd()
-                                                              .getTime()));
+            return interval == null
+                    || interval.getStart()
+                               .getTime() <= value.getTimestamp().getMillis()
+                            && value.getTimestamp().getMillis() < interval.getEnd()
+                                                              .getTime();
         }
 
     }

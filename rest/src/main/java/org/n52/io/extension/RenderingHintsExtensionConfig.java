@@ -32,6 +32,9 @@ import java.util.Map;
 
 import org.n52.io.request.StyleProperties;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class RenderingHintsExtensionConfig {
 
     private Map<String, ConfiguredStyle> phenomenonStyles = new HashMap<>();

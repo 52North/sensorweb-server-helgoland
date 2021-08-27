@@ -58,10 +58,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @RestController
 @RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
     "application/json"
 })
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TimeseriesDataController extends DataController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TimeseriesDataController.class);

@@ -98,7 +98,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         QuantityValue[] data = timeseries.getValues().toArray(new QuantityValue[0]);
 
         int dataLength = data.length;
-        if ((maxOutputValues >= dataLength) || (maxOutputValues == 0)) {
+        if (maxOutputValues >= dataLength || maxOutputValues == 0) {
             // nothing to do
             return timeseries;
         }

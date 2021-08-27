@@ -33,7 +33,10 @@ import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @Deprecated
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TransformingTimeseriesService extends ParameterService<TimeseriesMetadataOutput> {
 
     private final ParameterService<TimeseriesMetadataOutput> composedService;

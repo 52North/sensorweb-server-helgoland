@@ -29,6 +29,9 @@ package org.n52.io.response.dataset.profile;
 
 import java.io.Serializable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class VerticalExtentOutput implements Serializable {
 
     private static final long serialVersionUID = 8835039959381946807L;

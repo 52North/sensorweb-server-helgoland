@@ -27,23 +27,27 @@
  */
 package org.n52.io.extension;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.n52.io.response.StatusInterval;
 
 public class StatusIntervalsExtensionConfig {
 
-    private Map<String, ConfigInterval> phenomenonIntervals = new HashMap<>();
+    private Map<String, ConfigInterval> phenomenonIntervals = new LinkedHashMap<>();
 
-    private Map<String, ConfigInterval> datasetIntervals = new HashMap<>();
+    private Map<String, ConfigInterval> datasetIntervals = new LinkedHashMap<>();
 
     public Map<String, ConfigInterval> getPhenomenonIntervals() {
-        return phenomenonIntervals;
+        return Collections.unmodifiableMap(phenomenonIntervals);
     }
 
     public void setPhenomenonIntervals(Map<String, ConfigInterval> phenomenonIntervals) {
-        this.phenomenonIntervals = phenomenonIntervals;
+        if (phenomenonIntervals != null) {
+            this.phenomenonIntervals.putAll(phenomenonIntervals);
+        }
     }
 
     /**
@@ -52,12 +56,12 @@ public class StatusIntervalsExtensionConfig {
      */
     @Deprecated
     public Map<String, ConfigInterval> getTimeseriesIntervals() {
-        return getSeriesIntervals();
+        return Collections.unmodifiableMap(getSeriesIntervals());
     }
 
     /**
      * @param timeseriesIntervals
-     *        the intervals
+     *            the intervals
      * @deprecated use {@link StatusIntervalsExtensionConfig#setDatasetIntervals(Map)}
      */
     @Deprecated
@@ -76,7 +80,7 @@ public class StatusIntervalsExtensionConfig {
 
     /**
      * @param seriesIntervals
-     *        the intervals
+     *            the intervals
      * @deprecated use {@link StatusIntervalsExtensionConfig#setDatasetIntervals(Map)}
      */
     @Deprecated
@@ -85,23 +89,27 @@ public class StatusIntervalsExtensionConfig {
     }
 
     public Map<String, ConfigInterval> getDatasetIntervals() {
-        return datasetIntervals;
+        return Collections.unmodifiableMap(datasetIntervals);
     }
 
     public void setDatasetIntervals(Map<String, ConfigInterval> datasetIntervals) {
-        this.datasetIntervals = datasetIntervals;
+        if (datasetIntervals != null) {
+            this.datasetIntervals.putAll(datasetIntervals);
+        }
     }
 
     public static class ConfigInterval {
 
-        private Map<String, StatusInterval> statusIntervals = new HashMap<String, StatusInterval>();
+        private Map<String, StatusInterval> statusIntervals = new HashMap<>();
 
         public Map<String, StatusInterval> getStatusIntervals() {
-            return statusIntervals;
+            return Collections.unmodifiableMap(statusIntervals);
         }
 
         public void setStatusIntervals(Map<String, StatusInterval> statusIntervals) {
-            this.statusIntervals = statusIntervals;
+            if (statusIntervals != null) {
+                this.statusIntervals.putAll(statusIntervals);
+            }
         }
 
     }

@@ -100,9 +100,9 @@ public class RequestUtils {
 
     private static String checkLocales(Locale queried, Locale defaulLocale) {
         return defaulLocale.equals(queried)
-                || (((defaulLocale.getCountry() != null && !defaulLocale.getCountry().isEmpty())
-                        || (queried.getCountry() != null && !queried.getCountry().isEmpty()))
-                        && defaulLocale.getCountry().equalsIgnoreCase(queried.getCountry()))
+                || defaulLocale.getCountry() != null && !defaulLocale.getCountry().isEmpty()
+                || queried.getCountry() != null && !queried.getCountry().isEmpty()
+                        && defaulLocale.getCountry().equalsIgnoreCase(queried.getCountry())
                 || defaulLocale.getLanguage().equalsIgnoreCase(queried.getLanguage()) ? null : queried.toString();
     }
 

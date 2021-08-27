@@ -132,11 +132,11 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
     private Data<QuantityValue> generalize(Data<QuantityValue> timeseries) throws
             GeneralizerException {
         QuantityValue[] originalValues = getValueArray(timeseries);
-        if ((originalValues.length < 3) || (toleranceValue <= 0)) {
+        if (originalValues.length < 3 || toleranceValue <= 0) {
             return timeseries;
         }
 
-        if ((maxEntries != -1) && (originalValues.length > maxEntries)) {
+        if (maxEntries != -1 && originalValues.length > maxEntries) {
             throw new GeneralizerException(
                     "Maximum number of entries exceeded ("
                     + originalValues.length + ">"
@@ -228,7 +228,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
     private QuantityValue getFirstValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
-        if ((values == null) || (values.length == 0)) {
+        if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();
         }
         return values[0];
@@ -236,7 +236,7 @@ public final class DouglasPeuckerGeneralizer extends Generalizer<Data<QuantityVa
 
     private QuantityValue getLastValue(Data<QuantityValue> timeseries) {
         QuantityValue[] values = getValueArray(timeseries);
-        if ((values == null) || (values.length == 0)) {
+        if (values == null || values.length == 0) {
             throwNewMustNotBeEmptyException();
             return null;
         }

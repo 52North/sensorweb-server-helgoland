@@ -34,6 +34,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Holds some metadata about a whole data container. Examples are {@link #referenceValues} or values which
  * indicate the first value falling beyond the upper or lower time range bound requested
@@ -42,6 +44,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @param <T>
  *        the data type
  */
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = -2670379436251511249L;
@@ -53,7 +56,7 @@ public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializab
     private T valueAfterTimespan;
 
     public boolean hasReferenceValues() {
-        return (referenceValues != null) && !referenceValues.isEmpty();
+        return referenceValues != null && !referenceValues.isEmpty();
     }
 
     public Map<String, Data<T>> getReferenceValues() {

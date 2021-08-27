@@ -29,6 +29,7 @@ package org.n52.io.geojson;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -69,7 +70,7 @@ public class GeoJSONObject {
     }
 
     public void setMembers(Map<String, Object> members) {
-        this.members = members;
+        this.members = members != null ? new LinkedHashMap<>(members) : Collections.emptyMap();
     }
 
     public void setType(String type) {

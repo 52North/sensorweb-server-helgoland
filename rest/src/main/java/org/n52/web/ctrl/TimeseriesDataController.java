@@ -82,11 +82,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 //@RestController
 //@RequestMapping(value = UrlSettings.COLLECTION_TIMESERIES, produces = {
 //    "application/json"
 //})
 @Deprecated
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TimeseriesDataController extends BaseController {
 
     private static final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";

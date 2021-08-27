@@ -33,10 +33,13 @@ import org.n52.io.response.GeometryOutput;
 import org.n52.io.response.OutputCollection;
 import org.n52.series.spi.srv.ParameterService;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 // TODO consolidate
 // -> TransformingGeometryOutputService
 // -> TransformingPlatformOutputService
 // -> TransformingStationOutputService
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TransformingGeometryOutputService extends ParameterService<GeometryOutput> {
 
     private final ParameterService<GeometryOutput> composedService;

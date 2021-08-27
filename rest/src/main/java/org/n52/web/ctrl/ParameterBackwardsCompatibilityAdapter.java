@@ -34,7 +34,9 @@ import org.n52.io.response.ParameterOutput;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
+@SuppressFBWarnings({"EI_EXPOSE_REP2"})
 public class ParameterBackwardsCompatibilityAdapter<T extends ParameterOutput> extends ParameterService<T> {
 
     private final ParameterService<T> service;

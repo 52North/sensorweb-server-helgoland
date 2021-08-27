@@ -47,7 +47,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @JsonPropertyOrder({ "value", "detectionLimit", "timestamp", "uom"})
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class SamplingObservationOutput extends SelfSerializedOutput {
 
     private AbstractValue<?> value;

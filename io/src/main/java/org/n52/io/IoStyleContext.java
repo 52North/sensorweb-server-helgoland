@@ -41,6 +41,9 @@ import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.type.quantity.QuantityIoFactory;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public final class IoStyleContext {
 
     private final Map<String, StyleMetadata> styleMetadatas;

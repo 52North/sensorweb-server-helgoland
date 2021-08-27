@@ -34,6 +34,8 @@ import org.n52.io.response.dataset.StationOutput;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Composes a {@link ParameterService} for {@link GeoJSONFeature}s to transform
  * geometries to requested spatial reference system.
@@ -45,6 +47,7 @@ import org.n52.series.spi.srv.RawDataService;
 // -> TransformingGeometryOutputService
 // -> TransformingPlatformOutputService
 // -> TransformingStationOutputService
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class TransformingStationOutputService extends ParameterService<StationOutput> {
 
     private final ParameterService<StationOutput> composedService;

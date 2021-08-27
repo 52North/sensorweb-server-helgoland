@@ -36,8 +36,11 @@ import org.n52.web.common.RequestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @Component
 @Configurable
+@SuppressFBWarnings({"EI_EXPOSE_REP2"})
 public class HelgolandConfiguration {
 
     public static final String DEFAULT_URL = "http://localhost:8080";

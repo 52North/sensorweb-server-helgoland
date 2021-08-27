@@ -116,7 +116,7 @@ public final class CRSUtils {
      * @return a point referenced by the given spatial reference system.
      */
     public Point createPoint(Double x, Double y, Double z, String srs) {
-        Coordinate coordinate = (z != null) && !z.isNaN()
+        Coordinate coordinate = z != null && !z.isNaN()
             ? new Coordinate(x, y, z)
             : new Coordinate(x, y);
         GeometryFactory factory = createGeometryFactory(srs);
@@ -310,7 +310,7 @@ public final class CRSUtils {
      *         if creating CRS failed.
      */
     private CoordinateReferenceSystem getCrsFor(String authorityCode) throws FactoryException {
-        if ((authorityCode == null) || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
+        if (authorityCode == null || DEFAULT_CRS.equalsIgnoreCase(authorityCode)) {
             return internCrs;
         }
         return crsFactory.createCoordinateReferenceSystem(authorityCode);
@@ -328,8 +328,8 @@ public final class CRSUtils {
                                    CoordinateReferenceSystem second) {
         AxisOrder axisOrderFirst = CRS.getAxisOrder(first);
         AxisOrder axisOrderSecond = CRS.getAxisOrder(second);
-        if ((axisOrderFirst == AxisOrder.INAPPLICABLE)
-                || (axisOrderSecond == AxisOrder.INAPPLICABLE)) {
+        if (axisOrderFirst == AxisOrder.INAPPLICABLE
+                || axisOrderSecond == AxisOrder.INAPPLICABLE) {
             LOGGER.warn("Could not determine if axes ordering is switched.");
             return false;
         }

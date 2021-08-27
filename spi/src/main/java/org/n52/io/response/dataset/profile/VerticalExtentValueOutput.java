@@ -30,6 +30,9 @@ package org.n52.io.response.dataset.profile;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class VerticalExtentValueOutput implements Serializable {
 
     private static final long serialVersionUID = -8180810916760143563L;

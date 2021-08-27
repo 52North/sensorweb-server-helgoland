@@ -209,8 +209,8 @@ public class GeoJSONEncoder {
     protected int encodeCRS(int srid, int parentSrid, ObjectNode json) {
         if (srid == parentSrid
                 || srid == 0
-                || (parentSrid == DEFAULT_SRID
-                && srid == DEFAULT_SRID)) {
+                || parentSrid == DEFAULT_SRID
+                && srid == DEFAULT_SRID) {
             return parentSrid;
         } else {
             json.putObject(JSONConstants.CRS)
