@@ -54,10 +54,10 @@
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <jackson.version>2.12.4</jackson.version>
+        <jackson.version>2.12.5</jackson.version>
         <geotools.version>25.2</geotools.version>
-        <arctic-sea.version>9.0.0</arctic-sea.version>
-        <spring-boot.version>2.5.3</spring-boot.version>
+        <arctic-sea.version>9.1.0</arctic-sea.version>
+        <spring-boot.version>2.5.4</spring-boot.version>
         <spring.version>5.3.5</spring.version>
         <version.junit>5.7.2</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
@@ -342,7 +342,7 @@
             <dependency>
                 <groupId>org.locationtech.jts</groupId>
                 <artifactId>jts-core</artifactId>
-                <version>1.18.1</version>
+                <version>1.18.2</version>
             </dependency>
 
             <dependency>
@@ -493,7 +493,7 @@
             <dependency>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-annotations</artifactId>
-                <version>4.3.0</version>
+                <version>4.4.0</version>
                 <scope>provided</scope>
             </dependency>
             
