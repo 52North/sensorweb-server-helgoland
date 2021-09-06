@@ -4,7 +4,7 @@
     <parent>
         <artifactId>helgoland-parent</artifactId>
         <groupId>org.n52.sensorweb-server.helgoland</groupId>
-        <version>3.5.0-PR.4</version>
+        <version>3.5.0-SNAPSHOT</version>
     </parent>
     <packaging>jar</packaging>
     <name>Sensor Web Server Helgoland - Web Resources</name>
