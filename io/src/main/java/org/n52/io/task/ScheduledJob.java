@@ -49,7 +49,7 @@ public abstract class ScheduledJob extends QuartzJobBean {
     private String cronExpression;
 
     private boolean triggerAtStartup;
-    
+
     private DateTime startUpDelay;
 
     private boolean modified;
@@ -100,7 +100,7 @@ public abstract class ScheduledJob extends QuartzJobBean {
     public void setTriggerAtStartup(boolean triggerAtStartup) {
         this.triggerAtStartup = triggerAtStartup;
     }
-    
+
     public boolean isStartUpDelay() {
         return getStartUpDelay() != null && getStartUpDelay().isAfter(DateTime.now());
     }
