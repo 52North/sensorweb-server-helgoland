@@ -36,6 +36,7 @@ import java.util.Map;
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.StyleProperties;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.extension.MetadataExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,12 +86,15 @@ public class RenderingHintsExtension extends MetadataExtension<DatasetOutput< ? 
                               .containsKey(output.getId());
     }
 
-    private boolean hasPhenomenonConfiguration(DatasetOutput< ? > output) {
-        String id = output.getDatasetParameters(true)
-                          .getPhenomenon()
-                          .getId();
-        return renderingConfig.getPhenomenonStyles()
-                              .containsKey(id);
+    private boolean hasPhenomenonConfiguration(DatasetOutput<?> output) {
+        DatasetParameters datasetParameters = output.getDatasetParameters(true);
+        if (datasetParameters != null && datasetParameters.getPhenomenon() != null) {
+            String id = datasetParameters.getPhenomenon().getId();
+            return renderingConfig.getPhenomenonStyles().containsKey(id);
+        } else {
+            LOGGER.warn("Missing parameters for dataset '{}'!", output.getId());
+        }
+        return false;
     }
 
     @Override
