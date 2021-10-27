@@ -1,1 +1,1 @@
-Sitemap: /series-rest-api/feature_alternativeBBOXencoding/sitemap.xml
+Sitemap: /sensorweb-server-helgoland/feature_alternativeBBOXencoding/sitemap.xml

@@ -1,1 +1,1 @@
-Sitemap: /series-rest-api/develop/sitemap.xml
+Sitemap: /sensorweb-server-helgoland/develop/sitemap.xml

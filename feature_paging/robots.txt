@@ -1,1 +1,1 @@
-Sitemap: /series-rest-api/feature_paging/sitemap.xml
+Sitemap: /sensorweb-server-helgoland/feature_paging/sitemap.xml
