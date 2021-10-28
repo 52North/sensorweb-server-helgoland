@@ -33,6 +33,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;
@@ -55,10 +56,18 @@ public class DatasetsDataController extends DataController {
 
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
-        DatasetOutput<AbstractValue<?>> item = getFirstDatasetOutput(map);
-        return isProfileType(item)
-                ? PROFILE
-                : item.getValueType();
+        DatasetTypesMetadata types = geDatasetTypes(map).iterator().next();
+        if (isProfileType(types)) {
+//            return types.getValueType() + MINUS + PROFILE;
+            return PROFILE;
+        } else if (isTrajectoryType(types)) {
+//            return types.getValueType() + MINUS + TRAJECTORY;
+            return TRAJECTORY;
+        } else {
+            return types.getValueType();
+        }
     }
+
+
 
 }
