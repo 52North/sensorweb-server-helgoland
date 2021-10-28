@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Backwards Compatibility – 52°North GmbH – Spatial Information Research</title>     <meta charset="utf-8" />
+<title>Changes – 52°North GmbH – Spatial Information Research</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
+        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -103,22 +103,20 @@
       </div>
 
       <article class="page">
-  <h1>Backwards Compatibility</h1>
+  <h1>Changes</h1>
 
   <div class="entry">
-    <p>The API strives to be backwards compatible, i.e. features and datastructure once introduced 
-to the core will stay available. However, to add new features and functions will require to 
+    <p>However, to add new features and functions will require to 
 add new content to existing data structures (which won’t break backwards compability, though).</p>
 
 <p>Also new endpoints may be introduced over time like we did in <code class="highlighter-rouge">v2.0.0</code>.</p>
 
-<h2 id="version-200">Version 2.0.0</h2>
+<h2 id="version-200">Version 3.0.0</h2>
 
 <h3 id="new-endpoints">New Endpoints</h3>
 <ul>
   <li><code class="highlighter-rouge">/datasets</code>: More generic series metadata which can have different value types</li>
   <li><code class="highlighter-rouge">/platforms</code>: More generic metadata from where observations are made</li>
-  <li><code class="highlighter-rouge">/geometries</code>: Separated endpoint to query different types of geometries</li>
 </ul>
 
 <h3 id="platforms-vs-stations">Platforms vs. Stations</h3>
@@ -165,10 +163,9 @@ type of data (e.g. different scalar values or even aggregate types).</p>
 
 <p>Check out in more detail under the <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types section</a>.</p>
 
-<h3 id="data-vs-getdata">data vs. getData</h3>
+<h3 id="data-vs-getdata">data/getData vs. observations</h3>
 <p>Naming of <code class="highlighter-rouge">getData</code> was a bit confusing within a RESTful API. That’s the reason why <code class="highlighter-rouge">GET</code>ting
-data for a dataset has been renamed to <code class="highlighter-rouge">data</code> (<code class="highlighter-rouge">/datasets/&lt;id&gt;/data</code>). To stay backwards 
-compatible the old <code class="highlighter-rouge">getData</code> still exist under the old endpoint (<code class="highlighter-rouge">/timeseries/&lt;id&gt;/getData</code>).</p>
+data for a dataset has been renamed to <code class="highlighter-rouge">data</code> and then to <code class="highlighter-rouge">observations</code> (<code class="highlighter-rouge">/datasets/&lt;id&gt;/observations</code>) which is closer to the type of data returned. ).</p>
 
   </div>
 </article>
