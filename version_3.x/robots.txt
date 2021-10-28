@@ -1,1 +1,0 @@
-Sitemap: /sensorweb-server-helgoland/version_3.x/sitemap.xml

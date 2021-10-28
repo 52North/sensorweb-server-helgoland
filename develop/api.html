@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Series API Documentation – 52°North GmbH – Initiative for Geospatial Open Source Software</title>     <meta charset="utf-8" />
+<title>Helgoland API Documentation – 52°North GmbH – Spatial Information Research</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -25,14 +25,14 @@
     <meta name="theme-color" content="#ffffff">
 
     
-    <meta name="description" content="Initiative for Geospatial Open Source Software">
-    <meta property="og:description" content="Initiative for Geospatial Open Source Software" />
+    <meta name="description" content="Spatial Information Research">
+    <meta property="og:description" content="Spatial Information Research" />
     
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Series API Documentation" />
-    <meta property="twitter:title" content="Series API Documentation" />
+    <meta property="og:title" content="Helgoland API Documentation" />
+    <meta property="twitter:title" content="Helgoland API Documentation" />
     
 
 
@@ -51,7 +51,7 @@
   
     <nav class="navbar navbar-default navbar-fixed-top">
       <div id="contents" class="bs-sidebar hidden-print" style="height: 20px">
-        <a href="/sensorweb-server-helgoland/develop"><img alt="52&deg;North logo"
+        <a href="/sensorweb-server-helgoland/version_3.x"><img alt="52&deg;North logo"
           src="/sensorweb-server-helgoland/develop/assets/images/52n_logo_full.png" /></a>
       </div>
       <div class="container">
@@ -103,7 +103,7 @@
       </div>
 
       <article class="page">
-  <h1>Series API Documentation</h1>
+  <h1>Helgoland API Documentation</h1>
 
   <div class="entry">
     <p>foo bar foo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo 
@@ -594,7 +594,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -650,9 +650,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
-
-<p>Alternative 1: json Points</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -665,10 +663,6 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
-
-<p>Alternative 2: GeoJSON bbox</p>
-
-<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -1296,9 +1290,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
-
-<p>Alternative 1: json Points</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -1311,10 +1303,6 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
-
-<p>Alternative 2: GeoJSON bbox</p>
-
-<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -2007,7 +1995,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -2063,9 +2051,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
-
-<p>Alternative 1: json Points</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -2078,10 +2064,6 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
-
-<p>Alternative 2: GeoJSON bbox</p>
-
-<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -2524,7 +2506,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
             <div class="swagger-method-description">
                 <p>Gets data for a given <code class="highlighter-rouge">timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request.</p>
 
-<p>What Mime-Types are supported depends on the <code class="highlighter-rouge">valueType</code>. For example <code class="highlighter-rouge">quantity</code> observations can be drawn as a timeseries chart  (i.e. either <code class="highlighter-rouge">image/png</code> or <code class="highlighter-rouge">application/pdf</code>). Supported Mime-Types are listed for each <code class="highlighter-rouge">valueType</code> when querying  <code class="highlighter-rouge">/service/{serviceId}?valueTypes=all</code> produces:</p>
+<p>What Mime-Types are supported depends on the <code class="highlighter-rouge">datasetType</code>. For example <code class="highlighter-rouge">quantity</code> observations can be drawn as a timeseries chart  (i.e. either <code class="highlighter-rouge">image/png</code> or <code class="highlighter-rouge">application/pdf</code>). Supported Mime-Types are listed for each <code class="highlighter-rouge">datasetType</code> when querying  <code class="highlighter-rouge">/service/{serviceId}?datasetTypes=all</code> produces:</p>
 
 <ul>
   <li><code class="highlighter-rouge">application/json</code></li>
@@ -2533,8 +2515,6 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   <li><code class="highlighter-rouge">application/pdf</code></li>
   <li><code class="highlighter-rouge">application/zip</code></li>
 </ul>
-
-<p>Data can be classified into result times if these differ from actual <code class="highlighter-rouge">timestamp</code>. For example, this is the case for forecast data which might re-calculate (different result times) a given timespan. The <code class="highlighter-rouge">data</code> can be grouped  by using <code class="highlighter-rouge">resultTimes</code> parameter. When <code class="highlighter-rouge">resultTimes</code> parameter is missing, data of the oldest result is being  returned.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -2611,30 +2591,6 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>
                                   
                                   String
-                                  
-                                  
-                              </td>
-                            </tr>
-                          
-                        
-                          
-                          
-                            
-                            <tr>
-                              <td>
-                                  
-                                  resultTimes
-                                  
-                              </td>
-                              <td>query</td>
-                              <td><p>Filter data which is available for different result times. Query <code class="highlighter-rouge">/extras?fields=resultTimes</code> beforehand to get
-a list of result times or add <code class="highlighter-rouge">resultTimes=all</code> to get all data classified by result time. In case of <code class="highlighter-rouge">resultTime</code>
-is missing from Query, those data will be returned which belongs to the oldest result time.</p>
-
-</td>
-                              <td>
-                                  
-                                  Array
                                   
                                   
                               </td>
@@ -2966,7 +2922,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -3022,9 +2978,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
-
-<p>Alternative 1: json Points</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -3037,10 +2991,6 @@ is missing from Query, those data will be returned which belongs to the oldest r
   }
 }
 </code></p>
-
-<p>Alternative 2: GeoJSON bbox</p>
-
-<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -3803,9 +3753,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
-
-<p>Alternative 1: json Points</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
 
 <p><code class="highlighter-rouge">json  bbox={
   "ll": {
@@ -3818,10 +3766,6 @@ is missing from Query, those data will be returned which belongs to the oldest r
   }
 }
 </code></p>
-
-<p>Alternative 2: GeoJSON bbox</p>
-
-<p><code class="highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -4154,7 +4098,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -4683,7 +4627,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -5210,7 +5154,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -5737,7 +5681,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -6264,7 +6208,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -6789,7 +6733,7 @@ is missing from Query, those data will be returned which belongs to the oldest r
                             <tr>
                               <td>
                                   
-                                  valueTypes
+                                  datasetTypes
                                   
                               </td>
                               <td>query</td>
@@ -7120,7 +7064,7 @@ else {
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/071a1f91e0813879797c425f65598065d8078adc">071a1f91e0813879797c425f65598065d8078adc</a></p>
+      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
       
     </div>
   </footer>
