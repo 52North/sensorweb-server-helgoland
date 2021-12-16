@@ -38,6 +38,13 @@ import org.n52.io.request.StyleProperties;
 
 public class PrerenderingJobConfig {
 
+    public static final String CONFIG_OUTPUT_PATH = "outputPath";
+    public static final String CONFIG_WIDTH = "width";
+    public static final String CONFIG_HEIGHT = "height";
+    public static final String CONFIG_LANGUAGE = "language";
+    public static final String CONFIG_GRID = "grid";
+    public static final String CONFIG_GENERALIZE = "generalize";
+
     private Map<String, String> generalConfig = new HashMap<>();
 
     private List<RenderingConfig> phenomenonStyles = new ArrayList<>();
