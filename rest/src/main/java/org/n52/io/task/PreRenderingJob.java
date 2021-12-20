@@ -45,6 +45,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletConfig;
@@ -103,7 +105,8 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private static final String JOB_DATA_CONFIG_FILE = "configFile";
     private static final String JOB_DATA_WEBAPP_FOLDER = "webappFolder";
     private static final String IMAGE_EXTENSION = "png";
-    private static final String IMAGE_FILE_ENDING = "." + IMAGE_EXTENSION;
+    private static final String IMAGE_FILE_ENDING = "." + IMAGE_EXTENSION;    private static final String DEFAULT_OUTPUT_PATH = "generated/prerendered";
+
     @Autowired
     @Qualifier("datasetService")
     // autowired due to quartz job creation
@@ -159,6 +162,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         List<RenderingConfig> phenomenonStyles = taskConfigPrerendering.getPhenomenonStyles();
         List<RenderingConfig> styles = taskConfigPrerendering.getDatasetStyles();
+        Set<String> styleIds = styles.stream().map(s -> s.getId()).collect(Collectors.toSet());
         for (RenderingConfig config : phenomenonStyles) {
             Map<String, String> parameters = new HashMap<>();
             parameters.put(Parameters.PHENOMENA, config.getId());
@@ -168,16 +172,17 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             IoParameters query = IoParameters.createFromSingleValueMap(parameters);
             for (DatasetOutput< ? > metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
-                renderConfiguredIntervals(timeseriesId, config);
-                if (interrupted) {
-                    return;
+                if (!styleIds.contains(timeseriesId)) {
+                    renderConfiguredIntervals(timeseriesId, config);
+                    if (interrupted) {
+                        return;
+                    }
                 }
             }
         }
 
         for (RenderingConfig config : styles) {
             renderConfiguredIntervals(config.getId(), config);
-
             if (interrupted) {
                 return;
             }
@@ -298,6 +303,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         if (taskConfigPrerendering == null) {
             taskConfigPrerendering = readJobConfig(getConfigFile());
         }
+        checkQualifier(qualifier);
         try {
             BufferedImage image = loadImage(datasetId, qualifier);
             if (image == null) {
@@ -316,16 +322,25 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         return ImageIO.read(new FileInputStream(createFileName(datasetId, qualifier)));
     }
 
+    private void checkQualifier(String qualifier) {
+        if (qualifier != null && !qualifier.isEmpty()) {
+            QualifierPeriod.validate(qualifier);
+        }
+    }
+
     private IntervalWithTimeZone createTimespanFromInterval(String datasetId, String period) {
-        DateTime now = new DateTime();
-        if (period.equals("lastDay")) {
-            Interval interval = new Interval(now.minusDays(1), now);
+        return createTimespanFromInterval(datasetId, period, new DateTime());
+    }
+
+    private IntervalWithTimeZone createTimespanFromInterval(String datasetId, String period, DateTime end) {
+        if (period.equals(QualifierPeriod.LAST_DAY.getValue())) {
+            Interval interval = new Interval(end.minusDays(1), end);
             return new IntervalWithTimeZone(interval.toString());
-        } else if (period.equals("lastWeek")) {
-            Interval interval = new Interval(now.minusWeeks(1), now);
+        } else if (period.equals(QualifierPeriod.LAST_WEEK.getValue())) {
+            Interval interval = new Interval(end.minusWeeks(1), end);
             return new IntervalWithTimeZone(interval.toString());
-        } else if (period.equals("lastMonth")) {
-            Interval interval = new Interval(now.minusMonths(1), now);
+        } else if (period.equals(QualifierPeriod.LAST_MONTH.getValue())) {
+            Interval interval = new Interval(end.minusMonths(1), end);
             return new IntervalWithTimeZone(interval.toString());
         } else {
             throw new ResourceNotFoundException("Unknown interval '" + period + "' for datatset " + datasetId);
@@ -364,9 +379,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private Path getOutputFolder() {
         final Map<String, String> generalConfig = taskConfigPrerendering.getGeneralConfig();
-        String outputPath = generalConfig.get("outputPath");
-        Path outputDirectory = Paths.get(webappFolder)
-                                    .resolve(outputPath);
+        String outputPath = generalConfig.containsKey(PrerenderingJobConfig.CONFIG_OUTPUT_PATH)
+                            ? generalConfig.get(PrerenderingJobConfig.CONFIG_OUTPUT_PATH)
+                            : DEFAULT_OUTPUT_PATH;
+        Path outputDirectory = Paths.get(webappFolder).resolve(outputPath);
         File dir = outputDirectory.toFile();
         if (!dir.exists() && !dir.mkdirs()) {
             LOGGER.warn("Unable to create output folder '{}'.", outputDirectory);
@@ -378,11 +394,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         Map<String, String> configuration = new HashMap<>();
 
         // set defaults
-        configuration.put("width", Integer.toString(WIDTH_DEFAULT));
-        configuration.put("height", Integer.toString(HEIGHT_DEFAULT));
-        configuration.put("grid", Boolean.toString(GRID_DEFAULT));
+        configuration.put(PrerenderingJobConfig.CONFIG_WIDTH, Integer.toString(WIDTH_DEFAULT));
+        configuration.put(PrerenderingJobConfig.CONFIG_HEIGHT, Integer.toString(HEIGHT_DEFAULT));
+        configuration.put(PrerenderingJobConfig.CONFIG_GRID, Boolean.toString(GRID_DEFAULT));
         configuration.put("legend", Boolean.toString(LEGEND_DEFAULT));
-        configuration.put("generalize", Boolean.toString(GENERALIZE_DEFAULT));
+        configuration.put(PrerenderingJobConfig.CONFIG_GENERALIZE, Boolean.toString(GENERALIZE_DEFAULT));
         configuration.put("locale", LANGUAGE_DEFAULT);
         configuration.put("timespan", interval);
 
@@ -437,4 +453,23 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     public boolean isModified() {
         return jobConfig.isModified();
     }
-}
+
+    private enum QualifierPeriod {
+        LAST_DAY("lastDay"), LAST_WEEK("lastWeek"), LAST_MONTH("lastMonth");
+
+        private String value;
+
+        QualifierPeriod(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public static void validate(String qualifier) {
+            if (!Arrays.stream(QualifierPeriod.values()).anyMatch(q -> q.getValue().equals(qualifier))) {
+                throw new IllegalArgumentException("Invalid qualifier value!");
+            }
+        }
+    }}
