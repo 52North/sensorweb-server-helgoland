@@ -54,7 +54,7 @@
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <jackson.version>2.13.0</jackson.version>
+        <jackson.version>2.13.1</jackson.version>
         <geotools.version>26.1</geotools.version>
         <arctic-sea.version>9.2.1</arctic-sea.version>
         <spring-boot.version>2.6.1</spring-boot.version>
@@ -493,7 +493,7 @@
             <dependency>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-annotations</artifactId>
-                <version>4.5.0</version>
+                <version>4.5.2</version>
                 <scope>provided</scope>
             </dependency>
             
