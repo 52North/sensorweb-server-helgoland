@@ -105,17 +105,18 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     private static final String JOB_DATA_CONFIG_FILE = "configFile";
     private static final String JOB_DATA_WEBAPP_FOLDER = "webappFolder";
     private static final String IMAGE_EXTENSION = "png";
-    private static final String IMAGE_FILE_ENDING = "." + IMAGE_EXTENSION;    private static final String DEFAULT_OUTPUT_PATH = "generated/prerendered";
+    private static final String IMAGE_FILE_ENDING = "." + IMAGE_EXTENSION;
+    private static final String DEFAULT_OUTPUT_PATH = "generated/prerendered";
 
     @Autowired
     @Qualifier("datasetService")
     // autowired due to quartz job creation
-    private ParameterService<DatasetOutput<AbstractValue< ? >>> datasetService;
+    private ParameterService<DatasetOutput<AbstractValue<?>>> datasetService;
 
     @Autowired
     @Qualifier("datasetService")
     // autowired due to quartz job creation
-    private DataService<Data<AbstractValue< ? >>> dataService;
+    private DataService<Data<AbstractValue<?>>> dataService;
 
     @Autowired
     private PreRenderingJobConfig jobConfig;
@@ -139,12 +140,9 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Override
     public JobDetail createJobDetails() {
-        return JobBuilder.newJob(PreRenderingJob.class)
-                         .withIdentity(getJobName())
-                         .withDescription(getJobDescription())
-                         .usingJobData(JOB_DATA_CONFIG_FILE, getConfigFile())
-                         .usingJobData(JOB_DATA_WEBAPP_FOLDER, webappFolder)
-                         .build();
+        return JobBuilder.newJob(PreRenderingJob.class).withIdentity(getJobName()).withDescription(getJobDescription())
+                .usingJobData(JOB_DATA_CONFIG_FILE, getConfigFile()).usingJobData(JOB_DATA_WEBAPP_FOLDER, webappFolder)
+                .build();
     }
 
     @Override
@@ -170,7 +168,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             parameters.put(Parameters.FILTER_OBSERVATION_TYPES, "simple");
             parameters.put(Parameters.FILTER_VALUE_TYPES, "quantity");
             IoParameters query = IoParameters.createFromSingleValueMap(parameters);
-            for (DatasetOutput< ? > metadata : datasetService.getCondensedParameters(query)) {
+            for (DatasetOutput<?> metadata : datasetService.getCondensedParameters(query)) {
                 String timeseriesId = metadata.getId();
                 if (!styleIds.contains(timeseriesId)) {
                     renderConfiguredIntervals(timeseriesId, config);
@@ -190,7 +188,6 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
         LOGGER.debug("prerendering took '{}'", stopwatch.stopInSeconds());
     }
-
 
     private void renderConfiguredIntervals(String datasetId, RenderingConfig config) {
         if (config != null && config.getInterval() != null) {
@@ -213,25 +210,20 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         FileOutputStream fos = createFile(datasetId, interval, chartQualifier);
 
         try (FileOutputStream out = fos;) {
-            createIoFactory(parameters).createHandler(IMAGE_EXTENSION)
-                                       .writeBinary(out);
+            createIoFactory(parameters).createHandler(IMAGE_EXTENSION).writeBinary(out);
             fos.flush();
         } catch (IoHandlerException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
         }
     }
 
-    private IoHandlerFactory<DatasetOutput<AbstractValue< ? >>,
-                      AbstractValue< ? >> createIoFactory(IoParameters parameters)
-                              throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityValue.TYPE)
-                                       .setParameters(parameters)
-                                       .setDataService(dataService)
-                                       .setDatasetService(datasetService);
+    private IoHandlerFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> createIoFactory(
+            IoParameters parameters) throws DatasetFactoryException, URISyntaxException, MalformedURLException {
+        return createDefaultIoFactory().create(QuantityValue.TYPE).setParameters(parameters)
+                .setDataService(dataService).setDatasetService(datasetService);
     }
 
-    private DefaultIoFactory<DatasetOutput<AbstractValue< ? >>,
-                             AbstractValue< ? >> createDefaultIoFactory() {
+    private DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> createDefaultIoFactory() {
         return new DefaultIoFactory<>();
     }
 
@@ -243,8 +235,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     @Override
     public void setServletConfig(ServletConfig servletConfig) {
-        webappFolder = servletConfig.getServletContext()
-                                    .getRealPath("/");
+        webappFolder = servletConfig.getServletContext().getRealPath("/");
     }
 
     @Override
@@ -348,9 +339,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
     }
 
     private FileOutputStream createFile(String datasetId, String interval, String postfix) throws IOException {
-        String chartQualifier = postfix != null
-                ? interval + "_" + postfix
-                : interval;
+        String chartQualifier = postfix != null ? interval + "_" + postfix : interval;
         File file = createFileName(datasetId, chartQualifier);
         if (!file.exists() && !file.createNewFile()) {
             LOGGER.warn("Can't create file '{}'", file.getAbsolutePath());
@@ -372,16 +361,14 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
             filename = filename.startsWith(datasetId) ? filename : datasetId + "_" + filename;
         }
         Path outputDirectory = getOutputFolder();
-        return outputDirectory
-                .resolve(filename  + IMAGE_FILE_ENDING)
-                .toFile();
+        return outputDirectory.resolve(filename + IMAGE_FILE_ENDING).toFile();
     }
 
     private Path getOutputFolder() {
         final Map<String, String> generalConfig = taskConfigPrerendering.getGeneralConfig();
-        String outputPath = generalConfig.containsKey(PrerenderingJobConfig.CONFIG_OUTPUT_PATH)
-                            ? generalConfig.get(PrerenderingJobConfig.CONFIG_OUTPUT_PATH)
-                            : DEFAULT_OUTPUT_PATH;
+        String outputPath = generalConfig.containsKey(PreRenderingConfig.CONFIG_OUTPUT_PATH)
+                ? generalConfig.get(PreRenderingConfig.CONFIG_OUTPUT_PATH)
+                : DEFAULT_OUTPUT_PATH;
         Path outputDirectory = Paths.get(webappFolder).resolve(outputPath);
         File dir = outputDirectory.toFile();
         if (!dir.exists() && !dir.mkdirs()) {
@@ -394,11 +381,11 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         Map<String, String> configuration = new HashMap<>();
 
         // set defaults
-        configuration.put(PrerenderingJobConfig.CONFIG_WIDTH, Integer.toString(WIDTH_DEFAULT));
-        configuration.put(PrerenderingJobConfig.CONFIG_HEIGHT, Integer.toString(HEIGHT_DEFAULT));
-        configuration.put(PrerenderingJobConfig.CONFIG_GRID, Boolean.toString(GRID_DEFAULT));
+        configuration.put(PreRenderingConfig.CONFIG_WIDTH, Integer.toString(WIDTH_DEFAULT));
+        configuration.put(PreRenderingConfig.CONFIG_HEIGHT, Integer.toString(HEIGHT_DEFAULT));
+        configuration.put(PreRenderingConfig.CONFIG_GRID, Boolean.toString(GRID_DEFAULT));
         configuration.put("legend", Boolean.toString(LEGEND_DEFAULT));
-        configuration.put(PrerenderingJobConfig.CONFIG_GENERALIZE, Boolean.toString(GENERALIZE_DEFAULT));
+        configuration.put(PreRenderingConfig.CONFIG_GENERALIZE, Boolean.toString(GENERALIZE_DEFAULT));
         configuration.put("locale", LANGUAGE_DEFAULT);
         configuration.put("timespan", interval);
 
@@ -472,4 +459,5 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
                 throw new IllegalArgumentException("Invalid qualifier value!");
             }
         }
-    }}
+    }
+}
