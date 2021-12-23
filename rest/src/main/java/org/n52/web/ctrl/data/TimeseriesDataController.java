@@ -42,7 +42,6 @@ import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.io.task.PreRenderingJob;
-import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;
