@@ -43,7 +43,7 @@ public class HelgolandConfiguration {
     public static final String DEFAULT_URL = "http://localhost:8080";
     public static final String DEFAULT_REQUEST_INTERVAL_RESTRICTION = "P370D";
     public static final String DEFAULT_DEFAULT_LOCALE = "en";
-    private static final String EXTERNAL_URL_KEY = "helgoland.externa.url";
+    private static final String EXTERNAL_URL_KEY = "helgoland.external.url";
     private static final String REQUEST_INTERVAL_RESTRICTION_KEY = "helgoland.request.interval.restriction";
     private static final String REQUEST_DEFAULT_LOCALE_KEY = "helgoland.request.default.locale";
 
