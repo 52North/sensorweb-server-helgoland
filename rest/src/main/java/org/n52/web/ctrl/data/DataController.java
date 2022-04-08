@@ -252,7 +252,7 @@ public abstract class DataController extends BaseController {
                                   .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/observations",
+    @RequestMapping(value = {"/{datasetId}/observations", "/{datasetId}/observations.pdf", "/{datasetId}/data.pdf"},
         produces = {
             Constants.APPLICATION_PDF
         },
@@ -281,7 +281,7 @@ public abstract class DataController extends BaseController {
                                   .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/observations",
+    @RequestMapping(value = {"/{datasetId}/observations", "/{datasetId}/observations.zip", "/{datasetId}/data.zip"},
         produces = {
             Constants.APPLICATION_ZIP
         },
@@ -313,7 +313,7 @@ public abstract class DataController extends BaseController {
                                   .writeBinary(response.getOutputStream());
     }
 
-    @RequestMapping(value = "/{datasetId}/observations",
+    @RequestMapping(value = {"/{datasetId}/observations", "/{datasetId}/observations.csv", "/{datasetId}/data.csv"},
         produces = {
             Constants.TEXT_CSV
         },
