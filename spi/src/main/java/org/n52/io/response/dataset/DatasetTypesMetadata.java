@@ -27,36 +27,63 @@
  */
 package org.n52.io.response.dataset;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+public class DatasetTypesMetadata {
 
-@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
-public class ReferenceValueOutput<T extends AbstractValue<?>> {
+    private String id;
+    private String datasetType;
+    private String observationType;
+    private String valueType;
 
-    private String referenceValueId;
-    private String label;
-    private T lastValue;
-
-    public String getReferenceValueId() {
-        return referenceValueId;
+    public DatasetTypesMetadata() {
     }
 
-    public void setReferenceValueId(String referenceValueId) {
-        this.referenceValueId = referenceValueId;
+    public DatasetTypesMetadata(String id, String datasetType, String observationType, String valueType) {
+        this.id = id;
+        this.datasetType = datasetType;
+        this.observationType = observationType;
+        this.valueType = valueType;
     }
 
-    public String getLabel() {
-        return label;
+    public String getId() {
+        return id;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public DatasetTypesMetadata setId(Long id) {
+        this.id = Long.toString(id);
+        return this;
     }
 
-    public T getLastValue() {
-        return lastValue;
+    public DatasetTypesMetadata setId(String id) {
+        this.id = id;
+        return this;
     }
 
-    public void setLastValue(T lastValue) {
-        this.lastValue = lastValue;
+    public String getDatasetType() {
+        return datasetType;
     }
+
+    public DatasetTypesMetadata setDatasetType(String datasetType) {
+        this.datasetType = datasetType;
+        return this;
+    }
+
+    public String getObservationType() {
+        return observationType;
+    }
+
+    public DatasetTypesMetadata setObservationType(String observationType) {
+        this.observationType = observationType;
+        return this;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public DatasetTypesMetadata setValueType(String valueType) {
+        this.valueType = valueType;
+        return this;
+    }
+
+
 }

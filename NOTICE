@@ -55,6 +55,7 @@ This project includes:
   Netty/Common under Apache License, Version 2.0
   Netty/Handler under Apache License, Version 2.0
   Netty/Resolver under Apache License, Version 2.0
+  Netty/TomcatNative [OpenSSL - Classes] under The Apache Software License, Version 2.0
   Netty/Transport under Apache License, Version 2.0
   odata-commons-api under The Apache Software License, Version 2.0
   odata-commons-core under The Apache Software License, Version 2.0

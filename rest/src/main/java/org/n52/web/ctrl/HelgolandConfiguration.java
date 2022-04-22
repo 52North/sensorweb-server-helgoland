@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
+ * Copyright (C) 2013-2022 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -46,7 +46,7 @@ public class HelgolandConfiguration {
     public static final String DEFAULT_URL = "http://localhost:8080";
     public static final String DEFAULT_REQUEST_INTERVAL_RESTRICTION = "P370D";
     public static final String DEFAULT_DEFAULT_LOCALE = "en";
-    private static final String EXTERNAL_URL_KEY = "helgoland.externa.url";
+    private static final String EXTERNAL_URL_KEY = "helgoland.external.url";
     private static final String REQUEST_INTERVAL_RESTRICTION_KEY = "helgoland.request.interval.restriction";
     private static final String REQUEST_DEFAULT_LOCALE_KEY = "helgoland.request.default.locale";
 

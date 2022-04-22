@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
+ * Copyright (C) 2013-2022 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -40,6 +40,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PreRenderingConfig {
+
+    public static final String CONFIG_OUTPUT_PATH = "outputPath";
+    public static final String CONFIG_WIDTH = "width";
+    public static final String CONFIG_HEIGHT = "height";
+    public static final String CONFIG_LANGUAGE = "language";
+    public static final String CONFIG_GRID = "grid";
+    public static final String CONFIG_GENERALIZE = "generalize";
 
     private Map<String, String> generalConfig = new HashMap<>();
 

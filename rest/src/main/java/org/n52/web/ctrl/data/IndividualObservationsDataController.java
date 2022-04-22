@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
+ * Copyright (C) 2013-2022 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -34,6 +34,7 @@ import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.web.ctrl.UrlSettings;
@@ -58,17 +59,17 @@ public class IndividualObservationsDataController extends DataController {
 
     @Override
     protected String getValueType(IoParameters map, String requestUrl) {
-        DatasetOutput<AbstractValue< ? >> item = getFirstDatasetOutput(map);
-        String datasetType = item.getDatasetType();
+        DatasetTypesMetadata types = geDatasetTypes(map).iterator().next();
+        String datasetType = types.getDatasetType();
         if (!"individualObservation".equalsIgnoreCase(datasetType)) {
             String expectedType = UrlSettings.COLLECTION_INDIVIDUAL_OBSERVATIONS;
             String template = "The dataset with id ''{0}'' was not found for ''{1}''.";
-            String message = MessageFormat.format(template, item.getId(), expectedType);
+            String message = MessageFormat.format(template, types.getId(), expectedType);
             throw new ResourceNotFoundException(message);
         }
-        return isProfileType(item)
+        return isProfileType(types)
                 ? PROFILE
-                : item.getValueType();
+                : types.getValueType();
     }
 
 }

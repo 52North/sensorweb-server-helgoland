@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
+ * Copyright (C) 2013-2022 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published

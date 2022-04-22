@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2021 52°North Spatial Information Research GmbH
+ * Copyright (C) 2013-2022 52°North Spatial Information Research GmbH
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 as published
@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +58,9 @@ import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 import org.n52.io.response.dataset.DatasetOutput;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 import org.n52.series.spi.srv.DataService;
+import org.n52.series.spi.srv.DatasetTypesService;
 import org.n52.series.spi.srv.ParameterService;
 import org.n52.series.spi.srv.RawDataService;
 import org.n52.series.spi.srv.RawFormats;
@@ -89,7 +93,7 @@ public abstract class DataController extends BaseController {
     protected static final String SHOWTIMEINTERVALS_QUERY_OPTION = "showTimeIntervals";
 
     protected static final String PROFILE = "profile";
-
+    protected static final String TRAJECTORY = "trajectory";
     protected static final String OBSERVATIONS = "observations";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatasetsDataController.class);
@@ -405,6 +409,27 @@ public abstract class DataController extends BaseController {
         String datasetType = item.getDatasetType();
         return observationType.equals(PROFILE)
                 || datasetType.equals(PROFILE);
+    }
+
+    protected boolean isProfileType(DatasetTypesMetadata types) {
+        return types.getObservationType().equals(PROFILE) || types.getDatasetType().equals(PROFILE);
+    }
+
+    protected boolean isTrajectoryType(DatasetTypesMetadata types) {
+        return types.getObservationType().equals(TRAJECTORY) || types.getDatasetType().equals(TRAJECTORY);
+    }
+
+    protected List<DatasetTypesMetadata> geDatasetTypes(IoParameters map) {
+        return (getDatasetService() instanceof DatasetTypesService)
+                ? ((DatasetTypesService) getDatasetService()).getDatasetTypesMetadata(map)
+                : geDatasetTypes(getFirstDatasetOutput(map));
+    }
+
+    private List<DatasetTypesMetadata> geDatasetTypes(DatasetOutput<AbstractValue<?>> item) {
+        List<DatasetTypesMetadata> list = new LinkedList<>();
+        list.add(new DatasetTypesMetadata().setId(item.getId()).setDatasetType(item.getDatasetType())
+                .setObservationType(item.getObservationType()).setValueType(item.getValueType()));
+        return list;
     }
 
     protected DatasetOutput<AbstractValue< ? >> getFirstDatasetOutput(IoParameters map) {

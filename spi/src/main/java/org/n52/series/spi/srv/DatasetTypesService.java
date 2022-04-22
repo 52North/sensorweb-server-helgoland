@@ -25,26 +25,14 @@
  * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
  * for more details.
  */
-package org.n52.web.ctrl;
+package org.n52.series.spi.srv;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import org.n52.io.request.IoParameters;
+import org.n52.io.response.dataset.DatasetTypesMetadata;
 
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.servlet.ModelAndView;
+public interface DatasetTypesService {
 
-public interface ResourceController {
-
-    ModelAndView getCollection(HttpServletResponse response, String locale, MultiValueMap<String, String> query);
-
-    String getCollectionName();
-
-    ModelAndView getItem(String id, String locale, MultiValueMap<String, String> query, HttpServletResponse response);
-
-    default Map<String, Object> getExtras(HttpServletResponse response, String id, String locale,
-            MultiValueMap<String, String> query) {
-        return Collections.emptyMap();
-    }
+    List<DatasetTypesMetadata> getDatasetTypesMetadata(IoParameters map);
 }
