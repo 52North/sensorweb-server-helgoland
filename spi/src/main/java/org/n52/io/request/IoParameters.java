@@ -317,7 +317,7 @@ public final class IoParameters implements Parameters {
      *         available.
      */
     public boolean hasStyles() {
-        return (getSingleStyle() != null) || !getReferencedStyles().isEmpty();
+        return getSingleStyle() != null || !getReferencedStyles().isEmpty();
     }
 
     /**
@@ -1181,7 +1181,7 @@ public final class IoParameters implements Parameters {
     }
 
     private boolean isQuantityOnly(Set<String> valueTypes) {
-        return (valueTypes.size() == 1)
+        return valueTypes.size() == 1
                 && valueTypes.contains(QUANTITY);
     }
 

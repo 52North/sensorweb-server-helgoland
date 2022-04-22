@@ -27,7 +27,9 @@
  */
 package org.n52.io.response.dataset;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DataCollection<T> {
@@ -55,7 +57,7 @@ public class DataCollection<T> {
      * @return all series hold by this data collection.
      */
     public Map<String, T> getAllSeries() {
-        return allSeries;
+        return Collections.unmodifiableMap(allSeries);
     }
 
     /**
@@ -74,8 +76,8 @@ public class DataCollection<T> {
         return getAllSeries();
     }
 
-    public void setAllSeries(HashMap<String, T> series) {
-        this.allSeries = series;
+    public void setAllSeries(Map<String, T> series) {
+        this.allSeries = series != null ? new LinkedHashMap<>(series) : Collections.emptyMap();
     }
 
     public int size() {

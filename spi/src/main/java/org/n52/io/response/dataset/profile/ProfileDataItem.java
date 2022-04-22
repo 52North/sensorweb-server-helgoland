@@ -40,6 +40,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @JsonPropertyOrder({
     "verticalFrom",
     "verticalTo",
@@ -47,6 +49,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
     "value",
     "detectionLimit"
 })
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     private BigDecimal verticalFrom;
