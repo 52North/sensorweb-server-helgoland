@@ -44,6 +44,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, Serializable {
 
     private static final long serialVersionUID = -1606015864495830281L;
@@ -100,7 +103,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     @JsonIgnore
     public boolean isSetTimestamp() {
-        return !isSetTimestart() || (isSetTimestart() && timestart.equals(timestamp));
+        return !isSetTimestart() || isSetTimestart() && timestart.equals(timestamp);
     }
 
     @JsonSerialize(converter = TimeOutputConverter.class)

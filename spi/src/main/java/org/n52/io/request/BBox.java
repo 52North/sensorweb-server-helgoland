@@ -32,8 +32,11 @@ import org.locationtech.jts.geom.Point;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @JsonSerialize(using = BBoxSerializer.class)
 @JsonDeserialize(using = BBoxDeserializer.class)
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class BBox {
 
     private Point ll;

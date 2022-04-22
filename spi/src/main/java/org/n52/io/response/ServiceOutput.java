@@ -35,6 +35,9 @@ import org.n52.io.Utils;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ServiceOutput extends ParameterOutput {
 
     public static final String COLLECTION_PATH = "services";

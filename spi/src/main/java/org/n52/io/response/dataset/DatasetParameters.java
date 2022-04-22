@@ -33,6 +33,9 @@ import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.ParameterOutput;
 import org.n52.io.response.SelfSerializedOutput;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class DatasetParameters extends SelfSerializedOutput {
 
     public static final String OFFERING = "offering";

@@ -31,10 +31,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 /**
  * Aggregates common style options of multiple timeseries to render them on one
  * chart.
  */
+@SuppressFBWarnings({"DMI_RANDOM_USED_ONLY_ONCE"})
 public abstract class Style {
 
     public static final String PARAMETER_COLOR = "color";
@@ -48,6 +51,8 @@ public abstract class Style {
     public static final String VALUE_INTERVAL_BY_DAY = "byDay";
 
     public static final String VALUE_INTERVAL_BY_HOUR = "byHour";
+
+    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     private Map<String, String> properties = new HashMap<>();
 
@@ -69,8 +74,7 @@ public abstract class Style {
     }
 
     private String getNextFormattedRandomNumber() {
-        Random random = new Random(System.currentTimeMillis());
-        String randomHex = Integer.toHexString(random.nextInt(256));
+        String randomHex = Integer.toHexString(RANDOM.nextInt(256));
         if (randomHex.length() == 1) {
             // ensure two digits
             randomHex = "0" + randomHex;

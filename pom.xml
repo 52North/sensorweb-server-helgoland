@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52</groupId>
         <artifactId>parent</artifactId>
-        <version>21</version>
+        <version>24</version>
     </parent>
     
     <groupId>org.n52.sensorweb-server.helgoland</groupId>
@@ -56,9 +56,8 @@
 
         <jackson.version>2.13.2.20220328</jackson.version>
         <geotools.version>26.4</geotools.version>
-        <arctic-sea.version>9.4.0</arctic-sea.version>
-        <spring-boot.version>2.6.6</spring-boot.version>
-        <spring.version>5.3.5</spring.version>
+        <arctic-sea.version>9.5.1</arctic-sea.version>
+        <spring-boot.version>2.6.7</spring-boot.version>
         <version.junit>5.8.2</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
@@ -501,7 +500,6 @@
                 <version>4.6.0</version>
                 <scope>provided</scope>
             </dependency>
-            
         </dependencies>
     </dependencyManagement>
     

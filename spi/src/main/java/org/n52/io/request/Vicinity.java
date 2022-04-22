@@ -29,6 +29,9 @@ package org.n52.io.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import org.locationtech.jts.geom.Point;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
@@ -42,6 +45,7 @@ import org.opengis.referencing.FactoryException;
  */
 @JsonSerialize(using = VicinitySerializer.class)
 @JsonDeserialize(using = VicinityDeserializer.class)
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Vicinity {
 
     /**

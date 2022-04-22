@@ -42,6 +42,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Data<V extends AbstractValue< ? >> implements Serializable {
 
     private static final long serialVersionUID = 3119211667773416585L;
@@ -59,7 +62,7 @@ public class Data<V extends AbstractValue< ? >> implements Serializable {
     }
 
     public void addValues(final V[] toAdd) {
-        if ((toAdd != null) && (toAdd.length > 0)) {
+        if (toAdd != null && toAdd.length > 0) {
             this.values.addAll(Arrays.asList(toAdd));
         }
     }
