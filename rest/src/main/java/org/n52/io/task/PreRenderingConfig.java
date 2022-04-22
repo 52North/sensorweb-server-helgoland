@@ -36,6 +36,9 @@ import java.util.Map;
 import org.n52.io.Utils;
 import org.n52.io.request.StyleProperties;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class PreRenderingConfig {
 
     public static final String CONFIG_OUTPUT_PATH = "outputPath";
@@ -52,19 +55,23 @@ public class PreRenderingConfig {
     private List<RenderingConfig> datasetStyles = new ArrayList<>();
 
     public Map<String, String> getGeneralConfig() {
-        return generalConfig;
+        return Collections.unmodifiableMap(generalConfig);
     }
 
     public void setGeneralConfig(Map<String, String> generalConfig) {
-        this.generalConfig = generalConfig;
+        if (generalConfig != null) {
+            this.generalConfig.putAll(generalConfig);
+        }
     }
 
     public List<RenderingConfig> getPhenomenonStyles() {
-        return phenomenonStyles;
+        return Collections.unmodifiableList(phenomenonStyles);
     }
 
     public void setPhenomenonStyles(List<RenderingConfig> phenomenonStyles) {
-        this.phenomenonStyles = phenomenonStyles;
+        if (phenomenonStyles != null) {
+            this.phenomenonStyles.addAll(phenomenonStyles);
+        }
     }
 
     /**
@@ -73,11 +80,12 @@ public class PreRenderingConfig {
      */
     @Deprecated
     public List<RenderingConfig> getTimeseriesStyles() {
-        return datasetStyles;
+        return Collections.unmodifiableList(datasetStyles);
     }
 
     /**
-     * @param timeseriesStyles the styles to set
+     * @param timeseriesStyles
+     *            the styles to set
      * @deprecated use {@link PreRenderingConfig#setDatasetStyles(List)}
      */
     @Deprecated
@@ -95,7 +103,8 @@ public class PreRenderingConfig {
     }
 
     /**
-     * @param seriesStyles the styles to set
+     * @param seriesStyles
+     *            the styles to set
      * @deprecated use {@link PreRenderingConfig#setDatasetStyles(List)}
      */
     @Deprecated
@@ -104,7 +113,7 @@ public class PreRenderingConfig {
     }
 
     public List<RenderingConfig> getDatasetStyles() {
-        return datasetStyles;
+        return Collections.unmodifiableList(datasetStyles);
     }
 
     public void setDatasetStyles(List<RenderingConfig> datasetStyles) {
@@ -175,9 +184,7 @@ public class PreRenderingConfig {
         }
 
         public Map<String, String> getConfig() {
-            return config != null
-                    ? Collections.unmodifiableMap(config)
-                    : config;
+            return config != null ? Collections.unmodifiableMap(config) : config;
         }
 
         public void setConfig(Map<String, String> config) {

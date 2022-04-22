@@ -29,6 +29,9 @@ package org.n52.io.response.dataset;
 
 import org.n52.io.response.ParameterOutput;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class DatasetParameters {
 
     public static final String OFFERING = "offering";

@@ -85,10 +85,10 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
     }
 
     public String getHref() {
-        if ((getHrefBase() == null) && (href == null)) {
+        if (getHrefBase() == null && href == null) {
             return null;
         }
-        return !isSet(href) && (getHrefBase() != null)
+        return !isSet(href) && getHrefBase() != null
                 ? HrefHelper.constructHref(getHrefBase(), getCollectionName()) + "/" + getId()
                 : isSet(href)
                     ? href.getValue()
@@ -191,7 +191,7 @@ public abstract class ParameterOutput extends SelfSerializedOutput implements Ra
 
     @Override
     public boolean equals(Object obj) {
-        if ((obj == null) || !(obj instanceof ParameterOutput)) {
+        if (obj == null || !(obj instanceof ParameterOutput)) {
             return false;
         }
         ParameterOutput other = (ParameterOutput) obj;

@@ -36,6 +36,9 @@ import org.n52.io.response.dataset.AbstractValue;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ResultTimeClassifiedData<T extends AbstractValue< ? >> {
 
     private Map<String, List<AbstractValue< ? >>> valuesByResultTime;

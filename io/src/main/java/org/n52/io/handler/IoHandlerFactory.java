@@ -45,6 +45,9 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.series.spi.srv.DataService;
 import org.n52.series.spi.srv.ParameterService;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP2"})
 public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends AbstractValue< ? >> {
 
     private IoParameters parameters;

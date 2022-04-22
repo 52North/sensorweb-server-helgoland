@@ -36,6 +36,9 @@ import org.n52.io.response.dataset.AbstractValue;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> implements Serializable {
 
     private static final long serialVersionUID = -7292181682632614697L;

@@ -51,6 +51,9 @@ import org.n52.io.response.dataset.DatasetOutput;
 import org.n52.io.response.dataset.DatasetParameters;
 import org.n52.io.response.dataset.TimeseriesMetadataOutput;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+@SuppressFBWarnings({"EI_EXPOSE_REP2"})
 public abstract class CsvIoHandler<T extends AbstractValue< ? >> extends IoHandler<Data<T>> {
 
     public static final Charset UTF8 = Charset.forName("UTF-8");
