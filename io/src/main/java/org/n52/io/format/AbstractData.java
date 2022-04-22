@@ -28,22 +28,31 @@
 package org.n52.io.format;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public abstract class AbstractData {
 
-    private List<Number[]> values;
+    private List<Number[]> values = new LinkedList<>();
 
     private Number[] valueBeforeTimespan;
 
     private Number[] valueAfterTimespan;
 
     public List<Number[]> getValues() {
-        return values;
+        return Collections.unmodifiableList(values);
     }
 
-    public void setValues(List<Number[]> values) {
-        this.values = values;
+    @SuppressFBWarnings({ "EI_EXPOSE_REP2" })
+    public AbstractData setValues(List<Number[]> values) {
+        this.values.clear();
+        if (values != null) {
+            this.values.addAll(values);
+        }
+        return this;
     }
 
     public Number[] getValueBeforeTimespan() {

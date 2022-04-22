@@ -48,6 +48,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 @RestController
 @RequestMapping(value = UrlSettings.BASE, produces = { "application/json" })
 public class ResourcesController extends BaseController implements ResoureControllerConstants {
@@ -56,6 +58,7 @@ public class ResourcesController extends BaseController implements ResoureContro
     private Collection<ParameterRequestMappingAdapter<?>> parameterController;
 
     @Autowired
+    @SuppressFBWarnings({ "EI_EXPOSE_REP2" })
     public ResourcesController(CountingMetadataService metadataService,
             Collection<ParameterRequestMappingAdapter<?>> parameterController) {
         this.metadataService = metadataService;
