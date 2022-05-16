@@ -13,3 +13,7 @@ updates:
   - dependency-name: org.apache.xmlbeans:xmlbeans
     versions:
     - 4.0.0
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
