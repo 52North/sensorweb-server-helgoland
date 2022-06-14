@@ -55,9 +55,9 @@
         <env>dev</env>
 
         <jackson.version>2.13.3</jackson.version>
-        <geotools.version>26.4</geotools.version>
+        <geotools.version>27.0</geotools.version>
         <arctic-sea.version>9.5.3</arctic-sea.version>
-        <spring-boot.version>2.6.7</spring-boot.version>
+        <spring-boot.version>2.7.0</spring-boot.version>
         <version.junit>5.8.2</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
@@ -615,7 +615,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.1.0</version>
                     <configuration>
                         <rules>
                             <requireNoRepositories>
