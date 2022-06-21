@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class ProcedureSearchResult extends SearchResult {
 
+    public static final String TYPE = "procedure";
+
     @Override
     public String getType() {
-        return "procedure";
+        return TYPE;
     }
 
     @Override

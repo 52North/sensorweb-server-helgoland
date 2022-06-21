@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class TagSearchResult extends SearchResult {
 
+    public static final String TYPE = "tag";
+
     @Override
     public String getType() {
-        return "tag";
+        return TYPE;
     }
 
     @Override

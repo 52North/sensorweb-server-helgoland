@@ -29,6 +29,8 @@ package org.n52.series.spi.search;
 
 public class CategorySearchResult extends SearchResult {
 
+    public static final String TYPE = "category";
+
     @Override
     public String getHref() {
         return hasBaseUrl() ? createFullHref() : "./" + getCollectionName() + "/" + getId();
@@ -36,7 +38,7 @@ public class CategorySearchResult extends SearchResult {
 
     @Override
     public String getType() {
-        return "category";
+        return TYPE;
     }
 
     @Override

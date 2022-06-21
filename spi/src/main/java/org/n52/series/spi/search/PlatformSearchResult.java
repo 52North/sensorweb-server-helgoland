@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class PlatformSearchResult extends SearchResult {
 
+    public static final String TYPE = "platform";
+
     @Override
     public String getType() {
-        return "platform";
+        return TYPE;
     }
 
     @Override

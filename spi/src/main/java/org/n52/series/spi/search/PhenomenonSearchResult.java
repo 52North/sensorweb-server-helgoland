@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class PhenomenonSearchResult extends SearchResult {
 
+    public static final String TYPE = "phenomenon";
+
     @Override
     public String getType() {
-        return "phenomenon";
+        return TYPE;
     }
 
     @Override

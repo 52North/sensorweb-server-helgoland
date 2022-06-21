@@ -596,6 +596,10 @@ public final class IoParameters implements Parameters {
         return getValuesOf(SEARCH_TERM);
     }
 
+    public Set<String> getSearchTypes() {
+        return getValuesOf(SEARCH_TYPES, true);
+    }
+
     public Set<String> getGeometryTypes() {
         return getValuesOf(GEOMETRY_TYPES);
     }

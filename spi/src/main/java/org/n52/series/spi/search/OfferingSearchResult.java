@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class OfferingSearchResult extends SearchResult {
 
+    public static final String TYPE = "offering";
+
     @Override
     public String getType() {
-        return "offering";
+        return TYPE;
     }
 
     @Override

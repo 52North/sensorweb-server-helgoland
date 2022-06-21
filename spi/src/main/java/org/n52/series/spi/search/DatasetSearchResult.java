@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class DatasetSearchResult extends SearchResult {
 
+    public static final String TYPE = "dataset";
+
     @Override
     public String getType() {
-        return "dataset";
+        return TYPE;
     }
 
     @Override

@@ -40,6 +40,8 @@ public interface Parameters {
 
     String SEARCH_TERM = "q";
 
+    String SEARCH_TYPES = "types";
+
     /**
      * How detailed the output shall be.
      */

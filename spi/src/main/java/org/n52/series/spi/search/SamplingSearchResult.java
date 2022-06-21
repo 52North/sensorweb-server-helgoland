@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class SamplingSearchResult extends SearchResult {
 
+    public static final String TYPE = "sampling";
+
     @Override
     public String getType() {
-        return "sampling";
+        return TYPE;
     }
 
     @Override

@@ -29,9 +29,11 @@ package org.n52.series.spi.search;
 
 public class MeasuringProgramSearchResult extends SearchResult {
 
+    public static final String TYPE = "measuringProgram";
+
     @Override
     public String getType() {
-        return "measuringProgram";
+        return TYPE;
     }
 
     @Override
