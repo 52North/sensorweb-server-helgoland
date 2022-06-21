@@ -624,7 +624,8 @@ public final class IoParameters implements Parameters {
 
     Set<String> getValuesOf(String parameterName, boolean lowerCase) {
         return containsParameter(parameterName)
-                ? new HashSet<>(lowerCase ? csvToLowerCasedSet(parameterName) : csvToSet(getAsString(parameterName)))
+                ? new HashSet<>(lowerCase ? csvToLowerCasedSet(getAsString(parameterName))
+                        : csvToSet(getAsString(parameterName)))
                 : new HashSet<>(0);
     }
 
