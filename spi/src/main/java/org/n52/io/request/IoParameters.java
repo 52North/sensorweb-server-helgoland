@@ -593,7 +593,7 @@ public final class IoParameters implements Parameters {
     }
 
     public Set<String> getSearchTerms() {
-        return getValuesOf(SEARCH_TERM);
+        return getValuesOf(SEARCH_TERM, true);
     }
 
     public Set<String> getSearchTypes() {
