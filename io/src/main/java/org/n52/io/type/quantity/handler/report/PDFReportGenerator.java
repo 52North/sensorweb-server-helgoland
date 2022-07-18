@@ -148,11 +148,6 @@ public class PDFReportGenerator extends ReportGenerator<Data<QuantityValue>> {
             final String mimeType = Constants.APPLICATION_PDF;
             Fop fop = fopFactory.newFop(mimeType, stream);
 
-            // FopFactory fopFactory = FopFactory.newInstance(cfg);
-            // Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-            // FopFactory fopFactory = fopFactoryBuilder.build();
-            // Fop fop = fopFactory.newFop(APPLICATION_PDF.getMimeType(), stream);
-
             // Create PDF via XSLT transformation
             TransformerFactory transFact = TransformerFactory.newInstance();
             StreamSource transformationRule = getTransforamtionRule();
