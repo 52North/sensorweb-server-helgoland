@@ -300,7 +300,7 @@ public interface Parameters {
     /**
      * Default axes order respects EPSG axes ordering.
      */
-    boolean DEFAULT_FORCE_XY = false;
+    boolean DEFAULT_FORCE_XY = true;
 
     /**
      * Determines if filter shall match domain ids instead of global ids
