@@ -55,10 +55,10 @@
         <env>dev</env>
 
         <jackson.version>2.13.3</jackson.version>
-        <geotools.version>27.0</geotools.version>
+        <geotools.version>27.1</geotools.version>
         <arctic-sea.version>9.6.1</arctic-sea.version>
-        <spring-boot.version>2.7.1</spring-boot.version>
-        <version.junit>5.8.2</version.junit>
+        <spring-boot.version>2.7.2</spring-boot.version>
+        <version.junit>5.9.0</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
         <timestamp>${maven.build.timestamp}</timestamp>
