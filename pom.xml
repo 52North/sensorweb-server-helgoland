@@ -9,7 +9,7 @@
     
     <groupId>org.n52.sensorweb-server.helgoland</groupId>
     <artifactId>helgoland-parent</artifactId>
-    <version>3.5.0-PR.9</version>
+    <version>3.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Sensor Web Server Helgoland</name>
     <url>https://52north.org/research/research-labs/sensor-web/</url>
@@ -47,7 +47,7 @@
         <connection>scm:git:https://github.com/52North/series-rest-api.git</connection>
         <developerConnection>scm:git:https://github.com/52North/series-rest-api.git</developerConnection>
         <url>https://github.com/52North/series-rest-api</url>
-        <tag>v3.5.0-PR.9</tag>
+        <tag>HEAD</tag>
     </scm>
     
     <properties>
