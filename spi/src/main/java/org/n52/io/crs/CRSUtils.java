@@ -298,6 +298,14 @@ public final class CRSUtils {
         return isAxesSwitched(internCrs, getCrsFor(outer));
     }
 
+    public boolean isNorthingFirstEpsgCode(int epsgCode) throws FactoryException {
+        return isNorthingFirstEpsgCode(EPSG_PREFIX + epsgCode);
+    }
+
+    public boolean isNorthingFirstEpsgCode(String epsgCode) throws FactoryException {
+        return AxisOrder.NORTH_EAST.equals(CRS.getAxisOrder(CRS.decode(epsgCode)));
+    }
+
     /**
      * Gets the propert coordinate reference system defined for the given authority code. If no matching CRS
      * could be found the default {@link #internCrs} is being returned.
