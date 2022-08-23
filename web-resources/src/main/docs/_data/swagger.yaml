@@ -1,12 +1,10 @@
-swagger: '2.0'
+openapi: 3.0.3
 info:
-  title: 52°North Sensor Web Server Helgoland API
-  description: Thin Web binding API to access series data
-  version: 2.0.0
-host: example.org
-schemes:
-  - https
-basePath: /api/v1
+  title: 52Â°North Sensor Web Server Helgoland API
+  description: Thin Web binding API to access dataset data
+  version: 3.0.0
+servers:
+  - url: https://cloud.sensorweb.demo.52north.org/sos/api/
 consumes:
   - application/json
 produces:
@@ -16,17 +14,25 @@ paths:
     get:
       summary: Available endpoints.
       tags:
-        - general
+        - General
       description: >
         A (static) collection of endpoints available from this API. Each includes a relative path and a short description.
+      parameters:
+        - $ref: '#/parameters/expandedParam'
       responses:
         '200':
           description: A collection of API endpoints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Base'
   /search:
     get:
       summary: A simple search.
       tags:
-        - general
+        - General
       description: |
         A simple search over all resource's labels over all available endpoints. Note that the searching respects the current locale being selected.
       parameters:
@@ -34,219 +40,122 @@ paths:
           in: query
           description: Term which shall match (case insensitive) a resource's label
           required: true
-          type: string
+          schema:
+            type: string
         - $ref: '#/parameters/localeParam'
       responses:
         '200':
           description: A collection of search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Search'
           
-  /platforms:
+  /categories:
     get:
-      summary: Available Platforms
+      summary: Gets available categories
       tags:
-        - platform
-        - v2.0
-      description: |
-        A collection of available platforms. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
+        - Category
+      description: >
+        All available category instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
         Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
       parameters:
         - $ref: '#/parameters/localeParam'
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
         - $ref: '#/parameters/phenomenaParam'
         - $ref: '#/parameters/proceduresParam'
         - $ref: '#/parameters/offeringsParam'
         - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/geometryTypesParam'
-        - $ref: '#/parameters/platformGeometriesParam'
-        - $ref: '#/parameters/observedGeometriesParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
         - $ref: '#/parameters/valueTypesParam'
-        - $ref: '#/parameters/crsParam'
-        - $ref: '#/parameters/bboxParam'
-        - $ref: '#/parameters/nearParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
       responses:
         '200':
-          description: A collection of platforms
-        '400':
-          description: A query parameter does not match expected format
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-  '/platforms/{platformId}':
-    get:
-      summary: Gets a particular platform
-      tags:
-        - platform
-        - v2.0
-      description: |
-        Full view of a platform instance. A platform encodes a POINT geometry which is the actual location for `stationary` platforms and the last detected location for `mobile` platforms.
-      parameters:
-        - name: platformId
-          in: path
-          required: true
-          type: string
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/crsParam'
-      responses:
-        '200':
-          description: An expanded item
-        '400':
-          description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
+          description: A collection of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "2"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/categories/2"
+                domainId: SOS
+                label: SOS
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/platforms/{platformId}/extras':
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /categories/{categoryId}:
     get:
-      summary: Gets extra infos for platform
+      summary: Gets a catefory instance
       tags:
-        - platform
-        - v2.0
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.
-
-
-        You can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. 
+        - Category
+      description: |
+        Gets a category instance.
       parameters:
-        - name: platformId
+        - name: categoryId
           in: path
           required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
+          schema:
             type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-          
-  /stations:
-    get:
-      summary: Available Stations
-      tags:
-        - station
-      description: |
-        A collection of available stations. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
-        
-        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
-      parameters:
+          example: 2
         - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
-        - $ref: '#/parameters/phenomenaParam'
-        - $ref: '#/parameters/proceduresParam'
-        - $ref: '#/parameters/offeringsParam'
-        - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/crsParam'
-        - $ref: '#/parameters/bboxParam'
-        - $ref: '#/parameters/nearParam'
-      responses:
-        '200':
-          description: A collection of stations
-        '400':
-          description: A query parameter does not match expected format
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/stations/{stationId}':
-    get:
-      summary: Gets a particular station
-      tags:
-        - station
-      description: |
-        Full data view of a station. A station is a [GeoJSON point geometry](https://www.rfc-editor.org/info/rfc7946) which encodes available metadata in its `properties` member.
-      parameters:
-        - name: stationId
-          in: path
-          required: true
-          type: string
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/crsParam'
       responses:
         '200':
           description: An expanded item
-        '400':
-          description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "2"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/categories/2"
+                domainid: SOS
+                label: SOS
+                extras: 
+                  - license
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/stations/{stationId}/extras':
-    get:
-      summary: Gets extra infos for station
-      tags:
-        - station
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.
-
-
-        You can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: stationId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-            
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
   /datasets:
     get:
       summary: Gets available datasets
       tags:
-        - dataset
-        - v2.0
+        - Datasets
+          - Dataset
       description: |
         A collection of available datasets. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
@@ -256,36 +165,51 @@ paths:
         - $ref: '#/parameters/localeParam'
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
         - $ref: '#/parameters/phenomenaParam'
         - $ref: '#/parameters/proceduresParam'
         - $ref: '#/parameters/offeringsParam'
         - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/geometryTypesParam'
-        - $ref: '#/parameters/platformGeometriesParam'
-        - $ref: '#/parameters/observedGeometriesParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
         - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
       responses:
         '200':
           description: A collection of datasets
-        '400':
-          description: A query parameter does not match expected format
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+              example:
+                id: "79"
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
             
   '/datasets/{datasetId}':
     get:
       summary: Gets a particular dataset
       tags:
-        - dataset
-        - v2.0
+        - Datasets
+          - Dataset
       description: |
         Full view of a dataset instance. All relevant relations (parameters, unit, platform, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).
       parameters:
@@ -296,96 +220,38 @@ paths:
         - $ref: '#/parameters/localeParam'
       responses:
         '200':
-          description: An expanded item
+          description: A collection of datasets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasetExpanded'
+              example:
+                id: "79"
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-  '/datasets/{datasetId}/extras':
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /datasets/{datasetId}/observations:
     get:
-      summary: Gets extra infos for dataset
+      summary: Gets the observation values for the dataset
       tags:
-        - dataset
-        - v2.0
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each dataset.
-
-
-        You can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: datasetId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-  '/datasets/{datasetId}/{interval}':
-    get:
-      summary: Gets extra infos for dataset
-      tags:
-        - dataset
-        - v2.0
-      description: >
-        Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are
-        
-        * `lastDay.png`
-        
-        * `lastWeek.png`
-        
-        * `lastMonth.png`
-        
-        
-        Datasets of type `quantity` can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.
-      parameters:
-        - name: datasetId
-          in: path
-          required: true
-          type: string
-        - name: interval
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: In case no prerendered image available (or is currently being rendered)
-            
-  '/datasets/{datasetId}/data':
-    get:
-      summary: Gets data of a dataset
-      tags:
-        - dataset
-        - v2.0
+        - Datasets
+          - Dataset
       description: >
         Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
 
 
         What Mime-Types are supported depends on the `valueType`. For example `quantity` observations can be drawn as a timeseries chart 
         (i.e. either `image/png` or `application/pdf`). Supported Mime-Types are listed for each `valueType` when querying 
-        `/service/{serviceId}?valueTypes=all` produces:
+        `/service/{serviceId}` produces:
         
           - `application/json`
           - `image/png`
@@ -406,31 +272,47 @@ paths:
           type: string
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/timespanParam'
+        - $ref: '#/parameters/formatParam'
         - $ref: '#/parameters/resultTimesParam'
         - $ref: '#/parameters/showTimeIntervalsParam'
+        - $ref: '#/parameters/generalizeParam'
       responses:
         '200':
           description: Data for a given `timespan` in a requested output format
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Values'
+                  - $ref: '#/components/schemas/ValuesExpanded'
+                  - $ref: '#/components/schemas/ValuesFlot'
+                  - $ref: '#/components/schemas/ValuesFlotExpanded'
         '400':
           description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_400'
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
   /timeseries:
     get:
-      summary: Gets available timeseries
+      summary: Gets available datasets
       tags:
-        - timeseries
+        - Datasets
+          - Timeseries
       description: |
-        A collection of timeseries (i.e. datasets of type `quantity` which have been observed at `stationary`, `insitu` platforms having a 0-dimensional (POINT) location geometry. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        A collection of available datasets whose dataset type is `timeseries`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
         
         Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
@@ -438,612 +320,215 @@ paths:
         - $ref: '#/parameters/localeParam'
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
         - $ref: '#/parameters/phenomenaParam'
         - $ref: '#/parameters/proceduresParam'
         - $ref: '#/parameters/offeringsParam'
         - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
         - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
       responses:
         '200':
-          description: A collection of timeseries
-  '/timeseries/{timeseriesId}':
+          description: A collection of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+              example:
+                id: "79"
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /trajectories:
     get:
-      summary: Gets a particular timeseries
+      summary: Gets available datasets
       tags:
-        - timeseries
+        - Datasets
+          - Trajectories
       description: |
-        Full view of a timeseries instance. All relevant relations (parameters, unit, station, etc.) are inlined. If any additional information is listed in the `extras` array member it can be retrieved via `/datasets/{datasetId}/extras` (see next).
+        A collection of available datasets whose dataset type is `trajectory`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
-        For backward compatibility reasons metadata about `renderingHints` and `statusIntervals` are inlined here as well. However, those are listed within `extra` infos to make it consistent.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
       parameters:
-        - name: timeseriesId
-          in: path
-          required: true
-          type: string
         - $ref: '#/parameters/localeParam'
-      responses:
-        '200':
-          description: An expanded item
-        '400':
-          description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/timeseries/{timeseriesId}/extras':
-    get:
-      summary: Gets extra infos for timeseries
-      tags:
-        - timeseries
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each timeseries.
-
-
-        You can query just the ones you are interested in by appending the `fields`query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: timeseriesId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/timeseries/{timeseriesId}/getData':
-    get:
-      summary: Gets data of a timeseries
-      tags:
-        - timeseries
-      description: >
-        Gets data for a given `timespan` filter. Implementations may limit the maximum amount of time intervals a client can query in one request. 
-
-
-        This operation does only return data of `quantity` dataset types from`stationary`, `insitu` platforms having a 0-dimensional location geometry (`station`). Supported Mime-Types are `application/json`, `image/png`, `application/pdf`, and `text/csv`.
-      produces:
-        - application/json
-        - image/png
-        - text/csv
-        - application/pdf
-        - application/zip
-      parameters:
-        - name: timeseriesId
-          in: path
-          required: true
-          type: string
         - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/timespanParam'
-        - $ref: '#/parameters/widthParam'
-        - $ref: '#/parameters/heightParam'
-        - $ref: '#/parameters/legendParam'
-        - $ref: '#/parameters/gridParam'
-        - $ref: '#/parameters/generalizeParam'
-        - $ref: '#/parameters/formatParam'
-        - $ref: '#/parameters/base64Param'
-        - $ref: '#/parameters/showTimeIntervalsParam'
-      responses:
-        '200':
-          description: Data for a given `timespan` in a requested output format
-        '400':
-          description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /geometries:
-    get:
-      summary: A collection of available geometries
-      tags:
-        - geometry
-        - v2.0
-      description: |
-        All available geometries instances. Possible geometry types are 
-        
-        * `site`, i.e. `stationary` platform locations (fixed) 
-        
-        * `track`, i.e. trajectories made by a `mobile` platform
-        
-        * `static`, i.e. a fixed geometry observed by a `remote` platform
-        
-        * `dynamic`, i.e. geometry observed by a `remote` platform which changes over time
-      parameters:
-        - $ref: '#/parameters/geometryTypesParam'
-        - $ref: '#/parameters/platformGeometriesParam'
-        - $ref: '#/parameters/observedGeometriesParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
         - $ref: '#/parameters/crsParam'
         - $ref: '#/parameters/bboxParam'
         - $ref: '#/parameters/nearParam'
       responses:
         '200':
-          description: A collection of geometries
-  /geometries/{geometryId}:
+          description: A collection of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+              example:
+                id: "79"
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /individualObservations:
     get:
-      summary: Gets a particular geometry
+      summary: Gets available datasets
       tags:
-        - geometry
-        - v2.0
+        - Datasets
+          - IndividualObservations
       description: |
-        Full view of a geometry instance. Encodes as full [GeoJSON geometry](https://www.rfc-editor.org/info/rfc7946).
+        A collection of available datasets whose dataset type is `individualObservation`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
       parameters:
-        - name: geometryId
-          in: path
-          required: true
-          type: string
         - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
         - $ref: '#/parameters/crsParam'
+        - $ref: '#/parameters/bboxParam'
+        - $ref: '#/parameters/nearParam'
       responses:
         '200':
-          description: An expanded item
-        '400':
-          description: A query parameter does not match expected format
-          schema:
-            $ref: '#/definitions/Error'
+          description: A collection of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+              example:
+                id: "79"
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-          
-  /services:
-    get:
-      summary: Get available service instances
-      tags:
-        - parameter
-      description: >
-        All available service instances. For backwards compatibility reasons the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.
-      parameters:
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/valueTypesParam'
-      responses:
-        '200':
-          description: A collection of services
-  '/services/{serviceId}':
-    get:
-      summary: Gets an instance
-      tags:
-        - parameter
-      description: |
-        Gets a service instance.
-        
-        
-        Depending on what dataset types are available, differing output formats are available. For example, `image/png` (render as chart) or `application/pdf` (generating a report).
-      parameters:
-        - name: serviceId
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/services/{serviceId}/extras':
-    get:
-      summary: Gets extra infos for a service
-      tags:
-        - parameter
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each service.
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
 
 
-        You can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: serviceId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  /categories:
-    get:
-      summary: Gets available categories
-      tags:
-        - parameter
-      description: >
-        All available category instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
-        
-        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
-      parameters:
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
-        - $ref: '#/parameters/phenomenaParam'
-        - $ref: '#/parameters/proceduresParam'
-        - $ref: '#/parameters/offeringsParam'
-        - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/valueTypesParam'
-      responses:
-        '200':
-          description: A collection of categories
-  '/categories/{categoryId}':
-    get:
-      summary: Gets a catefory instance
-      tags:
-        - parameter
-      description: |
-        Gets a category instance.
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/categories/{categoryId}/extras':
-    get:
-      summary: Gets extra infos for a category
-      tags:
-        - parameter
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the `extras` metadata field of each category.
-
-
-        You can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: categoryId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  /phenomena:
-    get:
-      summary: Get available phenomenon instances
-      tags:
-        - parameter
-      description: >
-        All available phenomenon instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
-        
-        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
-      parameters:
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
-        - $ref: '#/parameters/phenomenaParam'
-        - $ref: '#/parameters/proceduresParam'
-        - $ref: '#/parameters/offeringsParam'
-        - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/valueTypesParam'
-      responses:
-        '200':
-          description: A collection of phenomena
-  '/phenomena/{phenomenonId}':
-    get:
-      summary: Gets a phenomenon instance
-      tags:
-        - parameter
-      description: |
-        Gets a phenomenon instance
-      parameters:
-        - name: phenomenonId
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/phenomena/{phenomenonId}/extras':
-    get:
-      summary: Gets extra infos for a phenomenon
-      tags:
-        - parameter
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each phemomenon.
-
-
-        You can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: phenomenonId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  /procedure:
-    get:
-      summary: Get available procedure instances
-      tags:
-        - parameter
-      description: >
-        All available procedure instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
-        
-        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
-      parameters:
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
-        - $ref: '#/parameters/phenomenaParam'
-        - $ref: '#/parameters/proceduresParam'
-        - $ref: '#/parameters/offeringsParam'
-        - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/valueTypesParam'
-      responses:
-        '200':
-          description: A collection of procedures
-  '/procedures/{procedureId}':
-    get:
-      summary: Gets a procedure instance
-      tags:
-        - parameter
-      description: |
-        Gets a procedure instance.
-      parameters:
-        - name: procedureId
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/procedures/{procedureId}/extras':
-    get:
-      summary: Gets extra infos for a procedure
-      tags:
-        - parameter
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each procedure.
-
-
-        You can query just the ones you are interested in by appending the `fields`  query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: procedureId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  /offerings:
-    get:
-      summary: Get available offerings instances
-      tags:
-        - parameter
-      description: >
-        All available offering instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
-        
-        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
-      parameters:
-        - $ref: '#/parameters/localeParam'
-        - $ref: '#/parameters/expandedParam'
-        - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
-        - $ref: '#/parameters/phenomenaParam'
-        - $ref: '#/parameters/proceduresParam'
-        - $ref: '#/parameters/offeringsParam'
-        - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
-        - $ref: '#/parameters/valueTypesParam'
-      responses:
-        '200':
-          description: A collection of offerings
-  '/offerings/{offeringId}':
-    get:
-      summary: Gets an offering instance
-      tags:
-        - parameter
-      description: |
-        Gets an offering instance.
-      parameters:
-        - name: offeringId
-          in: path
-          required: true
-          type: string
-      responses:
-        '200':
-          description: An expanded item
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/offerings/{offeringId}/extras':
-    get:
-      summary: Gets extra infos for a phenomenon
-      tags:
-        - parameter
-      description: >
-        Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the `extras` metadata field of each offering.
-
-
-        You can query just the ones you are interested in by appending the `fields` query parameter and passing a comma-separated value list to it. 
-      parameters:
-        - name: offeringId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
-      responses:
-        '200':
-          description: A list of (selected) extra infos
-        '404':
-          description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
-        '415':
-          description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
   /features:
     get:
       summary: Get available feature instances
       tags:
-        - parameter
+        - Feature
       description: >
-        All available instances. For backwards compatibility reasons the output  is filtered by default to list only those instances related to `stationary`,  `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`.
+        All available instances.
       parameters:
         - $ref: '#/parameters/localeParam'
         - $ref: '#/parameters/expandedParam'
         - $ref: '#/parameters/servicesParam'
-        - $ref: '#/parameters/categoriesParam'
         - $ref: '#/parameters/phenomenaParam'
         - $ref: '#/parameters/proceduresParam'
         - $ref: '#/parameters/offeringsParam'
         - $ref: '#/parameters/platformsParam'
-        - $ref: '#/parameters/stationsParam'
-        - $ref: '#/parameters/platformTypesParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
         - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+        - $ref: '#/parameters/crsParam'
+        - $ref: '#/parameters/bboxParam'
+        - $ref: '#/parameters/nearParam'
       responses:
         '200':
           description: A collection of features
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Feature'
+              example:
+                id: "3"
+                properties:
+                  label: ELV WS2500
+                  href: "https://cloud.sensorweb.demo.52north.org/sos/api/features/3"
+                  domainId: elv-ws2500
+                type: Feature
+                geometry:
+                  type: Point
+                  coordinates:
+                    - 7.652428150177
+                    - 51.934814453125
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
   '/features/{featureId}':
     get:
       summary: Gets an feature instance
       tags:
-        - parameter
+        - Feature
       description: |
         Gets a feature instance.
       parameters:
@@ -1051,54 +536,664 @@ paths:
           in: path
           required: true
           type: string
+        - $ref: '#/parameters/localeParam'
       responses:
         '200':
           description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureExpanded'
+              example:
+                id: "3"
+                properties:
+                  label: ELV WS2500
+                  href: "https://cloud.sensorweb.demo.52north.org/sos/api/features/3"
+                  domainId: elv-ws2500
+                  datasets:
+                    phenomenon:
+                      id: 42,
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/phenomena/42,
+                      domainId: AthmosphericPressure
+                      label: AthmosphericPressure
+                    procedure:
+                      id: "8"
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/procedures/8
+                      domainId: ws2500
+                      label: 52n-elv-ws2500
+                    category:
+                      id: "2"
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/categories/2
+                      domainId: SOS
+                      label: SOS
+                    offering:
+                      id: "8"
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/offerings/8
+                      domainId: ws2500
+                      label: 52North Weatherstation ELV WS2500
+                    service:
+                      id: "1"
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                      domainId: 1
+                      label: My RESTful Dataset Service
+                    platform:
+                      id: "5"
+                      href: https://cloud.sensorweb.demo.52north.org/sos/api/platforms/5
+                      domainId: elv-ws2500
+                      label: ELV WS2500
+                type: Feature
+                geometry:
+                  type: Point
+                  coordinates:
+                    - 7.652428150177
+                    - 51.934814453125
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
-          schema:
-            $ref: '#/definitions/Error'
-  '/features/{featureId}/extras':
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /offerings:
     get:
-      summary: Gets extra infos for a feature
+      summary: Gets available offerings
       tags:
-        - parameter
+        - Offering
       description: >
-        All available feature instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to `stationary`, `insitu` platforms. To retrieve a full metadata view add `platformTypes=all`. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
-        
+        All available offering instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
         
         Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
       parameters:
-        - name: featureId
-          in: path
-          required: true
-          type: string
-        - name: fields
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: csv
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
       responses:
         '200':
-          description: A list of (selected) extra infos
+          description: A collection of offerings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "6"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/offerings/6"
+                domainId: wxt520
+                label: 52North Weatherstation Vaisala WXT 520
         '404':
           description: Item not found
-          schema:
-            $ref: '#/definitions/Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
         '415':
           description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /offerings/{offeringId}:
+    get:
+      summary: Gets a offering instance
+      tags:
+        - Offering
+      description: |
+        Gets a offering instance.
+      parameters:
+        - name: offeringId
+          in: path
+          required: true
           schema:
-            $ref: '#/definitions/Error'
-            
-            
-            
-            
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "6"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/offerings/6"
+                domainId: wxt520
+                label: 52North Weatherstation Vaisala WXT 520
+                extras: 
+                  - license
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /phenomena:
+    get:
+      summary: Gets available offerings
+      tags:
+        - Phenomena
+      description: >
+        All available offering instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
+      parameters:
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+      responses:
+        '200':
+          description: A collection of offerings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "39"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/phenomena/39"
+                domainId: AirTemperature
+                label: AirTemperature
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /phenomena/{phenomenaId}:
+    get:
+      summary: Gets a offering instance
+      tags:
+        - Phenomena
+      description: |
+        Gets a phenomena instance.
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "39"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/phenomena/39"
+                domainId: AirTemperature
+                label: AirTemperature
+                extras: 
+                  - license
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /platforms:
+    get:
+      summary: Gets available platforms
+      tags:
+        - Platform
+      description: >
+        All available platform instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
+      parameters:
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+      responses:
+        '200':
+          description: A collection of platforms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "5"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/platforms/5"
+                domainId: elv-ws2500
+                label: ELV WS2500
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /platforms/{platformId}:
+    get:
+      summary: Gets a platform instance
+      tags:
+        - Platform
+      description: |
+        Gets a platform instance.
+      parameters:
+        - name: platformId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "5"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/platforms/5"
+                domainId: elv-ws2500
+                label: ELV WS2500
+                extras: 
+                  - license
+                  - parents
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /procedures:
+    get:
+      summary: Gets available procedures
+      tags:
+        - Procedure
+      description: >
+        All available procedure instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
+      parameters:
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+      responses:
+        '200':
+          description: A collection of procedures
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "8"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/procedures/8"
+                domainId: wxt520
+                label: 52n-elv-ws2500
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /procedures/{procedureId}:
+    get:
+      summary: Gets a offering instance
+      tags:
+        - Procedure
+      description: |
+        Gets a procedure instance.
+      parameters:
+        - name: procedureId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "8"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/procedures/8"
+                domainId: wxt520
+                label: 52n-elv-ws2500
+                extras: 
+                  - license
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /tags:
+    get:
+      summary: Gets available tags
+      tags:
+        - Tag
+      description: >
+        All available tag instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
+      parameters:
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/servicesParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+      responses:
+        '200':
+          description: A collection of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "3"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/tags/3"
+                domainId: 3
+                label: 3
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+  /tags/{tagId}:
+    get:
+      summary: Gets a offering instance
+      tags:
+        - Tag
+      description: |
+        Gets a tag instance.
+      parameters:
+        - name: tagId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultEntityExpanded'
+              example:
+                id: "3"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/tags/3"
+                domainId: 3
+                label: 3
+                extras: 
+                  - license
+                service:
+                  id: "1"
+                  href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+                  domainId: "1"
+                  label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /services:
+    get:
+      summary: Gets available services
+      tags:
+        - Service
+      description: >
+        All available service instances. Depending on the `expanded` parameter the collections items are compact or do inline full metadata.
+        
+        Filter options help to focus on a particular set of items. Filter either by parameters or spatially.
+      parameters:
+        - $ref: '#/parameters/localeParam'
+        - $ref: '#/parameters/expandedParam'
+        - $ref: '#/parameters/offeringsParam'
+        - $ref: '#/parameters/phenomenaParam'
+        - $ref: '#/parameters/proceduresParam'
+        - $ref: '#/parameters/categoriesParam'
+        - $ref: '#/parameters/platformsParam'
+        - $ref: '#/parameters/featuresParam'
+        - $ref: '#/parameters/datasetTypesParam'
+        - $ref: '#/parameters/observationTypesParam'
+        - $ref: '#/parameters/valueTypesParam'
+        - $ref: '#/parameters/mobileParam'
+        - $ref: '#/parameters/insituParam'
+        - $ref: '#/parameters/matchDomainIdsParam'
+      responses:
+        '200':
+          description: A collection of services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DefaultEntity'
+              example:
+                id: "1"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/services/1"
+                domainId: "1"
+                label: My RESTful Dataset Service
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
+
+  /services/{serviceId}:
+    get:
+      summary: Gets a offering instance
+      tags:
+        - Service
+      description: |
+        Gets a category instance.
+      parameters:
+        - name: offeringId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: 2
+        - $ref: '#/parameters/localeParam'
+      responses:
+        '200':
+          description: An expanded item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceExpanded'
+              example:
+                id: "1"
+                href: "https://cloud.sensorweb.demo.52north.org/sos/api/services/1"
+                domainId: "1"
+                label: My RESTful Dataset Service
+                extras: 
+                  - license
+                supportsFirstLatest: true
+                quantities: 
+                  features: 4
+                  phenomena: 33
+                  procedures: 4
+                  categories: 1
+                  platforms: 4
+                  offerings: 4
+                  datasets:
+                    total: 43
+                    timeseries: 43
+                    individualObservations: 0
+                    trajectories: 0
+                    profiles: 0
+                  measuringPrograms: 0
+                  samplings: 0
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_404'
+        '415':
+          description: Media Item not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Errors/Error_415'
 parameters:
   expandedParam:
     name: expanded
@@ -1109,103 +1204,179 @@ parameters:
 
 
       The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is `false`.
-  platformTypesParam:
-    name: platformTypes
-    in: query
-    type: array
-    items:
-      type: string
-    collectionFormat: csv
-    description: >
-      Filters the resources to get only those related to the platform type filter.
 
-
-      Allowed values are `stationary`, `mobile`, `insitu`, `remote`, `all`. 
-      
-      
-      The default is `stationary,insitu`.
-  valueTypesParam:
-    name: valueTypes
+    required: false
+    explode: true
+    schema:
+      type: boolean
+      enum:
+        - true
+        - false
+  datasetTypesParam:
+    name: datasetTypes
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: timeseries
     collectionFormat: csv
     description: >
       Filters the resources to get only those related to the dataset type filter.
 
 
-      Allowed values are `quantity`, `count`, `text`, `all` or any other custom types given by the  implementing backend.
+      Allowed values are `individualObservation`, `sampling`, `timeseries`, `profile`, `trajectory`.
+  observationTypesParam:
+    name: observationTypes
+    in: query
+    required: false
+    explode: true
+    schema:
+      type: string
+      example: simple
+    collectionFormat: csv
+    description: >
+      Filters the resources to get only those related to the observation type filter.
 
 
-      The default is `quantity`.
+      Allowed values are `simple`, `profile`, `timeseries`, `trajectory`.
+  valueTypesParam:
+    name: valueTypes
+    in: query
+    required: false
+    explode: true
+    schema:
+        type: string
+        example: quantity
+    collectionFormat: csv
+    description: >
+      Filters the resources to get only those related to the value type filter.
+
+
+      Allowed values are `quantity`, `count`, `text`, `category`, `bool`, `geometry`, `blob`, `reference`, `complex`, `dataarray` or any other custom types given by the  implementing backend.
+  mobileParam:
+    name: mobile
+    in: query
+    type: boolean
+    description: >
+      Filters the resources to get only those related to the mobile filter.
+    required: false
+    explode: true
+    schema:
+      type: boolean
+      enum:
+        - true
+        - false
+  insituParam:
+    name: insitu
+    in: query
+    type: boolean
+    description: >
+      Filters the resources to get only those related to the insitu filter.
+    required: false
+    explode: true
+    schema:
+      type: boolean
+      enum:
+        - true
+        - false
+  matchDomainIdsParam :
+    name: matchDomainIds
+    in: query
+    type: boolean
+    description: >
+      If `true` the filter parameters would be executed on the domain id/identifier of the entity. The default is `false`.
+    required: false
+    explode: true
+    schema:
+      type: boolean
+      enum:
+        - true
+        - false
   servicesParam:
     name: services
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given service id does match. The single form (`service`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
+      All resources where the given service id does match.
   categoriesParam:
     name: categories
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given category id does match. The single form (`category`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
+      All resources where the given category id does match.
   phenomenaParam:
     name: phenomena
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given phenomenon id does match. The single form (`phenomenon`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
+      All resources where the given phenomenon id does match.
   proceduresParam:
     name: procedures
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given procedure id does match. The single form (`procedure`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
+      All resources where the given procedure id does match.
   offeringsParam:
     name: offerings
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given offering id does match. The single form (`offering`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
-  stationsParam:
-    name: stations
+      All resources where the given offering id does match.
+  featuresParam:
+    name: features
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: >
-      All resources where the given station id does match. The single form (`station`) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.
+      All resources where the given feature id does match.
   platformsParam:
     name: platforms
     in: query
-    type: array
-    items:
+    required: false
+    explode: true
+    schema:
       type: string
+      example: simple
     collectionFormat: csv
     description: |
       All resources where the given platform id does match.
   localeParam:
     name: locale
     in: query
-    type: string
+    required: false
+    example: de_de
+    schema:
+      type: string
     description: >
       Specifies the language as [ISO639](http://en.wikipedia.org/wiki/ISO_639) code. Subdivisions are  respected by an `_` , e.g. `en_US` for American English.
 
@@ -1246,7 +1417,7 @@ parameters:
     in: query
     type: string
     description: >
-      Stations within a given bounding box (in WGS84 by default). Refer to the
+      Features within a given bounding box (in WGS84 by default). Refer to the
       crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.
     
 
@@ -1279,7 +1450,7 @@ parameters:
     in: query
     type: string
     description: >
-      Stations within a given bounding box (in WGS84 by default). Refer to the `crs` parameter if a  non-default CRS shall be used.
+      Features within a given bounding box (in WGS84 by default). Refer to the `crs` parameter if a  non-default CRS shall be used.
 
 
       ```json
@@ -1401,10 +1572,399 @@ parameters:
   showTimeIntervalsParam:
     name: showTimeIntervals
     in: query
-    type: boolean
-    collectionFormat: csv
-    description: |
-      Select whether Time fields in the output shall be returned using a single Timestamp or a Time Interval.   
+    schema:
+      type: boolean
+      example: false
+    description: >
+      Select whether Time fields in the output shall be returned using a single Timestamp or a Time Interval.
+components:
+  schemas:
+    Base:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entry, used for querying.
+          example: datasets
+        label: 
+          type: string
+          description: Label/name of the resource.
+          example: Datasets
+        description: 
+          type: string
+          description: Description of the resource.
+          example: Represents a sequence of data values observed over time.
+        href: 
+          type: string
+          format: uri
+          description: Link to the resource.
+          example: http://localhost:8080/52n-sos-webapp/api/datasets
+        size:
+          type: integer
+          description: Count of available entries.
+          example: 10
+          required: false 
+    Search:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entry, used for querying.
+          example: "1"
+        label: 
+          type: string
+          description: The label/name of the entry.
+          example: Datasets
+        type: 
+          type: string
+          description: The entity type of the entry.
+          example: dataset
+        href: 
+          type: string
+          format: uri
+          description: Link to the representation of the entity
+          example: http://localhost:8080/52n-sos-webapp/api/datasets/1
+    DefaultEntity:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entity, used for querying
+        href: 
+          type: string
+          format: uri
+          description: Link to the representation of the entity
+        domainid: 
+          type: string
+          description: The domainid/identifier of the entity.
+        label: 
+          type: string
+          description: The label/name of the entity.
+    DefaultEntityExpanded:
+      allOf:
+        - $ref: '#/components/schemas/DefaultEntity'
+        - type: object
+          properties:
+            extras:
+              $ref: '#/components/schemas/Extra'
+            service:
+              $ref: '#/components/schemas/Service'
+    Service:
+      allOf:
+        - $ref: '#/components/schemas/DefaultEntity'
+      example:
+        service:
+          id: 1
+          href: https://cloud.sensorweb.demo.52north.org/sos/api/services/1
+          domainId: 1
+          label: My RESTful Dataset Service 
+    Extra:
+      type: array
+      items:
+        type: string
+        example: license
+    Extras:
+      type: object
+      properties:
+        license:
+          type: string
+          example: http://special-licensing.lic/
+    Dataset:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entity, used for querying
+        href: 
+          type: string
+          format: uri
+          description: Link to the representation of the entity
+        label: 
+          type: string
+          description: The label/name of the entity.
+        datasetType:
+          type: string
+          description: The type of the dataset
+        observationType:
+          type: string
+          description: The type of the dataset observations
+        valueType:
+          type: string
+          description: The type of the dataset values
+        mobile:
+          type: string
+          description: Is this a mobile dataset
+        insitu:
+          type: string
+          description: Is this an insitu dataset
+        uom:
+          type: string
+          description: The unit of measurement of the dataset
+        originTimezone:
+          type: string
+          description: The original time zome of the observation value
+        samplingTimeStart:
+          type: string
+          format: date-time
+          description: The minimal time the observation value
+        samplingTimeEnd:
+          type: string
+          format: date-time
+          description: The maximum time of the observation value
+        feature:
+          $ref: '#/components/schemas/Feature'
+    DatasetExpanded:
+      allOf:
+        - $ref: '#/components/schemas/Dataset'
+        - type: object
+          properties:
+            extras:
+              type: array
+              items:
+                type: string
+            referenceValues:
+              type: array
+              items:
+                $ref: '#/components/schemas/ReferenceValue'
+            firstValue:
+              $ref: '#/components/schemas/Value'
+            lastValue:
+              $ref: '#/components/schemas/Value'
+            parameters:
+              $ref: '#/components/schemas/DatasetParameters'
+    DatasetParameters:
+      type: object
+      properties:
+        phenomenon:
+          $ref: '#/components/schemas/DefaultEntity'
+        procedure:
+          $ref: '#/components/schemas/DefaultEntity'
+        category:
+          $ref: '#/components/schemas/DefaultEntity'
+        offering:
+          $ref: '#/components/schemas/DefaultEntity'
+        service:
+          $ref: '#/components/schemas/DefaultEntity'
+        platform:
+          $ref: '#/components/schemas/DefaultEntity'
+    ReferenceValue:
+      type: object
+      properties:
+        referenceValueId:
+          type: string
+          description: The id of the reference  dataset.
+        label:
+          type: string
+          description: The label/name of the reference value.
+        lastValue:
+          $ref: '#/components/schemas/Value'
+    FeatureProperties:
+      type: object
+      properties: 
+        label: 
+          type: string
+          description: The label/name of the entity.
+        href: 
+          type: string
+          format: uri
+          description: Link to the representation of the entity
+        domainid: 
+          type: string
+          description: The domainid/identifier of the entity.
+    FeatureDatasets:
+      type: object
+      properties:
+        phenomenon:
+          $ref: '#/components/schemas/DefaultEntity'
+        procedure:
+          $ref: '#/components/schemas/DefaultEntity'
+        category:
+          $ref: '#/components/schemas/DefaultEntity'
+        offering:
+          $ref: '#/components/schemas/DefaultEntity'
+        service:
+          $ref: '#/components/schemas/DefaultEntity'
+        platform:
+          $ref: '#/components/schemas/DefaultEntity'
+    FeaturePropertiesExpanded:
+      allOf:
+        - $ref: '#/components/schemas/FeatureProperties'
+        - type: object
+          properties: 
+            datasets:
+              $ref: '#/components/schemas/FeatureDatasets'
+    Feature:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entity, used for querying
+        properties:
+          description:
+          allOf:
+            - $ref: '#/components/schemas/FeatureProperties'
+        type: 
+          type: string
+          description: The type of the GeoJSON feature
+        geometry:
+          type: object
+          properties:
+            type: 
+              type: string
+              description: The type of the GeoJSON geometry
+            coordinates:
+              type: array
+              description: The coordinates of the GeoJSON geometry
+              maxItems: 2
+              minItems: 2
+              items:
+                type: number
+    FeatureExpanded:
+      type: object
+      properties: 
+        id: 
+          type: string
+          description: The id of the entity, used for querying
+        properties:
+          description:
+          $ref: '#/components/schemas/FeaturePropertiesExpanded'
+        type: 
+          type: string
+          description: The type of the GeoJSON feature
+        geometry:
+          type: object
+          properties:
+            type: 
+              type: string
+              description: The type of the GeoJSON geometry
+            coordinates:
+              type: array
+              description: The coordinates of the GeoJSON geometry
+              maxItems: 2
+              minItems: 2
+              items:
+                type: number
+    ServiceExpanded:
+      allOf:
+        - $ref: '#/components/schemas/Service'
+        - type: object
+          properties:
+            extras:
+              type: array
+              items:
+                type: string
+                example: license
+            supportsFirstLatest:
+              type: boolean 
+            quantities:
+              type: object
+              properties:
+                featuers:
+                  type: integer
+                phenomena:
+                  type: integer
+                procedures:
+                  type: integer
+                categories:
+                  type: integer
+                platforms:
+                  type: integer
+                offerings:
+                  type: integer
+                datasets:
+                  type: object
+                  properties:
+                    total:
+                      type: integer
+                    timeseries:
+                      type: integer
+                    individualObservations:
+                      type: integer
+                    trajectories:
+                      type: integer
+                    profiles:
+                      type: integer
+                measuringPrograms:
+                  type: integer
+                samplings:
+                  samplings: integer
+    Value:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: The time value
+        value:
+          type: number
+          description: The value
+    Values:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Value'
+    ValuesExpanded:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Value'
+        extra:
+          type: object
+          properties:
+            referenceValues:
+              type: array
+              items:
+                $ref: '#/components/schemas/Value'
+            valueBeforeTimespan:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/Value'
+            valueAfterTimespan:
+              nullable: true
+              oneOf:
+                - $ref: '#/components/schemas/Value'
+    ValuesFlot:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFlot'
+    ValuesFlotExpanded:
+      type: object
+      description: The expanded flot value output
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFlot'
+        referenceValues:
+          required: false
+          type: array
+          items:
+            $ref: '#/components/schemas/ValueFlot'
+        valueBeforeTimespan:
+          required: false
+          oneOf:
+            - $ref: '#/components/schemas/ValueFlot'
+        valueAfterTimespan:
+          required: false
+          oneOf:
+            - $ref: '#/components/schemas/ValueFlot'
+    ValueFlot:
+      type: array
+      description: The time and value
+      maxItems: 2
+      minItems: 2
+      items:
+        oneOf:
+          - integer
+          - number
+
 definitions:
   SimpleDataRequest:
     type: object
@@ -1444,13 +2004,36 @@ definitions:
           - line
           - bar
 
-  Error:
-    type: object
-    properties:
-      statusCode:
-        type: integer
-        format: int32
-      reason:
-        type: string
-      userMessage:
-        type: string
+  Errors:
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int32
+        reason:
+          type: string
+        userMessage:
+          type: string
+    Error_400:
+      allOf:
+        - $ref: '#/definitions/Errors/Error'
+      example:
+          statusCode: 400
+          reason: Bad Request
+          userMessage: The requested parameter is invalid.
+    Error_404:
+      allOf:
+        - $ref: '#/definitions/Errors/Error'
+      example:
+          statusCode: 404
+          reason: Not Found
+          userMessage: Resource with id '4556465' was not found.
+    Error_415:
+      allOf:
+        - $ref: '#/definitions/Errors/Error'
+      example:
+        statusCode: 415
+        reason: Usupported Media Type
+        userMessage: MediaType 'application/xml' is not supported.
+
