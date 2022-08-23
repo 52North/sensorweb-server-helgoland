@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Helgoland API Documentation – 52°North GmbH – Spatial Information Research</title>     <meta charset="utf-8" />
+<title>Series API Documentation – 52°North GmbH – Spatial Information Research</title>     <meta charset="utf-8" />
     <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
@@ -31,8 +31,8 @@
     <meta name="author" content="52°North GmbH" />
 
     
-    <meta property="og:title" content="Helgoland API Documentation" />
-    <meta property="twitter:title" content="Helgoland API Documentation" />
+    <meta property="og:title" content="Series API Documentation" />
+    <meta property="twitter:title" content="Series API Documentation" />
     
 
 
@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -103,7 +103,7 @@
       </div>
 
       <article class="page">
-  <h1>Helgoland API Documentation</h1>
+  <h1>Series API Documentation</h1>
 
   <div class="entry">
     <p>foo bar foo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo 
@@ -206,7 +206,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -262,7 +262,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>A collection of available platforms. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>A collection of available platforms. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -290,7 +290,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -320,9 +320,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -343,7 +343,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -366,7 +366,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -389,7 +389,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -412,7 +412,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -435,7 +435,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -481,7 +481,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -506,9 +506,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -552,7 +552,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s geometry, either <code class="highlighter-rouge">site</code> for <code class="highlighter-rouge">stationary</code> platforms (or <code class="highlighter-rouge">station</code>s) or <code class="highlighter-rouge">track</code> for <code class="highlighter-rouge">mobile</code> platforms.</p>
+                              <td><p>The platform’s geometry, either <code class="language-plaintext highlighter-rouge">site</code> for <code class="language-plaintext highlighter-rouge">stationary</code> platforms (or <code class="language-plaintext highlighter-rouge">station</code>s) or <code class="language-plaintext highlighter-rouge">track</code> for <code class="language-plaintext highlighter-rouge">mobile</code> platforms.</p>
 </td>
                               <td>
                                   
@@ -575,7 +575,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s observed geometry, either <code class="highlighter-rouge">static</code> for <code class="highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="highlighter-rouge">dynamic</code> otherwise.</p>
+                              <td><p>The platform’s observed geometry, either <code class="language-plaintext highlighter-rouge">static</code> for <code class="language-plaintext highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="language-plaintext highlighter-rouge">dynamic</code> otherwise.</p>
 </td>
                               <td>
                                   
@@ -594,15 +594,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -625,7 +625,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -650,9 +650,11 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
 
-<p><code class="highlighter-rouge">json  bbox={
+<p>Alternative 1: json Points</p>
+
+<p><code class="language-plaintext highlighter-rouge">json  bbox={
   "ll": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -663,6 +665,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="language-plaintext highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -683,9 +689,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="language-plaintext highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
 
-<p><code class="highlighter-rouge">json near={
+<p><code class="language-plaintext highlighter-rouge">json near={
   "center": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -755,7 +761,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Full view of a platform instance. A platform encodes a POINT geometry which is the actual location for <code class="highlighter-rouge">stationary</code> platforms and the last detected location for <code class="highlighter-rouge">mobile</code> platforms.</p>
+                <p>Full view of a platform instance. A platform encodes a POINT geometry which is the actual location for <code class="language-plaintext highlighter-rouge">stationary</code> platforms and the last detected location for <code class="language-plaintext highlighter-rouge">mobile</code> platforms.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -804,7 +810,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -834,7 +840,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -909,9 +915,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each dataset.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each dataset.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -1023,7 +1029,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>A collection of available stations. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>A collection of available stations. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -1051,7 +1057,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -1081,9 +1087,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -1104,7 +1110,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1127,7 +1133,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1150,7 +1156,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1173,7 +1179,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1196,7 +1202,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1242,7 +1248,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1265,7 +1271,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -1290,9 +1296,11 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
 
-<p><code class="highlighter-rouge">json  bbox={
+<p>Alternative 1: json Points</p>
+
+<p><code class="language-plaintext highlighter-rouge">json  bbox={
   "ll": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -1303,6 +1311,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="language-plaintext highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -1323,9 +1335,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="language-plaintext highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
 
-<p><code class="highlighter-rouge">json near={
+<p><code class="language-plaintext highlighter-rouge">json near={
   "center": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -1395,7 +1407,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Full data view of a station. A station is a <a href="https://www.rfc-editor.org/info/rfc7946">GeoJSON point geometry</a> which encodes available metadata in its <code class="highlighter-rouge">properties</code> member.</p>
+                <p>Full data view of a station. A station is a <a href="https://www.rfc-editor.org/info/rfc7946">GeoJSON point geometry</a> which encodes available metadata in its <code class="language-plaintext highlighter-rouge">properties</code> member.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -1444,7 +1456,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -1474,7 +1486,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -1549,9 +1561,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each dataset.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each dataset.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -1663,7 +1675,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>A collection of available datasets. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>A collection of available datasets. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -1691,7 +1703,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -1721,9 +1733,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -1744,7 +1756,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1767,7 +1779,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1790,7 +1802,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1813,7 +1825,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1836,7 +1848,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1882,7 +1894,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -1907,9 +1919,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -1953,7 +1965,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s geometry, either <code class="highlighter-rouge">site</code> for <code class="highlighter-rouge">stationary</code> platforms (or <code class="highlighter-rouge">station</code>s) or <code class="highlighter-rouge">track</code> for <code class="highlighter-rouge">mobile</code> platforms.</p>
+                              <td><p>The platform’s geometry, either <code class="language-plaintext highlighter-rouge">site</code> for <code class="language-plaintext highlighter-rouge">stationary</code> platforms (or <code class="language-plaintext highlighter-rouge">station</code>s) or <code class="language-plaintext highlighter-rouge">track</code> for <code class="language-plaintext highlighter-rouge">mobile</code> platforms.</p>
 </td>
                               <td>
                                   
@@ -1976,7 +1988,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s observed geometry, either <code class="highlighter-rouge">static</code> for <code class="highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="highlighter-rouge">dynamic</code> otherwise.</p>
+                              <td><p>The platform’s observed geometry, either <code class="language-plaintext highlighter-rouge">static</code> for <code class="language-plaintext highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="language-plaintext highlighter-rouge">dynamic</code> otherwise.</p>
 </td>
                               <td>
                                   
@@ -1995,15 +2007,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -2026,7 +2038,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -2051,9 +2063,11 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
 
-<p><code class="highlighter-rouge">json  bbox={
+<p>Alternative 1: json Points</p>
+
+<p><code class="language-plaintext highlighter-rouge">json  bbox={
   "ll": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -2064,6 +2078,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="language-plaintext highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -2084,9 +2102,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="language-plaintext highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
 
-<p><code class="highlighter-rouge">json near={
+<p><code class="language-plaintext highlighter-rouge">json near={
   "center": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -2156,7 +2174,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Full view of a dataset instance. All relevant relations (parameters, unit, platform, etc.) are inlined. If any additional information is listed in the <code class="highlighter-rouge">extras</code> array member it can be retrieved via <code class="highlighter-rouge">/datasets/{datasetId}/extras</code> (see next).</p>
+                <p>Full view of a dataset instance. All relevant relations (parameters, unit, platform, etc.) are inlined. If any additional information is listed in the <code class="language-plaintext highlighter-rouge">extras</code> array member it can be retrieved via <code class="language-plaintext highlighter-rouge">/datasets/{datasetId}/extras</code> (see next).</p>
 
             </div>
             <div class="swagger-parameters">
@@ -2205,7 +2223,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -2277,9 +2295,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each dataset.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each dataset.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -2393,12 +2411,12 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
             <div class="swagger-method-description">
                 <p>Returns a pre-rendered image of a dataset for the given interval. Allowed interval values are</p>
 <ul>
-  <li><code class="highlighter-rouge">lastDay.png</code></li>
-  <li><code class="highlighter-rouge">lastWeek.png</code></li>
-  <li><code class="highlighter-rouge">lastMonth.png</code></li>
+  <li><code class="language-plaintext highlighter-rouge">lastDay.png</code></li>
+  <li><code class="language-plaintext highlighter-rouge">lastWeek.png</code></li>
+  <li><code class="language-plaintext highlighter-rouge">lastMonth.png</code></li>
 </ul>
 
-<p>Datasets of type <code class="highlighter-rouge">quantity</code> can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.</p>
+<p>Datasets of type <code class="language-plaintext highlighter-rouge">quantity</code> can be pre-rendered by a regular task. If pre-rendering is enabled for a given datasets depends on the API provider as it is a configuration issue.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -2504,17 +2522,19 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Gets data for a given <code class="highlighter-rouge">timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request.</p>
+                <p>Gets data for a given <code class="language-plaintext highlighter-rouge">timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request.</p>
 
-<p>What Mime-Types are supported depends on the <code class="highlighter-rouge">datasetType</code>. For example <code class="highlighter-rouge">quantity</code> observations can be drawn as a timeseries chart  (i.e. either <code class="highlighter-rouge">image/png</code> or <code class="highlighter-rouge">application/pdf</code>). Supported Mime-Types are listed for each <code class="highlighter-rouge">datasetType</code> when querying  <code class="highlighter-rouge">/service/{serviceId}?datasetTypes=all</code> produces:</p>
+<p>What Mime-Types are supported depends on the <code class="language-plaintext highlighter-rouge">valueType</code>. For example <code class="language-plaintext highlighter-rouge">quantity</code> observations can be drawn as a timeseries chart  (i.e. either <code class="language-plaintext highlighter-rouge">image/png</code> or <code class="language-plaintext highlighter-rouge">application/pdf</code>). Supported Mime-Types are listed for each <code class="language-plaintext highlighter-rouge">valueType</code> when querying  <code class="language-plaintext highlighter-rouge">/service/{serviceId}?valueTypes=all</code> produces:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">application/json</code></li>
-  <li><code class="highlighter-rouge">image/png</code></li>
-  <li><code class="highlighter-rouge">text/csv</code></li>
-  <li><code class="highlighter-rouge">application/pdf</code></li>
-  <li><code class="highlighter-rouge">application/zip</code></li>
+  <li><code class="language-plaintext highlighter-rouge">application/json</code></li>
+  <li><code class="language-plaintext highlighter-rouge">image/png</code></li>
+  <li><code class="language-plaintext highlighter-rouge">text/csv</code></li>
+  <li><code class="language-plaintext highlighter-rouge">application/pdf</code></li>
+  <li><code class="language-plaintext highlighter-rouge">application/zip</code></li>
 </ul>
+
+<p>Data can be classified into result times if these differ from actual <code class="language-plaintext highlighter-rouge">timestamp</code>. For example, this is the case for forecast data which might re-calculate (different result times) a given timespan. The <code class="language-plaintext highlighter-rouge">data</code> can be grouped  by using <code class="language-plaintext highlighter-rouge">resultTimes</code> parameter. When <code class="language-plaintext highlighter-rouge">resultTimes</code> parameter is missing, data of the oldest result is being  returned.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -2563,9 +2583,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -2591,6 +2611,50 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>
                                   
                                   String
+                                  
+                                  
+                              </td>
+                            </tr>
+                          
+                        
+                          
+                          
+                            
+                            <tr>
+                              <td>
+                                  
+                                  resultTimes
+                                  
+                              </td>
+                              <td>query</td>
+                              <td><p>Filter data which is available for different result times. Query <code class="language-plaintext highlighter-rouge">/extras?fields=resultTimes</code> beforehand to get
+a list of result times or add <code class="language-plaintext highlighter-rouge">resultTimes=all</code> to get all data classified by result time. In case of <code class="language-plaintext highlighter-rouge">resultTime</code>
+is missing from Query, those data will be returned which belongs to the oldest result time.</p>
+</td>
+                              <td>
+                                  
+                                  Array
+                                  
+                                  
+                              </td>
+                            </tr>
+                          
+                        
+                          
+                          
+                            
+                            <tr>
+                              <td>
+                                  
+                                  showTimeIntervals
+                                  
+                              </td>
+                              <td>query</td>
+                              <td><p>Select whether Time fields in the output shall be returned using a single Timestamp or a Time Interval.</p>
+</td>
+                              <td>
+                                  
+                                  Boolean
                                   
                                   
                               </td>
@@ -2657,7 +2721,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>A collection of timeseries (i.e. datasets of type <code class="highlighter-rouge">quantity</code> which have been observed at <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms having a 0-dimensional (POINT) location geometry. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>A collection of timeseries (i.e. datasets of type <code class="language-plaintext highlighter-rouge">quantity</code> which have been observed at <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms having a 0-dimensional (POINT) location geometry. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -2685,7 +2749,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -2715,9 +2779,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -2738,7 +2802,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2761,7 +2825,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2784,7 +2848,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2807,7 +2871,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2830,7 +2894,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2876,7 +2940,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -2901,9 +2965,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -2922,15 +2986,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -2953,7 +3017,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -2978,9 +3042,11 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
 
-<p><code class="highlighter-rouge">json  bbox={
+<p>Alternative 1: json Points</p>
+
+<p><code class="language-plaintext highlighter-rouge">json  bbox={
   "ll": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -2991,6 +3057,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="language-plaintext highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -3011,9 +3081,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="language-plaintext highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
 
-<p><code class="highlighter-rouge">json near={
+<p><code class="language-plaintext highlighter-rouge">json near={
   "center": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -3067,9 +3137,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Full view of a timeseries instance. All relevant relations (parameters, unit, station, etc.) are inlined. If any additional information is listed in the <code class="highlighter-rouge">extras</code> array member it can be retrieved via <code class="highlighter-rouge">/datasets/{datasetId}/extras</code> (see next).</p>
+                <p>Full view of a timeseries instance. All relevant relations (parameters, unit, station, etc.) are inlined. If any additional information is listed in the <code class="language-plaintext highlighter-rouge">extras</code> array member it can be retrieved via <code class="language-plaintext highlighter-rouge">/datasets/{datasetId}/extras</code> (see next).</p>
 
-<p>For backward compatibility reasons metadata about <code class="highlighter-rouge">renderingHints</code> and <code class="highlighter-rouge">statusIntervals</code> are inlined here as well. However, those are listed within <code class="highlighter-rouge">extra</code> infos to make it consistent.</p>
+<p>For backward compatibility reasons metadata about <code class="language-plaintext highlighter-rouge">renderingHints</code> and <code class="language-plaintext highlighter-rouge">statusIntervals</code> are inlined here as well. However, those are listed within <code class="language-plaintext highlighter-rouge">extra</code> infos to make it consistent.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -3118,7 +3188,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -3198,9 +3268,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each timeseries.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each timeseries.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code>query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code>query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -3312,9 +3382,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Gets data for a given <code class="highlighter-rouge">timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request.</p>
+                <p>Gets data for a given <code class="language-plaintext highlighter-rouge">timespan</code> filter. Implementations may limit the maximum amount of time intervals a client can query in one request.</p>
 
-<p>This operation does only return data of <code class="highlighter-rouge">quantity</code> dataset types from<code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms having a 0-dimensional location geometry (<code class="highlighter-rouge">station</code>). Supported Mime-Types are <code class="highlighter-rouge">application/json</code>, <code class="highlighter-rouge">image/png</code>, <code class="highlighter-rouge">application/pdf</code>, and <code class="highlighter-rouge">text/csv</code>.</p>
+<p>This operation does only return data of <code class="language-plaintext highlighter-rouge">quantity</code> dataset types from<code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms having a 0-dimensional location geometry (<code class="language-plaintext highlighter-rouge">station</code>). Supported Mime-Types are <code class="language-plaintext highlighter-rouge">application/json</code>, <code class="language-plaintext highlighter-rouge">image/png</code>, <code class="language-plaintext highlighter-rouge">application/pdf</code>, and <code class="language-plaintext highlighter-rouge">text/csv</code>.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -3363,9 +3433,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -3407,7 +3477,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">image/png</code> is requested, width determines the width in pixels.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">image/png</code> is requested, width determines the width in pixels.</p>
 </td>
                               <td>
                                   
@@ -3428,7 +3498,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">image/png</code> is requested, height determines the height in pixels.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">image/png</code> is requested, height determines the height in pixels.</p>
 </td>
                               <td>
                                   
@@ -3449,7 +3519,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Indicates if a legend shall be rendered directly on the image output (if <code class="highlighter-rouge">image/png</code> shall be  the output).</p>
+                              <td><p>Indicates if a legend shall be rendered directly on the image output (if <code class="language-plaintext highlighter-rouge">image/png</code> shall be  the output).</p>
 </td>
                               <td>
                                   
@@ -3547,9 +3617,29 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td><p>Indicates binary images shall be encoded to a base64 string on server side. This makes it easily possible to display images from JavaScript (you would need a byte parsing library  otherwise).</p>
 
 <p>Here is an example how to embed encoded base64 string</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>&lt;img src='data:image/png;base64," + encodedString + "' /&gt;
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;img src='data:image/png;base64," + encodedString + "' /&gt;
+</code></pre></div></div>
+</td>
+                              <td>
+                                  
+                                  Boolean
+                                  
+                                  
+                              </td>
+                            </tr>
+                          
+                        
+                          
+                          
+                            
+                            <tr>
+                              <td>
+                                  
+                                  showTimeIntervals
+                                  
+                              </td>
+                              <td>query</td>
+                              <td><p>Select whether Time fields in the output shall be returned using a single Timestamp or a Time Interval.</p>
 </td>
                               <td>
                                   
@@ -3624,16 +3714,16 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">site</code>, i.e. <code class="highlighter-rouge">stationary</code> platform locations (fixed)</p>
+    <p><code class="language-plaintext highlighter-rouge">site</code>, i.e. <code class="language-plaintext highlighter-rouge">stationary</code> platform locations (fixed)</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">track</code>, i.e. trajectories made by a <code class="highlighter-rouge">mobile</code> platform</p>
+    <p><code class="language-plaintext highlighter-rouge">track</code>, i.e. trajectories made by a <code class="language-plaintext highlighter-rouge">mobile</code> platform</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">static</code>, i.e. a fixed geometry observed by a <code class="highlighter-rouge">remote</code> platform</p>
+    <p><code class="language-plaintext highlighter-rouge">static</code>, i.e. a fixed geometry observed by a <code class="language-plaintext highlighter-rouge">remote</code> platform</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">dynamic</code>, i.e. geometry observed by a <code class="highlighter-rouge">remote</code> platform which changes over time</p>
+    <p><code class="language-plaintext highlighter-rouge">dynamic</code>, i.e. geometry observed by a <code class="language-plaintext highlighter-rouge">remote</code> platform which changes over time</p>
   </li>
 </ul>
 
@@ -3682,7 +3772,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s geometry, either <code class="highlighter-rouge">site</code> for <code class="highlighter-rouge">stationary</code> platforms (or <code class="highlighter-rouge">station</code>s) or <code class="highlighter-rouge">track</code> for <code class="highlighter-rouge">mobile</code> platforms.</p>
+                              <td><p>The platform’s geometry, either <code class="language-plaintext highlighter-rouge">site</code> for <code class="language-plaintext highlighter-rouge">stationary</code> platforms (or <code class="language-plaintext highlighter-rouge">station</code>s) or <code class="language-plaintext highlighter-rouge">track</code> for <code class="language-plaintext highlighter-rouge">mobile</code> platforms.</p>
 </td>
                               <td>
                                   
@@ -3705,7 +3795,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The platform’s observed geometry, either <code class="highlighter-rouge">static</code> for <code class="highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="highlighter-rouge">dynamic</code> otherwise.</p>
+                              <td><p>The platform’s observed geometry, either <code class="language-plaintext highlighter-rouge">static</code> for <code class="language-plaintext highlighter-rouge">remote</code> platforms observing fixed geometries or <code class="language-plaintext highlighter-rouge">dynamic</code> otherwise.</p>
 </td>
                               <td>
                                   
@@ -3728,7 +3818,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -3753,9 +3843,11 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the crs parameter if a  non-default CRS shall be used. The Box can be supplied as either as json Points or as GeoJSON bbox.</p>
 
-<p><code class="highlighter-rouge">json  bbox={
+<p>Alternative 1: json Points</p>
+
+<p><code class="language-plaintext highlighter-rouge">json  bbox={
   "ll": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -3766,6 +3858,10 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
   }
 }
 </code></p>
+
+<p>Alternative 2: GeoJSON bbox</p>
+
+<p><code class="language-plaintext highlighter-rouge">json bbox=&lt;minx&gt;,&lt;miny&gt;,&lt;maxx&gt;,&lt;maxy&gt;</code></p>
 </td>
                               <td>
                                   
@@ -3786,9 +3882,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
+                              <td><p>Stations within a given bounding box (in WGS84 by default). Refer to the <code class="language-plaintext highlighter-rouge">crs</code> parameter if a  non-default CRS shall be used.</p>
 
-<p><code class="highlighter-rouge">json near={
+<p><code class="language-plaintext highlighter-rouge">json near={
   "center": {
     "type": "Point",
     "coordinates": [&lt;x&gt;,&lt;y&gt;]
@@ -3891,7 +3987,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -3921,7 +4017,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
+                              <td><p>The client indicates that input geometries shall be interpreted as being referenced by the given CRS (for example in case of <code class="language-plaintext highlighter-rouge">crs=EPSG:25832</code> to  <a href="http://spatialreference.org/ref/epsg/25832/">ETRS89/UTM zone 32N</a>).</p>
 
 <p>Per default geometries are referenced by the WGS84 CRS (CRS84, i.e. lon/lat order). If crs value differs from default, all output geometries are transformed to match the asked CRS.</p>
 
@@ -3996,7 +4092,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available service instances. For backwards compatibility reasons the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>.</p>
+                <p>All available service instances. For backwards compatibility reasons the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -4022,7 +4118,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -4052,9 +4148,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -4077,9 +4173,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -4098,15 +4194,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -4157,7 +4253,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
             <div class="swagger-method-description">
                 <p>Gets a service instance.</p>
 
-<p>Depending on what dataset types are available, differing output formats are available. For example, <code class="highlighter-rouge">image/png</code> (render as chart) or <code class="highlighter-rouge">application/pdf</code> (generating a report).</p>
+<p>Depending on what dataset types are available, differing output formats are available. For example, <code class="language-plaintext highlighter-rouge">image/png</code> (render as chart) or <code class="language-plaintext highlighter-rouge">application/pdf</code> (generating a report).</p>
 
             </div>
             <div class="swagger-parameters">
@@ -4248,9 +4344,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each service.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each service.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -4362,7 +4458,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available category instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>All available category instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -4390,7 +4486,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -4420,9 +4516,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -4443,7 +4539,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4466,7 +4562,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4489,7 +4585,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4512,7 +4608,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4535,7 +4631,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4581,7 +4677,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4606,9 +4702,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -4627,15 +4723,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -4775,9 +4871,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each category.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available  metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each category.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -4889,7 +4985,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available phenomenon instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>All available phenomenon instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -4917,7 +5013,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -4947,9 +5043,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -4970,7 +5066,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -4993,7 +5089,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5016,7 +5112,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5039,7 +5135,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5062,7 +5158,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5108,7 +5204,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5133,9 +5229,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -5154,15 +5250,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -5302,9 +5398,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each phemomenon.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each phemomenon.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -5416,7 +5512,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available procedure instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>All available procedure instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -5444,7 +5540,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -5474,9 +5570,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -5497,7 +5593,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5520,7 +5616,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5543,7 +5639,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5566,7 +5662,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5589,7 +5685,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5635,7 +5731,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -5660,9 +5756,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -5681,15 +5777,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -5829,9 +5925,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each procedure.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each procedure.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code>  query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -5943,7 +6039,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available offering instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>All available offering instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -5971,7 +6067,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -6001,9 +6097,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -6024,7 +6120,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6047,7 +6143,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6070,7 +6166,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6093,7 +6189,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6116,7 +6212,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6162,7 +6258,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6187,9 +6283,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -6208,15 +6304,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -6356,9 +6452,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="highlighter-rouge">extras</code> metadata field of each offering.</p>
+                <p>Lists extra metadata which may vary from instance to instance. The available metadata fields are listed in the <code class="language-plaintext highlighter-rouge">extras</code> metadata field of each offering.</p>
 
-<p>You can query just the ones you are interested in by appending the <code class="highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
+<p>You can query just the ones you are interested in by appending the <code class="language-plaintext highlighter-rouge">fields</code> query parameter and passing a comma-separated value list to it.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -6470,7 +6566,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available instances. For backwards compatibility reasons the output  is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>,  <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>.</p>
+                <p>All available instances. For backwards compatibility reasons the output  is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>,  <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>.</p>
 
             </div>
             <div class="swagger-parameters">
@@ -6496,7 +6592,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="highlighter-rouge">_</code> , e.g. <code class="highlighter-rouge">en_US</code> for American English.</p>
+                              <td><p>Specifies the language as <a href="http://en.wikipedia.org/wiki/ISO_639">ISO639</a> code. Subdivisions are  respected by an <code class="language-plaintext highlighter-rouge">_</code> , e.g. <code class="language-plaintext highlighter-rouge">en_US</code> for American English.</p>
 
 <p>The REST-API should consider the following order to detect a locale</p>
 
@@ -6526,9 +6622,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>If <code class="highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
+                              <td><p>If <code class="language-plaintext highlighter-rouge">true</code> a list of partially expanded resource items is returned. The expansion provides more  detailed information up to a certain point. However, it does not necessarily provide all item  information as one may get when request the resource item itself.</p>
 
-<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="highlighter-rouge">false</code>.</p>
+<p>The expanded works almost only for resource collection. However, exceptions may exist (e.g.  for getting raw data). Exceptions are explicitly documented. The default is <code class="language-plaintext highlighter-rouge">false</code>.</p>
 </td>
                               <td>
                                   
@@ -6549,7 +6645,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given service id does match. The single form (<code class="highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given service id does match. The single form (<code class="language-plaintext highlighter-rouge">service</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6572,7 +6668,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given category id does match. The single form (<code class="highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given category id does match. The single form (<code class="language-plaintext highlighter-rouge">category</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6595,7 +6691,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given phenomenon id does match. The single form (<code class="language-plaintext highlighter-rouge">phenomenon</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6618,7 +6714,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given procedure id does match. The single form (<code class="highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given procedure id does match. The single form (<code class="language-plaintext highlighter-rouge">procedure</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6641,7 +6737,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given offering id does match. The single form (<code class="highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given offering id does match. The single form (<code class="language-plaintext highlighter-rouge">offering</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6687,7 +6783,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                                   
                               </td>
                               <td>query</td>
-                              <td><p>All resources where the given station id does match. The single form (<code class="highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
+                              <td><p>All resources where the given station id does match. The single form (<code class="language-plaintext highlighter-rouge">station</code>) is kept for backwards compatibility. Please use the plural form to filter on multiple ids.</p>
 </td>
                               <td>
                                   
@@ -6712,9 +6808,9 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the platform type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">mobile</code>, <code class="highlighter-rouge">insitu</code>, <code class="highlighter-rouge">remote</code>, <code class="highlighter-rouge">all</code>.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">mobile</code>, <code class="language-plaintext highlighter-rouge">insitu</code>, <code class="language-plaintext highlighter-rouge">remote</code>, <code class="language-plaintext highlighter-rouge">all</code>.</p>
 
-<p>The default is <code class="highlighter-rouge">stationary,insitu</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">stationary,insitu</code>.</p>
 </td>
                               <td>
                                   
@@ -6733,15 +6829,15 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
                             <tr>
                               <td>
                                   
-                                  datasetTypes
+                                  valueTypes
                                   
                               </td>
                               <td>query</td>
                               <td><p>Filters the resources to get only those related to the dataset type filter.</p>
 
-<p>Allowed values are <code class="highlighter-rouge">quantity</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">text</code>, <code class="highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
+<p>Allowed values are <code class="language-plaintext highlighter-rouge">quantity</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">text</code>, <code class="language-plaintext highlighter-rouge">all</code> or any other custom types given by the  implementing backend.</p>
 
-<p>The default is <code class="highlighter-rouge">quantity</code>.</p>
+<p>The default is <code class="language-plaintext highlighter-rouge">quantity</code>.</p>
 </td>
                               <td>
                                   
@@ -6881,7 +6977,7 @@ barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
         <div class="swagger-method-details">
             
             <div class="swagger-method-description">
-                <p>All available feature instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="highlighter-rouge">stationary</code>, <code class="highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="highlighter-rouge">platformTypes=all</code>. Depending on the <code class="highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
+                <p>All available feature instances. For backwards compatibility reasons, the output is filtered by default to list only those instances related to <code class="language-plaintext highlighter-rouge">stationary</code>, <code class="language-plaintext highlighter-rouge">insitu</code> platforms. To retrieve a full metadata view add <code class="language-plaintext highlighter-rouge">platformTypes=all</code>. Depending on the <code class="language-plaintext highlighter-rouge">expanded</code> parameter the collections items are compact or do inline full metadata.</p>
 
 <p>Filter options help to focus on a particular set of items. Filter either by parameters or spatially.</p>
 
@@ -7064,7 +7160,7 @@ else {
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

@@ -27,9 +27,223 @@
     
     <meta name="description" content="Status Intervals
 
+The data provider knows best how to interpret available data and can add domain specific information 
+which may help to interpret data values of a particular dataset.Clients are then able to render data 
+values (e.g. when rendering lastValues on a map) by comparing against those intervals. This gives a 
+user hints what data values actually mean and helps to avoid misunderstandings.
+
+The status intervals are available to a client as extra data for a given dataset.
+
+Configuration Location
+
+Status intervals can be configured for datasets having a particular phenomenon or each individually 
+(overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
+limit and some color hint a client may use to render properly.
+
+For example:
+
+{
+  "phenomenonIntervals": {
+    "1": {
+      "statusIntervals": {
+        "90-100 Percent": {
+          "upper" : 100.0,
+          "lower" : 90.0,
+          "color" : "#0000FF"
+        },
+        "80-90 Percent": {
+          "upper" : 90.0,
+          "lower" : 80.0,
+          "color" : "#1C00E2"
+        },
+        "70-80 Percent": {
+          "upper" : 80.0,
+          "lower" : 70.0,
+          "color" : "#3800C6"
+        },
+        "60-70 Percent": {
+          "upper" : 70.0,
+          "lower" : 60.0,
+          "color" : "#5500AA"
+        },
+        "50-60 Percent": {
+          "upper" : 60.0,
+          "lower" : 50.0,
+          "color" : "#71008D"
+        },
+        "40-50 Percent": {
+          "upper" : 50.0,
+          "lower" : 40.0,
+          "color" : "#8D0071"
+        },
+        "30-40 Percent": {
+          "upper" : 40.0,
+          "lower" : 30.0,
+          "color" : "#AA0055"
+        },
+        "20-30 Percent": {
+          "upper" : 30.0,
+          "lower" : 20.0,
+          "color" : "#C60038"
+        },
+        "10-20 Percent": {
+          "upper" : 20.0,
+          "lower" : 10.0,
+          "color" : "#E2001C"
+        },
+        "0-10 Percent": {
+          "upper" : 10.0,
+          "lower" : 0.0,
+          "color" : "#FF0000"
+        }
+      }
+    }
+  },
+  "datasetIntervals": {
+    "10": {
+      "statusIntervals": {
+        "&gt;20": {
+          "lower" : 20.0,
+          "color" : "#FF0000"
+        },
+        "15-20": {
+          "upper" : 20.0,
+          "lower" : 15.0,
+          "color" : "#BF003F"
+        },
+        "10-15": {
+          "upper" : 15.0,
+          "lower" : 10.0,
+          "color" : "#7F007F"
+        },
+        "5-10": {
+          "upper" : 10.0,
+          "lower" : 5.0,
+          "color" : "#3F00BF"
+        },
+        "0-5": {
+          "upper" : 5.0,
+          "lower" : 0.0,
+          "color" : "#0000FF"
+        }
+      }
+    }
+  }
+}
+
+
+timeseriesStyles and seriesStyles mean the same as datasetStyles and is kept 
+for backwards compatibility reasons.
 " />
     <meta property="og:description" content="Status Intervals
 
+The data provider knows best how to interpret available data and can add domain specific information 
+which may help to interpret data values of a particular dataset.Clients are then able to render data 
+values (e.g. when rendering lastValues on a map) by comparing against those intervals. This gives a 
+user hints what data values actually mean and helps to avoid misunderstandings.
+
+The status intervals are available to a client as extra data for a given dataset.
+
+Configuration Location
+
+Status intervals can be configured for datasets having a particular phenomenon or each individually 
+(overriding a possibly matching phenomenona config). Each entry provides a title, upper and lower
+limit and some color hint a client may use to render properly.
+
+For example:
+
+{
+  "phenomenonIntervals": {
+    "1": {
+      "statusIntervals": {
+        "90-100 Percent": {
+          "upper" : 100.0,
+          "lower" : 90.0,
+          "color" : "#0000FF"
+        },
+        "80-90 Percent": {
+          "upper" : 90.0,
+          "lower" : 80.0,
+          "color" : "#1C00E2"
+        },
+        "70-80 Percent": {
+          "upper" : 80.0,
+          "lower" : 70.0,
+          "color" : "#3800C6"
+        },
+        "60-70 Percent": {
+          "upper" : 70.0,
+          "lower" : 60.0,
+          "color" : "#5500AA"
+        },
+        "50-60 Percent": {
+          "upper" : 60.0,
+          "lower" : 50.0,
+          "color" : "#71008D"
+        },
+        "40-50 Percent": {
+          "upper" : 50.0,
+          "lower" : 40.0,
+          "color" : "#8D0071"
+        },
+        "30-40 Percent": {
+          "upper" : 40.0,
+          "lower" : 30.0,
+          "color" : "#AA0055"
+        },
+        "20-30 Percent": {
+          "upper" : 30.0,
+          "lower" : 20.0,
+          "color" : "#C60038"
+        },
+        "10-20 Percent": {
+          "upper" : 20.0,
+          "lower" : 10.0,
+          "color" : "#E2001C"
+        },
+        "0-10 Percent": {
+          "upper" : 10.0,
+          "lower" : 0.0,
+          "color" : "#FF0000"
+        }
+      }
+    }
+  },
+  "datasetIntervals": {
+    "10": {
+      "statusIntervals": {
+        "&gt;20": {
+          "lower" : 20.0,
+          "color" : "#FF0000"
+        },
+        "15-20": {
+          "upper" : 20.0,
+          "lower" : 15.0,
+          "color" : "#BF003F"
+        },
+        "10-15": {
+          "upper" : 15.0,
+          "lower" : 10.0,
+          "color" : "#7F007F"
+        },
+        "5-10": {
+          "upper" : 10.0,
+          "lower" : 5.0,
+          "color" : "#3F00BF"
+        },
+        "0-5": {
+          "upper" : 5.0,
+          "lower" : 0.0,
+          "color" : "#0000FF"
+        }
+      }
+    }
+  }
+}
+
+
+timeseriesStyles and seriesStyles mean the same as datasetStyles and is kept 
+for backwards compatibility reasons.
 " />
     
     <meta name="author" content="52°North GmbH" />
@@ -62,7 +276,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -74,7 +288,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -114,10 +328,10 @@
 
 <p>The data provider knows best how to interpret available data and can add domain specific information 
 which may help to interpret data values of a particular dataset.Clients are then able to render data 
-values (e.g. when rendering <code class="highlighter-rouge">lastValue</code>s on a map) by comparing against those intervals. This gives a 
+values (e.g. when rendering <code class="language-plaintext highlighter-rouge">lastValue</code>s on a map) by comparing against those intervals. This gives a 
 user hints what data values actually mean and helps to avoid misunderstandings.</p>
 
-<p>The status intervals are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+<p>The status intervals are available to a client as <code class="language-plaintext highlighter-rouge">extra</code> data for a given dataset.</p>
 
 <h3 id="configuration-location">Configuration Location</h3>
 
@@ -127,98 +341,97 @@ limit and some color hint a client may use to render properly.</p>
 
 <p>For example:</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"phenomenonIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"90-100 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"phenomenonIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"90-100 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"80-90 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#1C00E2"</span><span class="w">
+        </span><span class="nl">"80-90 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#1C00E2"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"70-80 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3800C6"</span><span class="w">
+        </span><span class="nl">"70-80 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3800C6"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"60-70 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#5500AA"</span><span class="w">
+        </span><span class="nl">"60-70 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#5500AA"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"50-60 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#71008D"</span><span class="w">
+        </span><span class="nl">"50-60 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#71008D"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"40-50 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#8D0071"</span><span class="w">
+        </span><span class="nl">"40-50 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#8D0071"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"30-40 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#AA0055"</span><span class="w">
+        </span><span class="nl">"30-40 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#AA0055"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"20-30 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#C60038"</span><span class="w">
+        </span><span class="nl">"20-30 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#C60038"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"10-20 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#E2001C"</span><span class="w">
+        </span><span class="nl">"10-20 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#E2001C"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"0-10 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+        </span><span class="nl">"0-10 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"datasetIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"&gt;20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+  </span><span class="nl">"datasetIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"&gt;20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"15-20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#BF003F"</span><span class="w">
+        </span><span class="nl">"15-20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#BF003F"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"10-15"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#7F007F"</span><span class="w">
+        </span><span class="nl">"10-15"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#7F007F"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"5-10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3F00BF"</span><span class="w">
+        </span><span class="nl">"5-10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3F00BF"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"0-5"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+        </span><span class="nl">"0-5"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+<p class="n52-callout n52-callout-info"><code class="language-plaintext highlighter-rouge">timeseriesStyles</code> and <code class="language-plaintext highlighter-rouge">seriesStyles</code> mean the same as <code class="language-plaintext highlighter-rouge">datasetStyles</code> and is kept 
 for backwards compatibility reasons.</p>
 
   </div>
@@ -243,7 +456,7 @@ for backwards compatibility reasons.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

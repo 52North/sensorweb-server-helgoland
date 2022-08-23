@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -108,17 +108,17 @@
   <div class="entry">
     <h2 id="overview">Overview</h2>
 
-<p class="n52-callout n52-callout-info">Paging is currently not supported for the Endpoint <code class="highlighter-rouge">/geometries</code>. All other Endpoints are supported.</p>
+<p class="n52-callout n52-callout-info">Paging is currently not supported for the Endpoint <code class="language-plaintext highlighter-rouge">/geometries</code>. All other Endpoints are supported.</p>
 
-<p>The API offers basic Paging support using the Query Parameters <code class="highlighter-rouge">offset</code> and <code class="highlighter-rouge">limit</code>. Paging is automatically enabled if at least one of the parameters is present in the query. If only one parameter is provided, the missing parameters default value will be used.</p>
+<p>The API offers basic Paging support using the Query Parameters <code class="language-plaintext highlighter-rouge">offset</code> and <code class="language-plaintext highlighter-rouge">limit</code>. Paging is automatically enabled if at least one of the parameters is present in the query. If only one parameter is provided, the missing parameters default value will be used.</p>
 
 <h3 id="parameter-semantics">Parameter Semantics</h3>
 
-<p><code class="highlighter-rouge">limit</code> describes the maximum amount of Elements in one Page. Except for the last Page, all Pages will always be filled to this maximum capacity.</p>
+<p><code class="language-plaintext highlighter-rouge">limit</code> describes the maximum amount of Elements in one Page. Except for the last Page, all Pages will always be filled to this maximum capacity.</p>
 
-<p><code class="highlighter-rouge">offset</code> describes the Page Number, starting from zero.</p>
+<p><code class="language-plaintext highlighter-rouge">offset</code> describes the Page Number, starting from zero.</p>
 
-<p class="n52-callout n52-callout-info">It is <strong>strongly advised</strong> to only specify the <code class="highlighter-rouge">limit</code> Parameter in the client, and get the <code class="highlighter-rouge">offset</code> from the Response Headers returned by the API (see examples below).</p>
+<p class="n52-callout n52-callout-info">It is <strong>strongly advised</strong> to only specify the <code class="language-plaintext highlighter-rouge">limit</code> Parameter in the client, and get the <code class="language-plaintext highlighter-rouge">offset</code> from the Response Headers returned by the API (see examples below).</p>
 
 <h3 id="parameter-values">Parameter Values</h3>
 <p>The Parameter Values are subject to the following restrictions:</p>
@@ -134,13 +134,13 @@
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">limit</code></td>
+      <td><code class="language-plaintext highlighter-rouge">limit</code></td>
       <td>1</td>
       <td>1000000</td>
       <td>10000</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">offset</code></td>
+      <td><code class="language-plaintext highlighter-rouge">offset</code></td>
       <td>0</td>
       <td>2147483647</td>
       <td>0</td>
@@ -148,37 +148,35 @@
   </tbody>
 </table>
 
-<p class="n52-callout n52-callout-info">Both <code class="highlighter-rouge">limit</code> and <code class="highlighter-rouge">offset</code> are integers and are programmatically limited to not exceed the value of 2147483647. If higher Numbers are provided the Request will fail and the API will throw an Error.</p>
+<p class="n52-callout n52-callout-info">Both <code class="language-plaintext highlighter-rouge">limit</code> and <code class="language-plaintext highlighter-rouge">offset</code> are integers and are programmatically limited to not exceed the value of 2147483647. If higher Numbers are provided the Request will fail and the API will throw an Error.</p>
 
-<p>If an invalid <code class="highlighter-rouge">limit</code> (i.e. exceeding MAX_VALUE) is supplied, <code class="highlighter-rouge">limit</code> will default to the closest valid value (e.g. MIN_VALUE or MAX_VALUE). 
-If no <code class="highlighter-rouge">limit</code> is supplied the default value will be used.</p>
+<p>If an invalid <code class="language-plaintext highlighter-rouge">limit</code> (i.e. exceeding MAX_VALUE) is supplied, <code class="language-plaintext highlighter-rouge">limit</code> will default to the closest valid value (e.g. MIN_VALUE or MAX_VALUE). 
+If no <code class="language-plaintext highlighter-rouge">limit</code> is supplied the default value will be used.</p>
 
-<p>If no offset or an invalid <code class="highlighter-rouge">offset</code> is supplied, <code class="highlighter-rouge">offset</code> will default to its default value.</p>
+<p>If no offset or an invalid <code class="language-plaintext highlighter-rouge">offset</code> is supplied, <code class="language-plaintext highlighter-rouge">offset</code> will default to its default value.</p>
 
 <h3 id="response-headers">Response Headers</h3>
 <p>Paging Information is returned by the API in the Response Header. An Example of the returned Headers can be found below:</p>
 
 <p><strong>Example Request URL</strong></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>http://example.com/api/stations?offset=2&amp;limit=10
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://example.com/api/stations?offset=2&amp;limit=10
+</code></pre></div></div>
 
 <p><strong>Example Response Header [partial]:</strong></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>[...]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[...]
 Link : &lt;http://example.com/api/stations?offset=2&amp;limit=10&gt; rel="self"
 Link : &lt;http://example.com/api/stations?offset=3&amp;limit=10&gt; rel="next"
 Link : &lt;http://example.com/api/stations?offset=1&amp;limit=10&gt; rel="previous"
 Link : &lt;http://example.com/api/stations?offset=0&amp;limit=10&gt; rel="first"
 Link : &lt;http://example.com/api/stations?offset=7&amp;limit=10&gt; rel="last"
 [...]
-</code></pre>
-</div>
+</code></pre></div></div>
 <p>The Presence of the Links in the Response Header varies on the specific circumstances:</p>
 
 <ul>
-  <li>The Link to <code class="highlighter-rouge">self</code> is always present.</li>
-  <li>The Links to <code class="highlighter-rouge">first</code> and <code class="highlighter-rouge">last</code> are present if a valid offset was provided.</li>
-  <li>The Links to <code class="highlighter-rouge">next</code> and <code class="highlighter-rouge">previous</code> are present if the pages exist and a valid offset was provided.</li>
+  <li>The Link to <code class="language-plaintext highlighter-rouge">self</code> is always present.</li>
+  <li>The Links to <code class="language-plaintext highlighter-rouge">first</code> and <code class="language-plaintext highlighter-rouge">last</code> are present if a valid offset was provided.</li>
+  <li>The Links to <code class="language-plaintext highlighter-rouge">next</code> and <code class="language-plaintext highlighter-rouge">previous</code> are present if the pages exist and a valid offset was provided.</li>
 </ul>
 
   </div>
@@ -203,7 +201,7 @@ Link : &lt;http://example.com/api/stations?offset=7&amp;limit=10&gt; rel="last"
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -114,19 +114,19 @@ meters of integrating the endpoint controllers.</p>
 
 <p class="n52-callout n52-callout-todo">make links to Spring MVC and to endpoint controllers.</p>
 
-<p>All endpoints are annotated with Spring’s annotations <code class="highlighter-rouge">Connector</code>, <code class="highlighter-rouge">RequestMethod</code>, 
-<code class="highlighter-rouge">RequestMapping</code>, etc. What is needed is a configured <code class="highlighter-rouge">DispatcherServlet</code> 
-in the <code class="highlighter-rouge">web.xml</code> and proper beans injections.</p>
+<p>All endpoints are annotated with Spring’s annotations <code class="language-plaintext highlighter-rouge">Connector</code>, <code class="language-plaintext highlighter-rouge">RequestMethod</code>, 
+<code class="language-plaintext highlighter-rouge">RequestMapping</code>, etc. What is needed is a configured <code class="language-plaintext highlighter-rouge">DispatcherServlet</code> 
+in the <code class="language-plaintext highlighter-rouge">web.xml</code> and proper beans injections.</p>
 
-<p class="n52-callout n52-callout-todo">Check if/how we can provide a pre-configured <code class="highlighter-rouge">Configuration</code> lib or class which can
+<p class="n52-callout n52-callout-todo">Check if/how we can provide a pre-configured <code class="language-plaintext highlighter-rouge">Configuration</code> lib or class which can
 be changed/extended by Web application implementors.</p>
 
 <h2 id="configuration-locations">Configuration Locations</h2>
 <ul>
-  <li><code class="highlighter-rouge">WEB-INF/classes/config-general.properties</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/spring/</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/classes/application.properties</code></li>
-  <li><code class="highlighter-rouge">WEB-INF/web.xml</code> (cors etc.)</li>
+  <li><code class="language-plaintext highlighter-rouge">WEB-INF/classes/config-general.properties</code></li>
+  <li><code class="language-plaintext highlighter-rouge">WEB-INF/spring/</code></li>
+  <li><code class="language-plaintext highlighter-rouge">WEB-INF/classes/application.properties</code></li>
+  <li><code class="language-plaintext highlighter-rouge">WEB-INF/web.xml</code> (cors etc.)</li>
 </ul>
 
 <div>
@@ -134,18 +134,17 @@ be changed/extended by Web application implementors.</p>
     <h2 id="general-configuration">General Configuration</h2>
 
 <h3 id="query-parameter-defaults">Query Parameter Defaults</h3>
-<p>Query parameter defaults can be changed under <code class="highlighter-rouge">WEB-INF/classes/config-general.json</code>. For example</p>
+<p>Query parameter defaults can be changed under <code class="language-plaintext highlighter-rouge">WEB-INF/classes/config-general.json</code>. For example</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"timeformat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YYYY-MM-dd, HH:mm"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"generalizer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"defaultGeneralizer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lttb"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"noDataGapThreshold"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"timeformat"</span><span class="p">:</span><span class="w"> </span><span class="s2">"YYYY-MM-dd, HH:mm"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"generalizer"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"defaultGeneralizer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"lttb"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"noDataGapThreshold"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"grid"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="nl">"grid"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
 <p class="n52-callout n52-callout-info">Changing API defaults may lead to unexpected results to Web clients. Only change defaults 
 if you know what you are doing.</p>
@@ -153,9 +152,9 @@ if you know what you are doing.</p>
 <h3 id="enabling-cors">Enabling CORS</h3>
 <p><a href="https://enable-cors.org/index.html">CORS</a> can be enabled via a third party filter (to stay 
 independend from a concrete Servlet container which may not ship such filter) within a Web 
-application’s <code class="highlighter-rouge">web.xml</code> file. A simple example (which allows all requests) may look like this:</p>
+application’s <code class="language-plaintext highlighter-rouge">web.xml</code> file. A simple example (which allows all requests) may look like this:</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;filter&gt;</span>
     <span class="nt">&lt;filter-name&gt;</span>CORS<span class="nt">&lt;/filter-name&gt;</span>
     <span class="nt">&lt;filter-class&gt;</span>com.thetransactioncompany.cors.CORSFilter<span class="nt">&lt;/filter-class&gt;</span>
     <span class="nt">&lt;init-param&gt;</span>
@@ -183,8 +182,7 @@ application’s <code class="highlighter-rouge">web.xml</code> file. A simple ex
     <span class="nt">&lt;filter-name&gt;</span>CORS<span class="nt">&lt;/filter-name&gt;</span>
     <span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
 <span class="nt">&lt;/filter-mapping&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p class="n52-callout n52-callout-info">You can <a href="http://www.test-cors.org/">test your CORS config</a> if configured correctly.</p>
 
@@ -198,11 +196,11 @@ reasons. First, it may be tedious to find all single properties within verbose X
 However, more it also very important to keep sensitive information (like database
 configuration) from the project itself.</p>
 
-<p>Create a <code class="highlighter-rouge">WEB-INF/classes/application.properties</code> file which will keep all the default 
+<p>Create a <code class="language-plaintext highlighter-rouge">WEB-INF/classes/application.properties</code> file which will keep all the default 
 values. Another may be located under your home directory. Configure the following which
 will first take parameters</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="c">&lt;!-- these properties do override default settings --&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- these properties do override default settings --&gt;</span>
 <span class="nt">&lt;ctx:property-placeholder</span> 
     <span class="err">&lt;!--</span> <span class="err">${user.home}/application.properties}</span> <span class="err">when</span> <span class="err">-Dlocal.configFile</span> <span class="err">not</span> <span class="err">defined</span> <span class="err">--</span><span class="nt">&gt;</span>
     location="${local.configFile:${user.home}/application.properties}"
@@ -212,23 +210,22 @@ will first take parameters</p>
 <span class="nt">&lt;ctx:property-placeholder</span> 
     <span class="na">location=</span><span class="s">"classpath:/application.properties"</span>
     <span class="na">ignore-resource-not-found=</span><span class="s">"false"</span> <span class="na">ignore-unresolvable=</span><span class="s">"false"</span> <span class="na">order=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A placeholder can now be declared within Spring XML files via <code class="highlighter-rouge">${placeholder:default}</code>.
+<p>A placeholder can now be declared within Spring XML files via <code class="language-plaintext highlighter-rouge">${placeholder:default}</code>.
 If present in the application properties file (your one or the default) it will be 
 replaced, otherwise the given default will be used.</p>
 
 <h3 id="separate-configuration-sections">Separate Configuration Sections</h3>
 
 <p>To keep overview we can separate parts of the configuration files and include them
-via file import, e.g. <code class="highlighter-rouge">&lt;import resource="mvc.xml" /&gt;</code>.</p>
+via file import, e.g. <code class="language-plaintext highlighter-rouge">&lt;import resource="mvc.xml" /&gt;</code>.</p>
 
 
 
     <h2 id="configuring-web-layer">Configuring Web Layer</h2>
 <p>The Web Layer can be configured by Spring MVC controllers served by a dispatcher servlet 
-(configured in <code class="highlighter-rouge">web.xml</code>). Configuration includes content negotiation, serialization config, 
+(configured in <code class="language-plaintext highlighter-rouge">web.xml</code>). Configuration includes content negotiation, serialization config, 
 and Web controller injections.</p>
 
 <h3 id="dispatcher-servlet">Dispatcher Servlet</h3>
@@ -238,14 +235,14 @@ alternatives which may end in the same result. This example splits Spring config
 files into two main files:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code> contains Web controllers and views</li>
-  <li><code class="highlighter-rouge">/WEB-INF/spring/application-context.xml</code> contains SPI implementations</li>
+  <li><code class="language-plaintext highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code> contains Web controllers and views</li>
+  <li><code class="language-plaintext highlighter-rouge">/WEB-INF/spring/application-context.xml</code> contains SPI implementations</li>
 </ul>
 
-<p>However, everything starts by adding Spring’s <code class="highlighter-rouge">DispatcherServlet</code> within the <code class="highlighter-rouge">web.xml</code>, 
+<p>However, everything starts by adding Spring’s <code class="language-plaintext highlighter-rouge">DispatcherServlet</code> within the <code class="language-plaintext highlighter-rouge">web.xml</code>, 
 put both configuration files, and relate it to some context path like so:</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
   <span class="nt">&lt;servlet-name&gt;</span>api-dispatcher<span class="nt">&lt;/servlet-name&gt;</span>
   <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
   <span class="nt">&lt;init-param&gt;</span>
@@ -259,14 +256,13 @@ put both configuration files, and relate it to some context path like so:</p>
   <span class="nt">&lt;servlet-name&gt;</span>api-dispatcher<span class="nt">&lt;/servlet-name&gt;</span>
   <span class="nt">&lt;url-pattern&gt;</span>/api/*<span class="nt">&lt;/url-pattern&gt;</span>
 <span class="nt">&lt;/servlet-mapping&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="content-negotiation">Content Negotiation</h3>
 <p>To support proper content negotiation and JSON serialization the following should be 
-added to the <code class="highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code>:</p>
+added to the <code class="language-plaintext highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.xml</code>:</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;ctx:annotation-config</span> <span class="nt">/&gt;</span>
 
 <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"objectMapper"</span> <span class="na">class=</span><span class="s">"com.fasterxml.jackson.databind.ObjectMapper"</span><span class="nt">&gt;</span>
@@ -291,8 +287,7 @@ added to the <code class="highlighter-rouge">/WEB-INF/spring/dispatcher-servlet.
         <span class="nt">&lt;/util:list&gt;</span>
     <span class="nt">&lt;/property&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="web-controller-injections">Web Controller injections</h3>
 <p>A Web controller serves an endpoint and behaves like described in the <a href="/sensorweb-server-helgoland/develop/api.html">Web API</a>. It 
@@ -302,7 +297,7 @@ performs <a href="/sensorweb-server-helgoland/develop/io.html">I/O operations</a
 referenced here. SPI implementors have to use these references to make sure the right
 backend service is called.</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;ctx:annotation-config</span> <span class="nt">/&gt;</span>
 
 <span class="c">&lt;!--
@@ -413,18 +408,17 @@ backend service is called.</p>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"preRenderingTask"</span> <span class="na">ref=</span><span class="s">"preRenderingJob"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"requestIntervalRestriction"</span> <span class="na">value=</span><span class="s">"${request.interval.restriction}"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <div class="n52-callout n52-callout-info">
   <p>Known application properties are 
 Some things to note:</p>
 
   <ul>
-    <li><code class="highlighter-rouge">${external.url}</code> and <code class="highlighter-rouge">${request.interval.restriction}</code> are property placeholders defined in 
+    <li><code class="language-plaintext highlighter-rouge">${external.url}</code> and <code class="language-plaintext highlighter-rouge">${request.interval.restriction}</code> are property placeholders defined in 
 an extra application properties file</li>
-    <li><code class="highlighter-rouge">org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter</code> is a backwards compatibility wrapper</li>
-    <li><code class="highlighter-rouge">metadataExtensions</code> list contains extensions which adds further metadata to <code class="highlighter-rouge">/&lt;endpoint&gt;/extras</code></li>
+    <li><code class="language-plaintext highlighter-rouge">org.n52.web.ctrl.ParameterBackwardsCompatibilityAdapter</code> is a backwards compatibility wrapper</li>
+    <li><code class="language-plaintext highlighter-rouge">metadataExtensions</code> list contains extensions which adds further metadata to <code class="language-plaintext highlighter-rouge">/&lt;endpoint&gt;/extras</code></li>
   </ul>
 
 </div>
@@ -433,8 +427,8 @@ an extra application properties file</li>
 <p>Configurable properties are</p>
 
 <ul>
-  <li><code class="highlighter-rouge">requestIntervalRestriction</code>: sets the maximum time period a clients can query data for, e.g. <code class="highlighter-rouge">P380D</code></li>
-  <li><code class="highlighter-rouge">externalUrl</code>: sets the external URL under which the API can be accessed by clients, e.g. (<code class="highlighter-rouge">https://example.com/my-api/</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">requestIntervalRestriction</code>: sets the maximum time period a clients can query data for, e.g. <code class="language-plaintext highlighter-rouge">P380D</code></li>
+  <li><code class="language-plaintext highlighter-rouge">externalUrl</code>: sets the external URL under which the API can be accessed by clients, e.g. (<code class="language-plaintext highlighter-rouge">https://example.com/my-api/</code>)</li>
 </ul>
 
 <h2 id="extensions">Extensions</h2>
@@ -444,7 +438,7 @@ an extra application properties file</li>
 
     <h2 id="common-utils">Common Utils</h2>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.dao.DefaultDbQueryFactory"</span><span class="nt">&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.dao.DefaultDbQueryFactory"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"databaseSrid"</span> <span class="na">value=</span><span class="s">"${database.srid}"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
 
@@ -454,20 +448,18 @@ an extra application properties file</li>
 
 <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.da.DefaultDataRepositoryFactory"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.DefaultIoFactory"</span> <span class="nt">/&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="static-service-entity">Static Service Entity</h3>
 <p>In case of a unique data backend a static service entity can be defined via Spring bean. Here’s an example</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.beans.ServiceEntity"</span><span class="nt">&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.series.db.beans.ServiceEntity"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"pkid"</span> <span class="na">value=</span><span class="s">"1"</span> <span class="nt">/&gt;</span>
   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"version"</span> <span class="na">value=</span><span class="s">"2.0"</span> <span class="nt">/&gt;</span>
   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"My Dataset Service"</span> <span class="nt">/&gt;</span>
   <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"noDataValues"</span> <span class="na">value=</span><span class="s">"-9999.0,99999,NO_DATA"</span> <span class="nt">/&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 
 </div>
@@ -494,7 +486,7 @@ an extra application properties file</li>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

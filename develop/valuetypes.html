@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -108,10 +108,10 @@
   <div class="entry">
     <p>A dataset has a particular type which indicates the type of data values
 which are being, or have been observed by a specific platform. This 
-can be simple scalar types or more complex types like <code class="highlighter-rouge">profile</code> or
-other <code class="highlighter-rouge">record</code> data being observed over time or along a track.</p>
+can be simple scalar types or more complex types like <code class="language-plaintext highlighter-rouge">profile</code> or
+other <code class="language-plaintext highlighter-rouge">record</code> data being observed over time or along a track.</p>
 
-<p>The default dataset type is <code class="highlighter-rouge">quantity</code> which actually is a 
+<p>The default dataset type is <code class="language-plaintext highlighter-rouge">quantity</code> which actually is a 
 numeric observation over time. A resource can be filtered by 
 dataset type(s).</p>
 
@@ -126,14 +126,14 @@ dataset type(s).</p>
 </ul>
 
 <h2 id="general">General</h2>
-<p>A simplest data value has a <code class="highlighter-rouge">timestamp</code> and a corresponding <code class="highlighter-rouge">value</code>.
-Showing time intervals (<code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code>) can be activated
-via query parameter <code class="highlighter-rouge">showTimeIntervals=true</code>.</p>
+<p>A simplest data value has a <code class="language-plaintext highlighter-rouge">timestamp</code> and a corresponding <code class="language-plaintext highlighter-rouge">value</code>.
+Showing time intervals (<code class="language-plaintext highlighter-rouge">timestart</code> and <code class="language-plaintext highlighter-rouge">timeend</code>) can be activated
+via query parameter <code class="language-plaintext highlighter-rouge">showTimeIntervals=true</code>.</p>
 
-<p><code class="highlighter-rouge">NULL</code> values means <code class="highlighter-rouge">no-data</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">NULL</code> values means <code class="language-plaintext highlighter-rouge">no-data</code>.</p>
 
-<p>While <code class="highlighter-rouge">timestamp</code> and <code class="highlighter-rouge">value</code> are mandatory (<code class="highlighter-rouge">timestamp</code> is mutually 
-exclusive to <code class="highlighter-rouge">timestart</code> and <code class="highlighter-rouge">timeend</code>), other information can
+<p>While <code class="language-plaintext highlighter-rouge">timestamp</code> and <code class="language-plaintext highlighter-rouge">value</code> are mandatory (<code class="language-plaintext highlighter-rouge">timestamp</code> is mutually 
+exclusive to <code class="language-plaintext highlighter-rouge">timestart</code> and <code class="language-plaintext highlighter-rouge">timeend</code>), other information can
 be encoded as well (if present).</p>
 
 <table class="table">
@@ -146,37 +146,37 @@ be encoded as well (if present).</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">timestamp</code></td>
+      <td><code class="language-plaintext highlighter-rouge">timestamp</code></td>
       <td>no</td>
       <td>when value has been observed</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">timestart</code></td>
+      <td><code class="language-plaintext highlighter-rouge">timestart</code></td>
       <td>no</td>
-      <td>when observation started (mutual exclusive to <code class="highlighter-rouge">timestamp</code>)</td>
+      <td>when observation started (mutual exclusive to <code class="language-plaintext highlighter-rouge">timestamp</code>)</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">timeend</code></td>
+      <td><code class="language-plaintext highlighter-rouge">timeend</code></td>
       <td>no</td>
-      <td>when observation ended (mutual exclusive to <code class="highlighter-rouge">timestamp</code>)</td>
+      <td>when observation ended (mutual exclusive to <code class="language-plaintext highlighter-rouge">timestamp</code>)</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">value</code></td>
+      <td><code class="language-plaintext highlighter-rouge">value</code></td>
       <td>no</td>
       <td>the actual (typed) data value</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">geometry</code></td>
+      <td><code class="language-plaintext highlighter-rouge">geometry</code></td>
       <td>yes</td>
-      <td>relevant for <code class="highlighter-rouge">mobile</code> platforms</td>
+      <td>relevant for <code class="language-plaintext highlighter-rouge">mobile</code> platforms</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">parameters</code></td>
+      <td><code class="language-plaintext highlighter-rouge">parameters</code></td>
       <td>yes</td>
       <td>additional parameters</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">validTime</code></td>
+      <td><code class="language-plaintext highlighter-rouge">validTime</code></td>
       <td>yes</td>
       <td>when the observation is being considered valid</td>
     </tr>
@@ -186,94 +186,91 @@ be encoded as well (if present).</p>
 <p>Each data value might have different optionals set.</p>
 
 <h2 id="scalar-data-types">Scalar data types</h2>
-<p>Scalar data types are single values (<code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">count</code>, <code class="highlighter-rouge">boolean</code>, <code class="highlighter-rouge">double</code>, 
-<code class="highlighter-rouge">text</code>). Observations of type <code class="highlighter-rouge">double</code> are identified by <code class="highlighter-rouge">quantity</code>. Other 
+<p>Scalar data types are single values (<code class="language-plaintext highlighter-rouge">double</code>, <code class="language-plaintext highlighter-rouge">count</code>, <code class="language-plaintext highlighter-rouge">boolean</code>, <code class="language-plaintext highlighter-rouge">double</code>, 
+<code class="language-plaintext highlighter-rouge">text</code>). Observations of type <code class="language-plaintext highlighter-rouge">double</code> are identified by <code class="language-plaintext highlighter-rouge">quantity</code>. Other 
 scalar types are denoted as is.</p>
 
 <p>Depending on what members are available (see above table) the following output 
 would be valid.</p>
 
-<h4 class="no_toc" id="quantity-example-stationary-platform">Quantity Example (<code class="highlighter-rouge">stationary</code> platform)</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"quantity_1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326400000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"validTime"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"start"</span><span class="p">:</span><span class="w"> </span><span class="mi">1381528800000</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"end"</span><span class="p">:</span><span class="w"> </span><span class="mi">1386802800000</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"bar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alice"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"foo"</span><span class="p">:</span><span class="w"> </span><span class="mf">3.4</span><span class="w">
-      </span><span class="p">},</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326460000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">1.1</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"bar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bob"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"foo"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<h4 class="no_toc" id="quantity-example-stationary-platform">Quantity Example (<code class="language-plaintext highlighter-rouge">stationary</code> platform)</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "quantity_1": {
+    "values": [
+      {
+        "timestamp": 1353326400000,
+        "value": 1,
+        "validTime": {
+          "start": 1381528800000,
+          "end": 1386802800000
+        },
+        "bar": "alice",
+        "foo": 3.4
+      },
+      {
+        "timestamp": 1353326460000,
+        "value": 1.1,
+        "bar": "bob",
+        "foo": 5
+      }
+    ]
+  }
+}
+</code></pre></div></div>
 
-<h4 class="no_toc" id="text-example-observation-interval-stationary-platform">Text example (observation interval, <code class="highlighter-rouge">stationary</code> platform)</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"text_1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestart"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326400000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"timesend"</span><span class="p">:</span><span class="w"> </span><span class="mi">135332605000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo"</span><span class="p">,</span><span class="w">
-      </span><span class="err">}</span><span class="p">,</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestart"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326460000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"timeend"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353326465000</span><span class="w">
-        </span><span class="s2">"value"</span><span class="err">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
-      </span><span class="err">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<h4 class="no_toc" id="text-example-observation-interval-stationary-platform">Text example (observation interval, <code class="language-plaintext highlighter-rouge">stationary</code> platform)</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "text_1": {
+    "values": [
+      {
+        "timestart": 1353326400000,
+        "timesend": 135332605000,
+        "value": "foo",
+      },
+      {
+        "timestart": 1353326460000,
+        "timeend": 1353326465000
+        "value": "bar",
+      }
+    ]
+  }
+}
+</code></pre></div></div>
 
-<h4 class="no_toc" id="quantity-example-mobile-platform">Quantity example (<code class="highlighter-rouge">mobile</code> platform)</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1362610500000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">261.494</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-          </span><span class="mf">3.020595</span><span class="p">,</span><span class="w">
-          </span><span class="mf">52.40741</span><span class="w">
-        </span><span class="p">]</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1362610520000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">261.738</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-          </span><span class="mf">3.018087</span><span class="p">,</span><span class="w">
-          </span><span class="mf">52.408466</span><span class="w">
-        </span><span class="p">]</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<h4 class="no_toc" id="quantity-example-mobile-platform">Quantity example (<code class="language-plaintext highlighter-rouge">mobile</code> platform)</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "values": [
+    {
+      "timestamp": 1362610500000,
+      "value": 261.494,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.020595,
+          52.40741
+        ]
+      }
+    },
+    {
+      "timestamp": 1362610520000,
+      "value": 261.738,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.018087,
+          52.408466
+        ]
+      }
+    },
+  ]
+}
+</code></pre></div></div>
 
 <h2 id="complex-data-types">Complex data types</h2>
 <p>Complex data types are compound values. Each compound value shall be seen as abstract
 value type which has to be made concrete by data providers. In case of providing 
-record data, the dataset should provide a concrete value type like <code class="highlighter-rouge">record+quantity</code> in 
-case of <code class="highlighter-rouge">quantity</code> values. Other, completely customized, value types (like <code class="highlighter-rouge">my-type</code>) 
+record data, the dataset should provide a concrete value type like <code class="language-plaintext highlighter-rouge">record+quantity</code> in 
+case of <code class="language-plaintext highlighter-rouge">quantity</code> values. Other, completely customized, value types (like <code class="language-plaintext highlighter-rouge">my-type</code>) 
 are also possible, but lead to less compatibility towards client (it has to know how to 
 deal with that specific type).</p>
 
@@ -284,163 +281,160 @@ supported by the API, just one subtype level.</p>
 would be valid.</p>
 
 <h3 id="record">Record</h3>
-<p>A record’s <code class="highlighter-rouge">value</code> member is a map of key-valued objects. However, a <code class="highlighter-rouge">record</code> is abstract
-and each implementation have to provide its own <code class="highlighter-rouge">valueType</code> within the <code class="highlighter-rouge">dataset</code> metadata.</p>
+<p>A record’s <code class="language-plaintext highlighter-rouge">value</code> member is a map of key-valued objects. However, a <code class="language-plaintext highlighter-rouge">record</code> is abstract
+and each implementation have to provide its own <code class="language-plaintext highlighter-rouge">valueType</code> within the <code class="language-plaintext highlighter-rouge">dataset</code> metadata.</p>
 
-<h4 class="no_toc" id="typed-record-example-text-stationary-platform">Typed Record Example: <code class="highlighter-rouge">text</code> (<code class="highlighter-rouge">stationary</code> platform)</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"record+text_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1437160475022</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"east"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b20c50876106726.jpg"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"south"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b26583054767586.jpg"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"north"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b19209320230740.jpg"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"spot"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b3782c557670845.jpg"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"west"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/55a9541b30c2f165697520.jpg"</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<h4 class="no_toc" id="typed-record-example-text-stationary-platform">Typed Record Example: <code class="language-plaintext highlighter-rouge">text</code> (<code class="language-plaintext highlighter-rouge">stationary</code> platform)</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "record+text_309510107": {
+    "values": [
+      {
+        "timestamp": 1437160475022,
+        "value": {
+          "east": "http://example.org/upload/201507/55a9541b20c50876106726.jpg",
+          "south": "http://example.org/upload/201507/55a9541b26583054767586.jpg",
+          "north": "http://example.org/upload/201507/55a9541b19209320230740.jpg",
+          "spot": "http://example.org/upload/201507/55a9541b3782c557670845.jpg",
+          "west": "http://example.org/upload/55a9541b30c2f165697520.jpg"
+        }
+      }
+    ]
+  }
+}
+</code></pre></div></div>
 
-<h4 class="no_toc" id="customized-example-fotoquest-stationary-platform">Customized Example: <code class="highlighter-rouge">fotoquest</code> (<code class="highlighter-rouge">stationary</code> platform)</h4>
+<h4 class="no_toc" id="customized-example-fotoquest-stationary-platform">Customized Example: <code class="language-plaintext highlighter-rouge">fotoquest</code> (<code class="language-plaintext highlighter-rouge">stationary</code> platform)</h4>
 <p><a href="https://github.com/52North/fotoquest-series-api">Fotoquest</a> value types describe some 
 kind of (referenced) media taken at a given location. It could also be described more 
-generally as <code class="highlighter-rouge">record+geojson</code>. Background infos about the project can be found at <a href="http://fotoquest-go.org/">the
+generally as <code class="language-plaintext highlighter-rouge">record+geojson</code>. Background infos about the project can be found at <a href="http://fotoquest-go.org/">the
 Fotoquest Homepage</a>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"fotoquest_309510107"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1437160475022</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"east"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120644"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120644"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b20c50876106726.jpg"</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="mf">14.27377</span><span class="p">,</span><span class="w">
-                </span><span class="mf">48.30273</span><span class="w">
-              </span><span class="p">]</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-          </span><span class="p">},</span><span class="w">
-          </span><span class="nt">"south"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120645"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120645"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b26583054767586.jpg"</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="mf">14.27375</span><span class="p">,</span><span class="w">
-                </span><span class="mf">48.30275</span><span class="w">
-              </span><span class="p">]</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-          </span><span class="p">},</span><span class="w">
-          </span><span class="nt">"north"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120643"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120643"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b19209320230740.jpg"</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="mf">14.27378</span><span class="p">,</span><span class="w">
-                </span><span class="mf">48.30273</span><span class="w">
-              </span><span class="p">]</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-          </span><span class="p">},</span><span class="w">
-          </span><span class="nt">"spot"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120647"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120647"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/201507/55a9541b3782c557670845.jpg"</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="mf">14.27375</span><span class="p">,</span><span class="w">
-                </span><span class="mf">48.30275</span><span class="w">
-              </span><span class="p">]</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-          </span><span class="p">},</span><span class="w">
-          </span><span class="nt">"west"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Feature"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120646"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"120646"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.org/upload/55a9541b30c2f165697520.jpg"</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="nt">"geometry"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Point"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"coordinates"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-                </span><span class="mf">14.27374</span><span class="p">,</span><span class="w">
-                </span><span class="mf">48.30275</span><span class="w">
-              </span><span class="p">]</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-          </span><span class="p">}</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "fotoquest_309510107": {
+    "values": [
+      {
+        "timestamp": 1437160475022,
+        "value": {
+          "east": {
+            "type": "Feature",
+            "id": "120644",
+            "properties": {
+              "id": "120644",
+              "href": "http://example.org/upload/201507/55a9541b20c50876106726.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27377,
+                48.30273
+              ]
+            }
+          },
+          "south": {
+            "type": "Feature",
+            "id": "120645",
+            "properties": {
+              "id": "120645",
+              "href": "http://example.org/upload/201507/55a9541b26583054767586.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27375,
+                48.30275
+              ]
+            }
+          },
+          "north": {
+            "type": "Feature",
+            "id": "120643",
+            "properties": {
+              "id": "120643",
+              "href": "http://example.org/upload/201507/55a9541b19209320230740.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27378,
+                48.30273
+              ]
+            }
+          },
+          "spot": {
+            "type": "Feature",
+            "id": "120647",
+            "properties": {
+              "id": "120647",
+              "href": "http://example.org/upload/201507/55a9541b3782c557670845.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27375,
+                48.30275
+              ]
+            }
+          },
+          "west": {
+            "type": "Feature",
+            "id": "120646",
+            "properties": {
+              "id": "120646",
+              "href": "http://example.org/upload/55a9541b30c2f165697520.jpg"
+            },
+            "geometry": {
+              "type": "Point",
+              "coordinates": [
+                14.27374,
+                48.30275
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+</code></pre></div></div>
 
 <h3 id="profile">Profile</h3>
 <p>A value type which contain observations along a vertical axis (e.g. observations made on
 different depth levels). The vertical unit is overridable within each vertical item.</p>
 
-<h4 class="no_toc" id="vertical-example-stationary-platform">Vertical Example (<code class="highlighter-rouge">stationary</code> platform)</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353330000000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"verticalUnit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test_unit_4"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1353330540000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"vertical"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"verticalUnit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"test_unit_4"</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<h4 class="no_toc" id="vertical-example-stationary-platform">Vertical Example (<code class="language-plaintext highlighter-rouge">stationary</code> platform)</h4>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "values": [
+    {
+      "timestamp": 1353330000000,
+      "value": [
+        {
+          "vertical": 10,
+          "value": 100
+        },
+        {
+          "vertical": 20,
+          "value": 200
+        }
+      ],
+      "verticalUnit": "test_unit_4"
+    },
+    {
+      "timestamp": 1353330540000,
+      "value": [
+        {
+          "vertical": 12,
+          "value": 400
+        },
+        {
+          "vertical": 15,
+          "value": 300
+        }
+      ],
+      "verticalUnit": "test_unit_4"
+    }
+  ]
+}
+</code></pre></div></div>
 
   </div>
 </article>
@@ -464,7 +458,7 @@ different depth levels). The vertical unit is overridable within each vertical i
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -109,7 +109,7 @@
     
 <p class="n52-callout n52-callout-todo">section under revision/update</p>
 
-<p class="n52-callout n52-callout-info">Extensions are configured for a controller instance via <code class="highlighter-rouge">metadataExtensions</code> property list. For
+<p class="n52-callout n52-callout-info">Extensions are configured for a controller instance via <code class="language-plaintext highlighter-rouge">metadataExtensions</code> property list. For
 details have a look at <a href="/sensorweb-server-helgoland/develop/configuration.html">Configuration section</a> section.</p>
 
 <div>
@@ -117,131 +117,165 @@ details have a look at <a href="/sensorweb-server-helgoland/develop/configuratio
     <h2 id="license-extension">License Extension</h2>
 
 <p>This simple extension which reads a license file and makes the content available to clients
-via <code class="highlighter-rouge">/&lt;endpoint&gt;/extras?fields=license</code> URL. This may be a full license text or a plain link.</p>
+via <code class="language-plaintext highlighter-rouge">/&lt;endpoint&gt;/extras?fields=license</code> URL. This may be a full license text or a plain link.</p>
 
 <h3 id="configuration-location">Configuration Location</h3>
 
-<p>Place a text file calling <code class="highlighter-rouge">config-license.txt</code> under <code class="highlighter-rouge">WEB-INF/classes</code> and enable license by 
-placing it under the <code class="highlighter-rouge">ParameterController</code>:</p>
+<p>Place a text file calling <code class="language-plaintext highlighter-rouge">config-license.txt</code> under <code class="language-plaintext highlighter-rouge">WEB-INF/classes</code> and enable license by 
+placing it under the <code class="language-plaintext highlighter-rouge">ParameterController</code>:</p>
 
-<div class="language-xml highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterController"</span> <span class="na">id=</span><span class="s">"parameterController"</span> <span class="na">abstract=</span><span class="s">"true"</span><span class="nt">&gt;</span>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.web.ctrl.ParameterController"</span> <span class="na">id=</span><span class="s">"parameterController"</span> <span class="na">abstract=</span><span class="s">"true"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"metadataExtensions"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;list&gt;</span>
             <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.response.extension.LicenseExtension"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;/list&gt;</span>
     <span class="nt">&lt;/property&gt;</span>
 <span class="nt">&lt;/bean&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 
     <h2 id="prerendering">Prerendering</h2>
 
 <p>A data provider can configure datasets being pre-/rerendered regularly for given time intervals
-(<code class="highlighter-rouge">lastMonth</code>, <code class="highlighter-rouge">lastWeek</code>, or <code class="highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
+(<code class="language-plaintext highlighter-rouge">lastMonth</code>, <code class="language-plaintext highlighter-rouge">lastWeek</code>, or <code class="language-plaintext highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
 to wait for that kind of fixed time intervals. Also, prerendered charts are easy to integrate via 
 html tags without making requests to render charts dynamically.</p>
 
 <p>On prerendering mode only single series charts are rendered (no chart overlay).</p>
 
-<h3 id="configuration-location">Configuration Location</h3>
+<h3 id="job-configuration">Job Configuration</h3>
+<p>A prerendering job can run at a given rate (as 
+<a href="http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06">Cron Expression</a>, 
+e.g. every Sunday at 04:00 in the morning). Such job can be configured and added to the Job scheduler 
+available by default, for example via Spring:</p>
 
-<p class="n52-callout n52-callout-todo">reference to JobScheduler configuration</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jobScheduler"</span> <span class="na">class=</span><span class="s">"org.n52.io.task.JobScheduler"</span> <span class="na">init-method=</span><span class="s">"init"</span> <span class="na">destroy-method=</span><span class="s">"shutdown"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"scheduler"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.scheduling.quartz.SchedulerFactoryBean"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobFactory"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.task.AutowiringSpringBeanJobFactory"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enabled"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"startupDelayInSeconds"</span> <span class="na">value=</span><span class="s">"5"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"scheduledJobs"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;list&gt;</span>
+      <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"preRenderingJob"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/list&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"preRenderingJob"</span> <span class="na">class=</span><span class="s">"org.n52.io.PreRenderingJob"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- start with '/' for config files lying under WEB-INF/classes folder --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"configFile"</span> <span class="na">value=</span><span class="s">"/config-task-prerendering.json"</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobName"</span> <span class="na">value=</span><span class="s">"Prerendering Job"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobDescription"</span> <span class="na">value=</span><span class="s">"Job prerendering charts."</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"triggerName"</span> <span class="na">value=</span><span class="s">"preRenderingV1_dailyAt_03:00am"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"cronExpression"</span> <span class="na">value=</span><span class="s">"0 0 03 * * ?"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"triggerAtStartup"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enabled"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div>
+
+<h3 id="configuration-location">Configuration Location</h3>
 
 <p>Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
-configuration section applies to all further config unless overridden (within a <code class="highlighter-rouge">config</code> entry).</p>
+configuration section applies to all further config unless overridden (within a <code class="language-plaintext highlighter-rouge">config</code> entry).</p>
 
 <p>For example:</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"generalConfig"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"locale"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"grid"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"generalize"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"generalConfig"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"locale"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"grid"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"generalize"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="nl">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
-     </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"chartQualifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"with_legend"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+     </span><span class="nl">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"chartQualifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"with_legend"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"lastMonth"</span><span class="w">
       </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"config"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"legend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="nl">"config"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"legend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
       </span><span class="p">},</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#00ffff"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#00ffff"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">],</span><span class="w">
-  </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="nl">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="nl">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"lastMonth"</span><span class="w">
       </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+<p class="n52-callout n52-callout-info"><code class="language-plaintext highlighter-rouge">timeseriesStyles</code> and <code class="language-plaintext highlighter-rouge">seriesStyles</code> mean the same as <code class="language-plaintext highlighter-rouge">datasetStyles</code> and is kept 
 for backwards compatibility reasons.</p>
 
 <h3 id="placeholders">Placeholders</h3>
 
 <p>To add fine grained title configuration on a phenomenona group a 
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code class="highlighter-rouge">String.format</code> template</a> 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code class="language-plaintext highlighter-rouge">String.format</code> template</a> 
 can be used.</p>
 
 <p>Choose one of the following</p>
 
 <ul>
-  <li><code class="highlighter-rouge">%1$s</code>: Platform label</li>
-  <li><code class="highlighter-rouge">%2$s</code>: Phenomenon label</li>
-  <li><code class="highlighter-rouge">%3$s</code>: Procedure label</li>
-  <li><code class="highlighter-rouge">%4$s</code>: Category label</li>
-  <li><code class="highlighter-rouge">%5$s</code>: Offering label</li>
-  <li><code class="highlighter-rouge">%6$s</code>: Feature label</li>
-  <li><code class="highlighter-rouge">%7$s</code>: Service label</li>
-  <li><code class="highlighter-rouge">%8$s</code>: Unit of Measure</li>
+  <li><code class="language-plaintext highlighter-rouge">%1$s</code>: Platform label</li>
+  <li><code class="language-plaintext highlighter-rouge">%2$s</code>: Phenomenon label</li>
+  <li><code class="language-plaintext highlighter-rouge">%3$s</code>: Procedure label</li>
+  <li><code class="language-plaintext highlighter-rouge">%4$s</code>: Category label</li>
+  <li><code class="language-plaintext highlighter-rouge">%5$s</code>: Offering label</li>
+  <li><code class="language-plaintext highlighter-rouge">%6$s</code>: Feature label</li>
+  <li><code class="language-plaintext highlighter-rouge">%7$s</code>: Service label</li>
+  <li><code class="language-plaintext highlighter-rouge">%8$s</code>: Unit of Measure</li>
 </ul>
 
-<p>Use the template for the title config within config file config-task-prerendering, e.g. <code class="highlighter-rouge">Platform: %1$s, Phenomenon: %2$s [{ %8$s}]</code>.</p>
+<p>Use the template for the title config within config file config-task-prerendering, e.g. <code class="language-plaintext highlighter-rouge">Platform: %1$s, Phenomenon: %2$s [{ %8$s}]</code>.</p>
 
 <h3 id="accessing-prerendered-charts">Accessing prerendered charts</h3>
 
-<p class="n52-callout n52-callout-todo"><code class="highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
+<p class="n52-callout n52-callout-todo"><code class="language-plaintext highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
 
 
     <h2 id="rendering-hints">Rendering Hints</h2>
 
-<p>The Helgoland API provides I/O mechanisms to render charts so that clients may directly request
-data via <code class="highlighter-rouge">accept=image/png</code> HTTP header. However, styles are chosen either randomly or by 
-passing the <code class="highlighter-rouge">style=...</code> parameter. As the data provider should know best what style fit best
+<p>The Series API provides I/O mechanisms to render charts so that clients may directly request
+data via <code class="language-plaintext highlighter-rouge">accept=image/png</code> HTTP header. However, styles are chosen either randomly or by 
+passing the <code class="language-plaintext highlighter-rouge">style=...</code> parameter. As the data provider should know best what style fit best
 to a particular dataset, it can be configured as rendering hints.</p>
 
-<p>The rendering hints are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+<p>The rendering hints are available to a client as <code class="language-plaintext highlighter-rouge">extra</code> data for a given dataset.</p>
 
 <h3 id="configuration-location">Configuration Location</h3>
 
@@ -251,35 +285,35 @@ limit and some color hint a client may use to render properly.</p>
 
 <p>For example:</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byHour"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"3"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byHour"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+  </span><span class="nl">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"referenceValueStyleProperties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"278"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-              </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-              </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
+        </span><span class="nl">"referenceValueStyleProperties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"278"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#1E90FF"</span><span class="w">
             </span><span class="p">}</span><span class="w">
           </span><span class="p">}</span><span class="w">
         </span><span class="p">}</span><span class="w">
@@ -287,10 +321,9 @@ limit and some color hint a client may use to render properly.</p>
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+<p class="n52-callout n52-callout-info"><code class="language-plaintext highlighter-rouge">timeseriesStyles</code> and <code class="language-plaintext highlighter-rouge">seriesStyles</code> mean the same as <code class="language-plaintext highlighter-rouge">datasetStyles</code> and is kept 
 for backwards compatibility reasons.</p>
 
 
@@ -298,10 +331,10 @@ for backwards compatibility reasons.</p>
 
 <p>The data provider knows best how to interpret available data and can add domain specific information 
 which may help to interpret data values of a particular dataset.Clients are then able to render data 
-values (e.g. when rendering <code class="highlighter-rouge">lastValue</code>s on a map) by comparing against those intervals. This gives a 
+values (e.g. when rendering <code class="language-plaintext highlighter-rouge">lastValue</code>s on a map) by comparing against those intervals. This gives a 
 user hints what data values actually mean and helps to avoid misunderstandings.</p>
 
-<p>The status intervals are available to a client as <code class="highlighter-rouge">extra</code> data for a given dataset.</p>
+<p>The status intervals are available to a client as <code class="language-plaintext highlighter-rouge">extra</code> data for a given dataset.</p>
 
 <h3 id="configuration-location">Configuration Location</h3>
 
@@ -311,98 +344,97 @@ limit and some color hint a client may use to render properly.</p>
 
 <p>For example:</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"phenomenonIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"90-100 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"phenomenonIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"1"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"90-100 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"80-90 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#1C00E2"</span><span class="w">
+        </span><span class="nl">"80-90 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">90.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#1C00E2"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"70-80 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3800C6"</span><span class="w">
+        </span><span class="nl">"70-80 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">80.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3800C6"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"60-70 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#5500AA"</span><span class="w">
+        </span><span class="nl">"60-70 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">70.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#5500AA"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"50-60 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#71008D"</span><span class="w">
+        </span><span class="nl">"50-60 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">60.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#71008D"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"40-50 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#8D0071"</span><span class="w">
+        </span><span class="nl">"40-50 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">50.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#8D0071"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"30-40 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#AA0055"</span><span class="w">
+        </span><span class="nl">"30-40 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">40.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#AA0055"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"20-30 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#C60038"</span><span class="w">
+        </span><span class="nl">"20-30 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">30.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#C60038"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"10-20 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#E2001C"</span><span class="w">
+        </span><span class="nl">"10-20 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#E2001C"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"0-10 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+        </span><span class="nl">"0-10 Percent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"datasetIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"&gt;20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
+  </span><span class="nl">"datasetIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"statusIntervals"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"&gt;20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#FF0000"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"15-20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#BF003F"</span><span class="w">
+        </span><span class="nl">"15-20"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">20.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#BF003F"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"10-15"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#7F007F"</span><span class="w">
+        </span><span class="nl">"10-15"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">15.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#7F007F"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"5-10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3F00BF"</span><span class="w">
+        </span><span class="nl">"5-10"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">10.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#3F00BF"</span><span class="w">
         </span><span class="p">},</span><span class="w">
-        </span><span class="nt">"0-5"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
+        </span><span class="nl">"0-5"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"upper"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">5.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lower"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000FF"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+<p class="n52-callout n52-callout-info"><code class="language-plaintext highlighter-rouge">timeseriesStyles</code> and <code class="language-plaintext highlighter-rouge">seriesStyles</code> mean the same as <code class="language-plaintext highlighter-rouge">datasetStyles</code> and is kept 
 for backwards compatibility reasons.</p>
 
 
@@ -430,7 +462,7 @@ for backwards compatibility reasons.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

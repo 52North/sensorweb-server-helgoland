@@ -58,7 +58,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -70,7 +70,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -107,7 +107,7 @@
 
   <div class="entry">
     <p>Depending on the requested data type the API offers some Input/Output processing.
-In case of <code class="highlighter-rouge">quantity</code> datasets a client might request a rendered chart instead 
+In case of <code class="language-plaintext highlighter-rouge">quantity</code> datasets a client might request a rendered chart instead 
 of raw data.</p>
 
 <p>The following sections list currently supported I/O operations.</p>
@@ -133,7 +133,7 @@ of raw data.</p>
 
 <h2 id="chart-rendering">Chart Rendering</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="language-plaintext highlighter-rouge">quantity</code> types.</p>
 
 <p>The following diagram types are available and can be set via style options:</p>
 
@@ -158,16 +158,16 @@ an image or a report (which embeds the chart).</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">lineType</code></td>
-      <td>The line style. Possible values are <code class="highlighter-rouge">solid</code>, <code class="highlighter-rouge">dotted</code> or <code class="highlighter-rouge">dashed</code></td>
+      <td><code class="language-plaintext highlighter-rouge">lineType</code></td>
+      <td>The line style. Possible values are <code class="language-plaintext highlighter-rouge">solid</code>, <code class="language-plaintext highlighter-rouge">dotted</code> or <code class="language-plaintext highlighter-rouge">dashed</code></td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">width</code></td>
+      <td><code class="language-plaintext highlighter-rouge">width</code></td>
       <td>The thickness of a line as integer, dash gap, point size (dependend on the chart type to be rendered)</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">color</code></td>
-      <td>A 6-digit hex color value, e.g. <code class="highlighter-rouge">#5f5f5f</code></td>
+      <td><code class="language-plaintext highlighter-rouge">color</code></td>
+      <td>A 6-digit hex color value, e.g. <code class="language-plaintext highlighter-rouge">#5f5f5f</code></td>
     </tr>
   </tbody>
 </table>
@@ -202,16 +202,16 @@ an image or a report (which embeds the chart).</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">interval</code></td>
-      <td>The time period a bar shall represent. Possible values are <code class="highlighter-rouge">byDay</code>, <code class="highlighter-rouge">byWeek</code>, <code class="highlighter-rouge">byMonth</code>.</td>
+      <td><code class="language-plaintext highlighter-rouge">interval</code></td>
+      <td>The time period a bar shall represent. Possible values are <code class="language-plaintext highlighter-rouge">byDay</code>, <code class="language-plaintext highlighter-rouge">byWeek</code>, <code class="language-plaintext highlighter-rouge">byMonth</code>.</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">width</code></td>
-      <td>Value between <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code>, which defines the bar width in percent (<code class="highlighter-rouge">width=1</code> means maximum width, i.e. bar next to bar).</td>
+      <td><code class="language-plaintext highlighter-rouge">width</code></td>
+      <td>Value between <code class="language-plaintext highlighter-rouge">0</code> and <code class="language-plaintext highlighter-rouge">1</code>, which defines the bar width in percent (<code class="language-plaintext highlighter-rouge">width=1</code> means maximum width, i.e. bar next to bar).</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">color</code></td>
-      <td>A 6-digit hex color value, e.g. <code class="highlighter-rouge">#5f5f5f</code></td>
+      <td><code class="language-plaintext highlighter-rouge">color</code></td>
+      <td>A 6-digit hex color value, e.g. <code class="language-plaintext highlighter-rouge">#5f5f5f</code></td>
     </tr>
   </tbody>
 </table>
@@ -279,34 +279,33 @@ Accept: image/png
 favorite programming language. For a quick review you can use Curl from command line
 (adapt parameters as needed, e.g. if you want a PDF report instead):</p>
 
-  <div class="highlighter-rouge"><pre class="highlight"><code>curl -X POST -d 'PASTE IN HERE YOUR POST REQUEST' \
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl -X POST -d 'PASTE IN HERE YOUR POST REQUEST' \
 -H "content-type:application/json" -H "accept:image/png" \
 http://localhost:8080/api/v1/timeseries/getData &amp;gt; img.png
-</code></pre>
-  </div>
+</code></pre></div>  </div>
 </div>
 
 <h2 id="generalizing-raw-data">Generalizing Raw Data</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="language-plaintext highlighter-rouge">quantity</code> types.</p>
 
 <p>Depending on sampling resolution and timespan timeseries data can be huge. Generalizing data can make 
 sense in more than just a low bandwidth use case (e.g. smoothing the curve).</p>
 
-<p>Generalization can be enabled by <code class="highlighter-rouge">generalize=true</code> query parameter. By default generalization behaviour 
-is set to <code class="highlighter-rouge">false</code>. The API currently supports two generalization algorithms.</p>
+<p>Generalization can be enabled by <code class="language-plaintext highlighter-rouge">generalize=true</code> query parameter. By default generalization behaviour 
+is set to <code class="language-plaintext highlighter-rouge">false</code>. The API currently supports two generalization algorithms.</p>
 
 <h3 id="largest-triangle-three-bucket-downsampling-default">Largest-Triangle-Three Bucket Downsampling (default)</h3>
 
 <p>Downsamples to a fix amount of output values 
 (<a href="http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf">Details</a>). This is the default
-algorithm chosen, when <code class="highlighter-rouge">generalizing_algorithm</code> parameter is missing.</p>
+algorithm chosen, when <code class="language-plaintext highlighter-rouge">generalizing_algorithm</code> parameter is missing.</p>
 
 <p>Parameters</p>
 <ul>
-  <li><code class="highlighter-rouge">generalize=true</code></li>
-  <li><code class="highlighter-rouge">generalizing_algorithm=lttb</code></li>
-  <li><code class="highlighter-rouge">threshold={int-value}</code> (default is <code class="highlighter-rouge">200</code>)</li>
+  <li><code class="language-plaintext highlighter-rouge">generalize=true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">generalizing_algorithm=lttb</code></li>
+  <li><code class="language-plaintext highlighter-rouge">threshold={int-value}</code> (default is <code class="language-plaintext highlighter-rouge">200</code>)</li>
 </ul>
 
 <h3 id="douglas-peucker-downsampling">Douglas-Peucker Downsampling</h3>
@@ -316,25 +315,25 @@ algorithm chosen, when <code class="highlighter-rouge">generalizing_algorithm</c
 
 <p>Parameters</p>
 <ul>
-  <li><code class="highlighter-rouge">generalize=true</code></li>
-  <li><code class="highlighter-rouge">generalizing_algorithm=dp</code></li>
-  <li><code class="highlighter-rouge">tolerance_value={double-value}</code> (default is 0.1)</li>
+  <li><code class="language-plaintext highlighter-rouge">generalize=true</code></li>
+  <li><code class="language-plaintext highlighter-rouge">generalizing_algorithm=dp</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tolerance_value={double-value}</code> (default is 0.1)</li>
 </ul>
 
 <h2 id="formatting-raw-data">Formatting Raw Data</h2>
 
-<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="highlighter-rouge">quantity</code> types.</p>
+<p class="n52-callout n52-callout-info">Chart rendering is only supported for <code class="language-plaintext highlighter-rouge">quantity</code> types.</p>
 
 <p>Raw data can be requested in a specific format. This can be useful if you work with a specific chart API 
 and want to avoid to convert data outout from one format to another. Possible formats are:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">tvp</code> (the default)</li>
-  <li><code class="highlighter-rouge">highchart</code></li>
+  <li><code class="language-plaintext highlighter-rouge">tvp</code> (the default)</li>
+  <li><code class="language-plaintext highlighter-rouge">highchart</code></li>
 </ul>
 
 <p>To retrieve extra reference values (if available for that timeseries) valid for the requested timespan just
-add <code class="highlighter-rouge">expand=true</code>.</p>
+add <code class="language-plaintext highlighter-rouge">expand=true</code>.</p>
 
 <p class="n52-callout n52-callout-info">Serving arbitrary formats is limited. Most probably you have to combine timeseries metadata and the actual 
 data differently within the used API. Please refer to the actual data output so that it can be used as 
@@ -345,53 +344,51 @@ intended by the 3rd party API.</p>
 <p>The format returns timeseries data as time-value tuples.</p>
 
 <p><strong>Example (single dataset)</strong></p>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376524800000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">433.0</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376524860000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">432.4</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376524920000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">432.0</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376524980000</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">431.1</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "values": [
+    {
+      "timestamp": 1376524800000,
+      "value": 433.0
+    },
+    {
+      "timestamp": 1376524860000,
+      "value": 432.4
+    },
+    {
+      "timestamp": 1376524920000,
+      "value": 432.0
+    },
+    {
+      "timestamp": 1376524980000,
+      "value": 431.1
+    }
+  ]
+}
+</code></pre></div></div>
 
 <p><strong>Example (multiple datasets)</strong></p>
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"ts_ad3edeff973ab62e39f76c14f95d1e82"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"ts_c8ed5ddbb89c19b2e385de23eecbde98"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376589600000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">546</span><span class="w">
-      </span><span class="p">},</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376589660000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">546.6</span><span class="w">
-      </span><span class="p">},</span><span class="w">
-      </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="mi">1376589720000</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">547</span><span class="w">
-      </span><span class="p">}</span><span class="w">
-    </span><span class="p">]</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "ts_ad3edeff973ab62e39f76c14f95d1e82": {
+    "values": []
+  },
+  "ts_c8ed5ddbb89c19b2e385de23eecbde98": {
+    "values": [
+      {
+        "timestamp": 1376589600000,
+        "value": 546
+      },
+      {
+        "timestamp": 1376589660000,
+        "value": 546.6
+      },
+      {
+        "timestamp": 1376589720000,
+        "value": 547
+      }
+    ]
+  }
+}
+</code></pre></div></div>
 
 <p class="n52-callout n52-callout-info">Please note that when adding <code>expanded=true</code>, reference values will be added as
 a dataset on their own. You can track reference values with the corresponding identifiers 
@@ -400,7 +397,7 @@ available from the dataset metadata.</p>
 <h3 id="highchart-format">Highchart Format</h3>
 
 <p>The format returns timeseries data in <a href="http://api.highcharts.com/highcharts#series">Highcharts series format</a>. 
-To add metadata or a readable dataset name you will have to replace the <code class="highlighter-rouge">datasetId</code> with a 
+To add metadata or a readable dataset name you will have to replace the <code class="language-plaintext highlighter-rouge">datasetId</code> with a 
 readable label taken from the Dataset metadata.</p>
 
 <p><strong>Example (single dataset)</strong></p>
@@ -423,7 +420,7 @@ readable label taken from the Dataset metadata.</p>
 </code></pre>
 
 <p><strong>Example (multiple datasets)</strong></p>
-<div class="highlighter-rouge"><pre class="highlight"><code>[
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[
   {
     "name": "ts_ad3edeff973ab62e39f76c14f95d1e82",
     "data": []
@@ -450,8 +447,7 @@ readable label taken from the Dataset metadata.</p>
     ]
   }
 ]
-</code></pre>
-</div>
+</code></pre></div></div>
 
   </div>
 </article>
@@ -475,7 +471,7 @@ readable label taken from the Dataset metadata.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>

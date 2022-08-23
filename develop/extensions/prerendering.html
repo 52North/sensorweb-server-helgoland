@@ -27,9 +27,269 @@
     
     <meta name="description" content="Prerendering
 
+A data provider can configure datasets being pre-/rerendered regularly for given time intervals
+(lastMonth, lastWeek, or lastDay). A client experience may be instant access rather than
+to wait for that kind of fixed time intervals. Also, prerendered charts are easy to integrate via 
+html tags without making requests to render charts dynamically.
+
+On prerendering mode only single series charts are rendered (no chart overlay).
+
+Job Configuration
+A prerendering job can run at a given rate (as 
+Cron Expression, 
+e.g. every Sunday at 04:00 in the morning). Such job can be configured and added to the Job scheduler 
+available by default, for example via Spring:
+
+&lt;bean id="jobScheduler" class="org.n52.io.task.JobScheduler" init-method="init" destroy-method="shutdown"&gt;
+  &lt;property name="scheduler"&gt;
+    &lt;bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"&gt;
+      &lt;property name="jobFactory"&gt;
+        &lt;bean class="org.n52.io.task.AutowiringSpringBeanJobFactory" /&gt;
+      &lt;/property&gt;
+    &lt;/bean&gt;
+  &lt;/property&gt;
+  &lt;property name="enabled" value="true" /&gt;
+  &lt;property name="startupDelayInSeconds" value="5" /&gt;
+  &lt;property name="scheduledJobs"&gt;
+    &lt;list&gt;
+      &lt;ref bean="preRenderingJob" /&gt;
+    &lt;/list&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean id="preRenderingJob" class="org.n52.io.PreRenderingJob"&gt;
+    &lt;!-- start with '/' for config files lying under WEB-INF/classes folder --&gt;
+    &lt;property name="configFile" value="/config-task-prerendering.json" /&gt;
+
+    &lt;property name="jobName" value="Prerendering Job" /&gt;
+    &lt;property name="jobDescription" value="Job prerendering charts." /&gt;
+    &lt;property name="triggerName" value="preRenderingV1_dailyAt_03:00am" /&gt;
+    &lt;!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 --&gt;
+    &lt;property name="cronExpression" value="0 0 03 * * ?" /&gt;
+    &lt;property name="triggerAtStartup" value="true" /&gt;
+    &lt;property name="enabled" value="true" /&gt;
+
+&lt;/bean&gt;
+
+
+Configuration Location
+
+Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
+phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
+configuration section applies to all further config unless overridden (within a config entry).
+
+For example:
+
+{
+  "generalConfig" : {
+    "width": "800",
+    "height": "500",
+    "locale" : "de",
+    "grid" : true,
+    "generalize" : false
+  },
+  "phenomenonStyles": [
+    {
+     "id" : "3",
+      "title" : "Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)",
+      "chartQualifier" : "with_legend",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "config" : {
+        "legend" : true
+      },
+      "style": {
+        "chartType": "line",
+        "properties": {
+          "color": "#00ffff",
+          "lineType": "solid",
+          "width": 2
+        }
+      }
+    }
+  ],
+  "datasetStyles": [
+    {
+      "id" : "16",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "style": {
+        "chartType": "bar",
+        "properties": {
+          "interval": "byDay",
+          "width": 0.8,
+          "color": "#0000ff"
+        }
+      }
+    }
+  ]
+}
+
+
+timeseriesStyles and seriesStyles mean the same as datasetStyles and is kept 
+for backwards compatibility reasons.
+
+Placeholders
+
+To add fine grained title configuration on a phenomenona group a 
+String.format template 
+can be used.
+
+Choose one of the following
+
+
+  %1$s: Platform label
+  %2$s: Phenomenon label
+  %3$s: Procedure label
+  %4$s: Category label
+  %5$s: Offering label
+  %6$s: Feature label
+  %7$s: Service label
+  %8$s: Unit of Measure
+
+
+Use the template for the title config within config file config-task-prerendering, e.g. Platform: %1$s, Phenomenon: %2$s [{ %8$s}].
+
+Accessing prerendered charts
+
+datasets/&lt;id&gt;/images/&lt;img_id&gt;
 " />
     <meta property="og:description" content="Prerendering
 
+A data provider can configure datasets being pre-/rerendered regularly for given time intervals
+(lastMonth, lastWeek, or lastDay). A client experience may be instant access rather than
+to wait for that kind of fixed time intervals. Also, prerendered charts are easy to integrate via 
+html tags without making requests to render charts dynamically.
+
+On prerendering mode only single series charts are rendered (no chart overlay).
+
+Job Configuration
+A prerendering job can run at a given rate (as 
+Cron Expression, 
+e.g. every Sunday at 04:00 in the morning). Such job can be configured and added to the Job scheduler 
+available by default, for example via Spring:
+
+&lt;bean id="jobScheduler" class="org.n52.io.task.JobScheduler" init-method="init" destroy-method="shutdown"&gt;
+  &lt;property name="scheduler"&gt;
+    &lt;bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"&gt;
+      &lt;property name="jobFactory"&gt;
+        &lt;bean class="org.n52.io.task.AutowiringSpringBeanJobFactory" /&gt;
+      &lt;/property&gt;
+    &lt;/bean&gt;
+  &lt;/property&gt;
+  &lt;property name="enabled" value="true" /&gt;
+  &lt;property name="startupDelayInSeconds" value="5" /&gt;
+  &lt;property name="scheduledJobs"&gt;
+    &lt;list&gt;
+      &lt;ref bean="preRenderingJob" /&gt;
+    &lt;/list&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;
+
+&lt;bean id="preRenderingJob" class="org.n52.io.PreRenderingJob"&gt;
+    &lt;!-- start with '/' for config files lying under WEB-INF/classes folder --&gt;
+    &lt;property name="configFile" value="/config-task-prerendering.json" /&gt;
+
+    &lt;property name="jobName" value="Prerendering Job" /&gt;
+    &lt;property name="jobDescription" value="Job prerendering charts." /&gt;
+    &lt;property name="triggerName" value="preRenderingV1_dailyAt_03:00am" /&gt;
+    &lt;!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 --&gt;
+    &lt;property name="cronExpression" value="0 0 03 * * ?" /&gt;
+    &lt;property name="triggerAtStartup" value="true" /&gt;
+    &lt;property name="enabled" value="true" /&gt;
+
+&lt;/bean&gt;
+
+
+Configuration Location
+
+Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
+phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
+configuration section applies to all further config unless overridden (within a config entry).
+
+For example:
+
+{
+  "generalConfig" : {
+    "width": "800",
+    "height": "500",
+    "locale" : "de",
+    "grid" : true,
+    "generalize" : false
+  },
+  "phenomenonStyles": [
+    {
+     "id" : "3",
+      "title" : "Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)",
+      "chartQualifier" : "with_legend",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "config" : {
+        "legend" : true
+      },
+      "style": {
+        "chartType": "line",
+        "properties": {
+          "color": "#00ffff",
+          "lineType": "solid",
+          "width": 2
+        }
+      }
+    }
+  ],
+  "datasetStyles": [
+    {
+      "id" : "16",
+      "interval": [
+        "lastWeek",
+        "lastMonth"
+      ],
+      "style": {
+        "chartType": "bar",
+        "properties": {
+          "interval": "byDay",
+          "width": 0.8,
+          "color": "#0000ff"
+        }
+      }
+    }
+  ]
+}
+
+
+timeseriesStyles and seriesStyles mean the same as datasetStyles and is kept 
+for backwards compatibility reasons.
+
+Placeholders
+
+To add fine grained title configuration on a phenomenona group a 
+String.format template 
+can be used.
+
+Choose one of the following
+
+
+  %1$s: Platform label
+  %2$s: Phenomenon label
+  %3$s: Procedure label
+  %4$s: Category label
+  %5$s: Offering label
+  %6$s: Feature label
+  %7$s: Service label
+  %8$s: Unit of Measure
+
+
+Use the template for the title config within config file config-task-prerendering, e.g. Platform: %1$s, Phenomenon: %2$s [{ %8$s}].
+
+Accessing prerendered charts
+
+datasets/&lt;id&gt;/images/&lt;img_id&gt;
 " />
     
     <meta name="author" content="52°North GmbH" />
@@ -62,7 +322,7 @@
         <div class="pull-right navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="http://52north.org">52°North</a></li>
-            <li><a href="http://github.com/ridoo/sensorweb-server-helgoland">Sources</a></li>
+            <li><a href="https://github.com/52North/sensorweb-server-helgoland">Sources</a></li>
             <li><a href="http://blog.52north.org">Blog</a></li>
           </ul>
         </div>
@@ -74,7 +334,7 @@
         <a href="/sensorweb-server-helgoland/develop/index.html">Home</a>
       </p>
       <p class="header">
-        <a href="/sensorweb-server-helgoland/develop/changes.html">Changes</a>
+        <a href="/sensorweb-server-helgoland/develop/compatibility.html">Compatibility</a>
       </p>
       <p class="header">
         <a href="/sensorweb-server-helgoland/develop/valuetypes.html">Value Types</a>
@@ -113,100 +373,135 @@
     <h2 id="prerendering">Prerendering</h2>
 
 <p>A data provider can configure datasets being pre-/rerendered regularly for given time intervals
-(<code class="highlighter-rouge">lastMonth</code>, <code class="highlighter-rouge">lastWeek</code>, or <code class="highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
+(<code class="language-plaintext highlighter-rouge">lastMonth</code>, <code class="language-plaintext highlighter-rouge">lastWeek</code>, or <code class="language-plaintext highlighter-rouge">lastDay</code>). A client experience may be instant access rather than
 to wait for that kind of fixed time intervals. Also, prerendered charts are easy to integrate via 
 html tags without making requests to render charts dynamically.</p>
 
 <p>On prerendering mode only single series charts are rendered (no chart overlay).</p>
 
-<h3 id="configuration-location">Configuration Location</h3>
+<h3 id="job-configuration">Job Configuration</h3>
+<p>A prerendering job can run at a given rate (as 
+<a href="http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06">Cron Expression</a>, 
+e.g. every Sunday at 04:00 in the morning). Such job can be configured and added to the Job scheduler 
+available by default, for example via Spring:</p>
 
-<p class="n52-callout n52-callout-todo">reference to JobScheduler configuration</p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"jobScheduler"</span> <span class="na">class=</span><span class="s">"org.n52.io.task.JobScheduler"</span> <span class="na">init-method=</span><span class="s">"init"</span> <span class="na">destroy-method=</span><span class="s">"shutdown"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"scheduler"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.scheduling.quartz.SchedulerFactoryBean"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobFactory"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.n52.io.task.AutowiringSpringBeanJobFactory"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enabled"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"startupDelayInSeconds"</span> <span class="na">value=</span><span class="s">"5"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"scheduledJobs"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;list&gt;</span>
+      <span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"preRenderingJob"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/list&gt;</span>
+  <span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"preRenderingJob"</span> <span class="na">class=</span><span class="s">"org.n52.io.PreRenderingJob"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!-- start with '/' for config files lying under WEB-INF/classes folder --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"configFile"</span> <span class="na">value=</span><span class="s">"/config-task-prerendering.json"</span> <span class="nt">/&gt;</span>
+
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobName"</span> <span class="na">value=</span><span class="s">"Prerendering Job"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"jobDescription"</span> <span class="na">value=</span><span class="s">"Job prerendering charts."</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"triggerName"</span> <span class="na">value=</span><span class="s">"preRenderingV1_dailyAt_03:00am"</span> <span class="nt">/&gt;</span>
+    <span class="c">&lt;!-- http://quartz-scheduler.org/documentation/quartz-2.1.x/tutorials/tutorial-lesson-06 --&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"cronExpression"</span> <span class="na">value=</span><span class="s">"0 0 03 * * ?"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"triggerAtStartup"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enabled"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div>
+
+<h3 id="configuration-location">Configuration Location</h3>
 
 <p>Prerendering (styles, intervals, legend, etc.) can be configured for datasets having a particular 
 phenomenon or each individually (overriding a possibly matching phenomenona config). A general 
-configuration section applies to all further config unless overridden (within a <code class="highlighter-rouge">config</code> entry).</p>
+configuration section applies to all further config unless overridden (within a <code class="language-plaintext highlighter-rouge">config</code> entry).</p>
 
 <p>For example:</p>
 
-<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"generalConfig"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"locale"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"grid"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"generalize"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"generalConfig"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="s2">"800"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"500"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"locale"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"de"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"grid"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"generalize"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
   </span><span class="p">},</span><span class="w">
-  </span><span class="nt">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="nl">"phenomenonStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
-     </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"chartQualifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"with_legend"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+     </span><span class="nl">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"title"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"Station: %1$s, Phenomenon: %2$s [{ %8$s}] (w/ legend)"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"chartQualifier"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"with_legend"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"lastMonth"</span><span class="w">
       </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"config"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"legend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="nl">"config"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"legend"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
       </span><span class="p">},</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#00ffff"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"line"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#00ffff"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"lineType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"solid"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">],</span><span class="w">
-  </span><span class="nt">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="nl">"datasetStyles"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
     </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="nl">"id"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"16"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="s2">"lastWeek"</span><span class="p">,</span><span class="w">
         </span><span class="s2">"lastMonth"</span><span class="w">
       </span><span class="p">],</span><span class="w">
-      </span><span class="nt">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
+      </span><span class="nl">"style"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"chartType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"interval"</span><span class="p">:</span><span class="w"> </span><span class="s2">"byDay"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"width"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"#0000ff"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p class="n52-callout n52-callout-info"><code class="highlighter-rouge">timeseriesStyles</code> and <code class="highlighter-rouge">seriesStyles</code> mean the same as <code class="highlighter-rouge">datasetStyles</code> and is kept 
+<p class="n52-callout n52-callout-info"><code class="language-plaintext highlighter-rouge">timeseriesStyles</code> and <code class="language-plaintext highlighter-rouge">seriesStyles</code> mean the same as <code class="language-plaintext highlighter-rouge">datasetStyles</code> and is kept 
 for backwards compatibility reasons.</p>
 
 <h3 id="placeholders">Placeholders</h3>
 
 <p>To add fine grained title configuration on a phenomenona group a 
-<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code class="highlighter-rouge">String.format</code> template</a> 
+<a href="https://docs.oracle.com/javase/8/docs/api/java/util/Formatter.html#syntax"><code class="language-plaintext highlighter-rouge">String.format</code> template</a> 
 can be used.</p>
 
 <p>Choose one of the following</p>
 
 <ul>
-  <li><code class="highlighter-rouge">%1$s</code>: Platform label</li>
-  <li><code class="highlighter-rouge">%2$s</code>: Phenomenon label</li>
-  <li><code class="highlighter-rouge">%3$s</code>: Procedure label</li>
-  <li><code class="highlighter-rouge">%4$s</code>: Category label</li>
-  <li><code class="highlighter-rouge">%5$s</code>: Offering label</li>
-  <li><code class="highlighter-rouge">%6$s</code>: Feature label</li>
-  <li><code class="highlighter-rouge">%7$s</code>: Service label</li>
-  <li><code class="highlighter-rouge">%8$s</code>: Unit of Measure</li>
+  <li><code class="language-plaintext highlighter-rouge">%1$s</code>: Platform label</li>
+  <li><code class="language-plaintext highlighter-rouge">%2$s</code>: Phenomenon label</li>
+  <li><code class="language-plaintext highlighter-rouge">%3$s</code>: Procedure label</li>
+  <li><code class="language-plaintext highlighter-rouge">%4$s</code>: Category label</li>
+  <li><code class="language-plaintext highlighter-rouge">%5$s</code>: Offering label</li>
+  <li><code class="language-plaintext highlighter-rouge">%6$s</code>: Feature label</li>
+  <li><code class="language-plaintext highlighter-rouge">%7$s</code>: Service label</li>
+  <li><code class="language-plaintext highlighter-rouge">%8$s</code>: Unit of Measure</li>
 </ul>
 
-<p>Use the template for the title config within config file config-task-prerendering, e.g. <code class="highlighter-rouge">Platform: %1$s, Phenomenon: %2$s [{ %8$s}]</code>.</p>
+<p>Use the template for the title config within config file config-task-prerendering, e.g. <code class="language-plaintext highlighter-rouge">Platform: %1$s, Phenomenon: %2$s [{ %8$s}]</code>.</p>
 
 <h3 id="accessing-prerendered-charts">Accessing prerendered charts</h3>
 
-<p class="n52-callout n52-callout-todo"><code class="highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
+<p class="n52-callout n52-callout-todo"><code class="language-plaintext highlighter-rouge">datasets/&lt;id&gt;/images/&lt;img_id&gt;</code></p>
 
   </div>
 </article>
@@ -230,7 +525,7 @@ can be used.</p>
           <li class="muted">&middot;</li>
           <li><a href="mailto:h.bredel@52north.org">Contact</a></li>
       </ul>
-      <p>Last Rev.: <a href="http://github.com/ridoo/sensorweb-server-helgoland/tree/cab6ba7420142198ad6d749c434ea5855f947d71">cab6ba7420142198ad6d749c434ea5855f947d71</a></p>
+      <p>Last Rev.: <a href="https://github.com/52North/sensorweb-server-helgoland/tree/cae36a2af4891d2472f1ee3de52132c2d028202d">cae36a2af4891d2472f1ee3de52132c2d028202d</a></p>
       
     </div>
   </footer>
