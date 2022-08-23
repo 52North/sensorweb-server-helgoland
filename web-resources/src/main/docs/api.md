@@ -1,9 +1,8 @@
 ---
 layout: swagger
-title: Series API Documentation
+title: Helgoland API Documentation
 data: swagger
 permalink: /api
 ---
 
-foo bar foo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo 
-barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo barfoo bar
+This is the Helgoland API SwaggerUI
