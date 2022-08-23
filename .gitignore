@@ -1,0 +1,7 @@
+io/
+rest/.classpath
+rest/
+spi/
+web-resources/
+xml-pdf-format/
+.project
