@@ -1,4 +1,3 @@
-
 # Name of your site (displayed in the header)
 name: 52°North GmbH
 
@@ -16,7 +15,7 @@ url:
 # (http://yourusername.github.io/repository-name)
 # and NOT your User repository (http://yourusername.github.io)
 # then add in the baseurl here, like this: "/repository-name"
-baseurl: ""
+baseurl: "/sensorweb-server-helgoland/develop"
 
 permalink: /:title/
 
@@ -29,8 +28,8 @@ collections:
 markdown: kramdown
 
 # starting from 3.5.0
-#plugins:
-gems:
+plugins:
+#gems:
   - jekyll-sitemap
   
 # Exclude these files from your production _site

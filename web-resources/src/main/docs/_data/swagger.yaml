@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  title: 52°North Sensor Web Server Helgoland API
+  title: 52Â°North Sensor Web Server Helgoland API
   description: Thin Web binding API to access series data
   version: 2.0.0
 host: example.org
