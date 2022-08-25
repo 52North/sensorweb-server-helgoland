@@ -1,7 +1,8 @@
 ---
 layout: swagger
-title: Series API Documentation
+title: Helgoland API Documentation
 data: swagger
 permalink: /api
 ---
 
+This is the Helgoland API SwaggerUI

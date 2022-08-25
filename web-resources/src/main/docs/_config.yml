@@ -1,4 +1,3 @@
-
 # Name of your site (displayed in the header)
 title: 52°North GmbH
 
@@ -16,7 +15,7 @@ url:
 # (http://yourusername.github.io/repository-name)
 # and NOT your User repository (http://yourusername.github.io)
 # then add in the baseurl here, like this: "/repository-name"
-baseurl: ""
+baseurl: "/sensorweb-server-helgoland/develop"
 
 permalink: /:title/
 
