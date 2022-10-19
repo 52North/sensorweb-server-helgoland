@@ -415,8 +415,8 @@
                         <artifactId>jai-codec</artifactId>
                     </exclusion>
                     <exclusion>
-                    	<groupId>org.apache.xmlgraphics</groupId>
-                		<artifactId>xmlgraphics-commons</artifactId>
+                        <groupId>org.apache.xmlgraphics</groupId>
+                        <artifactId>xmlgraphics-commons</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -424,17 +424,17 @@
                 <groupId>org.apache.xmlgraphics</groupId>
                 <artifactId>xmlgraphics-commons</artifactId>
                 <version>2.7</version>
-				<exclusions>
-					<exclusion>
-						<!--jcl-over-slf4j is used instead -->
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-					<exclusion>
+                <exclusions>
+                    <exclusion>
+                        <!--jcl-over-slf4j is used instead -->
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>commons-io</groupId>
                         <artifactId>commons-io</artifactId>
                     </exclusion>
-				</exclusions>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>xalan</groupId>
@@ -477,7 +477,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.11.2</version>
+                <version>2.12.0</version>
             </dependency>
             <!-- Testing -->
             <dependency>
