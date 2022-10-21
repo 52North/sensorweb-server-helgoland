@@ -57,7 +57,7 @@
         <jackson.version>2.13.4</jackson.version>
         <geotools.version>27.1</geotools.version>
         <arctic-sea.version>9.8.0</arctic-sea.version>
-        <spring-boot.version>2.7.4</spring-boot.version>
+        <spring-boot.version>2.7.5</spring-boot.version>
         <version.junit>5.9.1</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
