@@ -7,30 +7,18 @@ on:
 
 jobs:
   build:
-  	if: github.repository == 'version/3.5.x'
-    env:
-      Java: 11
-    if: github.repository != 'version/3.5.x'
-    env:
-      Java: 8
     runs-on: ubuntu-latest
-    name: Java $Java compile
+    name: Java 8 compile
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK $Java
+    - name: Set up JDK 8
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: $Java
+        java-version: 8
     - name: Build with Maven
       run: mvn -U -B clean install
   publish-snapshot:
-  	if: github.repository == 'version/3.5.x'
-    env:
-      Java: 11
-    if: github.repository != 'version/3.5.x'
-    env:
-      Java: 8
     needs: build
     runs-on: ubuntu-latest
 
