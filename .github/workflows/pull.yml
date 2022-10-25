@@ -2,13 +2,11 @@ name: Java CI on Pull Request
 
 on:
   pull_request:
-    branches:
-      - develop
   workflow_dispatch:
 
 jobs:
   build-java-8:
-    if: github.repository != 'version/3.5.x'
+    if: github.ref != 'refs/heads/version/3.5.x'
     strategy:
       matrix:
         java: [ 11, 17 ]
@@ -26,7 +24,7 @@ jobs:
       run: mvn -U -B clean install
       
   build-java-11:
-    if: github.repository == 'version/3.5.x'
+    if: github.ref == 'refs/heads/version/3.5.x'
     strategy:
       matrix:
         java: [ 11, 17 ]

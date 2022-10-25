@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-java-8:
-    if: github.repository != 'version/3.5.x'
+    if: github.ref != 'refs/heads/version/3.5.x'
     runs-on: ubuntu-latest
     name: Java 11 compile
     steps:
@@ -21,7 +21,7 @@ jobs:
       run: mvn -U -B clean install
   
   build-java-11:
-    if: github.repository == 'version/3.5.x'
+    if: github.ref == 'refs/heads/version/3.5.x'
     name: Java 11 compile
     steps:
     - uses: actions/checkout@v3
@@ -34,7 +34,7 @@ jobs:
       run: mvn -U -B clean install
       
   publish-snapshot-java-8:
-    if: github.repository != 'version/3.5.x'
+    if: github.ref != 'refs/heads/version/3.5.x'
     needs: build-java-8
     runs-on: ubuntu-latest
     steps:
@@ -54,7 +54,7 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
 
   publish-snapshot-java-11:
-    if: github.repository == 'version/3.5.x'
+    if: github.ref == 'refs/heads/version/3.5.x'
     needs: build-java-11
     runs-on: ubuntu-latest          
     steps:
