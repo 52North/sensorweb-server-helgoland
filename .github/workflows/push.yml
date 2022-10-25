@@ -5,6 +5,7 @@ on:
     branches:
       - develop
       - 'version/*'
+  workflow_dispatch:
 
 jobs:
   build:

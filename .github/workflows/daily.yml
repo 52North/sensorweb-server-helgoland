@@ -3,22 +3,34 @@ name: Daily Snapshot build
 on:
   schedule:
     - cron:  '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
+  	if: github.repository == 'version/3.5.x'
+    env:
+      Java: 11
+    if: github.repository != 'version/3.5.x'
+    env:
+      Java: 8
     runs-on: ubuntu-latest
-    name: Java 8 compile
-    
+    name: Java $Java compile
     steps:
     - uses: actions/checkout@v3
-    - name: Set up JDK 8
+    - name: Set up JDK $Java
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
-        java-version: 8
+        java-version: $Java
     - name: Build with Maven
       run: mvn -U -B clean install
   publish-snapshot:
+  	if: github.repository == 'version/3.5.x'
+    env:
+      Java: 11
+    if: github.repository != 'version/3.5.x'
+    env:
+      Java: 8
     needs: build
     runs-on: ubuntu-latest
 
@@ -28,7 +40,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 8
+          java-version: $Java
           server-id: sonatype-nexus-snapshots
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
