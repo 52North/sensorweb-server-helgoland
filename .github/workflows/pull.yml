@@ -9,7 +9,7 @@ jobs:
     if: github.ref != 'refs/heads/version/3.5.x'
     strategy:
       matrix:
-        java: [ 11, 17 ]
+        java: [ 8, 11, 17 ]
     runs-on: ubuntu-latest
     name: Java ${{ matrix.java }} compile
     
