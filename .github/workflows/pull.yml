@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-java-8:
-    if:  github.repository != 'version/3.5.x'
+    if: github.repository != 'version/3.5.x'
     strategy:
       matrix:
         java: [ 8, 11, 17 ]
@@ -26,7 +26,7 @@ jobs:
       run: mvn -U -B clean install
       
   build-java-11:
-    if:  github.repository == 'version/3.5.x'
+    if: github.repository == 'version/3.5.x'
     strategy:
       matrix:
         java: [ 11, 17 ]
