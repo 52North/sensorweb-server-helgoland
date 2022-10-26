@@ -22,6 +22,7 @@ jobs:
   
   build-java-11:
     if: github.ref == 'refs/heads/version/3.5.x'
+    runs-on: ubuntu-latest
     name: Java 11 compile
     steps:
     - uses: actions/checkout@v3
