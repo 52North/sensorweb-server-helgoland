@@ -25,7 +25,7 @@ jobs:
       run: mvn -fae -U -B clean license:check install -P check --file pom.xml
 
   publish-snapshot:
-    needs: build-java-11
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
