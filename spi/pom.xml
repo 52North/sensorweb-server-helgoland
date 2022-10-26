@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.n52.sensorweb-server.helgoland</groupId>
         <artifactId>helgoland-parent</artifactId>
-        <version>3.4.4-SNAPSHOT</version>
+        <version>3.4.4</version>
     </parent>
     <artifactId>helgoland-spi</artifactId>
     <name>Sensor Web Server Helgoland - SPI module</name>
