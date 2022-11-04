@@ -18,6 +18,6 @@ updates:
   schedule:
     interval: "daily"
 - package-ecosystem: "bundler"
-  directory: "/web-resources"
+  directory: "/web-resources/src/main/docs"
   schedule:
     interval: "daily"
