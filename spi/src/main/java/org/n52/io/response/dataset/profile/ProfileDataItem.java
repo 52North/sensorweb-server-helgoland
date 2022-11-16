@@ -85,7 +85,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         this.verticalFrom = verticalFrom;
     }
 
-    private boolean isSetVerticalFrom() {
+    protected boolean isSetVerticalFrom() {
         return this.verticalFrom != null;
     }
 
