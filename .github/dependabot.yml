@@ -13,7 +13,7 @@ updates:
     versions: ">= 4.x"
   - dependency-name: "org.springframework:*"
     versions: ">= 6.x"
-  - dependency-name: "oorg.springframework.boot:*"
+  - dependency-name: "org.springframework.boot:*"
     versions: ">= 3.x"
 - package-ecosystem: "github-actions"
   directory: "/"
