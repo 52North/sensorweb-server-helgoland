@@ -58,7 +58,7 @@
         <geotools.version>28.0</geotools.version>
         <arctic-sea.version>10.1.1</arctic-sea.version>
         <spring-boot.version>2.7.7</spring-boot.version>
-        <version.junit>5.9.1</version.junit>
+        <version.junit>5.9.2</version.junit>
         <version.hamcrest>2.2</version.hamcrest>
 
         <timestamp>${maven.build.timestamp}</timestamp>
