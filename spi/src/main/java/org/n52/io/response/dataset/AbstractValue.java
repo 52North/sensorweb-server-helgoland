@@ -36,6 +36,7 @@ import java.util.Set;
 import org.locationtech.jts.geom.Geometry;
 import org.n52.io.geojson.GeoJSONGeometrySerializer;
 import org.n52.io.response.DetectionLimitOutput;
+import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 
@@ -51,12 +52,12 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     private static final long serialVersionUID = -1606015864495830281L;
 
-    private TimeOutput timestart;
+    private OptionalOutput<TimeOutput> timestart = OptionalOutput.of(null);
 
     // serves also as timeend
-    private TimeOutput timestamp;
+    private OptionalOutput<TimeOutput> timestamp = OptionalOutput.of(null);
 
-    private T value;
+    private OptionalOutput<T> value = OptionalOutput.of(null);
 
     private ValueFormatter<T> valueFormatter;
 
@@ -78,44 +79,43 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     }
 
     public AbstractValue(TimeOutput timestart, TimeOutput timeend, T value) {
-        this.timestart = timestart;
-        this.timestamp = timeend;
-        this.value = value;
+        this.timestart = OptionalOutput.of(timestart);
+        this.timestamp = OptionalOutput.of(timeend);
+        this.value = OptionalOutput.of(value);
     }
 
     /**
      * @return the timestamp/timeend when {@link #value} has been observed.
      */
     @JsonSerialize(converter = TimeOutputConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public TimeOutput getTimestamp() {
-        return isSetTimestamp()
-                ? this.timestamp
-                : null;
+        return this.timestamp.getValue();
     }
 
     /**
-     * @param timestamp
-     *        sets the timestamp/timeend when {@link #value} has been observed.
+     * @param timestamp sets the timestamp/timeend when {@link #value} has been observed.
      */
     public void setTimestamp(TimeOutput timestamp) {
-        this.timestamp = timestamp;
+        this.timestamp = OptionalOutput.of(timestamp);
     }
 
     @JsonIgnore
     public boolean isSetTimestamp() {
-        return !isSetTimestart() || isSetTimestart() && timestart.equals(timestamp);
+        return timestart.isAbsent() || timestart.isPresent() && timestart.equals(timestamp);
     }
 
     @JsonSerialize(converter = TimeOutputConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public TimeOutput getTimeend() {
-        return isSetTimestart()
-                ? this.timestamp
+        return timestart.isPresent()
+                ? this.timestamp.getValue()
                 : null;
     }
 
     @JsonIgnore
     public boolean isSetTimeend() {
-        return this.timestamp != null && isSetTimestart();
+        return this.timestamp.isPresent() && this.timestart.isPresent();
     }
 
     /**
@@ -124,23 +124,18 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      * @return the timestart when {@link #value} has been observed.
      */
     @JsonSerialize(converter = TimeOutputConverter.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public TimeOutput getTimestart() {
-        return timestart;
+        return (timestart.isPresent()) ? timestart.getValue() : null;
     }
 
     /**
      * Optional.
      *
-     * @param timestart
-     *        the timestart when {@link #value} has been observed.
+     * @param timestart the timestart when {@link #value} has been observed.
      */
     public void setTimestart(TimeOutput timestart) {
-        this.timestart = timestart;
-    }
-
-    @JsonIgnore
-    public boolean isSetTimestart() {
-        return this.timestart != null;
+        this.timestart = OptionalOutput.of(timestart);
     }
 
     @JsonIgnore
@@ -148,13 +143,17 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         return value == null;
     }
 
-    @JsonInclude(content = Include.ALWAYS)
+    @JsonInclude(content = Include.NON_NULL)
     public T getValue() {
-        return value;
+        if (value != null && value.isPresent()) {
+            return value.getValue(true);
+        } else {
+            return null;
+        }
     }
 
     public void setValue(T value) {
-        this.value = value;
+        this.value = OptionalOutput.of(value);
     }
 
     @JsonIgnore
@@ -170,11 +169,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
      */
     @JsonIgnore
     public String getFormattedValue() {
-        if (value == null) {
+        if (value.isAbsent()) {
             return null;
         }
         return valueFormatter != null
-                ? valueFormatter.format(value)
+                ? valueFormatter.format(value.getValue(true))
                 : value.toString();
     }
 
@@ -221,8 +220,11 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         this.validTime = new ValidTime(start, end);
     }
 
+    @JsonSerialize(converter = TimeOutputConverter.class)
     public TimeOutput getResultTime() {
-        return resultTime != null && !resultTime.equals(timestamp) ? resultTime : null;
+        return resultTime != null && !resultTime.equals(timestamp.isPresent() ? timestamp.getValue() : null)
+                ? resultTime
+                : null;
     }
 
     public void setResultTime(TimeOutput resultTime) {
@@ -246,16 +248,16 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
     public String toString() {
         StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         return sb.append(" [ ")
-                 .append("timestart: ")
-                 .append(getTimestart())
-                 .append(", ")
-                 .append("timestamp: ")
-                 .append(getTimestamp())
-                 .append(", ")
-                 .append("value: ")
-                 .append(getValue())
-                 .append(" ]")
-                 .toString();
+                .append("timestart: ")
+                .append((timestart.isPresent()) ? timestart.getValue(true) : "null")
+                .append(", ")
+                .append("timestamp: ")
+                .append((timestamp.isPresent()) ? timestamp.getValue(true) : "null")
+                .append(", ")
+                .append("value: ")
+                .append((value.isPresent()) ? value.getValue(true) : "null")
+                .append(" ]")
+                .toString();
     }
 
     public class ValidTime {

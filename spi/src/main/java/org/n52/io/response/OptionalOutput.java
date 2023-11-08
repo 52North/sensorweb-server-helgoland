@@ -27,6 +27,7 @@
  */
 package org.n52.io.response;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -108,4 +109,17 @@ public final class OptionalOutput<T> {
 
     // TODO implement hashCode and equals
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OptionalOutput<?> that = (OptionalOutput<?>) o;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, serialize);
+    }
 }

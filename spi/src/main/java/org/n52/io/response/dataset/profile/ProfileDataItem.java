@@ -172,7 +172,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || ! (obj instanceof ProfileDataItem)) {
+        if (!(obj instanceof ProfileDataItem)) {
             return false;
         }
 
@@ -180,8 +180,7 @@ public class ProfileDataItem<T> implements Comparable<ProfileDataItem<T>> {
         ProfileDataItem< ? > other = (ProfileDataItem) obj;
         return Objects.equals(this.value, other.value)
                 && Objects.equals(this.vertical, other.vertical)
-                && Objects.equals(this.verticalFrom, other.verticalFrom)
-                && Objects.equals(this.vertical, other.vertical);
+                && Objects.equals(this.verticalFrom, other.verticalFrom);
     }
 
 }

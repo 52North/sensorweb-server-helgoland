@@ -31,7 +31,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.n52.io.response.TimeOutput;
+import org.n52.io.response.TimeOutputConverter;
 import org.n52.io.response.dataset.AbstractValue;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -50,11 +55,15 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> imp
     }
 
     @Override
-    @JsonProperty("values")
     public List<ProfileDataItem<T>> getValue() {
-        List<ProfileDataItem<T>> profileValue = new ArrayList<>(super.getValue());
-        Collections.sort(profileValue);
-        return profileValue;
+        List<ProfileDataItem<T>> value = super.getValue();
+        if (Objects.nonNull(value)) {
+            List<ProfileDataItem<T>> profileValue = new ArrayList<>(value);
+            Collections.sort(profileValue);
+            return profileValue;
+        } else {
+            return null;
+        }
     }
 
     public VerticalExtentOutput getVerticalExtent() {
@@ -65,4 +74,19 @@ public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> imp
         this.verticalExtent = verticalExtent;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        return sb.append(" [ ")
+                .append("timestart: ")
+                .append((getTimestart() != null) ? getTimestart() : "null")
+                .append(", ")
+                .append("timestamp: ")
+                .append((getTimestamp() != null) ? getTimestamp() : "null")
+                .append(", ")
+                .append("value: ")
+                .append((getValue() != null) ? getValue() : "null")
+                .append(" ]")
+                .toString();
+    }
 }
