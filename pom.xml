@@ -6,15 +6,15 @@
         <artifactId>parent</artifactId>
         <version>27</version>
     </parent>
-    
+
     <groupId>org.n52.sensorweb-server.helgoland</groupId>
     <artifactId>helgoland-parent</artifactId>
-    <version>3.5.1-SNAPSHOT</version>
+    <version>3.5.1</version>
     <packaging>pom</packaging>
     <name>Sensor Web Server Helgoland</name>
     <url>https://52north.org/research/research-labs/sensor-web/</url>
     <inceptionYear>2013</inceptionYear>
-    
+
     <modules>
         <module>io</module>
         <module>rest</module>
@@ -22,12 +22,12 @@
         <module>xml-pdf-format</module>
         <module>web-resources</module>
     </modules>
-    
-    <organization> 
-        <name>52North Spatial Information Research GmbH</name> 
-        <url>https://52north.org</url> 
-    </organization> 
-    
+
+    <organization>
+        <name>52North Spatial Information Research GmbH</name>
+        <url>https://52north.org</url>
+    </organization>
+
     <developers>
         <developer>
             <id>bredel</id>
@@ -35,21 +35,21 @@
             <email>h.bredel@52north.org</email>
         </developer>
     </developers>
-    
+
     <licenses>
         <license>
             <name>GNU General Public License, Version 2.0</name>
             <url>https://www.gnu.de/documents/gpl-2.0.en.html</url>
         </license>
     </licenses>
-    
+
     <scm>
         <connection>scm:git:https://github.com/52North/series-rest-api.git</connection>
         <developerConnection>scm:git:https://github.com/52North/series-rest-api.git</developerConnection>
         <url>https://github.com/52North/series-rest-api</url>
-        <tag>HEAD</tag>
+        <tag>v3.5.1</tag>
     </scm>
-    
+
     <properties>
         <!-- dev | ci | prod -->
         <env>dev</env>
@@ -68,8 +68,10 @@
         <version.java>11</version.java>
         <java.compiler.source>${version.java}</java.compiler.source>
         <java.compiler.target>${version.java}</java.compiler.target>
+        <maven.compiler.source>${version.java}</maven.compiler.source>
+        <maven.compiler.target>${version.java}</maven.compiler.target>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -80,7 +82,7 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            
+
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
@@ -134,7 +136,7 @@
                 <artifactId>faroe-annotations</artifactId>
                 <version>${arctic-sea.version}</version>
             </dependency>
-            
+
             <!-- geotools dependencies -->
             <dependency>
                 <groupId>org.geotools</groupId>
@@ -447,7 +449,7 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.avalon.framework</groupId>
                 <artifactId>avalon-framework-api</artifactId>
@@ -458,7 +460,7 @@
                 <artifactId>avalon-framework-impl</artifactId>
                 <version>4.3.1</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-math</artifactId>
@@ -511,7 +513,7 @@
                 <version>8.0.1</version>
                 <scope>test</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>xml-apis</groupId>
                 <artifactId>xml-apis</artifactId>
@@ -525,7 +527,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <build>
         <resources>
             <resource>
@@ -533,7 +535,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -550,7 +552,7 @@
                         </archive>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <!-- license headers -->
                     <groupId>com.mycila</groupId>
@@ -576,7 +578,7 @@
                         <strictCheck>true</strictCheck>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <!-- dependencies' licenses -->
                     <groupId>org.codehaus.mojo</groupId>
@@ -597,7 +599,7 @@
                         </licenseMerges>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <!-- assemble licenses -->
                     <groupId>org.jasig.maven</groupId>
@@ -610,7 +612,7 @@
                         <generateChildNotices>false</generateChildNotices>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <groupId>org.codehaus.gmaven</groupId>
                     <artifactId>groovy-maven-plugin</artifactId>
@@ -624,7 +626,7 @@
                         </source>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -634,7 +636,7 @@
                         </descriptors>
                     </configuration>
                 </plugin>
-                
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
@@ -651,7 +653,7 @@
                         </rules>
                     </configuration>
                 </plugin>
-                
+
                 <!-- 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -664,7 +666,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <profiles>
         <profile>
             <id>jdk8</id>
@@ -730,9 +732,9 @@
                 </plugins>
             </build>
         </profile>
-        
+
     </profiles>
-    
+
     <repositories>
         <repository>
             <id>n52-releases</id>
@@ -766,9 +768,9 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>        
+        </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>sonatype-nexus-snapshots</id>
