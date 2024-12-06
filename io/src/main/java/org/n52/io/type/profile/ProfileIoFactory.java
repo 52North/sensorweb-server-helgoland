@@ -57,11 +57,10 @@ public class ProfileIoFactory extends IoHandlerFactory<ProfileDatasetOutput, Pro
     }
 
     @Override
-    public IoHandler<Data<ProfileValue< ? >>> createHandler(String outputMimeType) {
-        IoParameters parameters = getParameters();
+    public IoHandler<Data<ProfileValue< ? >>> createHandler(String outputMimeType, IoParameters parameters) {
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.APPLICATION_ZIP || mimeType == Constants.MimeType.TEXT_CSV) {
-            ProfileCsvIoHandler handler = new ProfileCsvIoHandler(parameters, createProcessChain(), getMetadatas());
+            ProfileCsvIoHandler handler = new ProfileCsvIoHandler(parameters, createProcessChain(), getMetadatas(parameters));
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);

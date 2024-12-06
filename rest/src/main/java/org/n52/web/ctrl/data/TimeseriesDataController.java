@@ -98,8 +98,7 @@ public class TimeseriesDataController extends DataController {
         final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
+        createIoFactory(valueType).createHandler(outputFormat, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 
@@ -125,8 +124,7 @@ public class TimeseriesDataController extends DataController {
         String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.IMAGE_PNG;
         response.setContentType(outputFormat);
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
+        createIoFactory(valueType).createHandler(outputFormat, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 

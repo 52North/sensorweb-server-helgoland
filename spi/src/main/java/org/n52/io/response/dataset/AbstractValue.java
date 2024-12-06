@@ -174,7 +174,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
         }
         return valueFormatter != null
                 ? valueFormatter.format(value.getValue(true))
-                : value.toString();
+                : value.getValue(true).toString();
     }
 
     @JsonSerialize(using = GeoJSONGeometrySerializer.class)

@@ -130,22 +130,20 @@ public abstract class DataController extends BaseController {
                                           required = false) String httpLocale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
             throws Exception {
-        IoParameters map = createParameters(datasetId, query, httpLocale, response);
-        LOGGER.debug("get data for item '{}' with query: {}", datasetId, map);
-        checkAgainstTimespanRestriction(map.getTimespan());
-        checkForUnknownDatasetId(map.removeAllOf(Parameters.BBOX)
+        IoParameters parameters = createParameters(datasetId, query, httpLocale, response);
+        LOGGER.debug("get data for item '{}' with query: {}", datasetId, parameters);
+        checkAgainstTimespanRestriction(parameters.getTimespan());
+        checkForUnknownDatasetId(parameters.removeAllOf(Parameters.BBOX)
                                     .removeAllOf(Parameters.NEAR),
                                  datasetId);
 
         // RequestSimpleIoParameters parameters = RequestSimpleIoParameters.createForSingleSeries(seriesId,
         // map);
         // String valueType = ValueType.extractType(datasetId, handleAsValueTypeFallback);
-        String valueType = getValueType(map, request.getRequestURI());
-        IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(map)
-                                                                .createProcessChain();
+        String valueType = getValueType(parameters, request.getRequestURI());
+        DataCollection< ? > dataCollection = createIoFactory(valueType).createProcessChain().getProcessedData(parameters);
 
-        DataCollection< ? > dataCollection = ioChain.getProcessedData();
-        return map.isExpanded()
+        return parameters.isExpanded()
                 ? new ModelAndView().addObject(dataCollection.getSeriesOutput())
                 : new ModelAndView().addObject(dataCollection.getSeries(datasetId));
     }
@@ -168,10 +166,8 @@ public abstract class DataController extends BaseController {
 
         // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
-        IoProcessChain< ? > ioChain = createIoFactory(valueType).setParameters(parameters)
-                                                                .createProcessChain();
+        DataCollection< ? > processed  = createIoFactory(valueType).createProcessChain().getData(parameters);;
 
-        DataCollection< ? > processed = ioChain.getData();
         return new ModelAndView().addObject(processed.getSeriesOutput());
     }
 
@@ -250,8 +246,7 @@ public abstract class DataController extends BaseController {
         final String valueType = getValueType(parameters, request.getRequestURI());
         String outputFormat = Constants.APPLICATION_PDF;
         response.setContentType(outputFormat);
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
+        createIoFactory(valueType).createHandler(outputFormat, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 
@@ -279,8 +274,7 @@ public abstract class DataController extends BaseController {
         response.setHeader(CONTENT_DISPOSITION_HEADER,
                 CONTENT_DISPOSITION_VALUE_TEMPLATE + validateResponseSplitting(datasetId) + ".pdf\"");
 
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(outputFormat)
+        createIoFactory(valueType).createHandler(outputFormat, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 
@@ -311,8 +305,7 @@ public abstract class DataController extends BaseController {
 
         // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(Constants.APPLICATION_ZIP)
+        createIoFactory(valueType).createHandler(Constants.APPLICATION_ZIP, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 
@@ -350,8 +343,7 @@ public abstract class DataController extends BaseController {
 
         // final String datasetType = getValueType(parameters);
         final String valueType = getValueType(parameters, request.getRequestURI());
-        createIoFactory(valueType).setParameters(parameters)
-                                  .createHandler(Constants.TEXT_CSV)
+        createIoFactory(valueType).createHandler(Constants.TEXT_CSV, parameters)
                                   .writeBinary(response.getOutputStream());
     }
 

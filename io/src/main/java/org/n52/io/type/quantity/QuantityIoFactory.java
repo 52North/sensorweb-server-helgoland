@@ -64,22 +64,21 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
 
     @Override
     public IoProcessChain<Data<QuantityValue>> createProcessChain() {
-        return new QuantityIoProcessChain(getDataService(), getParameters());
+        return new QuantityIoProcessChain(getDataService());
     }
 
     @Override
-    public IoHandler<Data<QuantityValue>> createHandler(String outputMimeType) {
-        IoParameters parameters = getParameters();
+    public IoHandler<Data<QuantityValue>> createHandler(String outputMimeType, IoParameters parameters) {
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (mimeType == Constants.MimeType.IMAGE_PNG) {
-            return createMultiChartRenderer(mimeType);
+            return createMultiChartRenderer(mimeType, parameters);
         } else if (mimeType == Constants.MimeType.APPLICATION_PDF) {
-            ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType);
+            ChartIoHandler imgRenderer = createMultiChartRenderer(mimeType, parameters);
             return new PDFReportGenerator(parameters, createProcessChain(), imgRenderer);
         } else if (isCsvOutput(mimeType)) {
             CsvIoHandler<QuantityValue> handler = new SimpleCsvIoHandler<>(parameters,
                                                                            createProcessChain(),
-                                                                           getMetadatas());
+                                                                           getMetadatas(parameters));
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
@@ -91,11 +90,11 @@ public final class QuantityIoFactory extends IoHandlerFactory<QuantityDatasetOut
         throw exception;
     }
 
-    private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType) {
+    private MultipleChartsRenderer createMultiChartRenderer(Constants.MimeType mimeType, IoParameters parameters) {
         MultipleChartsRenderer chartRenderer = new MultipleChartsRenderer(
-                                                                          getParameters(),
+                                                                          parameters,
                                                                           createProcessChain(),
-                                                                          createContext());
+                                                                          createContext(parameters));
 
         chartRenderer.setMimeType(mimeType);
         return chartRenderer;

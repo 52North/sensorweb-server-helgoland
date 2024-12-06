@@ -42,34 +42,31 @@ final class CountIoProcessChain implements IoProcessChain<Data<CountValue>> {
 
     private final DataService<Data<CountValue>> dataService;
 
-    private final IoParameters parameters;
-
-    CountIoProcessChain(DataService<Data<CountValue>> dataService, IoParameters parameters) {
+    CountIoProcessChain(DataService<Data<CountValue>> dataService) {
         this.dataService = dataService;
-        this.parameters = parameters;
     }
 
     @Override
-    public DataCollection<Data<CountValue>> getData() {
+    public DataCollection<Data<CountValue>> getData(IoParameters parameters) {
         return dataService.getData(parameters);
     }
 
     @Override
-    public DataCollection< ? > getProcessedData() {
+    public DataCollection<?> getProcessedData(IoParameters parameters) {
         return parameters.shallClassifyByResultTimes()
-                ? formatAccordingToResultTimes()
-                : formatValueOutputs();
+                ? formatAccordingToResultTimes(parameters)
+                : formatValueOutputs(parameters);
     }
 
-    private DataCollection<ResultTimeClassifiedData<AbstractValue< ? >>> formatAccordingToResultTimes() {
-        return new ResultTimeFormatter<Data<CountValue>>().format(getData());
+    private DataCollection<ResultTimeClassifiedData<AbstractValue<?>>> formatAccordingToResultTimes(IoParameters parameters) {
+        return new ResultTimeFormatter<Data<CountValue>>().format(getData(parameters));
     }
 
-    private DataCollection< ? > formatValueOutputs() {
+    private DataCollection<?> formatValueOutputs(IoParameters parameters) {
         FormatterFactory factory = FormatterFactory.createFormatterFactory(parameters);
-        DataCollection<Data<CountValue>> data = getData();
+        DataCollection<Data<CountValue>> data = getData(parameters);
         return factory.create()
-                      .format(data);
+                .format(data);
     }
 
 }

@@ -27,14 +27,15 @@
  */
 package org.n52.io.handler;
 
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.AbstractValue;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.DataCollection;
 
 public interface IoProcessChain<T extends Data<? extends AbstractValue<?>>> {
 
-    DataCollection<T> getData();
+    DataCollection<T> getData(IoParameters parameters);
 
-    DataCollection<?> getProcessedData();
+    DataCollection<?> getProcessedData(IoParameters parameters);
 
 }

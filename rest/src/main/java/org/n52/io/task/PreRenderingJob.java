@@ -210,7 +210,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         FileOutputStream fos = createFile(datasetId, interval, chartQualifier);
 
         try (FileOutputStream out = fos;) {
-            createIoFactory(parameters).createHandler(IMAGE_EXTENSION).writeBinary(out);
+            createIoFactory(parameters).createHandler(IMAGE_EXTENSION, parameters).writeBinary(out);
             fos.flush();
         } catch (IoHandlerException | IOException e) {
             LOGGER.error("Image creation occures error.", e);
@@ -219,8 +219,10 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
 
     private IoHandlerFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> createIoFactory(
             IoParameters parameters) throws DatasetFactoryException, URISyntaxException, MalformedURLException {
-        return createDefaultIoFactory().create(QuantityValue.TYPE).setParameters(parameters)
-                .setDataService(dataService).setDatasetService(datasetService);
+        return createDefaultIoFactory()
+                .create(QuantityValue.TYPE)
+                .setDataService(dataService)
+                .setDatasetService(datasetService);
     }
 
     private DefaultIoFactory<DatasetOutput<AbstractValue<?>>, AbstractValue<?>> createDefaultIoFactory() {

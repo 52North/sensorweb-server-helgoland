@@ -50,19 +50,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP2"})
 public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends AbstractValue< ? >> {
 
-    private IoParameters parameters;
-
     private DataService<Data<V>> dataService;
 
     private ParameterService<P> datasetService;
 
     public IoHandlerFactory() {
-        this.parameters = IoParameters.createDefaults();
-    }
 
-    public IoHandlerFactory<P, V> setParameters(IoParameters parameters) {
-        this.parameters = parameters;
-        return this;
     }
 
     public IoHandlerFactory<P, V> setDataService(DataService<Data<V>> dataService) {
@@ -75,12 +68,12 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
         return this;
     }
 
-    public IoHandler<Data<V>> createHandler(String outputMimeType) {
+    public IoHandler<Data<V>> createHandler(String outputMimeType, IoParameters parameters) {
         Constants.MimeType mimeType = Constants.MimeType.toInstance(outputMimeType);
         if (isCsvOutput(mimeType)) {
             SimpleCsvIoHandler<V> handler = new SimpleCsvIoHandler<>(parameters,
                                                                      createProcessChain(),
-                                                                     getMetadatas());
+                                                                     getMetadatas(parameters));
 
             boolean zipOutput = parameters.getAsBoolean(Parameters.ZIP, false);
             handler.setZipOutput(zipOutput || mimeType == Constants.MimeType.APPLICATION_ZIP);
@@ -96,16 +89,16 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
         return new IoProcessChain<Data<V>>() {
 
             @Override
-            public DataCollection<Data<V>> getData() {
+            public DataCollection<Data<V>> getData(IoParameters parameters) {
                 return getDataService().getData(parameters);
             }
 
             @Override
-            public DataCollection< ? > getProcessedData() {
+            public DataCollection< ? > getProcessedData(IoParameters parameters) {
                 return parameters.shallClassifyByResultTimes()
-                        ? new ResultTimeFormatter<Data<V>>().format(getData())
+                        ? new ResultTimeFormatter<Data<V>>().format(getData(parameters))
                         // empty chain
-                        : getData();
+                        : getData(parameters);
             }
         };
     }
@@ -125,22 +118,18 @@ public abstract class IoHandlerFactory<P extends DatasetOutput<V>, V extends Abs
                 .map(Constants.MimeType::getMimeType).sorted().collect(Collectors.toSet());
     }
 
-    protected IoStyleContext createContext() {
+    protected IoStyleContext createContext(IoParameters parameters) {
         if (datasetService == null || !parameters.hasStyles()) {
             return IoStyleContext.createEmpty();
         }
-        return IoStyleContext.createContextWith(parameters, getMetadatas());
+        return IoStyleContext.createContextWith(parameters, getMetadatas(parameters));
     }
 
-    protected List<P> getMetadatas() {
+    protected List<P> getMetadatas(IoParameters parameters) {
         String[] datasetIds = parameters.getDatasets()
                                         .toArray(new String[0]);
         return datasetService.getParameters(datasetIds, parameters)
                              .getItems();
-    }
-
-    protected IoParameters getParameters() {
-        return parameters;
     }
 
     protected DataService<Data<V>> getDataService() {

@@ -30,6 +30,7 @@ package org.n52.io.type.count;
 
 import org.n52.io.handler.IoHandlerFactory;
 import org.n52.io.handler.IoProcessChain;
+import org.n52.io.request.IoParameters;
 import org.n52.io.response.dataset.Data;
 import org.n52.io.response.dataset.count.CountDatasetOutput;
 import org.n52.io.response.dataset.count.CountValue;
@@ -38,6 +39,6 @@ public class CountIoFactory extends IoHandlerFactory<CountDatasetOutput, CountVa
 
     @Override
     public IoProcessChain<Data<CountValue>> createProcessChain() {
-        return new CountIoProcessChain(getDataService(), getParameters());
+        return new CountIoProcessChain(getDataService());
     }
 }

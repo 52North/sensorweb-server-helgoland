@@ -43,15 +43,12 @@ final class QuantityIoProcessChain implements IoProcessChain<Data<QuantityValue>
 
     private final DataService<Data<QuantityValue>> dataService;
 
-    private final IoParameters parameters;
-
-    QuantityIoProcessChain(DataService<Data<QuantityValue>> dataService, IoParameters parameters) {
+    QuantityIoProcessChain(DataService<Data<QuantityValue>> dataService) {
         this.dataService = dataService;
-        this.parameters = parameters;
     }
 
     @Override
-    public DataCollection<Data<QuantityValue>> getData() {
+    public DataCollection<Data<QuantityValue>> getData(IoParameters parameters) {
         boolean generalize = parameters.isGeneralize();
         DataService<Data<QuantityValue>> service = generalize
                 ? new GeneralizingQuantityService(dataService)
@@ -60,19 +57,19 @@ final class QuantityIoProcessChain implements IoProcessChain<Data<QuantityValue>
     }
 
     @Override
-    public DataCollection< ? > getProcessedData() {
+    public DataCollection< ? > getProcessedData(IoParameters parameters) {
         return parameters.shallClassifyByResultTimes()
-                ? formatAccordingToResultTimes()
-                : formatValueOutputs();
+                ? formatAccordingToResultTimes(parameters)
+                : formatValueOutputs(parameters);
     }
 
-    private DataCollection<ResultTimeClassifiedData<AbstractValue< ? >>> formatAccordingToResultTimes() {
-        return new ResultTimeFormatter<Data<QuantityValue>>().format(getData());
+    private DataCollection<ResultTimeClassifiedData<AbstractValue< ? >>> formatAccordingToResultTimes(IoParameters parameters) {
+        return new ResultTimeFormatter<Data<QuantityValue>>().format(getData(parameters));
     }
 
-    private DataCollection< ? > formatValueOutputs() {
+    private DataCollection< ? > formatValueOutputs(IoParameters parameters) {
         FormatterFactory factory = FormatterFactory.createFormatterFactory(parameters);
-        DataCollection<Data<QuantityValue>> data = getData();
+        DataCollection<Data<QuantityValue>> data = getData(parameters);
         return factory.create()
                       .format(data);
     }
