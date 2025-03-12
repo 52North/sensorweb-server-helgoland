@@ -140,7 +140,7 @@ public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, 
 
     @JsonIgnore
     public boolean isNoDataValue() {
-        return value == null;
+        return (value == null || value.isAbsent());
     }
 
     @JsonInclude(content = Include.NON_NULL)

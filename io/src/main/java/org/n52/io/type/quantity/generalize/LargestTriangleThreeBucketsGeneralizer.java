@@ -44,8 +44,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Implementation of a generalizer using the Largest-Triangle-Three-Buckets algorithm
  *
- * @see
- * <a href="https://github.com/sveinn-steinarsson/flot-downsample/">
+ * @see <a href="https://github.com/sveinn-steinarsson/flot-downsample/">
  * https://github.com/sveinn-steinarsson/flot-downsample/</a>
  */
 public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<QuantityValue>> {
@@ -111,73 +110,96 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         // Bucket size. Leave room for start and end data points
         double bucketSize = ((double) dataLength - 2) / (maxOutputValues - 2);
 
-        int pointIndex = 0;
         Data<QuantityValue> sampled = new Data<>(metadata);
-        sampled.addNewValue(data[pointIndex]);
+        sampled.addNewValue(data[0]);
+        QuantityValue triangleLeft = data[0];
 
-        for (int bucketIndex = 0; bucketIndex < (maxOutputValues - 2);
-                bucketIndex++) {
+        for (int bucketIndex = 0; bucketIndex < (maxOutputValues - 2); bucketIndex++) {
 
             // get the range for this bucket
             int rangeOff = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
             int rangeTo = (int) Math.floor((bucketIndex + 1) * bucketSize) + 1;
 
-            // first point of triangle
-            QuantityValue triangleLeft = data[pointIndex];
-            if (triangleLeft.isNoDataValue()) {
-                addNodataValue(sampled, triangleLeft.getTimestamp());
-                pointIndex = rangeTo - 1;
+            // If this Bucket only contains noData we can skip all processing and just add nodata with at the beginning and end timestamps
+            BucketAverage triangleMiddle = calculateBucketAverage(bucketIndex, bucketSize, data);
+            if (triangleMiddle.getPointCount() == 0) {
+                addNodataValue(sampled, data[rangeOff].getTimestamp());
+                addNodataValue(sampled, data[rangeTo - 1].getTimestamp());
+                triangleLeft = null;
+                continue;
+            } else if (triangleMiddle.getPointCount() == 1) {
+                // If this Bucket only has one value skip all processing
+                sampled.addNewValue(triangleMiddle.toTimeseriesValue());
+                triangleLeft = triangleMiddle.toTimeseriesValue();
                 continue;
             }
 
-            // last point of triangle (next bucket's average)
-            BucketAverage triangleRight = calculateBucketAverage(bucketIndex + 1,
-                    bucketSize, data);
-
-            // init fallback value
-            BucketAverage avgCurrentBucket = calculateBucketAverage(bucketIndex, bucketSize, data);
-            long fallBackTimestamp = avgCurrentBucket.toTimeseriesValue().getTimestamp().getMillis();
-            QuantityValue maxAreaPoint = createQuantityValue(fallBackTimestamp, triangleLeft.getTimestamp());
-
-            double area;
-            int amountOfNodataValues = 0;
-            double maxArea = area = -1;
-            int nextPointIndex = 0;
-
-            for (; rangeOff < rangeTo; rangeOff++) {
-
-                //if (triangleRight.isNoDataBucket()) {
-                //  triangleRight = // TODO
-                //}
-                // calculate triangle area over three buckets
-                final QuantityValue triangleMiddle = data[rangeOff];
-
-                if (triangleMiddle.isNoDataValue()) {
-                    amountOfNodataValues++;
-                    if (isExceededGapThreshold(amountOfNodataValues, bucketSize)) {
-                        if (triangleMiddle.isNoDataValue()) {
-                            maxAreaPoint = avgCurrentBucket.toTimeseriesValue();
-                            LOGGER.debug("No data value for bucket {}.",
-                                    bucketIndex);
-                            pointIndex = rangeTo - 1;
-                            break;
-                        }
-                    }
-                } else {
-                    area = calcTriangleArea(triangleLeft, triangleRight,
-                            triangleMiddle);
-                    if (area > maxArea) {
-                        maxArea = area;
-                        maxAreaPoint = triangleMiddle;
-                        nextPointIndex = rangeOff;
+            // first point of triangle
+            // if left bucket was empty, use first data value of this bucket instead.
+            if (triangleLeft == null || triangleLeft.isNoDataValue()) {
+                // Find first value in this bucket
+                for (int i = rangeOff; i < rangeTo; i++) {
+                    if (!data[i].isNoDataValue()) {
+                        sampled.addNewValue(data[i]);
+                        triangleLeft = data[i];
+                        break;
                     }
                 }
             }
 
-            // Pick this point from the Bucket
-            sampled.addNewValue(maxAreaPoint);
-            // This a is the next a
-            pointIndex = nextPointIndex;
+            // last point of triangle (next bucket's average)
+            // if right bucket was empty, use last data value of this bucket instead.
+            BucketAverage rightBucket = calculateBucketAverage(bucketIndex + 1, bucketSize, data);
+            QuantityValue triangleRight = new QuantityValue();
+            if (rightBucket.getPointCount() == 0) {
+                for (int i = rangeTo; i > rangeOff; i--) {
+                    if (!data[i].isNoDataValue()) {
+                        triangleRight = data[i];
+                        break;
+                    }
+                }
+            } else {
+                triangleRight = rightBucket.toTimeseriesValue();
+            }
+
+            int amountOfNodataValues = 0;
+            double maxArea = -1;
+            boolean thresholdExceeded = false;
+            QuantityValue maxAreaPoint = null;
+            for (; rangeOff < rangeTo; rangeOff++) {
+                final QuantityValue triangleMiddleCandidate = data[rangeOff];
+
+                if (triangleMiddleCandidate.isNoDataValue()) {
+                    amountOfNodataValues++;
+                    if (isExceededGapThreshold(amountOfNodataValues, bucketSize)) {
+                        thresholdExceeded = true;
+                        break;
+                    }
+                } else {
+                    double area = calcTriangleArea(triangleLeft, triangleRight, triangleMiddleCandidate);
+                    if (area > maxArea) {
+                        maxArea = area;
+                        maxAreaPoint = triangleMiddleCandidate;
+                    }
+                }
+            }
+
+            if (thresholdExceeded) {
+                for (; rangeOff < rangeTo; rangeOff++) {
+                    sampled.addNewValue(data[rangeOff]);
+                }
+                triangleLeft = data[rangeOff];
+            } else {
+                // Pick this point from the Bucket
+                sampled.addNewValue(maxAreaPoint);
+                triangleLeft = maxAreaPoint;
+            }
+
+            // Our next bucket is empty so we add last point of this bucket to have a clean
+            if (rightBucket.getPointCount() == 0) {
+                sampled.addNewValue(triangleRight);
+                triangleLeft = triangleRight;
+            }
         }
 
         // Always add last value
@@ -186,7 +208,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
     }
 
     private boolean isExceededGapThreshold(int amountOfNodataValues,
-            double bucketSize) {
+                                           double bucketSize) {
         return noDataGapThreshold <= 1
                 // max percent
                 ? amountOfNodataValues > (noDataGapThreshold * bucketSize)
@@ -199,18 +221,18 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
     }
 
     private static double calcTriangleArea(QuantityValue left,
-            BucketAverage right, QuantityValue middle) {
+                                           QuantityValue right, QuantityValue middle) {
         BigDecimal middleValue = middle.getValue();
         final BigDecimal leftValue = left.getValue();
-        final BigDecimal rightValue = right.value;
-        return Math.abs(((left.getTimestamp().getMillis() - right.timestamp)
+        final BigDecimal rightValue = right.getValue();
+        return Math.abs(((left.getTimestamp().getMillis() - right.getTimestamp().getMillis())
                 * (middleValue.subtract(leftValue).doubleValue()))
                 - ((left.getTimestamp().getMillis() - middle.getTimestamp().getMillis())
                 * (rightValue.subtract(leftValue).doubleValue()))) * 0.5;
     }
 
     private BucketAverage calculateBucketAverage(int bucketIndex,
-            double bucketSize, QuantityValue[] data) {
+                                                 double bucketSize, QuantityValue[] data) {
 
         int dataLength = data.length;
         int avgRangeStart = (int) Math.floor((bucketIndex + 0) * bucketSize) + 1;
@@ -223,6 +245,7 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         int amountOfNodataValues = 0;
         boolean noDataThresholdExceeded = false;
         boolean unixTime = false;
+
         for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
             final QuantityValue current = data[avgRangeStart];
             avgTimestamp += current.getTimestamp().getMillis();
@@ -242,8 +265,14 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         }
 
         avgTimestamp /= avgRangeLength;
-        avgValue = avgValue.divide(BigDecimal.valueOf(avgRangeLength), MathContext.DECIMAL128);
-        return new BucketAverage(avgTimestamp, avgValue, unixTime);
+        if (avgRangeLength == amountOfNodataValues) {
+            // Totally empty bucket
+            return new BucketAverage(avgTimestamp, null, unixTime, 0);
+        } else {
+            // at least (avgRangeLength-amountOfNodataValues) values were added
+            avgValue = avgValue.divide(BigDecimal.valueOf(avgRangeLength - amountOfNodataValues), MathContext.DECIMAL128);
+            return new BucketAverage(avgTimestamp, avgValue, unixTime, avgRangeLength - amountOfNodataValues);
+        }
     }
 
     private QuantityValue createQuantityValue(TimeOutput timeOutput) {
@@ -263,11 +292,14 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         private final Double timestamp;
         private final BigDecimal value;
         private final boolean unixTime;
+        private final double pointCount;
 
-        BucketAverage(Double timestamp, BigDecimal value, boolean unixTime) {
+
+        BucketAverage(Double timestamp, BigDecimal value, boolean unixTime, double pointCount) {
             this.timestamp = timestamp;
             this.value = value;
             this.unixTime = unixTime;
+            this.pointCount = pointCount;
         }
 
         QuantityValue toTimeseriesValue() {
@@ -276,5 +308,10 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
             quantity.setValue(value);
             return quantity;
         }
+
+        public double getPointCount() {
+            return pointCount;
+        }
+
     }
 }
