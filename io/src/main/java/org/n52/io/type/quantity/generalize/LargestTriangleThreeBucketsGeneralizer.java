@@ -243,22 +243,15 @@ public class LargestTriangleThreeBucketsGeneralizer extends Generalizer<Data<Qua
         double avgTimestamp = 0d;
         BigDecimal avgValue = BigDecimal.ZERO;
         int amountOfNodataValues = 0;
-        boolean noDataThresholdExceeded = false;
         boolean unixTime = false;
 
         for (; avgRangeStart < avgRangeEnd; avgRangeStart++) {
             final QuantityValue current = data[avgRangeStart];
             avgTimestamp += current.getTimestamp().getMillis();
             unixTime = current.getTimestamp().isUnixTime();
-            if (noDataThresholdExceeded) {
-                // keep on calc avg timestamp
-                continue;
-            }
             if (current.isNoDataValue()) {
+                // exclude this value from average calculation.
                 amountOfNodataValues++;
-                if (amountOfNodataValues == noDataGapThreshold) {
-                    noDataThresholdExceeded = true;
-                }
             } else {
                 avgValue = avgValue.add(current.getValue());
             }
