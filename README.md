@@ -112,7 +112,7 @@ TBD
 
 ## Credits
 
-The development of the 52°North Sensor Web Server Helgoland REST-API implementation was supported by several organizations and projects. Among other we would like to thank the following organisations and project
+The development of the 52°North Sensor Web Server Helgoland REST-API implementation was supported by several organizations and projects. Among other we would like to thank the following organisations and projects.
 
 | Project/Logo | Description |
 | :-------------: | :------------- |
