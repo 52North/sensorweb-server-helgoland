@@ -1,4 +1,5 @@
-# 52n Sensor Web Server Helgoland 
+# 52n Sensor Web Server Helgoland
+
 [![Build Status](https://travis-ci.org/52North/sensorweb-server-helgoland.svg)](https://travis-ci.org/52North/sensorweb-server-helgoland) [![Java CI](https://github.com/52North/sensorweb-server-helgoland/actions/workflows/maven.yml/badge.svg)](https://github.com/52North/sensorweb-server-helgoland/actions/workflows/maven.yml) [![Maven Central](https://img.shields.io/maven-central/v/org.n52.sensorweb-server.helgoland/helgoland-parent.svg)](https://search.maven.org/search?q=g:org.n52.sensorweb-server.helgoland) [![Total alerts](https://img.shields.io/lgtm/alerts/g/52North/sensorweb-server-helgoland.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/52North/sensorweb-server-helgoland/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/52North/sensorweb-server-helgoland.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/52North/sensorweb-server-helgoland/context:javascript) [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/52North/sensorweb-server-helgoland.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/52North/sensorweb-server-helgoland/context:java)
 
 <img style="width: 60%; height: 60%" alt="series-rest-api architecture overview" src="https://52north.github.io/sensorweb-server-helgoland/develop/assets/images/big-picture.png">
@@ -9,21 +10,21 @@
 
 _The Sensor Web Server Helgoland is a REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to make data available via the API_
 
-The Sensor Web Server Helgoland provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
-  * prerendering of series data, 
-  * generalization, 
-  * overlaying of data from multiple series
-  * conversion of raw data to other formats like pdf and png
+The Sensor Web Server Helgoland provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g.
 
-Output formats for *stationary*, *mobile*, *insitu* and *remote* sensors are available, each filterable by metadata parameters. This enables clients to access the data via different approaches, e.g. to filter all series by phenomena first or by a special procedure.
+- prerendering of series data,
+- generalization,
+- overlaying of data from multiple series
+- conversion of raw data to other formats like pdf and png
+
+Output formats for _stationary_, _mobile_, _insitu_ and _remote_ sensors are available, each filterable by metadata parameters. This enables clients to access the data via different approaches, e.g. to filter all series by phenomena first or by a special procedure.
 
 Next to the Web API, a Service Provider Interface (SPI) defines the underlying interface for data providing backends. With this, the API is flexible enough to be put ontop of arbitrary data stores. Its modular design enables a seamless integration into existing Web applications.
 
 The following main frameworks are used to provide this API:
 
-- [Spring MVC](https://spring.org/) 
-- [JFreeChart](http://www.jfree.org/jfreechart/) 
-
+- [Spring MVC](https://spring.org/)
+- [JFreeChart](http://www.jfree.org/jfreechart/)
 
 ### Existing SPI implementations:
 
@@ -33,31 +34,62 @@ The following main frameworks are used to provide this API:
 - [DWD Weather Alerts](https://github.com/52North/dwd-series-api): tbd
 
 ## References
-* The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
-* The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
-* The [52°North Helgoland Web Client](https://githum.com/52North/helgoland) consumes one or multiple instances of the Sensor Web Server Helgoland API. A demo can be found under the http://sensorweb.demo.52north.org/client/#/
+
+- The [SOS proxy demo](http://sensorweb.demo.52north.org/sensorwebclient-webapp-stable/api/v1/) provides an SPI implementation which accesses data from multiple Sensor Observation Services [(OGC SOS)](http://opengeospatial.org/standards/sos).
+- The [Web application integration demo](sensorweb.demo.52north.org/52n-sos-webapp/api/v1/) gives an integration demo which directly accesses the data from a database.
+- The [52°North Helgoland Web Client](https://githum.com/52North/helgoland) consumes one or multiple instances of the Sensor Web Server Helgoland API. A demo can be found under the http://sensorweb.demo.52north.org/client/#/
 
 ## License
 
 The client is published under the [GNU General Public License v2 (GPLv2)](http://www.gnu.org/licenses/gpl-2.0.html).
 
 ## Changelog
+
 - https://github.com/52North/sensorweb-server-helgoland/blob/develop/CHANGELOG.md
 - for detailed infos check https://github.com/52North/sensorweb-server-helgoland/pulls?q=is%3Apr+is%3Aclosed
 
 ## Contributing
-We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/), 
-although we do not see it that strict. 
+
+We try to follow [the GitFlow model](http://nvie.com/posts/a-successful-git-branching-model/),
+although we do not see it that strict.
 
 However, make sure to do pull requests for features, hotfixes, etc. by
 making use of GitFlow. Altlassian provides [a good overview]
-(https://www.atlassian.com/de/git/workflows#!workflow-gitflow). of the 
+(https://www.atlassian.com/de/git/workflows#!workflow-gitflow). of the
 most common workflows.
 
 ## Contact
+
 Henning Bredel (h.bredel@52north.org)
 
-## Quick Start
+## Local Development Setup
+
+### Prerequisites
+
+- Java 11 or higher
+- Apache Maven 3.6+
+
+### Build the project
+
+```bash
+mvn clean install
+```
+
+### Run the application
+
+```bash
+mvn spring-boot:run
+```
+
+### Quick Start
+
+To start the Sensor Web Server Helgoland locally, follow the steps described
+in the *Local Development Setup* section above.
+
+By default, the application will be available on port `8080`
+unless configured otherwise.
+
+
 
 ### Client development
 The [Web API documentation](http://52north.github.io/sensorweb-server-helgoland) gives a detailed overview on how to access the data provided by the API. Available I/O functions are described there, too, like generelization, chart rendering/overlay, etc.
@@ -66,19 +98,21 @@ The [Web API documentation](http://52north.github.io/sensorweb-server-helgoland)
 https://wiki.52north.org/bin/view/SensorWeb/SensorWebClientRESTInterface~~
 
 ### API Configuration
-How to provide a custom SPI implementation is beyond this section. See (...TBD...) to get detailed 
+How to provide a custom SPI implementation is beyond this section. See (...TBD...) to get detailed
 information on this.
 
 #### Logging
 
 #### Generalizer
-In file `WEB-INF/classes/config-general.json` add 
+In file `WEB-INF/classes/config-general.json` add
 
 ```
+
 "generalizer": {
-    "defaultGeneralizer": "lttb",
-    "noDataGapThreshold": 5
+"defaultGeneralizer": "lttb",
+"noDataGapThreshold": 5
 }
+
 ```
 
 The parameters are described on the official [Web API documentation](http://52north.github.io/sensorweb-server-helgoland).
@@ -86,19 +120,19 @@ The parameters are described on the official [Web API documentation](http://52no
 #### Prerendering
 Prerendering is supported for measurement data.
 
-Prerendering configuration is a task which can be run regularly by a scheduler. Configuration is done as a 
+Prerendering configuration is a task which can be run regularly by a scheduler. Configuration is done as a
 `PreRenderingJob` bean. Checkout `WEB-INF/spring/spi-impl-dao_tasks.xml` how to set up a prerendering
 job. The actual rendering configuration for each dataset/phenomenon can be referenced within the job bean.
 
 Rendering configuration tells how to render the actual dataset information. It comprises a `phenomenonStyles`
-section (valid for a set of dataset for a given phenomenon) and a `datasetStyles` section (which actually 
+section (valid for a set of dataset for a given phenomenon) and a `datasetStyles` section (which actually
 overrides a phenomenon style of a specific dataset) Each section can override parameters made in the `generalConfig`.
 
-Only those datasets are prerendered having a match either in `phenomenonStyles` or `datasetStyles`. 
+Only those datasets are prerendered having a match either in `phenomenonStyles` or `datasetStyles`.
 
 #### Date formatting
-In file `WEB-INF/spring/config-general.json` you can set `timeformat` Parameter. Please checkout the 
-[Java SimpleDateFormat rules](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) how the 
+In file `WEB-INF/spring/config-general.json` you can set `timeformat` Parameter. Please checkout the
+[Java SimpleDateFormat rules](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) how the
 format has to look like.
 
 #### Rendering Hints
@@ -127,3 +161,4 @@ The development of the 52°North Sensor Web Server Helgoland REST-API implementa
 | <a target="_blank" href="http://www.wupperverband.de"><img alt="Wupperverband" align="middle" width="196" src="https://raw.githubusercontent.com/52North/sos/develop/spring/views/src/main/webapp/static/images/funding/logo_wv.jpg"/></a> | The <a target="_blank" href="http://www.wupperverband.de/">Wupperverband</a> for water, humans and the environment (Germany) |
 | <a target="_blank" href="http://www.irceline.be/en"><img alt="Belgian Interregional Environment Agency (IRCEL - CELINE)" align="middle" width="130" src="https://raw.githubusercontent.com/52North/sos/develop/spring/views/src/main/webapp/static/images/funding/logo_irceline_no_text.png"/></a> | The <a href="http://www.irceline.be/en" target="_blank" title="Belgian Interregional Environment Agency (IRCEL - CELINE)">Belgian Interregional Environment Agency (IRCEL - CELINE)</a> is active in the domain of air quality (modelling, forecasts, informing the public on the state of their air quality, e-reporting to the EU under the air quality directives, participating in scientific research on air quality, etc.). IRCEL &mdash; CELINE is a permanent cooperation between three regional environment agencies: <a href="http://www.awac.be/" title="Agence wallonne de l&#39Air et du Climat (AWAC)">Agence wallonne de l'Air et du Climat (AWAC)</a>, <a href="http://www.ibgebim.be/" title="Bruxelles Environnement - Leefmilieu Brussel">Bruxelles Environnement - Leefmilieu Brussel</a> and <a href="http://www.vmm.be/" title="Vlaamse Milieumaatschappij (VMM)">Vlaamse Milieumaatschappij (VMM)</a>. |
 | <a target="_blank" href="https://cordis.europa.eu/project/id/282915"><img alt="GEOWOW - GEOSS interoperability for Weather, Ocean and Water" align="middle" width="172" src="https://raw.githubusercontent.com/52North/sos/develop/spring/views/src/main/webapp/static/images/funding/logo_geowow.png"/></a> | The development of this version of the 52&deg;North Sensor Web Server Helgoland API was supported by the <a target="_blank" href="http://cordis.europa.eu/fp7/home_en.html">European FP7</a> research project <a href="https://cordis.europa.eu/project/id/282915" title="GEOWOW">GEOWOW</a> (co-funded by the European Commission under the grant agreement n&deg;282915) |
+```
