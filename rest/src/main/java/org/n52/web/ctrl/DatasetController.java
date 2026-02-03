@@ -68,6 +68,9 @@ public class DatasetController extends AbstractDatasetController {
 
     @Override
     protected Long getSize(IoParameters parameters) {
+        if (parameters == null) {
+            return 0L;
+        }
         return getEntityCounter().getDatasetCount(parameters);
     }
 
