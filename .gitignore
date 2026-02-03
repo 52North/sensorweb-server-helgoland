@@ -8,3 +8,4 @@ nbactions.xml
 *.swo
 nbactions.xml
 
+.vscode/
