@@ -7,7 +7,7 @@
 
 **Thin Web binding API to access timeseries data.**
 
-_The Sensor Web Server Helgoland is a REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Sevice Provider Interface (SPI) which can be implemented by arbitrary backend services to make data available via the API_
+_The Sensor Web Server Helgoland is a REST API provides an access layer to sensor data via RESTful Web binding with different output formats like json, pdf or png. It provides a well defined Service Provider Interface (SPI) which can be implemented by arbitrary backend services to make data available via the API_
 
 The Sensor Web Server Helgoland provides a thin access layer to sensor and observation data via RESTful Web binding. In addition, it offers several IO functionalities e.g. 
   * prerendering of series data, 
