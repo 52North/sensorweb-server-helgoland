@@ -27,21 +27,21 @@
  */
 package org.n52.io.response.dataset;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.n52.io.response.AbstractOutput;
 import org.n52.io.response.FeatureOutput;
 import org.n52.io.response.OptionalOutput;
 import org.n52.io.response.TimeOutput;
 import org.n52.io.response.TimeOutputConverter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.List;
 
-public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput {
+public class DatasetOutput<V extends AbstractValue<?>> extends AbstractOutput {
 
     public static final String COLLECTION_PATH = "datasets";
 
+    public static final String DATASET_DESCRIPTION = "description";
     public static final String DATASET_TYPE = "datasetType";
     public static final String OBSERVATION_TYPE = "observationType";
     public static final String VALUE_TYPE = "valueType";
@@ -58,6 +58,7 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     public static final String LAST_VALUE = "lastValue";
     public static final String HAS_SAMPLINGS = "hasSamplings";
 
+    private OptionalOutput<String> description;
     private OptionalOutput<String> datasetType;
     private OptionalOutput<String> observationType;
     private OptionalOutput<String> valueType;
@@ -75,6 +76,14 @@ public class DatasetOutput<V extends AbstractValue< ? >> extends AbstractOutput 
     private OptionalOutput<V> lastValue;
 
     public DatasetOutput() {
+    }
+
+    public String getDescription() {
+        return getIfSerialized(description);
+    }
+
+    public void setDescription(OptionalOutput<String> description) {
+        this.description = description;
     }
 
     public String getDatasetType() {
