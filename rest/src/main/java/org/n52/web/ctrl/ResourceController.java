@@ -29,7 +29,7 @@ package org.n52.web.ctrl;
 
 import java.util.Collections;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.ModelAndView;

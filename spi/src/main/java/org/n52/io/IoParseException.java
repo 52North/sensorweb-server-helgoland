@@ -27,11 +27,13 @@
  */
 package org.n52.io;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
 public class IoParseException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = -3627963628985404024L;
 
     private List<String> details;

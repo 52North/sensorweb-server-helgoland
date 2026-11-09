@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -68,8 +67,8 @@ import org.n52.io.style.Style;
 import org.n52.shetland.ogc.filter.Filter;
 import org.n52.svalbard.decode.exception.DecodingException;
 import org.n52.svalbard.odata.ODataFesParser;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.operation.TransformException;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.operation.TransformException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.LinkedMultiValueMap;
@@ -179,7 +178,7 @@ public final class IoParameters implements Parameters {
 
     private static InputStream getDefaultConfigFile() {
         try {
-            Path path = Paths.get(IoParameters.class.getResource("/")
+            Path path = Path.of(IoParameters.class.getResource("/")
                                                     .toURI());
             File config = path.resolve(DEFAULT_CONFIG_FILE)
                               .toFile();

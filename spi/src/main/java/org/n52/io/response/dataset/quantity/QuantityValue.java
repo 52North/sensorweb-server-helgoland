@@ -27,6 +27,7 @@
  */
 package org.n52.io.response.dataset.quantity;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 
 import org.n52.io.response.dataset.NumericValue;
@@ -35,6 +36,7 @@ public class QuantityValue extends NumericValue<BigDecimal> {
 
     public static final String TYPE = "quantity";
 
+    @Serial
     private static final long serialVersionUID = -7292181682632614697L;
 
     public QuantityValue() {

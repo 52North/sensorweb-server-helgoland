@@ -29,8 +29,8 @@ package org.n52.web.ctrl.data;
 
 import java.text.MessageFormat;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.n52.io.Constants;
 import org.n52.io.handler.DefaultIoFactory;
@@ -109,7 +109,7 @@ public class TimeseriesDataController extends DataController {
         method = RequestMethod.GET)
     public void getSeriesChart(HttpServletRequest request,
                                HttpServletResponse response,
-                               @PathVariable String datasetId,
+                               @PathVariable("datasetId") String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                    required = false) String httpLocale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)
@@ -131,7 +131,7 @@ public class TimeseriesDataController extends DataController {
     @RequestMapping(value = "/{datasetId}/observations.png", produces = Constants.IMAGE_PNG, method = RequestMethod.GET)
     public void getSeriesChartPng(HttpServletRequest request,
             HttpServletResponse response,
-            @PathVariable String datasetId,
+            @PathVariable("datasetId") String datasetId,
             @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                 required = false) String httpLocale,
             @RequestParam(required = false) MultiValueMap<String, String> query)
@@ -140,7 +140,7 @@ public class TimeseriesDataController extends DataController {
     }
 
     @RequestMapping(value = "/{datasetId}/images", method = RequestMethod.GET)
-    public ModelAndView getSeriesChartByInterval(@PathVariable String datasetId) {
+    public ModelAndView getSeriesChartByInterval(@PathVariable("datasetId") String datasetId) {
         assertPrerenderingIsEnabled();
         ModelAndView response = new ModelAndView();
         return response.addObject(preRenderingTask.getPrerenderedImages(datasetId));
@@ -148,8 +148,8 @@ public class TimeseriesDataController extends DataController {
 
     @RequestMapping(value = "/{datasetId}/{chartQualifier}", produces = Constants.IMAGE_PNG, method = RequestMethod.GET)
     public void getSeriesChartByInterval(HttpServletResponse response,
-                                         @PathVariable String datasetId,
-                                         @PathVariable String chartQualifier)
+                                         @PathVariable("datasetId") String datasetId,
+                                         @PathVariable("chartQualifier") String chartQualifier)
             throws Exception {
         assertPrerenderingIsEnabled();
         assertPrerenderedImageIsAvailable(datasetId, chartQualifier);
@@ -162,8 +162,8 @@ public class TimeseriesDataController extends DataController {
     @RequestMapping(value = "/{datasetId}/images/{fileName}", produces = Constants.IMAGE_PNG,
         method = RequestMethod.GET)
     public void getSeriesChartByFilename(HttpServletResponse response,
-                                         @PathVariable String datasetId,
-                                         @PathVariable String fileName)
+                                         @PathVariable("datasetId") String datasetId,
+                                         @PathVariable("fileName") String fileName)
             throws Exception {
         assertPrerenderingIsEnabled();
         assertPrerenderedImageIsAvailable(fileName, null);
@@ -180,7 +180,7 @@ public class TimeseriesDataController extends DataController {
     }, method = RequestMethod.GET)
     public ModelAndView getTimeseriesData(HttpServletRequest request,
                                           HttpServletResponse response,
-                                          @PathVariable String datasetId,
+                                          @PathVariable("datasetId") String datasetId,
                                           @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                               required = false) String httpLocale,
                                           @RequestParam(required = false) MultiValueMap<String, String> query)

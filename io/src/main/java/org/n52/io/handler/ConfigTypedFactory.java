@@ -38,7 +38,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,7 +102,7 @@ public abstract class ConfigTypedFactory<T> implements ApplicationContextAware {
 
     private static File getConfigFile(String configLocation) throws URISyntaxException {
         URL resource = ConfigTypedFactory.class.getResource("/");
-        Path path = Paths.get(resource.toURI());
+        Path path = Path.of(resource.toURI());
         Path configFile = path.resolve(configLocation);
         return configFile.toFile();
     }

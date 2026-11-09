@@ -27,12 +27,16 @@
  */
 package org.n52.web.exception;
 
+import java.io.Serial;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public final class ResourceNotFoundException extends WebExceptionAdapter implements WebException {
 
+    @Serial
     private static final long serialVersionUID = 7127133546245639752L;
 
     public ResourceNotFoundException(String message, Throwable cause) {

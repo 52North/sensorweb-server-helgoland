@@ -27,12 +27,16 @@
  */
 package org.n52.io.response.dataset.category;
 
+import java.io.Serial;
+
+
 import org.n52.io.response.dataset.AbstractValue;
 
 public class CategoryValue extends AbstractValue<String> {
 
     public static final String TYPE = "category";
 
+    @Serial
     private static final long serialVersionUID = 635165564503748527L;
 
     public CategoryValue() {

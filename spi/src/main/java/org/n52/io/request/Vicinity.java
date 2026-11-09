@@ -36,7 +36,7 @@ import org.locationtech.jts.geom.Point;
 import org.n52.io.crs.BoundingBox;
 import org.n52.io.crs.CRSUtils;
 import org.n52.io.crs.WGS84Util;
-import org.opengis.referencing.FactoryException;
+import org.geotools.api.referencing.FactoryException;
 
 /**
  * Represents the surrounding area based on a center and a radius. All

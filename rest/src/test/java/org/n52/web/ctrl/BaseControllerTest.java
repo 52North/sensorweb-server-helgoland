@@ -29,7 +29,7 @@ package org.n52.web.ctrl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.jupiter.api.Test;
 import org.n52.io.request.IoParameters;

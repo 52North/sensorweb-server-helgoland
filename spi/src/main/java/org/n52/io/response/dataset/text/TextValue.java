@@ -27,12 +27,16 @@
  */
 package org.n52.io.response.dataset.text;
 
+import java.io.Serial;
+
+
 import org.n52.io.response.dataset.AbstractValue;
 
 public class TextValue extends AbstractValue<String> {
 
     public static final String TYPE = "text";
 
+    @Serial
     private static final long serialVersionUID = -7292181682632614697L;
 
     public TextValue() {

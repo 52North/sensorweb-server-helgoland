@@ -27,8 +27,11 @@
  */
 package org.n52.io.response.dataset;
 
+import java.io.Serial;
+
 public abstract class NumericValue<T extends Number> extends AbstractValue<T> {
 
+    @Serial
     private static final long serialVersionUID = 9064167578581810290L;
 
 }

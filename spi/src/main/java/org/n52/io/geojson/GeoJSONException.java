@@ -27,12 +27,15 @@
  */
 package org.n52.io.geojson;
 
+import java.io.Serial;
+
 /**
  *
  * @since 2.0
  */
 public class GeoJSONException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -8203818559729187312L;
 
     public GeoJSONException(String message) {

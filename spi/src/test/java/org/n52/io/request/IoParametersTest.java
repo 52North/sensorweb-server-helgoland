@@ -40,7 +40,6 @@ import static org.n52.io.request.IoParameters.createFromSingleValueMap;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -335,7 +334,7 @@ public class IoParametersTest {
 
 
     private File getAlternativeConfigFile() throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/")
+        Path root = Path.of(getClass().getResource("/")
                                         .toURI());
         return root.resolve("test-config.json")
                    .toFile();

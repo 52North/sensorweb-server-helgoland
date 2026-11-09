@@ -27,8 +27,11 @@
  */
 package org.n52.web.exception;
 
+import java.io.Serial;
+
 public class BadQueryParameterException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 8220427733871836223L;
 
     public BadQueryParameterException(String message) {

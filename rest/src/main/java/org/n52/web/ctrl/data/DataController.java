@@ -35,8 +35,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.joda.time.DateTime;
@@ -125,7 +125,7 @@ public abstract class DataController extends BaseController {
         method = RequestMethod.GET)
     public ModelAndView getSeriesData(HttpServletRequest request,
                                       HttpServletResponse response,
-                                      @PathVariable String datasetId,
+                                      @PathVariable("datasetId") String datasetId,
                                       @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                           required = false) String httpLocale,
                                       @RequestParam(required = false) MultiValueMap<String, String> query)
@@ -201,7 +201,7 @@ public abstract class DataController extends BaseController {
             RawFormats.RAW_FORMAT
         })
     public void getRawSeriesData(HttpServletResponse response,
-                                 @PathVariable String datasetId,
+                                 @PathVariable("datasetId") String datasetId,
                                  @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                      required = false) String httpLocale,
                                  @RequestParam MultiValueMap<String, String> query) {
@@ -257,7 +257,7 @@ public abstract class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesReport(HttpServletRequest request,
                                 HttpServletResponse response,
-                                @PathVariable String datasetId,
+                                @PathVariable("datasetId") String datasetId,
                                 @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                     required = false) String httpLocale,
                                 @RequestParam(required = false) MultiValueMap<String, String> query)
@@ -285,7 +285,7 @@ public abstract class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesAsZippedCsv(HttpServletRequest request,
                                      HttpServletResponse response,
-                                     @PathVariable String datasetId,
+                                     @PathVariable("datasetId") String datasetId,
                                      @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                          required = false) String httpLocale,
                                      @RequestParam(required = false) MultiValueMap<String, String> query)
@@ -316,7 +316,7 @@ public abstract class DataController extends BaseController {
         method = RequestMethod.GET)
     public void getSeriesAsCsv(HttpServletRequest request,
                                HttpServletResponse response,
-                               @PathVariable String datasetId,
+                               @PathVariable("datasetId") String datasetId,
                                @RequestHeader(value = Parameters.HttpHeader.ACCEPT_LANGUAGE,
                                    required = false) String httpLocale,
                                @RequestParam(required = false) MultiValueMap<String, String> query)

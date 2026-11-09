@@ -27,6 +27,7 @@
  */
 package org.n52.io.response.dataset.profile;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +47,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class ProfileValue<T> extends AbstractValue<List<ProfileDataItem<T>>> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7292181682632614697L;
 
     private VerticalExtentOutput verticalExtent;

@@ -32,7 +32,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +70,7 @@ public class DefaultIoHandlerFactoryTest {
     }
 
     private File getConfigFile(String name) throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/").toURI());
+        Path root = Path.of(getClass().getResource("/").toURI());
         return root.resolve(name).toFile();
     }
 

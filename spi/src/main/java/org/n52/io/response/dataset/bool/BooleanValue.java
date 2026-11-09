@@ -27,10 +27,14 @@
  */
 package org.n52.io.response.dataset.bool;
 
+import java.io.Serial;
+
+
 import org.n52.io.response.dataset.AbstractValue;
 
 public class BooleanValue extends AbstractValue<Boolean> {
 
+    @Serial
     private static final long serialVersionUID = -7292181682632614697L;
 
     public BooleanValue() {

@@ -38,7 +38,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,7 +48,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletConfig;
+import jakarta.servlet.ServletConfig;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -371,7 +370,7 @@ public class PreRenderingJob extends ScheduledJob implements InterruptableJob, S
         String outputPath = generalConfig.containsKey(PreRenderingConfig.CONFIG_OUTPUT_PATH)
                 ? generalConfig.get(PreRenderingConfig.CONFIG_OUTPUT_PATH)
                 : DEFAULT_OUTPUT_PATH;
-        Path outputDirectory = Paths.get(webappFolder).resolve(outputPath);
+        Path outputDirectory = Path.of(webappFolder).resolve(outputPath);
         File dir = outputDirectory.toFile();
         if (!dir.exists() && !dir.mkdirs()) {
             LOGGER.warn("Unable to create output folder '{}'.", outputDirectory);

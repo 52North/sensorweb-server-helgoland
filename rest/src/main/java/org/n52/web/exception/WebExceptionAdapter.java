@@ -27,12 +27,14 @@
  */
 package org.n52.web.exception;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public abstract class WebExceptionAdapter extends RuntimeException implements WebException {
 
+    @Serial
     private static final long serialVersionUID = 8960179333452332350L;
 
     private List<String> details;

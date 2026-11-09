@@ -27,8 +27,11 @@
  */
 package org.n52.io.handler;
 
+import java.io.Serial;
+
 public class IoHandlerException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 65118552505433367L;
 
     public IoHandlerException(String message) {

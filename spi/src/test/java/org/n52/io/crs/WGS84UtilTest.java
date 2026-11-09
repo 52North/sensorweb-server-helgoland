@@ -40,7 +40,7 @@ import static org.n52.io.crs.WGS84Util.shortestDistanceBetween;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opengis.referencing.FactoryException;
+import org.geotools.api.referencing.FactoryException;
 
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;

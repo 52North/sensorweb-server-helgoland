@@ -73,20 +73,20 @@ public class GeoJSONEncoder {
             GeoJSONException {
         if (geometry.isEmpty()) {
             return null;
-        } else if (geometry instanceof Point) {
-            return encode((Point) geometry, parentSrid);
-        } else if (geometry instanceof LineString) {
-            return encode((LineString) geometry, parentSrid);
-        } else if (geometry instanceof Polygon) {
-            return encode((Polygon) geometry, parentSrid);
-        } else if (geometry instanceof MultiPoint) {
-            return encode((MultiPoint) geometry, parentSrid);
-        } else if (geometry instanceof MultiLineString) {
-            return encode((MultiLineString) geometry, parentSrid);
-        } else if (geometry instanceof MultiPolygon) {
-            return encode((MultiPolygon) geometry, parentSrid);
-        } else if (geometry instanceof GeometryCollection) {
-            return encode((GeometryCollection) geometry, parentSrid);
+        } else if (geometry instanceof Point point1) {
+            return encode(point1, parentSrid);
+        } else if (geometry instanceof LineString string1) {
+            return encode(string1, parentSrid);
+        } else if (geometry instanceof Polygon polygon1) {
+            return encode(polygon1, parentSrid);
+        } else if (geometry instanceof MultiPoint point) {
+            return encode(point, parentSrid);
+        } else if (geometry instanceof MultiLineString string) {
+            return encode(string, parentSrid);
+        } else if (geometry instanceof MultiPolygon polygon) {
+            return encode(polygon, parentSrid);
+        } else if (geometry instanceof GeometryCollection collection) {
+            return encode(collection, parentSrid);
         } else {
             throw new GeoJSONException("unknown geometry type " + geometry.getGeometryType());
         }

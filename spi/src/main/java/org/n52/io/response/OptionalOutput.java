@@ -86,7 +86,7 @@ public final class OptionalOutput<T> {
     }
 
     public boolean isAbsent() {
-        return !value.isPresent();
+        return value.isEmpty();
     }
 
     /**

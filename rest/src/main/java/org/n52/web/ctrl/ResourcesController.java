@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.n52.io.HrefHelper;
 import org.n52.io.I18N;
@@ -260,8 +260,8 @@ public class ResourcesController extends BaseController implements ResoureContro
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof ResourceCollection) {
-                return getId().equals(((ResourceCollection) obj).getId());
+            if (obj instanceof ResourceCollection collection) {
+                return getId().equals(collection.getId());
             }
             return false;
         }

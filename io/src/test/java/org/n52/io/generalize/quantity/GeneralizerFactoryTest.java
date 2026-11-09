@@ -32,7 +32,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.jupiter.api.Test;
@@ -53,7 +52,7 @@ public class GeneralizerFactoryTest {
     }
 
     private File getAlternativeConfigFile() throws URISyntaxException {
-        Path root = Paths.get(getClass().getResource("/")
+        Path root = Path.of(getClass().getResource("/")
                                         .toURI());
         return root.resolve("test-config.json")
                    .toFile();

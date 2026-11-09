@@ -27,8 +27,11 @@
  */
 package org.n52.io.type.quantity.generalize;
 
+import java.io.Serial;
+
 public class GeneralizerException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = 4770273399132586951L;
 
     public GeneralizerException(String message) {

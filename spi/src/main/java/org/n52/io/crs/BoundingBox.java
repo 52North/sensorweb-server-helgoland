@@ -27,6 +27,7 @@
  */
 package org.n52.io.crs;
 
+import java.io.Serial;
 import java.io.Serializable;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Geometry;
@@ -37,6 +38,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class BoundingBox implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -674668726920006020L;
 
     private Point ll;

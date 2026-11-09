@@ -120,8 +120,7 @@ public class OffsetBasedPagination implements Pagination {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof OffsetBasedPagination) {
-            OffsetBasedPagination that = (OffsetBasedPagination) obj;
+        if (obj instanceof OffsetBasedPagination that) {
             return getOffset() == that.getOffset()
                     && getLimit() == that.getLimit();
         }

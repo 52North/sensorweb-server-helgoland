@@ -80,8 +80,8 @@ public class TimeOutput implements Comparable<TimeOutput> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof TimeOutput) {
-            return getDateTime().equals(((TimeOutput) obj).getDateTime());
+        if (obj != null && obj instanceof TimeOutput output) {
+            return getDateTime().equals(output.getDateTime());
         }
         return false;
     }

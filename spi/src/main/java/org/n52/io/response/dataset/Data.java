@@ -27,6 +27,7 @@
  */
 package org.n52.io.response.dataset;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,6 +48,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class Data<V extends AbstractValue< ? >> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3119211667773416585L;
 
     private final SortedSet<V> values = new TreeSet<>();

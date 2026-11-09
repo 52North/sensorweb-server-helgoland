@@ -36,9 +36,9 @@ import static org.n52.io.crs.CRSUtils.DEFAULT_CRS;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.operation.TransformException;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.NoSuchAuthorityCodeException;
+import org.geotools.api.referencing.operation.TransformException;
 
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;

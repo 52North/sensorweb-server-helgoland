@@ -27,12 +27,16 @@
  */
 package org.n52.io.response.dataset.count;
 
+import java.io.Serial;
+
+
 import org.n52.io.response.dataset.NumericValue;
 
 public class CountValue extends NumericValue<Integer> {
 
     public static final String TYPE = "count";
 
+    @Serial
     private static final long serialVersionUID = 635165564503748527L;
 
     public CountValue() {

@@ -27,7 +27,7 @@
  */
 package org.n52.web.ctrl;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;

@@ -27,12 +27,16 @@
  */
 package org.n52.web.exception;
 
+import java.io.Serial;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 public class InternalServerException extends WebExceptionAdapter implements WebException {
 
+    @Serial
     private static final long serialVersionUID = -299285770822168789L;
 
     public InternalServerException(String message, Throwable cause) {

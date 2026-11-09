@@ -27,6 +27,7 @@
  */
 package org.n52.io.response.dataset;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +48,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public class DatasetMetadata<T extends AbstractValue< ? >> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2670379436251511249L;
 
     private Map<String, Data<T>> referenceValues = new HashMap<>();

@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Locale.LanguageRange;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.n52.io.request.IoParameters;
 import org.n52.io.request.Parameters;

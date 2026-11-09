@@ -34,7 +34,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Scanner;
@@ -67,8 +66,8 @@ public class LicenseExtension extends MetadataExtension<ServiceOutput> {
 
     private String readLicenseText(String configFile) {
         try {
-            Path root = Paths.get(getClass().getResource("/").toURI());
-            final Path target = Paths.get(configFile);
+            Path root = Path.of(getClass().getResource("/").toURI());
+            final Path target = Path.of(configFile);
             File file = !Files.exists(target)
                     ? root.resolve(configFile).toFile()
                     : target.toFile();

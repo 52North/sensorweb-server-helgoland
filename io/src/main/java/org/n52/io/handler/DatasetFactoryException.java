@@ -27,8 +27,11 @@
  */
 package org.n52.io.handler;
 
+import java.io.Serial;
+
 public class DatasetFactoryException extends Exception {
 
+    @Serial
     private static final long serialVersionUID = -6474285099278656900L;
 
     public DatasetFactoryException(String message) {

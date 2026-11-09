@@ -27,6 +27,7 @@
  */
 package org.n52.io.response.dataset;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,6 +51,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @SuppressFBWarnings({"EI_EXPOSE_REP", "EI_EXPOSE_REP2"})
 public abstract class AbstractValue<T> implements Comparable<AbstractValue<T>>, Serializable {
 
+    @Serial
     private static final long serialVersionUID = -1606015864495830281L;
 
     private OptionalOutput<TimeOutput> timestart = OptionalOutput.of(null);

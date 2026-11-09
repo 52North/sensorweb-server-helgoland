@@ -27,12 +27,14 @@
  */
 package org.n52.io.response.dataset.record;
 
+import java.io.Serial;
 import java.util.Map;
 
 import org.n52.io.response.dataset.AbstractValue;
 
 public class RecordValue extends AbstractValue<Map<String, Object>> {
 
+    @Serial
     private static final long serialVersionUID = -7292181682632614697L;
 
     public RecordValue() {
