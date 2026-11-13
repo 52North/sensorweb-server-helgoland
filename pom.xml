@@ -54,7 +54,7 @@
         <!-- dev | ci | prod -->
         <env>dev</env>
 
-        <jackson.version>2.14.0</jackson.version>
+        <jackson.version>2.23.0</jackson.version>
         <geotools.version>35.0</geotools.version>
         <arctic-sea.version>10.2.0-SNAPSHOT</arctic-sea.version>
         <version.junit>6.1.0</version.junit>
