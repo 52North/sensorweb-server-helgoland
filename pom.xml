@@ -59,7 +59,7 @@
         <arctic-sea.version>10.2.0-SNAPSHOT</arctic-sea.version>
         <version.junit>6.1.0</version.junit>
         <version.hamcrest>3.0</version.hamcrest>
-        <version.slf4j>2.0.18</version.slf4j>
+        <version.slf4j>2.0.20</version.slf4j>
         <version.spring>6.2.19</version.spring>
 
         <timestamp>${maven.build.timestamp}</timestamp>
